@@ -6,9 +6,12 @@ Full-stack web app: attach a financial filing PDF (10-K/10-Q for US companies, F
 
 ```
 Browser (React SPA)
-  └─ src/pages/Home.tsx          client orchestrator: extract → 6 sequential POST /api/agent
-                                  calls, retries each up to 3×, graceful degradation
+  └─ src/pages/Home.tsx          client orchestrator: extract → metadata → 6 sequential /api/agent
+                                  calls; bounded retries are new HTTP requests; graceful degradation
+                                  optional /api/market-research runs only after an empty filing-peer result
+  └─ src/components/AnalysisProgress.tsx observable stage/retry/degradation UI
   └─ src/components/Dashboard.tsx interactive dashboard (ECharts) from assembled JSON
+  └─ src/lib/powerpoint.ts       client-side 9-slide bilingual PPTX from the validated analysis JSON
   └─ api/ (Hono server, serverless-style, fully stateless)
        boot.ts                    POST /api/extract (PDF → text), POST /api/agent (one LLM call)
        analyze.ts                 extractFilingText (pdf-parse), buildAgentInput (per-agent
@@ -21,7 +24,7 @@ Browser (React SPA)
 Key design rules (learned from production failures):
 
 1. **Never run long work in the background on a hosted runtime.** Every unit of work happens inside a short HTTP request; the server holds no state and the browser orchestrates.
-2. **Per-request duration limit is real** (~60–120s on ingress). Each LLM call must stay well under it: send each agent only a *focused excerpt* of the filing (20–70K chars), keep output budgets tight, and make **one attempt per request** — retries live at the client, not inside the request.
+2. **Per-request duration limit is real** (~60–120s on ingress). Each LLM/tool call must stay well under it: send each agent only a *focused excerpt* of the filing (20–70K chars), keep output budgets tight, and make **one expensive call per request**. Retries live in the browser and always start a new request. Citation-backed peer search is a separate optional endpoint rather than a nested second call inside the market request.
 3. **Graceful degradation**: a failed agent is skipped; the dashboard renders with the modules that succeeded plus a warning banner.
 4. Terminal errors (quota exhausted, content rejected, misconfigured) abort early — they will fail every agent.
 5. Section detection handles 10-K (Item 1/7/8) and 10-Q (Item 1/2/3) layouts and skips table-of-contents entries via `(?!\s*\d)` lookaheads.
@@ -41,7 +44,7 @@ Key design rules (learned from production failures):
 
 - **Frontend**: React 19 + TypeScript + Vite + Tailwind + shadcn/ui, ECharts, react-router
 - **Backend**: Hono + tRPC (base scaffold), plain REST endpoints for the pipeline
-- **LLM**: AI SDK (`ai` + `@ai-sdk/openai-compatible`, pinned versions) against an OpenAI-compatible gateway; credentials via server-side env (`KIMI_AGENTGW_BASE_URL`, `KIMI_AGENTGW_API_KEY`) — never exposed to the browser
+- **LLM**: AI SDK (`ai` + `@ai-sdk/openai`, pinned versions) with `gpt-5.6-terra`; credentials via the server-side `OPENAI_API_KEY` secret — never exposed to the browser
 - **PDF**: pdf-parse v1.1.1 — import from `pdf-parse/lib/pdf-parse.js` (the package entry has a debug-mode bug); a `.d.ts` shim is included
 - **Validation**: zod v4 schemas in `contracts/analysis.ts`
 - Structured output via `generateObject` + `supportsStructuredOutputs`; per-agent `max_completion_tokens` in `engines.ts`
@@ -50,8 +53,8 @@ Key design rules (learned from production failures):
 
 ```bash
 npm install
-# provide gateway env vars (server-side only):
-#   KIMI_AGENTGW_BASE_URL, KIMI_AGENTGW_API_KEY
+# provide the server-side provider secret:
+#   OPENAI_API_KEY
 npm run build
 NODE_ENV=production PORT=3000 node dist/boot.js
 ```

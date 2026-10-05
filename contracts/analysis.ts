@@ -1,0 +1,385 @@
+import { z } from "zod";
+
+/** Shared contract: the site assembles these slices into the full dashboard. */
+
+export const evidenceReferenceSchema = z.object({
+  section: z.string(),
+  page: z.string().nullable().optional(),
+  item: z.string().nullable().optional(),
+  sourceForm: z.string().nullable().optional(),
+  /** Exact filing excerpt used to validate a claim; never a paraphrase. */
+  quote: z.string().nullable().optional(),
+  kind: z.enum(["excerpt", "citation"]).optional(),
+  url: z.string().url().optional(),
+  publisher: z.string().optional(),
+  accessed: z.string().optional(),
+});
+export type EvidenceReference = z.infer<typeof evidenceReferenceSchema>;
+
+export const metadataSchema = z.object({
+  metadata: z.object({
+    jurisdiction: z.enum(["br", "us"]),
+    filingType: z.string(),
+    reportingPeriod: z.string().nullable(),
+    filedAt: z.string().nullable(),
+    confidence: z.number().min(0).max(1),
+    cnpj: z.string().nullable(),
+    cvmDocumentClass: z.string().nullable(),
+    registryData: z.string().nullable(),
+    cik: z.string().nullable(),
+    sicCode: z.string().nullable(),
+    fiscalYearEnd: z.string().nullable(),
+    stateOfIncorporation: z.string().nullable(),
+    sources: z.array(evidenceReferenceSchema).max(8),
+  }),
+});
+export type MetadataResult = z.infer<typeof metadataSchema>;
+
+export const companySchema = z.object({
+  company: z.object({
+    name: z.string(),
+    ticker: z.string().nullable(),
+    exchange: z.string().nullable(),
+    filingType: z.string(),
+    periodEnd: z.string(),
+    filedAt: z.string().nullable(),
+    filingReference: z.string().nullable().optional(),
+    description: z.string(),
+  }),
+  kpis: z
+    .array(
+      z.object({
+        label: z.string(),
+        value: z.string(),
+        delta: z.string().nullable(),
+        positive: z.boolean().nullable(),
+        source: evidenceReferenceSchema.nullable().optional(),
+      })
+    )
+    .max(8),
+});
+export type CompanyResult = z.infer<typeof companySchema>;
+
+export const marketSchema = z.object({
+  market: z.object({
+    industry: z.string(),
+    competitors: z.array(z.string()).max(12),
+    peerEvidence: z.array(z.object({
+      name: z.string(),
+      sourceType: z.enum(["filing", "external"]),
+      source: evidenceReferenceSchema,
+    })).max(12).optional(),
+    externalResearchStatus: z.enum(["pending", "not_needed", "complete", "no_citable_results", "unavailable"]).optional(),
+      geographies: z
+      .array(z.object({
+        name: z.string(),
+        values: z.array(z.number()),
+        periods: z.array(z.string()).max(5).optional(),
+        sourceType: z.enum(["filing", "external"]).optional(),
+        source: evidenceReferenceSchema.nullable().optional(),
+      }))
+      .max(8),
+    segments: z.array(
+      z.object({
+        name: z.string(),
+        revenue: z.array(z.number()),
+        earnings: z.array(z.number()).nullable(),
+        periods: z.array(z.string()).max(5).optional(),
+        sourceType: z.enum(["filing", "external"]).optional(),
+        source: evidenceReferenceSchema.nullable().optional(),
+      })
+    ),
+    insights: z.array(z.object({
+      dimension: z.enum(["segment", "geography"]),
+      metric: z.enum(["revenue", "earnings"]),
+      name: z.string(),
+      period: z.string(),
+      comparisonPeriod: z.string(),
+      comparison: z.enum(["YoY", "QoQ"]),
+      changePercent: z.number(),
+      sourceType: z.literal("filing"),
+      source: evidenceReferenceSchema,
+    })).max(12).optional(),
+    validationFlags: z.array(z.object({ code: z.string(), note: z.string() })).max(100).optional(),
+  }),
+});
+export type MarketResult = z.infer<typeof marketSchema>;
+
+export const risksSchema = z.object({
+  risks: z
+    .array(
+      z.object({
+        title: z.string(),
+        category: z.string(),
+        severity: z.number().min(1).max(5),
+        summary: z.string(),
+        materialityRank: z.number().int().positive().optional(),
+        source: evidenceReferenceSchema.nullable().optional(),
+      })
+    )
+    .max(15),
+});
+export type RisksResult = z.infer<typeof risksSchema>;
+
+export const financialsSchema = z.object({
+  financials: z.object({
+    unit: z.string(),
+    years: z.array(z.string()).max(5),
+    revenue: z.array(z.number()),
+    grossProfit: z.array(z.number()).nullable().optional(),
+    ebit: z.array(z.number()).nullable().optional(),
+    ebitda: z.array(z.number()).nullable().optional(),
+    adjustedEbitda: z.array(z.number()).nullable().optional(),
+    incomeBeforeTax: z.array(z.number()).nullable().optional(),
+    incomeTaxExpense: z.array(z.number()).nullable().optional(),
+    reportedRoic: z.array(z.number()).nullable().optional(),
+    netIncome: z.array(z.number()),
+    eps: z.array(z.number()).nullable(),
+    grossMargin: z.array(z.number()).nullable(),
+    operatingMargin: z.array(z.number()).nullable(),
+    operatingCashFlow: z.array(z.number()).nullable(),
+    capex: z.array(z.number()).nullable(),
+    freeCashFlow: z.array(z.number()).nullable(),
+    dividends: z.array(z.number()).nullable(),
+    buybacks: z.array(z.number()).nullable(),
+    totalAssets: z.array(z.number()).nullable(),
+    totalLiabilities: z.array(z.number()).nullable().optional(),
+    totalEquity: z.array(z.number()).nullable().optional(),
+    totalDebt: z.array(z.number()).nullable(),
+    shortTermDebt: z.array(z.number()).nullable().optional(),
+    longTermDebt: z.array(z.number()).nullable().optional(),
+    cash: z.array(z.number()).nullable(),
+    currentAssets: z.array(z.number()).nullable().optional(),
+    currentLiabilities: z.array(z.number()).nullable().optional(),
+    interestExpense: z.array(z.number()).nullable().optional(),
+    accountsReceivable: z.array(z.number()).nullable().optional(),
+    inventory: z.array(z.number()).nullable().optional(),
+    accountsPayable: z.array(z.number()).nullable().optional(),
+    costOfGoodsSold: z.array(z.number()).nullable().optional(),
+    goodwill: z.array(z.number()).nullable().optional(),
+    trends: z.array(z.object({
+      metric: z.string(),
+      period: z.string(),
+      comparisonPeriod: z.string(),
+      comparison: z.enum(["YoY", "QoQ"]),
+      changePercent: z.number(),
+    })).max(100).optional(),
+    validationFlags: z.array(z.object({
+      code: z.string(),
+      severity: z.enum(["warning", "error"]),
+      period: z.string().nullable().optional(),
+      note: z.string(),
+    })).max(100).optional(),
+    crossReferencedPriorFiling: z.boolean().optional(),
+    forwardGuidance: z
+      .array(
+        z.object({
+          metric: z.string(),
+          period: z.string(),
+          range: z.string(),
+          source: evidenceReferenceSchema,
+        }),
+      )
+      .max(12)
+      .optional(),
+    evidence: z
+      .array(
+        z.object({
+          metric: z.string(),
+          period: z.string().nullable(),
+          source: evidenceReferenceSchema,
+        }),
+      )
+      .max(40)
+      .optional(),
+    validation: z
+      .object({
+        balanceSheetIdentity: z.enum(["reconciled", "mismatch", "not_available"]),
+        difference: z.number().nullable(),
+        ocrAnomalies: z.array(z.string()),
+        jumpWarnings: z.array(z.string()),
+        relationshipWarnings: z.array(z.string()).optional(),
+      })
+      .optional(),
+    computed: z.array(
+      z.object({
+        key: z.string(),
+        values: z.array(z.number().nullable()),
+        unit: z.enum(["currency", "percent", "multiple", "ratio", "days"]),
+        type: z.enum(["reported", "calculated", "adjusted"]),
+        formula: z.string().nullable(),
+        components: z.array(z.string()).max(8),
+        numerator: z.string().nullable(),
+        denominator: z.string().nullable(),
+        periods: z.array(z.string()).max(5),
+        sources: z.array(evidenceReferenceSchema).max(8),
+        confidence: z.enum(["high", "medium"]),
+        note: z.string().nullable().optional(),
+      }),
+    ).max(40).optional(),
+  }),
+});
+export type FinancialsResult = z.infer<typeof financialsSchema>;
+
+export const historySchema = z.object({
+  timeline: z
+    .array(
+      z.object({
+        year: z.string(),
+        title: z.string(),
+        category: z.string(),
+        detail: z.string(),
+        source: evidenceReferenceSchema.nullable().optional(),
+        sourceType: z.enum(["filing", "external"]).optional(),
+      })
+    )
+    .max(20),
+  events: z
+    .array(
+      z.object({
+        id: z.string().optional(),
+        date: z.string(),
+        title: z.string(),
+        category: z.string(),
+        impact: z.string().nullable(),
+        sourceForm: z.string().nullable().optional(),
+        source: evidenceReferenceSchema.nullable().optional(),
+        dateGranularity: z.enum(["day", "month", "year"]).optional(),
+        materiality: z.enum(["material", "implied", "routine"]).optional(),
+        sourceType: z.enum(["filing", "external"]).optional(),
+        confidence: z.enum(["high", "medium", "low"]).optional(),
+        sourceRef: z.object({
+          kind: z.enum(["excerpt", "citation"]),
+          section: z.string().optional(),
+          pageHint: z.string().optional(),
+          quote: z.string().optional(),
+          url: z.string().optional(),
+          publisher: z.string().optional(),
+          accessed: z.string().optional(),
+        }).optional(),
+      })
+    )
+    .max(15),
+  enrichmentStatus: z.enum(["none", "partial", "full", "skipped"]).optional(),
+  validationFlags: z.array(z.object({
+    code: z.string(),
+    eventId: z.string().optional(),
+    note: z.string(),
+    reason: z.string().optional(),
+  })).max(100).optional(),
+});
+export type HistoryResult = z.infer<typeof historySchema>;
+
+export const summarySchema = z.object({
+  summary: z.array(z.string()).max(10),
+  confidenceNotes: z
+    .array(
+      z.object({
+        claim: z.string(),
+        confidence: z.enum(["high", "medium", "low"]),
+        reason: z.string(),
+        source: evidenceReferenceSchema.nullable().optional(),
+      }),
+    )
+    .max(12)
+    .optional(),
+  missingData: z.array(z.string()).max(20).optional(),
+});
+export type SummaryResult = z.infer<typeof summarySchema>;
+
+export type AgentName =
+  | "profiler"
+  | "market"
+  | "risks"
+  | "financials"
+  | "historian"
+  | "synthesizer";
+
+export type AnalysisStageName = "metadata" | AgentName;
+export type Jurisdiction = "br" | "us";
+
+export type FilingClassification = {
+  jurisdiction: Jurisdiction;
+  filingType: string;
+  confidence: number;
+  needsConfirmation: boolean;
+  signals: string[];
+};
+
+export type ModuleDiagnostic = {
+  status: "complete" | "incomplete" | "failed" | "not_applicable";
+  reason?: string;
+  missing?: string[];
+  warnings?: string[];
+  confidence?: number;
+  enrichmentStatus?: "none" | "partial" | "full" | "skipped";
+};
+
+export type AnalysisDiagnostics = Partial<Record<AnalysisStageName, ModuleDiagnostic>>;
+
+export type PrebuiltDashboardSeries = {
+  state: "ready" | "empty";
+  title: string;
+  subtitle: string;
+  axis: string[];
+  bar: { name: string; values: number[] } | null;
+  line: { name: string; values: number[]; suffix: string } | null;
+  message?: string;
+};
+
+export type PrebuiltDashboardData = {
+  template: "featured-map";
+  jurisdiction: Jurisdiction;
+  locale: "pt-BR" | "en-US";
+  currency: "BRL" | "USD";
+  riskPresentation: "narrative" | "structured";
+  eventPriority: "fatos-relevantes" | "8-k";
+  period: string;
+  hero: {
+    state: "ready" | "empty";
+    label: string;
+    value: number | null;
+    unit: string;
+    delta: string | null;
+    comparison: string | null;
+    message?: string;
+  };
+  kpis: CompanyResult["kpis"];
+  combo: PrebuiltDashboardSeries;
+  pareto: {
+    state: "ready" | "empty";
+    title: string;
+    items: Array<{ name: string; value: number }>;
+    message?: string;
+  };
+  pivot: {
+    state: "ready" | "empty";
+    title: string;
+    columns: [string, string, string, string];
+    rows: Array<[string, string, string, string]>;
+    total: [string, string, string, string] | null;
+    message?: string;
+  };
+};
+
+/** The fully assembled dashboard data. */
+export interface FilingAnalysis {
+  schemaVersion: "2.0";
+  jurisdiction: Jurisdiction;
+  metadata: MetadataResult["metadata"];
+  company: CompanyResult["company"];
+  kpis: CompanyResult["kpis"];
+  market: MarketResult["market"];
+  risks: RisksResult["risks"];
+  financials: FinancialsResult["financials"];
+  timeline: HistoryResult["timeline"];
+  events: HistoryResult["events"];
+  historyValidationFlags?: HistoryResult["validationFlags"];
+  summary: SummaryResult["summary"];
+  confidenceNotes: NonNullable<SummaryResult["confidenceNotes"]>;
+  missingData: string[];
+  diagnostics?: AnalysisDiagnostics;
+  prebuiltDashboard?: PrebuiltDashboardData;
+}
+
+export type Market = "us" | "br";
