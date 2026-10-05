@@ -1,17 +1,26 @@
 import { Hono } from "hono";
 import { bodyLimit } from "hono/body-limit";
 
+
+
+
+
 import { extractFilingText, BadFiling } from "./analyze";
 import { agentManager } from "./agent-manager";
 import { buildPrebuiltDashboardData } from "./dashboard-manager";
 import { classifyFiling, metadataFallback } from "./classification";
 import { modelRuntimeConfig } from "./ai/provider";
+import { calculateValuation, prepareValuation, reconcileValuations, ValuationGateError, ValuationInputError } from "./valuation-manager";
 import type {
   AgentName,
   FilingAnalysis,
   FilingClassification,
   Market,
   MarketResult,
+  ValuationAssumption,
+  ValuationMethod,
+  DcfValuationResult,
+  CompsValuationResult,
 } from "../contracts/analysis";
 import {
   AiUnavailable,
@@ -34,6 +43,7 @@ function errStatus(err: unknown): { body: { error: string }; status: 400 | 403 |
   return { body: { error: "internal" }, status: 500 };
 }
 
+/* ---- Step 0: extract text (CPU only, fast) ---- */
 app.get("/api/status", (c) => c.json({
   configured: Boolean(process.env.OPENAI_API_KEY),
   ai: modelRuntimeConfig(),
@@ -59,6 +69,7 @@ app.post("/api/extract", async (c) => {
   }
 });
 
+/* ---- Agent Manager: source slicing, agent order and output validation. ---- */
 app.get("/api/analysis-plan", (c) => c.json(agentManager.plan()));
 
 app.post("/api/metadata", async (c) => {
@@ -121,6 +132,7 @@ app.post("/api/agent", async (c) => {
   }
 });
 
+/* Optional stage: one bounded web-search model call, never nested inside /api/agent. */
 app.post("/api/market-research", async (c) => {
   try {
     const body = await c.req.json();
@@ -137,6 +149,56 @@ app.post("/api/market-research", async (c) => {
   }
 });
 
+
+/* Valuation assumptions are prepared first and must be explicitly validated before calculation. */
+app.post("/api/valuation/propose", async (c) => {
+  try {
+    const body = await c.req.json();
+    const analysis = body.analysis as FilingAnalysis;
+    const method = body.method as ValuationMethod;
+    if (!analysis?.company || !analysis?.financials || !["dcf", "comps"].includes(method)) {
+      return c.json({ error: "bad_request" }, 400);
+    }
+    return c.json({ proposal: await prepareValuation(analysis, method) });
+  } catch (err) {
+    if (err instanceof ValuationInputError) return c.json({ error: err.message }, 422);
+    const { body, status } = errStatus(err);
+    return c.json(body, status);
+  }
+});
+
+app.post("/api/valuation/calculate", async (c) => {
+  try {
+    const body = await c.req.json();
+    const analysis = body.analysis as FilingAnalysis;
+    const method = body.method as ValuationMethod;
+    const assumptions = Array.isArray(body.assumptions) ? body.assumptions as ValuationAssumption[] : [];
+    if (!analysis?.company || !analysis?.financials || !["dcf", "comps"].includes(method) || !assumptions.length) {
+      return c.json({ error: "bad_request" }, 400);
+    }
+    return c.json({ result: calculateValuation(analysis, method, assumptions) });
+  } catch (err) {
+    if (err instanceof ValuationGateError) {
+      return c.json({ error: err.message, pending: err.pending }, 409);
+    }
+    if (err instanceof ValuationInputError) return c.json({ error: err.message }, 422);
+    const { body, status } = errStatus(err);
+    return c.json(body, status);
+  }
+});
+
+app.post("/api/valuation/reconcile", async (c) => {
+  try {
+    const body = await c.req.json();
+    const dcf = body.dcf as DcfValuationResult | undefined;
+    const comps = body.comps as CompsValuationResult | undefined;
+    return c.json({ reconciliation: reconcileValuations(dcf, comps) });
+  } catch {
+    return c.json({ error: "bad_request" }, 400);
+  }
+});
+
+/* The template manager turns agent JSON into a fixed-dashboard binding only. */
 app.post("/api/dashboard-data", async (c) => {
   try {
     const body = await c.req.json();
