@@ -1,7 +1,7 @@
 import { generateText, Output, stepCountIs } from "ai";
 import { z } from "zod";
 import type { MarketResult } from "../contracts/analysis";
-import { filingModel, marketWebSearchTool } from "./ai/provider";
+import { filingModel, marketWebSearchTool, openAIProviderOptions } from "./ai/provider";
 
 const webResearchOutput = z.object({
   peers: z.array(z.object({
@@ -25,7 +25,6 @@ function canonicalUrl(value: string): string | null {
   }
 }
 
-/** Only accept URLs actually returned as web-search citations by the provider. */
 export function verifyMarketResearchPeers(
   peers: ResearchPeer[],
   sources: Array<{ url: string; title?: string }>,
@@ -68,10 +67,6 @@ export function verifyMarketResearchPeers(
   return verified;
 }
 
-/**
- * Separate, citation-backed fallback for peer names absent from the filing.
- * Financials, forecasts and valuation metrics are intentionally out of scope.
- */
 export async function researchMarketPeers(input: {
   jurisdiction: "us" | "br";
   industry: string;
@@ -81,13 +76,12 @@ export async function researchMarketPeers(input: {
     model: filingModel("market"),
     output: Output.object({ schema: webResearchOutput }),
     tools: {
-      // The provider-defined search tool and AI SDK's structured-output
-      // generic disagree on the no-input tool type in this installed SDK.
       web_search: marketWebSearchTool() as never,
     },
     stopWhen: stepCountIs(3),
     maxRetries: 0,
     maxOutputTokens: 2_000,
+    providerOptions: openAIProviderOptions("market"),
     system: [
       "You are a cautious public-equity industry researcher. The uploaded regulatory filing is the authority for issuer identity and disclosed facts.",
       "Use web search now; do not answer from memory. Find a short list of current, direct competitors of the named issuer.",
