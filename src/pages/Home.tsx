@@ -10,6 +10,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import Dashboard from "@/components/Dashboard";
+import ValuationWorkspace from "@/components/ValuationWorkspace";
 import AnalysisProgress, {
   type ExecutionStageKey,
   type ExecutionState,
@@ -23,6 +24,7 @@ import type {
   MarketResult,
   MetadataResult,
   ModuleDiagnostic,
+  ValuationBundle,
 } from "@contracts/analysis";
 
 type Market = "us" | "br";
@@ -177,6 +179,10 @@ export default function Home() {
   const updateExecution = (key: ExecutionStageKey, patch: Partial<ExecutionState[ExecutionStageKey]>) => {
     setExecution(prev => ({ ...prev, [key]: { ...prev[key], ...patch } }));
   };
+
+  const handleValuationChange = useCallback((valuation: ValuationBundle) => {
+    setAnalysis(prev => prev ? { ...prev, valuation } : prev);
+  }, []);
 
   const cancelAnalysis = () => {
     cancelledRef.current = true;
@@ -622,6 +628,7 @@ export default function Home() {
               </div>
             )}
             <Dashboard data={analysis} lang={lang} />
+            <ValuationWorkspace analysis={analysis} lang={lang} onChange={handleValuationChange} />
           </div>
         )}
 
