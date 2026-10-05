@@ -350,8 +350,8 @@ export const dcfValuationResultSchema = z.object({
   }),
   scenarios: z.object({
     bull: valuationFigureSchema,
-    base: valuationFigureScheme,
-    bear: valuationFigureScheme,
+    base: valuationFigureSchema,
+    bear: valuationFigureSchema,
   }),
   notes: z.array(z.string()).max(12),
 });
