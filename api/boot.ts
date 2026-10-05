@@ -1,14 +1,11 @@
 import { Hono } from "hono";
 import { bodyLimit } from "hono/body-limit";
 
-
-
-
-
 import { extractFilingText, BadFiling } from "./analyze";
 import { agentManager } from "./agent-manager";
 import { buildPrebuiltDashboardData } from "./dashboard-manager";
 import { classifyFiling, metadataFallback } from "./classification";
+import { modelRuntimeConfig } from "./ai/provider";
 import type {
   AgentName,
   FilingAnalysis,
@@ -37,8 +34,10 @@ function errStatus(err: unknown): { body: { error: string }; status: 400 | 403 |
   return { body: { error: "internal" }, status: 500 };
 }
 
-/* ---- Step 0: extract text (CPU only, fast) ---- */
-app.get("/api/status", (c) => c.json({ configured: Boolean(process.env.OPENAI_API_KEY) }));
+app.get("/api/status", (c) => c.json({
+  configured: Boolean(process.env.OPENAI_API_KEY),
+  ai: modelRuntimeConfig(),
+}));
 
 app.post("/api/extract", async (c) => {
   try {
@@ -60,7 +59,6 @@ app.post("/api/extract", async (c) => {
   }
 });
 
-/* ---- Agent Manager: source slicing, agent order and output validation. ---- */
 app.get("/api/analysis-plan", (c) => c.json(agentManager.plan()));
 
 app.post("/api/metadata", async (c) => {
@@ -123,7 +121,6 @@ app.post("/api/agent", async (c) => {
   }
 });
 
-/* Optional stage: one bounded web-search model call, never nested inside /api/agent. */
 app.post("/api/market-research", async (c) => {
   try {
     const body = await c.req.json();
@@ -140,7 +137,6 @@ app.post("/api/market-research", async (c) => {
   }
 });
 
-/* The template manager turns agent JSON into a fixed-dashboard binding only. */
 app.post("/api/dashboard-data", async (c) => {
   try {
     const body = await c.req.json();
