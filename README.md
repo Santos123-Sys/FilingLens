@@ -1,21 +1,41 @@
 # FilingLens
 
-FilingLens converts US SEC and Brazilian CVM filing PDFs into a structured analysis and an interactive, bilingual dashboard. Version 2.0 classifies the regulator and filing type at intake, runs a metadata pre-stage, then coordinates six focused GPT-5.6-Terra analysis modules through jurisdiction-specific retrieval, validation and presentation contracts.
+FilingLens converts US SEC and Brazilian CVM filing PDFs into a structured, evidence-aware company analysis. The browser orchestrates a stateless Hono API, renders a bilingual dashboard, and can export the completed analysis as a professional PowerPoint presentation.
 
-## Dashboard features
+## What the application does
 
-- Shared fiscal-period filters and a segment selector for the time-series and segment charts.
-- Headline KPI visibility controls. KPI strings/deltas are for the latest reported period and are **not** recalculated when a historical chart period is selected.
-- Financial metric explorer with line, column and area views; segment revenue/earnings, geographic revenue, margins, cash flow, and debt/cash charts where source data exists.
-- Risk category filtering; searchable and sortable event table.
-- CSV export for available financial series and browser print / save-to-PDF.
-- Filing context, units and data caveats, with explicit empty states when the filing does not support a visualization.
-- Source-section references on material claims and figures, claim-level confidence notes, and a missing-data inventory.
-- Filing-first competitor analysis with a bounded web-search fallback when the filing names no peers. External names are shown only when the provider returns a matching citation URL, and they remain labelled separately from filing disclosures.
-- CVM/SEC filing-type completeness rules, balance-sheet identity checks, OCR anomaly flags and disclosed forward-guidance extraction.
-- English and Brazilian Portuguese interface labels.
+- Detects SEC vs. CVM filings at intake and runs a metadata pre-stage before specialist analysis.
+- Runs six focused modules for company profile, market, risks, financials, timeline/events, and synthesis.
+- Applies filing-type completeness checks, financial-statement validation, calculated ratios, anomaly screens, and source-provenance validation.
+- Keeps filing evidence and external web evidence distinct. Filing-named peers are preferred; if no validated peers are found, a separate cited-web research request can add direct competitors only when a matching citation URL is returned.
+- Shows an observable stage-by-stage workflow in the UI, with partial/failed modules degrading gracefully instead of blocking the entire dashboard.
+- Supports both the Brazilian CVM and U.S. SEC analysis flows from the same validated data contract.
+- Exports a 10-slide `.pptx` company deck from the same `FilingAnalysis` object used by the dashboard. The deck includes executive summary, company snapshot, financial performance, liquidity/leverage, market/competitors, operating mix, risks, events, and sources/gaps/methodology.
+- Preserves filing-vs-web provenance in the dashboard and PowerPoint output.
 
-Financial values are extracted from the uploaded document and should be checked against the source filing before consequential use. The product is informational, not investment advice. The dashboard is a point-in-time analysis, not a live regulatory-data feed.
+Financial values are extracted from the uploaded filing and should be checked against the source document before consequential use. FilingLens is informational and is not investment advice.
+
+## Reliability model
+
+The hosted runtime is stateless. Every server request performs at most one expensive model invocation. Retries are owned by the browser and are bounded per stage; agent calls are staggered rather than launched in parallel. The optional web peer-research step is isolated in `/api/market-research`, so a search call cannot silently extend the core market-agent request beyond its request budget.
+
+High-level flow:
+
+```text
+PDF
+  -> extract + deterministic jurisdiction classification
+  -> metadata
+  -> profile
+  -> market from filing
+  -> optional cited-web peer research
+  -> risks
+  -> financials + validation
+  -> timeline/events + validation
+  -> synthesis
+  -> validated FilingAnalysis
+       -> dashboard
+       -> PowerPoint export
+```
 
 ## Development
 
@@ -26,7 +46,7 @@ npm ci
 npm run dev
 ```
 
-Useful validation commands:
+Validation commands:
 
 ```bash
 npm run check
@@ -35,14 +55,10 @@ npm test
 npm run build
 ```
 
-The application includes a Hono API for PDF extraction, deterministic jurisdiction classification, the metadata pre-stage and the six analysis agents. See `.env.example` for required server configuration before running the full filing-analysis flow.
+The shared schemas live in `contracts/analysis.ts`, financial calculations in `contracts/financial-metrics.ts`, model instructions in `api/engines.ts`, and the browser workflow in `src/pages/Home.tsx`. The dashboard is in `src/components/Dashboard.tsx`; PowerPoint generation is in `src/lib/powerpoint.ts`.
 
-## Dashboard data contract
+## Deployment
 
-The shared schemas live in `contracts/analysis.ts`; model instructions live in `api/engines.ts`. The UI lives in `src/components/Dashboard.tsx`. Keep financial arrays aligned to `financials.years` in oldest-to-newest order, use `null` / empty arrays for unavailable data rather than zeroes, and only include a filing accession / CVM document reference when the source explicitly provides it. See `prompts/filing-to-dashboard-prompt.md` for the full extraction and interpretation rules.
+The React UI and Hono API can deploy as a Cloudflare Worker/Sites-style application. Configure `OPENAI_API_KEY` as a server-side secret. Without it, the UI reports the missing configuration and disables analysis. Uploaded filings are processed for the active session; this source package does not implement persistent filing history.
 
-## Sites deployment
-
-The React UI and stateless Hono API deploy as a Cloudflare Worker with static assets. Configure `OPENAI_API_KEY` as a server-side Sites secret. Filing analysis uses `gpt-5.6-terra`. Without the secret, the UI displays a setup notice and disables analysis. Files are processed within the current session; there is no saved filing history.
-
-`npm run build` generates `dist/server/index.js` and `dist/client`. PDFs must be text-based, at most 20 MB. Retry boundaries are owned by the Agent Manager and applied per stage only to transient provider failures. The market stage may make one additional bounded web-search call only when no filing-cited competitor survives validation.
+`npm run build` generates `dist/server/index.js` and `dist/client`. PDFs must be text-based and at most 20 MB.
