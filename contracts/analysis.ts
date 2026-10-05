@@ -287,6 +287,131 @@ export const summarySchema = z.object({
 });
 export type SummaryResult = z.infer<typeof summarySchema>;
 
+
+export const valuationMethodSchema = z.enum(["dcf", "comps"]);
+export type ValuationMethod = z.infer<typeof valuationMethodSchema>;
+
+export const valuationAssumptionValueSchema = z.union([z.number(), z.string(), z.boolean(), z.null()]);
+export type ValuationAssumptionValue = z.infer<typeof valuationAssumptionValueSchema>;
+
+export const valuationAssumptionSchema = z.object({
+  id: z.string(),
+  method: valuationMethodSchema,
+  category: z.string(),
+  label: z.string(),
+  proposed_value: valuationAssumptionValueSchema,
+  final_value: valuationAssumptionValueSchema.optional(),
+  unit: z.string().nullable().optional(),
+  rationale: z.string(),
+  source: evidenceReferenceSchema.nullable().optional(),
+  confidence: z.enum(["high", "medium", "low"]),
+  impact: z.enum(["high", "medium", "low"]),
+  status: z.enum(["proposed", "accepted", "edited", "rejected"]),
+});
+export type ValuationAssumption = z.infer<typeof valuationAssumptionSchema>;
+
+export const valuationFigureSchema = z.object({
+  value: z.number().nullable(),
+  unit: z.string(),
+  assumption_ids: z.array(z.string()),
+  note: z.string().optional(),
+});
+export type ValuationFigure = z.infer<typeof valuationFigureSchema>;
+
+export const dcfProjectionSchema = z.object({
+  year: z.string(),
+  revenue: z.number(),
+  ebit_margin: z.number(),
+  ebit: z.number(),
+  nopat: z.number(),
+  d_and_a: z.number(),
+  capex: z.number(),
+  change_nwc: z.number(),
+  fcff: z.number(),
+});
+export type DcfProjection = z.infer<typeof dcfProjectionSchema>;
+
+export const dcfValuationResultSchema = z.object({
+  method: z.literal("dcf"),
+  status: z.literal("complete"),
+  projections: z.array(dcfProjectionSchema).length(5),
+  figures: z.object({
+    wacc: valuationFigureSchema,
+    terminal_growth: valuationFigureSchema,
+    terminal_value: valuationFigureSchema,
+    enterprise_value: valuationFigureSchema,
+    equity_value: valuationFigureSchema,
+    implied_per_share: valuationFigureSchema,
+  }),
+  sensitivity: z.object({
+    wacc: z.array(z.number()).length(5),
+    terminal_growth: z.array(z.number()).length(5),
+    values: z.array(z.array(z.number().nullable()).length(5)).length(5),
+  }),
+  scenarios: z.object({
+    bull: valuationFigureSchema,
+    base: valuationFigureSchema,
+    bear: valuationFigureSchema,
+  }),
+  notes: z.array(z.string()).max(12),
+});
+export type DcfValuationResult = z.infer<typeof dcfValuationResultSchema>;
+
+export const compsPeerResultSchema = z.object({
+  name: z.string(),
+  multiple: z.number().nullable(),
+  source: evidenceReferenceSchema.nullable().optional(),
+  assumption_id: z.string(),
+});
+export type CompsPeerResult = z.infer<typeof compsPeerResultSchema>;
+
+export const compsValuationResultSchema = z.object({
+  method: z.literal("comps"),
+  status: z.literal("complete"),
+  multiple_metric: z.enum(["EV/EBITDA", "EV/Revenue", "P/E"]),
+  peers: z.array(compsPeerResultSchema).max(12),
+  quartiles: z.object({
+    q1: valuationFigureSchema,
+    median: valuationFigureSchema,
+    q3: valuationFigureSchema,
+  }),
+  figures: z.object({
+    selected_multiple: valuationFigureSchema,
+    enterprise_value: valuationFigureSchema,
+    equity_value: valuationFigureSchema,
+    implied_per_share: valuationFigureSchema,
+  }),
+  sensitivity: z.array(z.object({
+    label: z.string(),
+    multiple: z.number(),
+    implied_per_share: z.number().nullable(),
+    assumption_ids: z.array(z.string()),
+  })).max(7),
+  notes: z.array(z.string()).max(12),
+});
+export type CompsValuationResult = z.infer<typeof compsValuationResultSchema>;
+
+export const valuationReconciliationSchema = z.object({
+  status: z.enum(["aligned", "divergent", "unavailable"]),
+  dcf_per_share: z.number().nullable(),
+  comps_per_share: z.number().nullable(),
+  divergence_percent: z.number().nullable(),
+  threshold_percent: z.number(),
+  notes: z.array(z.string()).max(8),
+});
+export type ValuationReconciliation = z.infer<typeof valuationReconciliationSchema>;
+
+export const valuationBundleSchema = z.object({
+  assumptions: z.object({
+    dcf: z.array(valuationAssumptionSchema).optional(),
+    comps: z.array(valuationAssumptionSchema).optional(),
+  }).default({}),
+  dcf: dcfValuationResultSchema.optional(),
+  comps: compsValuationResultSchema.optional(),
+  reconciliation: valuationReconciliationSchema.optional(),
+});
+export type ValuationBundle = z.infer<typeof valuationBundleSchema>;
+
 export type AgentName =
   | "profiler"
   | "market"
@@ -380,6 +505,7 @@ export interface FilingAnalysis {
   missingData: string[];
   diagnostics?: AnalysisDiagnostics;
   prebuiltDashboard?: PrebuiltDashboardData;
+  valuation?: ValuationBundle;
 }
 
 export type Market = "us" | "br";
