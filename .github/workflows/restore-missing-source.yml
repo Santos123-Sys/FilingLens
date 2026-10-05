@@ -1,0 +1,57 @@
+name: Restore missing v17 source
+
+on:
+  push:
+    branches:
+      - feature/powerpoint-agentic-ux
+    paths:
+      - '.restore/ready'
+
+permissions:
+  contents: write
+
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Restore only files missing from the branch
+        shell: python
+        run: |
+          import pathlib
+          import shutil
+          import zipfile
+
+          root = pathlib.Path('.')
+          archive = root / '.restore' / 'FilingLens_v17_Complete_Project.zip'
+          allowed = ('.openai/', 'api/', 'contracts/', 'db/', 'docs/', 'prompts/', 'scripts/', 'src/', 'worker/')
+          restored = []
+          with zipfile.ZipFile(archive) as bundle:
+              for member in bundle.infolist():
+                  name = member.filename
+                  if member.is_dir() or not name.startswith(allowed):
+                      continue
+                  target = root / name
+                  if target.exists():
+                      continue
+                  target.parent.mkdir(parents=True, exist_ok=True)
+                  with bundle.open(member) as source, target.open('wb') as destination:
+                      shutil.copyfileobj(source, destination)
+                  restored.append(name)
+          shutil.rmtree(root / '.restore')
+          print(f'Restored {len(restored)} missing files')
+          for name in restored:
+              print(name)
+      - name: Commit restored runtime source
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No missing files to restore"
+          else
+            git commit -m "Restore remaining FilingLens v17 runtime source"
+            git push origin HEAD:feature/powerpoint-agentic-ux
+          fi
