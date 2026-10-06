@@ -46,10 +46,19 @@ export const filingModel = (stage: AnalysisStageName) => openai(MODEL_PINS[stage
 export const reasoningEffortFor = (stage: AnalysisStageName): ReasoningEffort =>
   stage === "synthesizer" ? OPENAI_SYNTHESIZER_REASONING_EFFORT : OPENAI_REASONING_EFFORT;
 
+/**
+ * AI SDK 6 enables OpenAI strict JSON Schema mode by default. FilingLens' domain
+ * contracts intentionally use nullable/optional evidence fields because a filing
+ * must never be forced to fabricate unavailable values. OpenAI strict mode rejects
+ * those otherwise-valid schemas before inference (for example optional
+ * filingReference / validation period fields). Keep provider-side strict mode off
+ * and retain Zod validation after generation at the application boundary.
+ */
 export const openAIProviderOptions = (stage: AnalysisStageName, maxCompletionTokens?: number) => ({
   openai: {
     ...(maxCompletionTokens ? { maxCompletionTokens } : {}),
     reasoningEffort: reasoningEffortFor(stage),
+    strictJsonSchema: false,
   },
 });
 

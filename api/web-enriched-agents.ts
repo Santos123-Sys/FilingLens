@@ -21,7 +21,9 @@ const profilerCrossCheckSchema = z.object({
     businessDescription: z.string().min(1).max(700),
     identityMatch: z.boolean().nullable(),
     descriptionConsistent: z.boolean().nullable(),
-    url: z.string().url(),
+    // URL validity is checked against provider-returned citations below. Avoid
+    // emitting JSON Schema format:"uri", which OpenAI Responses rejects.
+    url: z.string(),
   }).nullable(),
 });
 
@@ -39,7 +41,7 @@ const externalTimelineCandidateSchema = z.object({
   category: z.enum(TIMELINE_CATEGORIES),
   materiality: z.enum(["material", "implied", "routine"]),
   confidence: z.enum(["high", "medium", "low"]),
-  url: z.string().url(),
+  url: z.string(),
   publisher: z.string().max(160).nullable(),
 });
 
