@@ -32,6 +32,10 @@ type Lang = "en" | "pt";
 type Phase = "idle" | "working" | "confirm" | "done" | "error";
 type PresentationState = "idle" | "building" | "ready" | "error";
 
+const MAX_DOCUMENTS = 6;
+const MAX_FILE_BYTES = 20 * 1024 * 1024;
+const MAX_BUNDLE_BYTES = 60 * 1024 * 1024;
+
 class PipelineCancelled extends Error {}
 class PipelineRequestError extends Error {
   code: string;
@@ -46,85 +50,89 @@ class PipelineRequestError extends Error {
 
 const T: Record<Lang, Record<string, string>> = {
   en: {
-    badge: "FILING → DASHBOARD → PRESENTATION · SEC + CVM",
-    h1a: "Analyze the filing.",
+    badge: "FILINGS → DASHBOARD → PRESENTATION · SEC + CVM",
+    h1a: "Analyze the filing bundle.",
     h1b: "Use the result immediately.",
-    lead: "Attach a 10-K, 10-Q, 8-K or S-1 (US), or a Formulário de Referência, DFP, ITR or Fato Relevante (Brazil). FilingLens validates filing-derived facts, uses citation-backed web peer research only when required, renders the dashboard and prepares a professional PowerPoint deck.",
+    lead: "Attach one or more 10-K, 10-Q, 8-K or S-1 filings (US), or Formulário de Referência, DFP, ITR or Fato Relevante documents (Brazil). FilingLens validates filing-derived facts, uses citation-backed web peer research only when required, renders the dashboard and prepares a professional PowerPoint deck.",
     s1t: "Pick your market",
     s1p: "Choose the filing jurisdiction — US Companies (SEC) or Empresas Brasileiras (CVM/B3). FilingLens also verifies the detected jurisdiction before analysis.",
     tabUs: "🇺🇸 US Companies",
     tabBr: "🇧🇷 Empresas Brasileiras",
-    usDesc: "SEC path — 10-K, 10-Q, 8-K and S-1. FilingLens routes filing sections to bounded specialists and applies form-specific completeness checks.",
-    brDesc: "CVM path — Formulário de Referência, DFP, ITR and Fato Relevante. FilingLens uses Portuguese retrieval anchors and document-specific completeness rules.",
-    drop1us: "Drop your SEC filing PDF here",
-    drop1br: "Drop your CVM filing PDF here",
-    drop2: "or click to browse — PDF only",
-    analyze: "Analyze filing",
+    usDesc: "SEC path — 10-K, 10-Q, 8-K and S-1. You may submit up to 6 related PDFs in one bundle; FilingLens routes evidence across the bundle to bounded specialists.",
+    brDesc: "CVM path — Formulário de Referência, DFP, ITR and Fato Relevante. You may submit up to 6 related PDFs in one bundle; FilingLens uses Portuguese retrieval anchors and document-specific completeness rules.",
+    drop1us: "Drop your SEC filing PDFs here",
+    drop1br: "Drop your CVM filing PDFs here",
+    drop2: "or click to browse — up to 6 PDFs",
+    analyze: "Analyze filing bundle",
     analyzing: "Analysis in progress",
-    extracting: "Reading and classifying the filing…",
+    extracting: "Reading and classifying the documents…",
     confirmTitle: "Confirm the filing jurisdiction",
-    confirmText: "The document contains mixed or low-confidence jurisdiction signals. Confirm the regulator path before analysis begins.",
+    confirmText: "The uploaded bundle contains mixed or low-confidence jurisdiction signals. Confirm the regulator path before analysis begins.",
     detected: "Detected",
     done: "Analysis complete",
     download: "Download data",
     deck: "Download PowerPoint",
     deckBuilding: "Preparing PowerPoint…",
     deckError: "PowerPoint unavailable",
-    again: "Analyze another filing",
+    again: "Analyze another filing bundle",
     privacy: "Operational progress is visible; private model reasoning is not displayed.",
-    tipUs: "Best results: use the official text-based PDF from SEC EDGAR, up to 20 MB.",
-    tipBr: "Best results: use the official text-based PDF from CVM Empresas.NET, up to 20 MB.",
-    err_no_file: "No file received. Please attach the filing PDF.",
-    err_file_too_large: "The PDF is larger than 20 MB.",
-    err_unreadable_pdf: "This PDF could not be read (it may be scanned/image-only or corrupted). Try a text-based PDF.",
+    tipUs: "Best results: use official text-based PDFs from SEC EDGAR. Up to 6 PDFs, 20 MB each, 60 MB total.",
+    tipBr: "Best results: use official text-based PDFs from CVM Empresas.NET. Up to 6 PDFs, 20 MB each, 60 MB total.",
+    err_no_file: "No file received. Please attach at least one filing PDF.",
+    err_file_too_large: "One PDF is larger than 20 MB.",
+    err_too_many_files: "A bundle can contain at most 6 PDFs.",
+    err_bundle_too_large: "The filing bundle is larger than 60 MB in total.",
+    err_unreadable_pdf: "A PDF could not be read (it may be scanned/image-only or corrupted). Try a text-based PDF.",
     err_too_little_text: "Very little text was extracted — this doesn't look like a complete filing.",
     err_ai_unavailable: "Analysis quota exhausted — this feature is temporarily unavailable.",
     err_content_rejected: "The document was rejected by the content filter.",
     err_ai_misconfigured: "The analysis engine is misconfigured. Ask the administrator to configure the AI provider.",
-    err_ai_transient: "The analysis service timed out or remained unavailable after bounded retries. You can run the filing again.",
+    err_ai_transient: "A required analysis stage remained unavailable after bounded retries. FilingLens preserved completed stages; run the bundle again if needed.",
     err_internal: "Something went wrong on our side. Please try again.",
-    err_cancelled: "Analysis cancelled. The file is still selected and can be analyzed again.",
+    err_cancelled: "Analysis cancelled. The files are still selected and can be analyzed again.",
     footer: "FilingLens · Public regulatory filings (SEC EDGAR / CVM) · Filing-first analysis · Informational use only — not investment advice.",
   },
   pt: {
-    badge: "DOCUMENTO → DASHBOARD → APRESENTAÇÃO · SEC + CVM",
-    h1a: "Analise o documento.",
+    badge: "DOCUMENTOS → DASHBOARD → APRESENTAÇÃO · SEC + CVM",
+    h1a: "Analise o conjunto de documentos.",
     h1b: "Use o resultado imediatamente.",
-    lead: "Anexe um 10-K, 10-Q, 8-K ou S-1 (EUA), ou um Formulário de Referência, DFP, ITR ou Fato Relevante (Brasil). O FilingLens valida fatos extraídos do documento, usa pesquisa web citada de concorrentes apenas quando necessária, gera o dashboard e prepara um PowerPoint profissional.",
+    lead: "Anexe um ou mais 10-K, 10-Q, 8-K ou S-1 (EUA), ou Formulário de Referência, DFP, ITR ou Fato Relevante (Brasil). O FilingLens valida fatos extraídos dos documentos, usa pesquisa web citada de concorrentes apenas quando necessária, gera o dashboard e prepara um PowerPoint profissional.",
     s1t: "Escolha seu mercado",
     s1p: "Selecione a jurisdição — US Companies (SEC) ou Empresas Brasileiras (CVM/B3). O FilingLens também verifica a jurisdição detectada antes da análise.",
     tabUs: "🇺🇸 US Companies",
     tabBr: "🇧🇷 Empresas Brasileiras",
-    usDesc: "Rota SEC — 10-K, 10-Q, 8-K e S-1. O FilingLens encaminha seções do documento a especialistas limitados e aplica controles de completude por formulário.",
-    brDesc: "Rota CVM — Formulário de Referência, DFP, ITR e Fato Relevante. O FilingLens usa âncoras em português e regras de completude específicas por documento.",
-    drop1us: "Arraste o PDF do documento SEC aqui",
-    drop1br: "Arraste o PDF do documento CVM aqui",
-    drop2: "ou clique para procurar — somente PDF",
-    analyze: "Analisar documento",
+    usDesc: "Rota SEC — 10-K, 10-Q, 8-K e S-1. É possível enviar até 6 PDFs relacionados; o FilingLens distribui as evidências do conjunto entre especialistas limitados.",
+    brDesc: "Rota CVM — Formulário de Referência, DFP, ITR e Fato Relevante. É possível enviar até 6 PDFs relacionados; o FilingLens usa âncoras em português e regras de completude específicas por documento.",
+    drop1us: "Arraste os PDFs dos documentos SEC aqui",
+    drop1br: "Arraste os PDFs dos documentos CVM aqui",
+    drop2: "ou clique para procurar — até 6 PDFs",
+    analyze: "Analisar conjunto de documentos",
     analyzing: "Análise em andamento",
-    extracting: "Lendo e classificando o documento…",
-    confirmTitle: "Confirme a jurisdição do documento",
-    confirmText: "O documento contém sinais mistos ou de baixa confiança. Confirme a rota regulatória antes do início da análise.",
+    extracting: "Lendo e classificando os documentos…",
+    confirmTitle: "Confirme a jurisdição dos documentos",
+    confirmText: "O conjunto enviado contém sinais mistos ou de baixa confiança. Confirme a rota regulatória antes do início da análise.",
     detected: "Detectado",
     done: "Análise concluída",
     download: "Baixar dados",
     deck: "Baixar PowerPoint",
     deckBuilding: "Preparando PowerPoint…",
     deckError: "PowerPoint indisponível",
-    again: "Analisar outro documento",
+    again: "Analisar outro conjunto",
     privacy: "O progresso operacional é visível; o raciocínio privado do modelo não é exibido.",
-    tipUs: "Melhores resultados: use o PDF oficial com texto do SEC EDGAR, de até 20 MB.",
-    tipBr: "Melhores resultados: use o PDF oficial com texto do CVM Empresas.NET, de até 20 MB.",
-    err_no_file: "Nenhum arquivo recebido. Anexe o PDF do documento.",
-    err_file_too_large: "O PDF é maior que 20 MB.",
-    err_unreadable_pdf: "Não foi possível ler este PDF (pode ser digitalizado como imagem ou estar corrompido). Tente um PDF com texto.",
+    tipUs: "Melhores resultados: use PDFs oficiais com texto do SEC EDGAR. Até 6 PDFs, 20 MB cada e 60 MB no total.",
+    tipBr: "Melhores resultados: use PDFs oficiais com texto do CVM Empresas.NET. Até 6 PDFs, 20 MB cada e 60 MB no total.",
+    err_no_file: "Nenhum arquivo recebido. Anexe pelo menos um PDF.",
+    err_file_too_large: "Um dos PDFs é maior que 20 MB.",
+    err_too_many_files: "O conjunto pode conter no máximo 6 PDFs.",
+    err_bundle_too_large: "O conjunto de documentos ultrapassa 60 MB no total.",
+    err_unreadable_pdf: "Não foi possível ler um dos PDFs (pode ser digitalizado como imagem ou estar corrompido). Tente um PDF com texto.",
     err_too_little_text: "Muito pouco texto foi extraído — isto não parece um documento completo.",
     err_ai_unavailable: "A cota de análise se esgotou — o recurso está temporariamente indisponível.",
     err_content_rejected: "O documento foi rejeitado pelo filtro de conteúdo.",
     err_ai_misconfigured: "O motor de análise está mal configurado. Peça ao administrador para configurar o provedor de IA.",
-    err_ai_transient: "O serviço de análise expirou ou permaneceu indisponível após tentativas limitadas. Você pode executar novamente.",
+    err_ai_transient: "Um estágio necessário permaneceu indisponível após tentativas limitadas. O FilingLens preservou os estágios concluídos; execute o conjunto novamente se necessário.",
     err_internal: "Algo deu errado do nosso lado. Tente novamente.",
-    err_cancelled: "Análise cancelada. O arquivo continua selecionado e pode ser analisado novamente.",
+    err_cancelled: "Análise cancelada. Os arquivos continuam selecionados e podem ser analisados novamente.",
     footer: "FilingLens · Documentos regulatórios públicos (SEC EDGAR / CVM) · Análise priorizando o documento · Uso informacional — não constitui recomendação de investimento.",
   },
 };
@@ -144,7 +152,7 @@ function initialExecution(): ExecutionState {
   return Object.fromEntries(PRIMARY_STAGE_KEYS.map(key => [key, {
     status: "queued",
     attempt: 0,
-    maxAttempts: key === "marketResearch" ? 2 : 2,
+    maxAttempts: 2,
   }])) as ExecutionState;
 }
 
@@ -152,12 +160,19 @@ function sleep(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function requestTimeout(stage?: ExecutionStageKey): number {
+  if (stage === "historian" || stage === "financials" || stage === "synthesizer") return 240_000;
+  if (stage === "marketResearch") return 180_000;
+  if (stage === "metadata" || stage === "profiler" || stage === "market" || stage === "risks") return 150_000;
+  return 120_000;
+}
+
 export default function Home() {
   const [configured, setConfigured] = useState<boolean | null>(null);
   useEffect(() => { fetch("/api/status").then(r => r.json()).then(s => setConfigured(s.configured)).catch(() => setConfigured(false)); }, []);
   const [lang, setLang] = useState<Lang>("en");
   const [market, setMarket] = useState<Market>("us");
-  const [file, setFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
   const [phase, setPhase] = useState<Phase>("idle");
   const [extracting, setExtracting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -199,7 +214,7 @@ export default function Home() {
       if (cancelledRef.current) throw new PipelineCancelled();
       const controller = new AbortController();
       activeRequestRef.current = controller;
-      const timeout = window.setTimeout(() => controller.abort("stage_timeout"), 90_000);
+      const timeout = window.setTimeout(() => controller.abort("stage_timeout"), requestTimeout(stage));
       if (stage) updateExecution(stage, { status: attempt > 1 ? "retrying" : "running", attempt, maxAttempts });
       try {
         const response = await fetch(url, { ...init, signal: controller.signal });
@@ -257,14 +272,31 @@ export default function Home() {
     return () => { active = false; window.clearTimeout(timer); };
   }, [analysis, lang]);
 
-  const pick = (f: File | undefined | null) => {
-    if (!f || phase === "working") return;
-    if (!f.name.toLowerCase().endsWith(".pdf") || f.size > 20 * 1024 * 1024) {
-      setError(lang === "pt" ? "Selecione um PDF de até 20 MB." : "Select a PDF up to 20 MB.");
+  const pick = (selection: File[] | FileList | null | undefined) => {
+    if (!selection || phase === "working") return;
+    const next = Array.from(selection);
+    if (next.length === 0) return;
+    if (next.length > MAX_DOCUMENTS) {
+      setError(t("err_too_many_files"));
       setPhase("error");
       return;
     }
-    setFile(f);
+    if (next.some(file => !file.name.toLowerCase().endsWith(".pdf"))) {
+      setError(lang === "pt" ? "Selecione somente arquivos PDF." : "Select PDF files only.");
+      setPhase("error");
+      return;
+    }
+    if (next.some(file => file.size > MAX_FILE_BYTES)) {
+      setError(t("err_file_too_large"));
+      setPhase("error");
+      return;
+    }
+    if (next.reduce((sum, file) => sum + file.size, 0) > MAX_BUNDLE_BYTES) {
+      setError(t("err_bundle_too_large"));
+      setPhase("error");
+      return;
+    }
+    setFiles(next);
     setError(null);
     setPhase("idle");
     setAnalysis(null);
@@ -381,13 +413,13 @@ export default function Home() {
       const prof = parts.profiler as { company: FilingAnalysis["company"]; kpis: FilingAnalysis["kpis"] } | undefined;
       const summaryPart = parts.synthesizer as { summary: FilingAnalysis["summary"]; confidenceNotes?: FilingAnalysis["confidenceNotes"]; missingData?: string[] } | undefined;
       const companyFallback: FilingAnalysis["company"] = {
-        name: file?.name.replace(/\.pdf$/i, "") ?? "Filing",
+        name: files[0]?.name.replace(/\.pdf$/i, "") ?? "Filing",
         ticker: null,
         exchange: null,
         filingType: metadata.filingType || confirmed.filingType,
         periodEnd: metadata.reportingPeriod ?? "",
         filedAt: metadata.filedAt,
-        description: lang === "pt" ? "Perfil não disponível para este documento." : "Profile unavailable for this filing.",
+        description: lang === "pt" ? "Perfil não disponível para este conjunto de documentos." : "Profile unavailable for this filing bundle.",
       };
       const financialsFallback: FilingAnalysis["financials"] = {
         unit: confirmed.jurisdiction === "br" ? "R$ milhões" : "USD millions",
@@ -440,7 +472,7 @@ export default function Home() {
   };
 
   const analyze = async () => {
-    if (!file || phase === "working") return;
+    if (files.length === 0 || phase === "working") return;
     cancelledRef.current = false;
     setPhase("working");
     setExtracting(true);
@@ -450,7 +482,7 @@ export default function Home() {
     setExecution(initialExecution());
     try {
       const form = new FormData();
-      form.append("file", file);
+      files.forEach(file => form.append("file", file));
       form.append("market", market);
       const body = await requestJson("/api/extract", { method: "POST", body: form }, undefined, 1);
       if (typeof body.text !== "string" || !body.classification) throw new PipelineRequestError("internal");
@@ -502,7 +534,7 @@ export default function Home() {
   const reset = () => {
     cancelledRef.current = true;
     activeRequestRef.current?.abort();
-    setFile(null);
+    setFiles([]);
     setAnalysis(null);
     setFailed([]);
     setPhase("idle");
@@ -514,6 +546,8 @@ export default function Home() {
     setPresentationBlob(null);
     setPresentationState("idle");
   };
+
+  const bundleSizeMb = files.reduce((sum, file) => sum + file.size, 0) / 1024 / 1024;
 
   return (
     <div className="min-h-screen bg-[#080d18] text-slate-100" style={{ backgroundImage: "radial-gradient(1000px 480px at 72% -10%, rgba(37,99,235,.25) 0%, rgba(8,13,24,0) 62%), radial-gradient(700px 420px at 10% 15%, rgba(8,145,178,.10) 0%, rgba(8,13,24,0) 60%)" }}>
@@ -551,7 +585,7 @@ export default function Home() {
 
             <div className="mt-7 grid gap-3 md:grid-cols-3">
               {[
-                [ShieldCheck, lang === "pt" ? "Documento primeiro" : "Filing first", lang === "pt" ? "Fatos financeiros e operacionais permanecem vinculados ao documento regulatório." : "Financial and operating facts remain anchored to the regulatory filing."],
+                [ShieldCheck, lang === "pt" ? "Documento primeiro" : "Filing first", lang === "pt" ? "Fatos financeiros e operacionais permanecem vinculados aos documentos regulatórios." : "Financial and operating facts remain anchored to the regulatory filings."],
                 [FileSearch, lang === "pt" ? "Pesquisa web limitada" : "Bounded web research", lang === "pt" ? "A web é usada apenas para concorrentes e somente com URLs citadas." : "The web is used only for peers and only when citation URLs are returned."],
                 [Presentation, lang === "pt" ? "PowerPoint automático" : "Automatic PowerPoint", lang === "pt" ? "Após a análise, um deck profissional é preparado com os mesmos dados validados." : "After analysis, a professional deck is prepared from the same validated data."],
               ].map(([Icon, heading, copy]) => {
@@ -584,15 +618,15 @@ export default function Home() {
 
               {phase !== "confirm" && (
                 <>
-                  <div onClick={() => phase !== "working" && inputRef.current?.click()} onDragOver={e => { e.preventDefault(); setDragOver(true); }} onDragLeave={() => setDragOver(false)} onDrop={e => { e.preventDefault(); setDragOver(false); pick(e.dataTransfer.files?.[0]); }} className={`mt-5 cursor-pointer rounded-2xl border border-dashed p-9 text-center transition ${dragOver ? "border-cyan-400 bg-cyan-500/8" : "border-slate-700 bg-slate-950/35 hover:border-cyan-500/50"}`}>
+                  <div onClick={() => phase !== "working" && inputRef.current?.click()} onDragOver={e => { e.preventDefault(); setDragOver(true); }} onDragLeave={() => setDragOver(false)} onDrop={e => { e.preventDefault(); setDragOver(false); pick(e.dataTransfer.files); }} className={`mt-5 cursor-pointer rounded-2xl border border-dashed p-9 text-center transition ${dragOver ? "border-cyan-400 bg-cyan-500/8" : "border-slate-700 bg-slate-950/35 hover:border-cyan-500/50"}`}>
                     <div className="mx-auto grid h-11 w-11 place-items-center rounded-xl border border-slate-700 bg-slate-900"><FileSearch className="h-5 w-5 text-cyan-300" /></div>
-                    <div className="mt-3 text-sm font-semibold text-slate-100">{file ? file.name : market === "us" ? t("drop1us") : t("drop1br")}</div>
-                    <div className="mt-1 text-[11px] text-slate-500">{file ? `${(file.size / 1024 / 1024).toFixed(1)} MB` : t("drop2")}</div>
+                    <div className="mt-3 text-sm font-semibold text-slate-100">{files.length > 0 ? (files.length === 1 ? files[0].name : `${files.length} ${lang === "pt" ? "documentos selecionados" : "documents selected"}`) : market === "us" ? t("drop1us") : t("drop1br")}</div>
+                    <div className="mt-1 text-[11px] text-slate-500">{files.length > 0 ? `${bundleSizeMb.toFixed(1)} MB · ${files.map(file => file.name).join(" · ")}` : t("drop2")}</div>
                     <span className="mt-4 inline-block rounded-full border border-slate-800 bg-slate-900 px-3 py-1 text-[10px] text-slate-500">{market === "us" ? "PDF · 10-K · 10-Q · 8-K · S-1" : "PDF · FRE · DFP · ITR · Fato Relevante"}</span>
-                    <input ref={inputRef} type="file" accept=".pdf,application/pdf" className="hidden" onChange={e => pick(e.target.files?.[0])} />
+                    <input ref={inputRef} type="file" multiple accept=".pdf,application/pdf" className="hidden" onChange={e => pick(e.target.files)} />
                   </div>
 
-                  <button onClick={analyze} disabled={!file || phase === "working" || configured !== true} className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-500 py-3.5 text-sm font-bold text-white shadow-lg shadow-blue-950/20 transition enabled:hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40">
+                  <button onClick={analyze} disabled={files.length === 0 || phase === "working" || configured !== true} className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-500 py-3.5 text-sm font-bold text-white shadow-lg shadow-blue-950/20 transition enabled:hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40">
                     <Sparkles className="h-4 w-4" />{phase === "working" ? (extracting ? t("extracting") : t("analyzing")) : t("analyze")}
                   </button>
 
