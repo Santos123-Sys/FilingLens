@@ -6,6 +6,7 @@ import { agentManager } from "./agent-manager";
 import { buildPrebuiltDashboardData } from "./dashboard-manager";
 import { classifyFiling, metadataFallback } from "./classification";
 import { modelRuntimeConfig } from "./ai/provider";
+import { dataToolsBinary, dataToolsConfigured, dataToolsJson } from "./data-tools-client";
 import { calculateValuation, prepareValuation, reconcileValuations, ValuationGateError, ValuationInputError } from "./valuation-manager";
 import type {
   AgentName,
@@ -13,6 +14,7 @@ import type {
   FilingClassification,
   Market,
   MarketResult,
+  RegulatoryDataSnapshot,
   ValuationAssumption,
   ValuationMethod,
   DcfValuationResult,
@@ -38,9 +40,6 @@ function errStatus(err: unknown): { body: { error: string }; status: 400 | 403 |
   if (err instanceof AiUnavailable) return { body: { error: "ai_unavailable" }, status: 403 };
   if (err instanceof ContentRejected) return { body: { error: "content_rejected" }, status: 403 };
   if (err instanceof AiMisconfigured) return { body: { error: "ai_misconfigured" }, status: 500 };
-  // Invalid provider/schema requests are deterministic developer/configuration errors,
-  // not transient outages. Return a non-5xx status so the browser does not waste a
-  // second bounded model call on an identical invalid request.
   if (err instanceof AiInvalidRequest) return { body: { error: "ai_invalid_request" }, status: 422 };
   if (err instanceof AiTransient) return { body: { error: "ai_transient" }, status: 503 };
   console.error("request failed:", err);
@@ -51,10 +50,48 @@ function safeDocumentName(name: string): string {
   return name.replace(/[\r\n\[\]]+/g, " ").trim().slice(0, 180) || "filing.pdf";
 }
 
+function firstCapture(text: string, patterns: RegExp[]): string | null {
+  for (const pattern of patterns) {
+    const match = pattern.exec(text);
+    if (match?.[1]) return match[1];
+  }
+  return null;
+}
+
+function deterministicCik(text: string): string | null {
+  const value = firstCapture(text.slice(0, 120_000), [
+    /CENTRAL\s+INDEX\s+KEY\s*[:#]?\s*0*(\d{6,10})/i,
+    /\bCIK\s*[:#]?\s*0*(\d{6,10})\b/i,
+  ]);
+  return value ? value.padStart(10, "0") : null;
+}
+
+function deterministicCnpj(text: string): string | null {
+  const value = firstCapture(text.slice(0, 120_000), [
+    /\b(\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2})\b/,
+    /\bCNPJ\s*[:#]?\s*(\d{14})\b/i,
+  ]);
+  return value ? value.replace(/\D/g, "") : null;
+}
+
+function unavailableRegulatoryData(jurisdiction: Market, warning: string): RegulatoryDataSnapshot {
+  return {
+    status: "unavailable",
+    jurisdiction,
+    provider: jurisdiction === "us" ? "sec_edgar" : "cvm_open_data",
+    company: {},
+    metrics: [],
+    sources: [],
+    warnings: [warning],
+    raw: {},
+  };
+}
+
 /* ---- Step 0: extract text (CPU only, fast) ---- */
 app.get("/api/status", (c) => c.json({
   configured: Boolean(process.env.OPENAI_API_KEY),
   ai: modelRuntimeConfig(),
+  dataTools: { configured: dataToolsConfigured() },
   intake: { maxDocuments: MAX_DOCUMENTS, maxFileMb: 20, maxBundleMb: 60 },
 }));
 
@@ -109,9 +146,6 @@ app.post("/api/metadata", async (c) => {
     try {
       return c.json(await agentManager.runMetadata(classification.jurisdiction, text, classification));
     } catch (error) {
-      // Metadata is useful, but it must not be a single point of failure. A structured-output
-      // mismatch or provider timeout degrades to deterministic filing classification so the
-      // specialist stages can still run. Configuration, quota and policy failures remain terminal.
       if (error instanceof AiMisconfigured || error instanceof AiUnavailable || error instanceof ContentRejected) {
         throw error;
       }
@@ -132,6 +166,33 @@ app.post("/api/metadata", async (c) => {
   } catch (err) {
     const { body: eb, status } = errStatus(err);
     return c.json(eb, status);
+  }
+});
+
+/* Deterministic authoritative cross-check. This never blocks filing analysis. */
+app.post("/api/regulatory-data", async (c) => {
+  const body = await c.req.json().catch(() => ({})) as Record<string, unknown>;
+  const jurisdiction: Market = body.jurisdiction === "br" ? "br" : "us";
+  if (!dataToolsConfigured()) {
+    return c.json(unavailableRegulatoryData(jurisdiction, "Private regulatory-data service is not configured; filing analysis continued."));
+  }
+  const text = typeof body.text === "string" ? body.text : "";
+  const cik = typeof body.cik === "string" && body.cik.trim() ? body.cik : deterministicCik(text);
+  const cnpj = typeof body.cnpj === "string" && body.cnpj.trim() ? body.cnpj : deterministicCnpj(text);
+  try {
+    const result = await dataToolsJson<RegulatoryDataSnapshot>("/v1/regulatory/enrich", {
+      jurisdiction,
+      filingType: typeof body.filingType === "string" ? body.filingType : undefined,
+      reportingPeriod: typeof body.reportingPeriod === "string" ? body.reportingPeriod : undefined,
+      cik,
+      cnpj,
+      companyName: typeof body.companyName === "string" ? body.companyName : undefined,
+      ticker: typeof body.ticker === "string" ? body.ticker : undefined,
+    });
+    return c.json(result);
+  } catch (error) {
+    console.warn("[regulatory-data] enrichment unavailable; preserving filing-only analysis", error);
+    return c.json(unavailableRegulatoryData(jurisdiction, "Authoritative structured-data lookup was unavailable; filing evidence was preserved."));
   }
 });
 
@@ -179,6 +240,36 @@ app.post("/api/market-research", async (c) => {
   } catch (err) {
     const { body, status } = errStatus(err);
     return c.json(body, status);
+  }
+});
+
+/* PowerPoint is generated by the private presentation-native Python service. */
+app.post("/api/presentation", async (c) => {
+  try {
+    const body = await c.req.json();
+    const analysis = body.analysis as FilingAnalysis;
+    const lang = body.lang === "pt" ? "pt" : "en";
+    if (!analysis?.company || !analysis?.financials) return c.json({ error: "bad_request" }, 400);
+    if (!dataToolsConfigured()) return c.json({ error: "presentation_service_unavailable" }, 503);
+    const upstream = await dataToolsBinary("/v1/presentation", { analysis, lang });
+    if (!upstream.ok) {
+      console.error("[presentation] data-tools rejected generation", upstream.status, await upstream.text().catch(() => ""));
+      return c.json({ error: "presentation_generation_failed" }, 503);
+    }
+    const bytes = await upstream.arrayBuffer();
+    const disposition = upstream.headers.get("Content-Disposition") ?? 'attachment; filename="FilingLens-Analysis.pptx"';
+    return new Response(bytes, {
+      status: 200,
+      headers: {
+        "Content-Type": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        "Content-Disposition": disposition,
+        "Cache-Control": "no-store",
+        "X-FilingLens-Presentation-Engine": upstream.headers.get("X-FilingLens-Presentation-Engine") ?? "python-pptx",
+      },
+    });
+  } catch (error) {
+    console.error("[presentation] generation failed", error);
+    return c.json({ error: "presentation_generation_failed" }, 503);
   }
 });
 
