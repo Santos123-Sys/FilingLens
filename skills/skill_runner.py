@@ -41,7 +41,6 @@ def main() -> int:
         print(f"failed to decode skill archive: {exc}", file=sys.stderr)
         return 65
 
-    stdin_bytes = sys.stdin.buffer.read()
     try:
         with zipfile.ZipFile(io.BytesIO(archive_bytes), "r") as zf:
             if member not in zf.namelist():
@@ -58,7 +57,7 @@ def main() -> int:
         os.chmod(script_path, 0o700)
         proc = subprocess.run(
             [sys.executable, str(script_path), *script_args],
-            input=stdin_bytes,
+            stdin=subprocess.DEVNULL,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             timeout=30,
