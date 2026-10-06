@@ -125,10 +125,10 @@ describe("Agent and dashboard managers", () => {
     ]);
   });
 
-  it("keeps retries at the browser boundary and web research in its own request", () => {
+  it("keeps retries at the browser boundary while allowing bounded provider web tools inside profiler and historian", () => {
     expect(agentManager.plan()).toMatchObject({
       retryBoundary: "browser-per-stage",
-      requestPolicy: "one_expensive_model_call_per_http_request",
+      requestPolicy: "one_primary_model_invocation_per_agent_request; provider web-search tool may execute inside profiler/historian; deterministic Python skills do not call a model",
       executionMode: "sequential_staged",
       webResearchStage: { endpoint: "/api/market-research" },
     });
@@ -171,8 +171,8 @@ describe("Agent and dashboard managers", () => {
     expect(dashboard.pivot.state).toBe("empty");
   });
 
-  it("calculates period-aligned financial relationships without replacing reported inputs", () => {
-    const result = applyFinancialValidation({
+  it("calculates period-aligned financial relationships without replacing reported inputs", async () => {
+    const result = await applyFinancialValidation({
       financials: {
         unit: "R$ milhões", years: ["2024", "2025"], revenue: [100, 120],
         grossProfit: [40, 54], ebit: [20, 30], ebitda: [25, 36],
