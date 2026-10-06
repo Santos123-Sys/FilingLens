@@ -30,11 +30,17 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Install data-tools dependencies
+        run: python -m pip install -r services/financial-data-service/requirements.txt pytest==8.3.5
+
       - name: Typecheck
         run: npm run check
 
       - name: Test
         run: npm test
+
+      - name: Test data-tools PowerPoint round-trip
+        run: PYTHONPATH=services/financial-data-service pytest -q services/financial-data-service/tests
 
       - name: Build
         run: npm run build
