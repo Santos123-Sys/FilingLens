@@ -275,29 +275,41 @@ export default function Home() {
 
   const pick = (selection: File[] | FileList | null | undefined) => {
     if (!selection || phase === "working") return;
-    const next = Array.from(selection);
-    if (next.length === 0) return;
+    const incoming = Array.from(selection);
+    if (incoming.length === 0) return;
+    const seen = new Set<string>();
+    const next = [...files, ...incoming].filter(file => {
+      const key = `${file.name}:${file.size}:${file.lastModified}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
     if (next.length > MAX_DOCUMENTS) {
       setError(t("err_too_many_files"));
       setPhase("error");
+      if (inputRef.current) inputRef.current.value = "";
       return;
     }
     if (next.some(file => !file.name.toLowerCase().endsWith(".pdf"))) {
       setError(lang === "pt" ? "Selecione somente arquivos PDF." : "Select PDF files only.");
       setPhase("error");
+      if (inputRef.current) inputRef.current.value = "";
       return;
     }
     if (next.some(file => file.size > MAX_FILE_BYTES)) {
       setError(t("err_file_too_large"));
       setPhase("error");
+      if (inputRef.current) inputRef.current.value = "";
       return;
     }
     if (next.reduce((sum, file) => sum + file.size, 0) > MAX_BUNDLE_BYTES) {
       setError(t("err_bundle_too_large"));
       setPhase("error");
+      if (inputRef.current) inputRef.current.value = "";
       return;
     }
     setFiles(next);
+    if (inputRef.current) inputRef.current.value = "";
     setError(null);
     setPhase("idle");
     setAnalysis(null);
@@ -536,6 +548,7 @@ export default function Home() {
     cancelledRef.current = true;
     activeRequestRef.current?.abort();
     setFiles([]);
+    if (inputRef.current) inputRef.current.value = "";
     setAnalysis(null);
     setFailed([]);
     setPhase("idle");
@@ -622,7 +635,8 @@ export default function Home() {
                   <div onClick={() => phase !== "working" && inputRef.current?.click()} onDragOver={e => { e.preventDefault(); setDragOver(true); }} onDragLeave={() => setDragOver(false)} onDrop={e => { e.preventDefault(); setDragOver(false); pick(e.dataTransfer.files); }} className={`mt-5 cursor-pointer rounded-2xl border border-dashed p-9 text-center transition ${dragOver ? "border-cyan-400 bg-cyan-500/8" : "border-slate-700 bg-slate-950/35 hover:border-cyan-500/50"}`}>
                     <div className="mx-auto grid h-11 w-11 place-items-center rounded-xl border border-slate-700 bg-slate-900"><FileSearch className="h-5 w-5 text-cyan-300" /></div>
                     <div className="mt-3 text-sm font-semibold text-slate-100">{files.length > 0 ? (files.length === 1 ? files[0].name : `${files.length} ${lang === "pt" ? "documentos selecionados" : "documents selected"}`) : market === "us" ? t("drop1us") : t("drop1br")}</div>
-                    <div className="mt-1 text-[11px] text-slate-500">{files.length > 0 ? `${bundleSizeMb.toFixed(1)} MB · ${files.map(file => file.name).join(" · ")}` : t("drop2")}</div>
+                    <div className="mt-1 text-[11px] text-slate-500">{files.length > 0 ? `${files.length}/${MAX_DOCUMENTS} · ${bundleSizeMb.toFixed(1)} MB · ${files.map(file => file.name).join(" · ")}` : t("drop2")}</div>
+                    {files.length > 0 && files.length < MAX_DOCUMENTS && <div className="mt-2 text-[10px] font-medium text-cyan-300/80">{lang === "pt" ? "Clique novamente ou arraste mais PDFs para adicionar ao conjunto." : "Click again or drop more PDFs to add them to this bundle."}</div>}
                     <span className="mt-4 inline-block rounded-full border border-slate-800 bg-slate-900 px-3 py-1 text-[10px] text-slate-500">{market === "us" ? "PDF · 10-K · 10-Q · 8-K · S-1" : "PDF · FRE · DFP · ITR · Fato Relevante"}</span>
                     <input ref={inputRef} type="file" multiple accept=".pdf,application/pdf" className="hidden" onChange={e => pick(e.target.files)} />
                   </div>
