@@ -38,13 +38,11 @@ export class SkillRuntimeError extends Error {
 async function runMember(
   skill: keyof typeof SKILL_ARCHIVES,
   args: string[],
-  stdin = "",
 ): Promise<{ stdout: string; stderr: string }> {
   const spec = SKILL_ARCHIVES[skill];
   try {
     const result = await execFileAsync(PYTHON, [RUNNER, spec.archive, spec.member, ...args], {
       cwd: ROOT,
-      input: stdin,
       timeout: 35_000,
       maxBuffer: 3 * 1024 * 1024,
       encoding: "utf8",
