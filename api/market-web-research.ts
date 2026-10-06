@@ -6,7 +6,9 @@ import { filingModel, marketWebSearchTool, openAIProviderOptions } from "./ai/pr
 const webResearchOutput = z.object({
   peers: z.array(z.object({
     name: z.string().min(1).max(100),
-    url: z.string().url(),
+    // The exact cited URL is verified after generation against provider sources.
+    // Avoid format:"uri" in the OpenAI response schema.
+    url: z.string(),
     reason: z.string().min(1).max(240),
   })).max(8),
 });
