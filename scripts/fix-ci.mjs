@@ -1,5 +1,6 @@
 import fs from "node:fs";
 
+// One-shot repository patch: it validates before committing and then deletes itself.
 function replaceRequired(text, from, to, label) {
   if (!text.includes(from)) throw new Error(`missing replacement target: ${label}`);
   return text.replace(from, to);
@@ -49,6 +50,5 @@ contractTest = replaceRequired(
 );
 fs.writeFileSync("api/analysis-contract.test.ts", contractTest);
 
-// Remove this one-shot fixer and its trigger from the final tree.
 fs.rmSync("scripts/fix-ci.mjs");
 fs.rmSync(".github/workflows/fix-ci.yml");
