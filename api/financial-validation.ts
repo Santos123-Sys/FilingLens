@@ -1,6 +1,7 @@
 import type { FinancialsResult } from "../contracts/analysis";
 import { computeFinancialMetrics } from "./financial-metrics";
 import { analyzeFinancialSkillInputs } from "./financial-skill-analysis";
+import { runExactFinancialSkills } from "./exact-financial-skills";
 
 const SERIES_KEYS = [
   "revenue",
@@ -43,9 +44,9 @@ function latest(values: number[] | null | undefined): number | null {
   return typeof value === "number" && Number.isFinite(value) ? value : null;
 }
 
-export function applyFinancialValidation(
+export async function applyFinancialValidation(
   result: FinancialsResult,
-): FinancialsResult {
+): Promise<FinancialsResult> {
   const financials = result.financials;
   const assets = latest(financials.totalAssets);
   const liabilities = latest(financials.totalLiabilities);
@@ -76,10 +77,18 @@ export function applyFinancialValidation(
     });
   }
 
-  const computed = computeFinancialMetrics(financials);
-  const statementAnalysis = analyzeFinancialSkillInputs(financials);
+  const filingLensComputed = computeFinancialMetrics(financials);
+  const exactSkills = await runExactFinancialSkills(financials, filingLensComputed);
+  const exactStatementUnavailable = exactSkills.runtimeFlags.some(flag => flag.code === "FINANCIAL_STATEMENT_SKILL_RUNTIME_UNAVAILABLE");
+  const fallbackStatement = exactStatementUnavailable ? analyzeFinancialSkillInputs(financials) : { trends: [], validationFlags: [] };
+  const trends = exactSkills.trends.length ? exactSkills.trends : fallbackStatement.trends;
+  const validationFlags = [
+    ...(exactSkills.validationFlags.length ? exactSkills.validationFlags : fallbackStatement.validationFlags),
+    ...exactSkills.runtimeFlags,
+  ].filter((flag, index, list) => list.findIndex(other => other.code === flag.code && other.period === flag.period) === index);
+
   const relationshipWarnings: string[] = [];
-  const calculatedFcf = computed.find(item => item.key === "freeCashFlowCalculated");
+  const calculatedFcf = exactSkills.computed.find(item => item.key === "freeCashFlowCalculated");
   if (Array.isArray(financials.freeCashFlow) && calculatedFcf) {
     financials.freeCashFlow.forEach((reported, index) => {
       const calculated = calculatedFcf.values[index];
@@ -94,9 +103,9 @@ export function applyFinancialValidation(
   return {
     financials: {
       ...financials,
-      computed,
-      trends: statementAnalysis.trends,
-      validationFlags: statementAnalysis.validationFlags,
+      computed: exactSkills.computed,
+      trends,
+      validationFlags,
       validation: {
         balanceSheetIdentity,
         difference,
