@@ -10,7 +10,12 @@ export const evidenceReferenceSchema = z.object({
   /** Exact filing excerpt used to validate a claim; never a paraphrase. */
   quote: z.string().nullable().optional(),
   kind: z.enum(["excerpt", "citation"]).optional(),
-  url: z.string().url().optional(),
+  /**
+   * URL syntax is verified at citation-binding boundaries instead of encoded as
+   * JSON-Schema format:"uri". OpenAI Responses rejects that format in response
+   * schemas even when the application-level Zod validator otherwise accepts it.
+   */
+  url: z.string().optional(),
   publisher: z.string().optional(),
   accessed: z.string().optional(),
 });
