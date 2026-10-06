@@ -6,8 +6,9 @@ import { AiMisconfigured, classifyAiError } from "./lib/ai-client";
 import { AGENTS, METADATA_AGENT, type AgentName } from "./engines";
 import type { Jurisdiction, Market } from "../contracts/analysis";
 
-const MAX_TEXT_CHARS = 220_000;
+const MAX_TEXT_CHARS = 320_000;
 const AGENT_TIMEOUT_MS = 5 * 60 * 1000;
+const MIN_SECTION_SPACING = 8_000;
 
 const BR_FINANCIAL_HEADINGS = [
   /demonstra(?:ç|c)(?:ão|ao)\s+(?:do|de)\s+resultado(?:\s+do\s+exerc[ií]cio)?/i,
@@ -33,12 +34,34 @@ const BR_MARKET_HEADINGS = [
   /principais\s+mercados/i,
   /participa(?:ç|c)(?:ão|ao)\s+(?:de\s+)?mercado/i,
 ];
-const SEC_SECTION_HEADINGS = [
-  /item\s+1\.?\s+business/i,
-  /item\s+1a\.?\s+risk\s+factors/i,
-  /item\s+7\.?\s+management'?s\s+discussion/i,
+const SEC_FINANCIAL_HEADINGS = [
+  /part\s+i[,.]?\s*item\s+1\.?\s+financial\s+statements/i,
+  /item\s+1\.?\s+financial\s+statements/i,
+  /condensed\s+consolidated\s+statements?\s+of\s+(?:income|operations|earnings)/i,
+  /condensed\s+consolidated\s+balance\s+sheets?/i,
+  /condensed\s+consolidated\s+statements?\s+of\s+cash\s+flows?/i,
   /item\s+8\.?\s+financial\s+statements/i,
+];
+const SEC_RISK_HEADINGS = [
+  /item\s+1a\.?\s+risk\s+factors/i,
+  /no\s+material\s+changes?.{0,140}risk\s+factors/i,
+  /risk\s+factors?\s+(?:set\s+forth|described|disclosed)/i,
+];
+const SEC_MARKET_HEADINGS = [
+  /segment\s+information/i,
+  /reportable\s+segments?/i,
+  /revenue\s+by\s+(?:specialized\s+market|market\s+platform|segment|geograph)/i,
+  /geographic\s+(?:revenue|information)/i,
   /item\s+2\.?\s+management'?s\s+discussion/i,
+  /item\s+1\.?\s+business/i,
+  /exhibit\s+99\.?1/i,
+];
+const SEC_PROFILE_HEADINGS = [
+  /item\s+1\.?\s+business/i,
+  /business\s+overview/i,
+  /company\s+overview/i,
+  /item\s+2\.?\s+management'?s\s+discussion/i,
+  /exhibit\s+99\.?1/i,
 ];
 const EVENT_HEADINGS = [
   /fato\s+relevante/i,
@@ -67,33 +90,99 @@ export async function extractFilingText(buf: Buffer): Promise<string> {
   return createAnalysisCorpus(text);
 }
 
-function findSectionStart(text: string, patterns: RegExp[]): number {
-  for (const re of patterns) {
-    re.lastIndex = 0;
-    const m = re.exec(text);
-    if (m) return m.index;
-  }
-  return -1;
+function cloneGlobal(pattern: RegExp): RegExp {
+  return new RegExp(pattern.source, pattern.flags.includes("g") ? pattern.flags : `${pattern.flags}g`);
 }
 
-function surrounding(text: string, patterns: RegExp[], radius = 10_000): string {
-  const start = findSectionStart(text, patterns);
-  if (start < 0) return "";
-  return text.slice(Math.max(0, start - 1000), Math.min(text.length, start + radius));
+function matchStarts(text: string, patterns: RegExp[]): number[] {
+  const starts: number[] = [];
+  for (const pattern of patterns) {
+    for (const match of text.matchAll(cloneGlobal(pattern))) {
+      if (typeof match.index === "number") starts.push(match.index);
+    }
+  }
+  return [...new Set(starts)].sort((a, b) => a - b);
+}
+
+/**
+ * Collapse nearby aliases that point to the same filing section. Without this,
+ * headings such as "Part I Item 1" and "Condensed Consolidated Statements of
+ * Income" can consume separate windows while a distant balance sheet or cash
+ * flow statement is starved from the bounded prompt.
+ */
+function spacedSectionStarts(starts: number[]): number[] {
+  const spaced: number[] = [];
+  for (const start of starts) {
+    const previous = spaced.at(-1);
+    if (previous === undefined || start - previous >= MIN_SECTION_SPACING) spaced.push(start);
+  }
+  return spaced;
+}
+
+/**
+ * Retrieve multiple matching filing windows, not only the first section heading.
+ * This matters for 10-Qs where income statement, balance sheet, segment notes,
+ * MD&A and risk updates are separated by tens or hundreds of pages.
+ */
+function surroundingMatches(
+  text: string,
+  patterns: RegExp[],
+  totalBudget: number,
+  maxMatches = 5,
+  preferLast = false,
+): string {
+  const starts = spacedSectionStarts(matchStarts(text, patterns));
+  if (!starts.length) return "";
+  const selected = preferLast ? starts.slice(-maxMatches) : starts.slice(0, maxMatches);
+  const perMatch = Math.max(4_000, Math.floor(totalBudget / selected.length));
+  return selected
+    .map(start => text.slice(Math.max(0, start - 1_200), Math.min(text.length, start + perMatch - 1_200)))
+    .join("\n\n");
+}
+
+/**
+ * Fairly distribute a hard character budget across evidence families. Sequential
+ * join-then-slice semantics can silently drop the final evidence family, which is
+ * exactly how a 10-Q balance sheet was lost after being successfully retrieved.
+ */
+function boundedJoin(parts: string[], budget: number): string {
+  const unique: string[] = [];
+  const seen = new Set<string>();
+  for (const part of parts.filter(Boolean)) {
+    const key = part.slice(0, 240);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    unique.push(part);
+  }
+  if (!unique.length) return "";
+
+  const separator = "\n\n";
+  let remaining = Math.max(0, budget - separator.length * (unique.length - 1));
+  let remainingParts = unique.length;
+  const output: string[] = [];
+  for (const part of unique) {
+    const quota = Math.max(0, Math.floor(remaining / remainingParts));
+    const slice = part.slice(0, quota);
+    output.push(slice);
+    remaining -= slice.length;
+    remainingParts -= 1;
+  }
+  return output.join(separator).slice(0, budget);
 }
 
 export function createAnalysisCorpus(text: string): string {
   if (text.length <= MAX_TEXT_CHARS) return text;
-  const chunks = [
-    text.slice(0, 45_000),
-    surrounding(text, BR_FINANCIAL_HEADINGS, 55_000),
-    surrounding(text, BR_RISK_HEADINGS, 30_000),
-    surrounding(text, BR_MARKET_HEADINGS, 30_000),
-    surrounding(text, SEC_SECTION_HEADINGS, 55_000),
-    surrounding(text, EVENT_HEADINGS, 25_000),
-    text.slice(-25_000),
-  ].filter(Boolean);
-  return Array.from(new Set(chunks)).join("\n\n").slice(0, MAX_TEXT_CHARS);
+  return boundedJoin([
+    text.slice(0, 40_000),
+    surroundingMatches(text, BR_FINANCIAL_HEADINGS, 45_000, 4),
+    surroundingMatches(text, SEC_FINANCIAL_HEADINGS, 85_000, 6),
+    surroundingMatches(text, BR_RISK_HEADINGS, 35_000, 3, true),
+    surroundingMatches(text, SEC_RISK_HEADINGS, 45_000, 4, true),
+    surroundingMatches(text, BR_MARKET_HEADINGS, 40_000, 4),
+    surroundingMatches(text, SEC_MARKET_HEADINGS, 55_000, 5),
+    surroundingMatches(text, EVENT_HEADINGS, 25_000, 4, true),
+    text.slice(-35_000),
+  ], MAX_TEXT_CHARS);
 }
 
 /**
@@ -121,22 +210,46 @@ function proportionalJoin(documents: string[], totalChars: number, build: (docum
 
 export function buildMetadataInput(text: string): string {
   const documents = splitDocuments(text);
-  return proportionalJoin(documents, 50_000, (document, budget) => document.slice(0, budget));
+  return proportionalJoin(documents, 60_000, (document, budget) => document.slice(0, budget));
 }
 
 function buildSingleAgentInput(agent: AgentName, text: string, budget: number): string {
-  const first = text.slice(0, Math.min(12_000, Math.max(6_000, Math.floor(budget * 0.22))));
-  const cap = (parts: string[]) => parts.filter(Boolean).join("\n\n").slice(0, budget);
+  const first = text.slice(0, Math.min(12_000, Math.max(6_000, Math.floor(budget * 0.18))));
+  const cap = (parts: string[]) => boundedJoin(parts, budget);
   switch (agent) {
     case "financials":
-      return cap([first, surrounding(text, BR_FINANCIAL_HEADINGS, Math.floor(budget * 0.68)), surrounding(text, [/item\s+8\.?\s+financial\s+statements/i], Math.floor(budget * 0.68))]);
+      return cap([
+        first,
+        surroundingMatches(text, SEC_FINANCIAL_HEADINGS, Math.floor(budget * 0.76), 6),
+        surroundingMatches(text, BR_FINANCIAL_HEADINGS, Math.floor(budget * 0.62), 5),
+        text.slice(-Math.min(8_000, Math.floor(budget * 0.08))),
+      ]);
     case "risks":
-      return cap([first, surrounding(text, BR_RISK_HEADINGS, Math.floor(budget * 0.72)), surrounding(text, [/item\s+1a\.?\s+risk\s+factors/i], Math.floor(budget * 0.72))]);
+      return cap([
+        first,
+        surroundingMatches(text, SEC_RISK_HEADINGS, Math.floor(budget * 0.76), 5, true),
+        surroundingMatches(text, BR_RISK_HEADINGS, Math.floor(budget * 0.70), 4, true),
+        text.slice(-Math.min(9_000, Math.floor(budget * 0.1))),
+      ]);
     case "market":
+      return cap([
+        first,
+        surroundingMatches(text, SEC_MARKET_HEADINGS, Math.floor(budget * 0.75), 6),
+        surroundingMatches(text, BR_MARKET_HEADINGS, Math.floor(budget * 0.70), 5),
+      ]);
     case "profiler":
-      return cap([first, surrounding(text, BR_MARKET_HEADINGS, Math.floor(budget * 0.68)), surrounding(text, [/item\s+1\.?\s+business/i], Math.floor(budget * 0.68))]);
+      return cap([
+        first,
+        surroundingMatches(text, SEC_PROFILE_HEADINGS, Math.floor(budget * 0.54), 4),
+        surroundingMatches(text, SEC_MARKET_HEADINGS, Math.floor(budget * 0.42), 4),
+        surroundingMatches(text, BR_MARKET_HEADINGS, Math.floor(budget * 0.50), 4),
+      ]);
     case "historian":
-      return cap([first, surrounding(text, EVENT_HEADINGS, Math.floor(budget * 0.62)), text.slice(-Math.min(10_000, Math.floor(budget * 0.2)))]);
+      return cap([
+        first,
+        surroundingMatches(text, EVENT_HEADINGS, Math.floor(budget * 0.64), 6, true),
+        text.slice(-Math.min(12_000, Math.floor(budget * 0.18))),
+      ]);
     case "synthesizer":
       return text.slice(0, budget);
     default:
@@ -145,11 +258,11 @@ function buildSingleAgentInput(agent: AgentName, text: string, budget: number): 
 }
 
 export function buildAgentInput(agent: AgentName, text: string): string {
-  const totalChars = agent === "financials" ? 120_000
-    : agent === "historian" ? 100_000
-      : agent === "market" || agent === "profiler" ? 90_000
-        : agent === "risks" ? 85_000
-          : 80_000;
+  const totalChars = agent === "financials" ? 145_000
+    : agent === "historian" ? 110_000
+      : agent === "market" || agent === "profiler" ? 105_000
+        : agent === "risks" ? 100_000
+          : 90_000;
   const documents = splitDocuments(text);
   return proportionalJoin(documents, totalChars, (document, budget) => buildSingleAgentInput(agent, document, budget));
 }

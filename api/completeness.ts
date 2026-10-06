@@ -17,6 +17,10 @@ function array(value: unknown): unknown[] {
   return Array.isArray(value) ? value : [];
 }
 
+function nonEmptyString(value: unknown): boolean {
+  return typeof value === "string" && value.trim().length > 0;
+}
+
 /** Structured output validates shape, not usefulness. */
 export function assessCompleteness(
   agent: AgentName,
@@ -28,11 +32,32 @@ export function assessCompleteness(
   switch (agent) {
     case "profiler": {
       const company = record(root?.company);
-      const hasName = typeof company?.name === "string" && company.name.trim().length > 0;
+      const hasName = nonEmptyString(company?.name);
       const hasDescription = typeof company?.description === "string" && company.description.trim().length > 30;
-      return hasName && hasDescription
-        ? { status: "complete", confidence: 0.85, ...(array(root?.kpis).length ? {} : { missing: ["filing-supported headline KPIs"] }) }
-        : { status: "incomplete", reason: "profile_data_not_found", missing: ["issuer identity and business description"] };
+      const hasIdentity = hasName && [company?.ticker, company?.exchange, company?.filingType].some(nonEmptyString);
+      const kpiCount = array(root?.kpis).length;
+      const filingType = context?.filingType?.toLowerCase() ?? "";
+      const periodicUpdate = /10-q|8-k|itr|fato relevante/.test(filingType);
+
+      // Periodic filings often do not repeat the full Item 1 / business narrative.
+      // Treat explicit issuer identity plus at least one filing KPI as a usable profile,
+      // while preserving the absent description as a visible data gap.
+      if (hasName && hasDescription) {
+        return {
+          status: "complete",
+          confidence: 0.85,
+          ...(kpiCount ? {} : { missing: ["filing-supported headline KPIs"] }),
+        };
+      }
+      if (periodicUpdate && hasIdentity && kpiCount > 0) {
+        return {
+          status: "complete",
+          confidence: 0.8,
+          missing: ["business description not repeated in this periodic filing"],
+          warnings: ["periodic_filing_profile_uses_identity_and_kpis"],
+        };
+      }
+      return { status: "incomplete", reason: "profile_data_not_found", missing: ["issuer identity and business description or filing KPIs"] };
     }
     case "market": {
       const market = record(root?.market);

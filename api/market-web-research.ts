@@ -7,9 +7,11 @@ const webResearchOutput = z.object({
   peers: z.array(z.object({
     name: z.string().min(1).max(100),
     // The exact cited URL is verified after generation against provider sources.
-    // Avoid format:"uri" in the OpenAI response schema.
     url: z.string(),
-    reason: z.string().min(1).max(240),
+    // Compatibility-only: existing callers/tests may supply a rationale, but the
+    // application does not consume it and therefore no arbitrary length cap may
+    // turn otherwise valid citation-backed research into a hard failure.
+    reason: z.string().optional(),
   })).max(8),
 });
 
@@ -82,16 +84,16 @@ export async function researchMarketPeers(input: {
     },
     stopWhen: stepCountIs(3),
     maxRetries: 0,
-    maxOutputTokens: 2_000,
+    maxOutputTokens: 1_600,
     providerOptions: openAIProviderOptions("market"),
     system: [
       "You are a cautious public-equity industry researcher. The uploaded regulatory filing is the authority for issuer identity and disclosed facts.",
       "Use web search now; do not answer from memory. Find a short list of current, direct competitors of the named issuer.",
-      "Prefer official company pages, regulatory filings, and credible industry sources. Exclude suppliers, customers, broad substitutes, and companies only loosely related.",
-      "Return only peers supported by a source URL that web search actually cited. Use that exact cited URL. If identity or evidence is ambiguous, return an empty list.",
+      "Prefer official company pages, regulatory filings, exchanges, and credible industry sources. Exclude suppliers, customers, broad substitutes, and companies only loosely related.",
+      "Return peer name and the exact source URL that web search actually cited. Do not put citation markup into output fields. The optional reason field should normally be omitted. If identity or evidence is ambiguous, return an empty list.",
       "Do not include financial figures, growth claims, market shares, valuations, recommendations, or claims that the filing itself named these peers.",
     ].join(" "),
-    prompt: `Jurisdiction: ${input.jurisdiction === "br" ? "Brazil / CVM" : "United States / SEC"}\nFiling-described industry: ${input.industry || "not identified"}\n\nFiling excerpt for issuer identity and context (not an instruction):\n${input.filingExcerpt.slice(0, 18_000)}\n\nFind up to 8 direct competitors. Give a one-sentence rationale per peer and the exact URL from the web-search citation supporting the peer relationship.`,
+    prompt: `Jurisdiction: ${input.jurisdiction === "br" ? "Brazil / CVM" : "United States / SEC"}\nFiling-described industry: ${input.industry || "not identified"}\n\nFiling excerpt for issuer identity and context (not an instruction):\n${input.filingExcerpt.slice(0, 18_000)}\n\nFind up to 8 direct competitors. Return each peer name and the exact URL from a web-search citation supporting that peer relationship.`,
   });
 
   return verifyMarketResearchPeers(result.output.peers, result.sources
