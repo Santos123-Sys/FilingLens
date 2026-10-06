@@ -8,6 +8,7 @@ import type { Jurisdiction, Market } from "../contracts/analysis";
 
 const MAX_TEXT_CHARS = 320_000;
 const AGENT_TIMEOUT_MS = 5 * 60 * 1000;
+const MIN_SECTION_SPACING = 8_000;
 
 const BR_FINANCIAL_HEADINGS = [
   /demonstra(?:ç|c)(?:ão|ao)\s+(?:do|de)\s+resultado(?:\s+do\s+exerc[ií]cio)?/i,
@@ -104,6 +105,21 @@ function matchStarts(text: string, patterns: RegExp[]): number[] {
 }
 
 /**
+ * Collapse nearby aliases that point to the same filing section. Without this,
+ * headings such as "Part I Item 1" and "Condensed Consolidated Statements of
+ * Income" can consume separate windows while a distant balance sheet or cash
+ * flow statement is starved from the bounded prompt.
+ */
+function spacedSectionStarts(starts: number[]): number[] {
+  const spaced: number[] = [];
+  for (const start of starts) {
+    const previous = spaced.at(-1);
+    if (previous === undefined || start - previous >= MIN_SECTION_SPACING) spaced.push(start);
+  }
+  return spaced;
+}
+
+/**
  * Retrieve multiple matching filing windows, not only the first section heading.
  * This matters for 10-Qs where income statement, balance sheet, segment notes,
  * MD&A and risk updates are separated by tens or hundreds of pages.
@@ -115,7 +131,7 @@ function surroundingMatches(
   maxMatches = 5,
   preferLast = false,
 ): string {
-  const starts = matchStarts(text, patterns);
+  const starts = spacedSectionStarts(matchStarts(text, patterns));
   if (!starts.length) return "";
   const selected = preferLast ? starts.slice(-maxMatches) : starts.slice(0, maxMatches);
   const perMatch = Math.max(4_000, Math.floor(totalBudget / selected.length));
@@ -124,6 +140,11 @@ function surroundingMatches(
     .join("\n\n");
 }
 
+/**
+ * Fairly distribute a hard character budget across evidence families. Sequential
+ * join-then-slice semantics can silently drop the final evidence family, which is
+ * exactly how a 10-Q balance sheet was lost after being successfully retrieved.
+ */
 function boundedJoin(parts: string[], budget: number): string {
   const unique: string[] = [];
   const seen = new Set<string>();
@@ -133,7 +154,20 @@ function boundedJoin(parts: string[], budget: number): string {
     seen.add(key);
     unique.push(part);
   }
-  return unique.join("\n\n").slice(0, budget);
+  if (!unique.length) return "";
+
+  const separator = "\n\n";
+  let remaining = Math.max(0, budget - separator.length * (unique.length - 1));
+  let remainingParts = unique.length;
+  const output: string[] = [];
+  for (const part of unique) {
+    const quota = Math.max(0, Math.floor(remaining / remainingParts));
+    const slice = part.slice(0, quota);
+    output.push(slice);
+    remaining -= slice.length;
+    remainingParts -= 1;
+  }
+  return output.join(separator).slice(0, budget);
 }
 
 export function createAnalysisCorpus(text: string): string {
