@@ -1,10 +1,6 @@
 import { Hono } from "hono";
 import { bodyLimit } from "hono/body-limit";
 
-
-
-
-
 import { extractFilingText, BadFiling } from "./analyze";
 import { agentManager } from "./agent-manager";
 import { buildPrebuiltDashboardData } from "./dashboard-manager";
@@ -31,7 +27,10 @@ import {
 
 const app = new Hono();
 
-app.use(bodyLimit({ maxSize: 21 * 1024 * 1024 }));
+const MAX_DOCUMENTS = 6;
+const MAX_FILE_BYTES = 20 * 1024 * 1024;
+const MAX_BUNDLE_BYTES = 60 * 1024 * 1024;
+app.use(bodyLimit({ maxSize: 65 * 1024 * 1024 }));
 
 function errStatus(err: unknown): { body: { error: string }; status: 400 | 403 | 422 | 500 | 503 } {
   if (err instanceof BadFiling) return { body: { error: err.message }, status: 422 };
@@ -43,26 +42,48 @@ function errStatus(err: unknown): { body: { error: string }; status: 400 | 403 |
   return { body: { error: "internal" }, status: 500 };
 }
 
+function safeDocumentName(name: string): string {
+  return name.replace(/[\r\n\[\]]+/g, " ").trim().slice(0, 180) || "filing.pdf";
+}
+
 /* ---- Step 0: extract text (CPU only, fast) ---- */
 app.get("/api/status", (c) => c.json({
   configured: Boolean(process.env.OPENAI_API_KEY),
   ai: modelRuntimeConfig(),
+  intake: { maxDocuments: MAX_DOCUMENTS, maxFileMb: 20, maxBundleMb: 60 },
 }));
 
 app.post("/api/extract", async (c) => {
   try {
     const form = await c.req.formData();
-    const file = form.get("file");
     const preferredMarket: Market | undefined = form.get("market") === "br"
       ? "br"
       : form.get("market") === "us" ? "us" : undefined;
-    if (!(file instanceof File)) return c.json({ error: "no_file" }, 400);
-    if (file.size > 20 * 1024 * 1024) return c.json({ error: "file_too_large" }, 413);
-    const bytes = new Uint8Array(await file.arrayBuffer());
-    if (new TextDecoder().decode(bytes.slice(0, 5)) !== "%PDF-") return c.json({ error: "unreadable_pdf" }, 422);
-    const text = await extractFilingText(Buffer.from(bytes));
+    const files = form.getAll("file").filter((item): item is File => item instanceof File);
+    if (files.length === 0) return c.json({ error: "no_file" }, 400);
+    if (files.length > MAX_DOCUMENTS) return c.json({ error: "too_many_files" }, 400);
+    const bundleBytes = files.reduce((sum, file) => sum + file.size, 0);
+    if (bundleBytes > MAX_BUNDLE_BYTES) return c.json({ error: "bundle_too_large" }, 413);
+
+    const documents: Array<{ name: string; size: number; textChars: number; classification: FilingClassification }> = [];
+    const texts: string[] = [];
+    for (let index = 0; index < files.length; index++) {
+      const file = files[index];
+      if (file.size > MAX_FILE_BYTES) return c.json({ error: "file_too_large" }, 413);
+      const bytes = new Uint8Array(await file.arrayBuffer());
+      if (new TextDecoder().decode(bytes.slice(0, 5)) !== "%PDF-") return c.json({ error: "unreadable_pdf" }, 422);
+      const text = await extractFilingText(Buffer.from(bytes));
+      const classification = classifyFiling(text, preferredMarket);
+      const name = safeDocumentName(file.name);
+      documents.push({ name, size: file.size, textChars: text.length, classification });
+      texts.push(`\n[FILINGLENS_DOCUMENT ${index + 1}/${files.length}: ${name}]\n${text}\n[/FILINGLENS_DOCUMENT ${index + 1}]\n`);
+    }
+
+    const text = texts.join("\n");
     const classification = classifyFiling(text, preferredMarket);
-    return c.json({ text, classification });
+    const crossJurisdiction = documents.some(doc => doc.classification.jurisdiction !== classification.jurisdiction);
+    if (crossJurisdiction) classification.needsConfirmation = true;
+    return c.json({ text, classification, documents, documentCount: documents.length });
   } catch (err) {
     const { body, status } = errStatus(err);
     return c.json(body, status);
@@ -83,17 +104,24 @@ app.post("/api/metadata", async (c) => {
     try {
       return c.json(await agentManager.runMetadata(classification.jurisdiction, text, classification));
     } catch (error) {
-      if (
-        error instanceof AiTransient
-        || error instanceof AiMisconfigured
-        || error instanceof AiUnavailable
-        || error instanceof ContentRejected
-      ) throw error;
+      // Metadata is useful, but it must not be a single point of failure. A structured-output
+      // mismatch or provider timeout degrades to deterministic filing classification so the
+      // specialist stages can still run. Configuration, quota and policy failures remain terminal.
+      if (error instanceof AiMisconfigured || error instanceof AiUnavailable || error instanceof ContentRejected) {
+        throw error;
+      }
+      const reason = error instanceof AiTransient ? "metadata_ai_transient_fallback" : "metadata_agent_failed";
+      console.warn(`[agent:metadata] degraded to deterministic fallback: ${reason}`);
       return c.json({
         result: { metadata: metadataFallback(classification) },
-        diagnostic: { status: "failed", reason: "metadata_agent_failed", confidence: classification.confidence },
+        diagnostic: {
+          status: "incomplete",
+          reason,
+          confidence: classification.confidence,
+          missing: ["model-derived metadata fields"],
+        },
         manager: { stage: 0, totalStages: 7, agent: "metadata", excerptChars: Math.min(text.length, 50_000), attempts: 1 },
-        evaluation: { schemaValid: true, completeness: "failed" },
+        evaluation: { schemaValid: true, completeness: "incomplete" },
       });
     }
   } catch (err) {
@@ -148,7 +176,6 @@ app.post("/api/market-research", async (c) => {
     return c.json(body, status);
   }
 });
-
 
 /* Valuation assumptions are prepared first and must be explicitly validated before calculation. */
 app.post("/api/valuation/propose", async (c) => {
