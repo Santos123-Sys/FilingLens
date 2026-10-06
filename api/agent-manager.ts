@@ -8,8 +8,10 @@ import {
   risksSchema,
   summarySchema,
   type AgentName,
+  type CompanyResult,
   type FilingClassification,
   type FinancialsResult,
+  type HistoryResult,
   type MarketResult,
   type MetadataResult,
   type Market,
@@ -21,6 +23,8 @@ import { validateHistorianOutput } from "./historian-validation";
 import { validateMarketOutput } from "./market-validation";
 import { extractDatedFilingEvents } from "./timeline-skill-extraction";
 import { researchMarketPeers } from "./market-web-research";
+import { runHistorianWithExternalEnrichment, runProfilerWithExternalCrossCheck } from "./web-enriched-agents";
+import { applyExactTimelineValidation } from "./exact-timeline-skill";
 
 const AGENT_SCHEMAS = {
   profiler: companySchema,
@@ -88,17 +92,36 @@ export function mergeMarketResearchPeers(
   };
 }
 
+function hasProfilerCrossCheck(result: CompanyResult): boolean {
+  return result.kpis.some(item => item.label === "External issuer cross-check" && item.source?.kind === "citation");
+}
+
+function historianContext(
+  context: { jurisdiction: Market; filingType: string; filingDate?: string | null; priorResults?: Record<string, unknown> },
+) {
+  const profile = context.priorResults?.profiler as CompanyResult | undefined;
+  const financials = context.priorResults?.financials as FinancialsResult | undefined;
+  return {
+    jurisdiction: context.jurisdiction,
+    filingType: context.filingType,
+    filingDate: context.filingDate,
+    issuerName: profile?.company?.name ?? "",
+    filingPeriod: profile?.company?.periodEnd ?? "",
+    currency: financials?.financials?.unit ?? "",
+  };
+}
+
 /**
- * The sole authority for specialist order, schema selection, source slicing
- * and completeness checks. Every method performs at most one expensive model
- * call. Retries are browser-orchestrated so a hosted request never contains a
- * hidden multi-attempt loop or more than one model/tool invocation.
+ * Sole authority for specialist order, skill binding, source slicing and
+ * completeness checks. Browser retries remain the request-level retry boundary.
+ * Profiler and Historian use one web-capable model invocation each so their
+ * guide-required research enrichment does not multiply specialist stages.
  */
 export const agentManager = {
   plan() {
     return {
       manager: "FilingLens Agent Manager",
-      schemaVersion: "2.1",
+      schemaVersion: "2.3",
       metadataStage: "metadata",
       agents: MANAGED_AGENT_ORDER,
       webResearchStage: {
@@ -108,14 +131,14 @@ export const agentManager = {
       },
       dashboardStage: "prebuilt-dashboard-mapping",
       retryBoundary: "browser-per-stage",
-      requestPolicy: "one_expensive_model_call_per_http_request",
+      requestPolicy: "one_primary_model_invocation_per_agent_request; provider web-search tool may execute inside profiler/historian; deterministic Python skills do not call a model",
       executionMode: "sequential_staged",
       integrations: [
-        { skill: "equity-research", stage: "profiler", integration: "prompt_method_only", mode: "tear-sheet identity checks; external cross-check skipped", externalResearch: "unavailable" },
-        { skill: "market-research-brief", stage: "market", integration: "prompt_method_typescript_and_cited_web_search", mode: "filing-first peer checks; citation-backed competitor research runs as a separate optional request only when the filing names none", externalResearch: "conditional_openai_web_search" },
-        { skill: "financial-ratio-toolkit", stage: "financials", integration: "typescript_calculation", mode: "mapped filing-only ratios; market-data metrics omitted" },
-        { skill: "financial-statement-analyzer", stage: "financials", integration: "typescript_calculation", mode: "comparable-period trends and ten anomaly screens" },
-        { skill: "filing-timeline-extractor", stage: "historian", integration: "typescript_extraction_and_validation", mode: "filing-only dated-excerpt fallback and timeline validation; Python CLI not invoked", externalResearch: "unavailable" },
+        { skill: "equity-research", stage: "profiler", integration: "tear_sheet_method_and_cited_web_cross_check", mode: "filing-primary issuer identity/business-description cross-check only; no Equity Report, DCF, price target, multiples or recommendation", externalResearch: "bounded_openai_web_search" },
+        { skill: "market-research-brief", stage: "market", integration: "analysis_framework_and_cited_web_search", mode: "filing-first market framework; citation-backed competitor research remains a separate optional request only when the filing names none", externalResearch: "conditional_openai_web_search" },
+        { skill: "financial-ratio-toolkit", stage: "financials", integration: "exact_python_runtime_plus_filinglens_binding", mode: "exact supplied scripts/analyze.py per usable period; filing-only inputs; market-data metrics omitted; FilingLens debt/period/locale conventions override incompatible toolkit formulas" },
+        { skill: "financial-statement-analyzer", stage: "financials", integration: "exact_python_runtime_plus_filinglens_binding", mode: "exact supplied scripts/analyze_financials.py for comparable-period trends and anomaly screens; TypeScript reconciliation retained" },
+        { skill: "filing-timeline-extractor", stage: "historian", integration: "full_workflow_cited_web_enrichment_and_exact_python_validation", mode: "filing events plus citation-backed gap filling, dedupe/reconcile, then exact supplied validate_timeline.py at the Agent Manager boundary before events bind", externalResearch: "bounded_openai_web_search" },
       ],
     };
   },
@@ -158,21 +181,40 @@ export const agentManager = {
     const schema: z.ZodTypeAny = AGENT_SCHEMAS[agent];
     const excerpt = buildAgentInput(agent, filingText);
     const input = agent === "synthesizer" ? synthesisInput(excerpt, context.priorResults) : excerpt;
-    const value = await runAgent(agent, market, input, schema, context);
     const subtools: string[] = [];
+    let value: unknown;
+
+    if (agent === "profiler") {
+      value = await runProfilerWithExternalCrossCheck(market, input, context);
+      subtools.push("equity-research-tear-sheet-method", "citation-verified-issuer-cross-check");
+    } else if (agent === "historian") {
+      const exactContext = historianContext(context);
+      let history: HistoryResult;
+      try {
+        history = await runHistorianWithExternalEnrichment(market, input, exactContext);
+      } catch {
+        const fallback = extractDatedFilingEvents(excerpt);
+        history = validateHistorianOutput({ timeline: [], events: fallback }, context.filingDate);
+        history.validationFlags = [
+          ...(history.validationFlags ?? []),
+          {
+            code: "HISTORIAN_RESEARCH_UNAVAILABLE",
+            note: "Citation-backed timeline enrichment was unavailable; deterministic filing-only event extraction was preserved.",
+            reason: "web_enrichment_request_failed",
+          },
+        ];
+        history.enrichmentStatus = "skipped";
+      }
+      value = await applyExactTimelineValidation(history, exactContext);
+      subtools.push("filing-timeline-extractor", "citation-verified-timeline-enrichment", "exact-validate_timeline.py");
+    } else {
+      value = await runAgent(agent, market, input, schema, context);
+    }
+
     let result = value;
     if (agent === "financials") {
-      result = applyFinancialValidation(value as FinancialsResult);
-      subtools.push("financial-ratio-toolkit", "financial-statement-analyzer");
-    }
-    if (agent === "historian") {
-      const history = value as import("../contracts/analysis").HistoryResult;
-      const validated = validateHistorianOutput(history, context.filingDate);
-      if (!validated.timeline.length && !validated.events.length) {
-        const fallback = extractDatedFilingEvents(excerpt);
-        result = validateHistorianOutput({ ...history, events: fallback }, context.filingDate);
-      } else result = validated;
-      subtools.push("filing-timeline-extractor", "filing-timeline-extractor-validator");
+      result = await applyFinancialValidation(value as FinancialsResult);
+      subtools.push("exact-financial-ratio-toolkit-python", "exact-financial-statement-analyzer-python", "filinglens-reconciliation-validator");
     }
     if (agent === "market") {
       const marketResult = validateMarketOutput(value as MarketResult);
@@ -180,14 +222,18 @@ export const agentManager = {
       result = marketResult;
       subtools.push("filing-source-provenance-validator", "market-research-brief-period-comparison", "market-research-brief-analysis-framework");
     }
-    if (agent === "profiler") subtools.push("equity-research-tear-sheet-method");
+
     const diagnostic = assessCompleteness(agent, result, context);
-    if (["profiler", "historian"].includes(agent)) {
-      diagnostic.enrichmentStatus = "skipped";
-      diagnostic.warnings = ["external_enrichment_unavailable"];
+    if (agent === "profiler") {
+      const profile = result as CompanyResult;
+      diagnostic.enrichmentStatus = hasProfilerCrossCheck(profile) ? "full" : "skipped";
+      if (!hasProfilerCrossCheck(profile)) {
+        diagnostic.warnings = [...(diagnostic.warnings ?? []), "external_issuer_cross_check_no_citable_result"];
+      }
     }
     if (agent === "historian") {
-      const history = result as import("../contracts/analysis").HistoryResult;
+      const history = result as HistoryResult;
+      diagnostic.enrichmentStatus = history.enrichmentStatus ?? "skipped";
       if ((history.validationFlags?.length ?? 0) > 0) {
         diagnostic.warnings = [...(diagnostic.warnings ?? []), "historian_validation_flags"];
       }
@@ -199,6 +245,13 @@ export const agentManager = {
         diagnostic.warnings = [...(diagnostic.warnings ?? []), "market_validation_flags"];
       }
     }
+    if (agent === "financials") {
+      const financials = result as FinancialsResult;
+      if ((financials.financials.validationFlags ?? []).some(flag => flag.code.includes("SKILL_RUNTIME_UNAVAILABLE"))) {
+        diagnostic.warnings = [...(diagnostic.warnings ?? []), "exact_financial_skill_runtime_degraded"];
+      }
+    }
+
     const stage = MANAGED_AGENT_ORDER.indexOf(agent) + 1;
     return {
       result,

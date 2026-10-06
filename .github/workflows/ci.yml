@@ -1,0 +1,88 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main, feature/full-skill-runtime-enrichment]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run check
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      - name: Smoke test exact financial ratio skill
+        run: python3 skills/skill_runner.py skills/financial-ratio-toolkit/source.zip.b64 scripts/analyze.py --help
+
+      - name: Smoke test exact financial statement skill
+        run: |
+          python3 skills/skill_runner.py skills/financial-statement-analyzer/source.zip.b64 scripts/analyze_financials.py --sample > /tmp/financial-sample.json
+          python3 skills/skill_runner.py skills/financial-statement-analyzer/source.zip.b64 scripts/analyze_financials.py /tmp/financial-sample.json --json > /tmp/financial-result.json
+          python3 -c 'import json; json.load(open("/tmp/financial-result.json"))'
+
+      - name: Smoke test exact timeline validator
+        run: |
+          cat > /tmp/timeline.json <<'JSON'
+          {
+            "module": "historian",
+            "module_status": "complete",
+            "issuer_context": {
+              "issuer_name": "Fixture Issuer",
+              "jurisdiction": "SEC",
+              "form_type": "10-K",
+              "filing_period": "2025",
+              "filing_date": "2026-01-31",
+              "currency": "USD"
+            },
+            "events": [
+              {
+                "id": "evt-2025-fixture",
+                "date": "2025",
+                "date_granularity": "year",
+                "title": "Fixture event",
+                "summary": "Fixture event used only to validate the bundled Python utility.",
+                "category": "other",
+                "materiality": "routine",
+                "source_type": "filing",
+                "source_ref": {
+                  "kind": "excerpt",
+                  "section": "Fixture",
+                  "quote": "The fixture issuer reported this event in 2025."
+                },
+                "confidence": "high"
+              }
+            ],
+            "enrichment_status": "none",
+            "validation_flags": [],
+            "generated_at": "2026-01-31T00:00:00.000Z"
+          }
+          JSON
+          python3 skills/skill_runner.py skills/filing-timeline-extractor/source.zip.b64 filing-timeline-extractor/scripts/validate_timeline.py /tmp/timeline.json

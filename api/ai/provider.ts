@@ -7,7 +7,7 @@ const openai = createOpenAI({
 
 export type ReasoningEffort = "none" | "minimal" | "low" | "medium" | "high" | "xhigh";
 
-const DEFAULT_MODEL = "gpt-6-sol";
+const DEFAULT_MODEL = "gpt-5.6-terra";
 const DEFAULT_REASONING_EFFORT: ReasoningEffort = "medium";
 const DEFAULT_SYNTHESIZER_REASONING_EFFORT: ReasoningEffort = "high";
 const VALID_REASONING = new Set<ReasoningEffort>(["none", "minimal", "low", "medium", "high", "xhigh"]);

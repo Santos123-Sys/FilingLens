@@ -4,7 +4,6 @@ export type PresentationLanguage = "en" | "pt";
 
 const EMU = 914400;
 const SLIDE_W = 13.333;
-const SLIDE_H = 7.5;
 const BG = "0B1020";
 const PANEL = "121A2E";
 const PANEL_2 = "17233D";
