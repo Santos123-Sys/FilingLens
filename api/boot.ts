@@ -22,6 +22,7 @@ import {
   AiUnavailable,
   ContentRejected,
   AiMisconfigured,
+  AiInvalidRequest,
   AiTransient,
 } from "./lib/ai-client";
 
@@ -37,6 +38,10 @@ function errStatus(err: unknown): { body: { error: string }; status: 400 | 403 |
   if (err instanceof AiUnavailable) return { body: { error: "ai_unavailable" }, status: 403 };
   if (err instanceof ContentRejected) return { body: { error: "content_rejected" }, status: 403 };
   if (err instanceof AiMisconfigured) return { body: { error: "ai_misconfigured" }, status: 500 };
+  // Invalid provider/schema requests are deterministic developer/configuration errors,
+  // not transient outages. Return a non-5xx status so the browser does not waste a
+  // second bounded model call on an identical invalid request.
+  if (err instanceof AiInvalidRequest) return { body: { error: "ai_invalid_request" }, status: 422 };
   if (err instanceof AiTransient) return { body: { error: "ai_transient" }, status: 503 };
   console.error("request failed:", err);
   return { body: { error: "internal" }, status: 500 };
