@@ -14,12 +14,12 @@ import type {
   FilingClassification,
   Market,
   MarketResult,
-  RegulatoryDataSnapshot,
   ValuationAssumption,
   ValuationMethod,
   DcfValuationResult,
   CompsValuationResult,
 } from "../contracts/analysis";
+import type { RegulatoryDataSnapshot } from "../contracts/regulatory-data";
 import {
   AiUnavailable,
   ContentRejected,
