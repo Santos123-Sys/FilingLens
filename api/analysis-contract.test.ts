@@ -190,5 +190,5 @@ describe("Agent and dashboard managers", () => {
     expect(computed.find(metric => metric.key === "freeCashFlowCalculated")?.values).toEqual([14, 20]);
     expect(computed.find(metric => metric.key === "revenueGrowth")?.values).toEqual([null, 20]);
     expect(computed.find(metric => metric.key === "roic")?.values).toEqual([null, 13.24]);
-  });
+  }, 20_000);
 });

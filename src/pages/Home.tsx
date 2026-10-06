@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
-  Download,
   FileJson,
   FileSearch,
   Presentation,
@@ -261,7 +260,9 @@ export default function Home() {
       try {
         const deck = buildCompanyPowerPoint(analysis, lang);
         if (!active) return;
-        setPresentationBlob(new Blob([deck.bytes], { type: "application/vnd.openxmlformats-officedocument.presentationml.presentation" }));
+        const pptxBuffer = new ArrayBuffer(deck.bytes.byteLength);
+        new Uint8Array(pptxBuffer).set(deck.bytes);
+        setPresentationBlob(new Blob([pptxBuffer], { type: "application/vnd.openxmlformats-officedocument.presentationml.presentation" }));
         setPresentationName(deck.fileName);
         setPresentationState("ready");
       } catch (deckError) {
@@ -313,7 +314,7 @@ export default function Home() {
     setClassification({ ...confirmed, needsConfirmation: false });
     setExecution(initialExecution());
     try {
-      const planBody = await requestJson("/api/analysis-plan", { method: "GET" }, undefined, 1).catch(() => ({}));
+      const planBody: Record<string, unknown> = await requestJson("/api/analysis-plan", { method: "GET" }, undefined, 1).catch(() => ({}));
       const plannedCandidates: unknown[] = Array.isArray(planBody.agents) ? planBody.agents : [];
       const managedAgents: AgentName[] = plannedCandidates.filter(
         (agent): agent is AgentName => typeof agent === "string" && AGENTS.some(item => item.key === agent),
@@ -366,7 +367,7 @@ export default function Home() {
           }, agent, 2);
           parts[agent] = abody.result;
           diagnostics[agent] = (abody.diagnostic as ModuleDiagnostic | undefined)?.status
-            ? abody.diagnostic
+            ? (abody.diagnostic as ModuleDiagnostic)
             : { status: "incomplete", reason: "response_diagnostic_missing" };
           updateExecution(agent, {
             status: diagnostics[agent]?.status === "complete" || diagnostics[agent]?.status === "not_applicable" ? "complete" : "degraded",
