@@ -180,7 +180,7 @@ describe("bounded FilingLens skill integrations", () => {
       name: "Verified Motors",
       sourceType: "external",
       source: {
-        section: "Independent web research",
+        section: "Independent competitive research",
         kind: "citation",
         url: "https://industry.example/peer",
         publisher: "Industry Association",
