@@ -138,7 +138,7 @@ export const agentManager = {
       dashboardStage: "prebuilt-dashboard-mapping",
       retryBoundary: "browser-per-stage",
       requestPolicy: "one_primary_model_invocation_per_agent_request; provider web-search tool may execute inside profiler/historian; deterministic Python skills do not call a model",
-      executionMode: "sequential_staged",
+      executionMode: "dependency_aware_bounded_concurrency",
       integrations: [
         { skill: "equity-research", stage: "profiler", integration: "tear_sheet_method_and_cited_web_cross_check", mode: "filing-primary issuer identity/business-description cross-check only; no Equity Report, DCF, price target, multiples or recommendation", externalResearch: "bounded_openai_web_search" },
         { skill: "market-research-brief", stage: "market", integration: "full_competitive_landscape_and_cited_web_search", mode: "filing-first market extraction plus always-on, citation-verified external competitive analysis; filing facts remain primary and external claims are labeled separately", externalResearch: "bounded_openai_web_search" },
