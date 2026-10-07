@@ -22,7 +22,7 @@ import { applyFinancialValidation } from "./financial-validation";
 import { validateHistorianOutput } from "./historian-validation";
 import { validateMarketOutput } from "./market-validation";
 import { extractDatedFilingEvents } from "./timeline-skill-extraction";
-import { researchMarketPeers } from "./market-web-research";
+import { researchCompetitiveLandscape } from "./market-web-research";
 import { runHistorianWithExternalEnrichment, runProfilerWithExternalCrossCheck } from "./web-enriched-agents";
 import { applyExactTimelineValidation } from "./exact-timeline-skill";
 
@@ -74,20 +74,26 @@ export function synthesisInput(excerpt: string, priorResults?: Record<string, un
 export function mergeMarketResearchPeers(
   input: MarketResult,
   externalPeers: NonNullable<MarketResult["market"]["peerEvidence"]>,
+  competitiveAnalysis?: NonNullable<MarketResult["market"]["competitiveAnalysis"]>,
 ): MarketResult {
   const validated = validateMarketOutput(input);
   const market = validated.market;
-  if (market.competitors.length > 0) {
-    return { market: { ...market, externalResearchStatus: "not_needed" } };
-  }
-  const filingPeerNames = new Set(market.competitors.map(name => name.trim().toLowerCase()));
-  const uniqueExternal = externalPeers.filter(peer => !filingPeerNames.has(peer.name.trim().toLowerCase()));
+  const existingNames = new Set(market.competitors.map(name => name.trim().toLowerCase()));
+  const uniqueExternal = externalPeers.filter(peer => !existingNames.has(peer.name.trim().toLowerCase()));
+  const competitors = [...market.competitors, ...uniqueExternal.map(peer => peer.name)].slice(0, 12);
+  const peerEvidence = [...(market.peerEvidence ?? []), ...uniqueExternal]
+    .filter((peer, index, all) => all.findIndex(candidate => candidate.name.trim().toLowerCase() === peer.name.trim().toLowerCase()) === index)
+    .slice(0, 12);
+  const status = competitiveAnalysis?.status === "complete" || competitiveAnalysis?.status === "partial"
+    ? "complete"
+    : uniqueExternal.length ? "complete" : "no_citable_results";
   return {
     market: {
       ...market,
-      peerEvidence: [...(market.peerEvidence ?? []), ...uniqueExternal].slice(0, 12),
-      competitors: [...market.competitors, ...uniqueExternal.map(peer => peer.name)].slice(0, 12),
-      externalResearchStatus: uniqueExternal.length ? "complete" : "no_citable_results",
+      competitors,
+      peerEvidence,
+      externalResearchStatus: status,
+      ...(competitiveAnalysis ? { competitiveAnalysis } : {}),
     },
   };
 }
@@ -126,7 +132,7 @@ export const agentManager = {
       agents: MANAGED_AGENT_ORDER,
       webResearchStage: {
         key: "market-research",
-        trigger: "market_agent_has_no_filing_supported_peers",
+        trigger: "always_after_market_agent",
         endpoint: "/api/market-research",
       },
       dashboardStage: "prebuilt-dashboard-mapping",
@@ -135,7 +141,7 @@ export const agentManager = {
       executionMode: "sequential_staged",
       integrations: [
         { skill: "equity-research", stage: "profiler", integration: "tear_sheet_method_and_cited_web_cross_check", mode: "filing-primary issuer identity/business-description cross-check only; no Equity Report, DCF, price target, multiples or recommendation", externalResearch: "bounded_openai_web_search" },
-        { skill: "market-research-brief", stage: "market", integration: "analysis_framework_and_cited_web_search", mode: "filing-first market framework; citation-backed competitor research remains a separate optional request only when the filing names none", externalResearch: "conditional_openai_web_search" },
+        { skill: "market-research-brief", stage: "market", integration: "full_competitive_landscape_and_cited_web_search", mode: "filing-first market extraction plus always-on, citation-verified external competitive analysis; filing facts remain primary and external claims are labeled separately", externalResearch: "bounded_openai_web_search" },
         { skill: "financial-ratio-toolkit", stage: "financials", integration: "exact_python_runtime_plus_filinglens_binding", mode: "exact supplied scripts/analyze.py per usable period; filing-only inputs; market-data metrics omitted; FilingLens debt/period/locale conventions override incompatible toolkit formulas" },
         { skill: "financial-statement-analyzer", stage: "financials", integration: "exact_python_runtime_plus_filinglens_binding", mode: "exact supplied scripts/analyze_financials.py for comparable-period trends and anomaly screens; TypeScript reconciliation retained" },
         { skill: "filing-timeline-extractor", stage: "historian", integration: "full_workflow_cited_web_enrichment_and_exact_python_validation", mode: "filing events plus citation-backed gap filling, dedupe/reconcile, then exact supplied validate_timeline.py at the Agent Manager boundary before events bind", externalResearch: "bounded_openai_web_search" },
@@ -275,27 +281,22 @@ export const agentManager = {
     jurisdiction: Market,
     filingText: string,
     input: MarketResult,
+    company?: CompanyResult["company"],
   ) {
     const validated = validateMarketOutput(input);
-    if (validated.market.competitors.length > 0) {
-      const result = mergeMarketResearchPeers(validated, []);
-      return {
-        result,
-        diagnostic: assessCompleteness("market", result, { jurisdiction }),
-        manager: { stage: "market-research", attempts: 0, excerptChars: 0, subtools: [] },
-      };
-    }
     const excerpt = buildAgentInput("market", filingText);
-    const peers = await researchMarketPeers({
+    const researched = await researchCompetitiveLandscape({
       jurisdiction,
+      issuerName: company?.name ?? "",
+      ticker: company?.ticker ?? null,
       industry: validated.market.industry,
       filingExcerpt: excerpt,
     });
-    const result = mergeMarketResearchPeers(validated, peers);
+    const result = mergeMarketResearchPeers(validated, researched.peerEvidence, researched.competitiveAnalysis);
     const diagnostic = assessCompleteness("market", result, { jurisdiction });
     diagnostic.enrichmentStatus = result.market.externalResearchStatus === "complete" ? "full" : "skipped";
     if (result.market.externalResearchStatus === "no_citable_results") {
-      diagnostic.warnings = [...(diagnostic.warnings ?? []), "external_market_research_no_citations"];
+      diagnostic.warnings = [...(diagnostic.warnings ?? []), "external_competitive_research_no_citations"];
     }
     return {
       result,
@@ -304,8 +305,8 @@ export const agentManager = {
         stage: "market-research",
         attempts: 1,
         excerptChars: excerpt.length,
-        subtools: ["cited-web-market-research"],
+        subtools: ["market-research-brief", "cited-web-competitive-landscape"],
       },
     };
-  },
+
 };
