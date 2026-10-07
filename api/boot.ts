@@ -188,6 +188,7 @@ app.post("/api/regulatory-data", async (c) => {
       cnpj,
       companyName: typeof body.companyName === "string" ? body.companyName : undefined,
       ticker: typeof body.ticker === "string" ? body.ticker : undefined,
+      historyYears: typeof body.historyYears === "number" ? Math.max(1, Math.min(5, Math.floor(body.historyYears))) : 5,
     });
     return c.json(result);
   } catch (error) {
@@ -233,10 +234,11 @@ app.post("/api/market-research", async (c) => {
     const jurisdiction: Market = body.jurisdiction === "br" ? "br" : "us";
     const text = String(body.text || "");
     const marketResult = body.marketResult as MarketResult;
+    const company = body.company && typeof body.company === "object" ? body.company as FilingAnalysis["company"] : undefined;
     if (text.length < 2000 || !marketResult?.market) {
       return c.json({ error: "bad_request" }, 400);
     }
-    return c.json(await agentManager.runMarketResearch(jurisdiction, text, marketResult));
+    return c.json(await agentManager.runMarketResearch(jurisdiction, text, marketResult, company));
   } catch (err) {
     const { body, status } = errStatus(err);
     return c.json(body, status);
