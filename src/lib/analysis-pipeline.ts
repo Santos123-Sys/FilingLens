@@ -8,6 +8,7 @@ import type {
   ModuleDiagnostic,
 } from "@contracts/analysis";
 import type { RegulatoryDataSnapshot } from "@contracts/regulatory-data";
+import { attachRegulatoryAnnualHistory } from "../../api/regulatory-financial-history";
 
 export type PipelineLanguage = "en" | "pt";
 export type PipelineStage = "metadata" | "regulatoryData" | AgentName | "marketResearch";
@@ -208,6 +209,43 @@ export async function executeAnalysisPipeline(input: {
 
   await runPool(CORE_AGENTS, 2, agent => runAgent(agent));
 
+  // Identifier recovery lane: the first structured-data request is intentionally
+  // parallel-friendly and filing-ID based. If the filing omitted CIK/CNPJ, retry
+  // once after Profiler has resolved a stable issuer name/ticker. This avoids
+  // blocking all specialist work on external I/O while still recovering history.
+  const profileResult = parts.profiler as { company?: FilingAnalysis["company"] } | undefined;
+  if (regulatoryData?.status === "identifier_missing" && profileResult?.company) {
+    try {
+      const body = await requestJson("/api/regulatory-data", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          jurisdiction: market,
+          filingType: metadata.filingType || classification.filingType,
+          reportingPeriod: metadata.reportingPeriod,
+          cik: metadata.cik,
+          cnpj: metadata.cnpj,
+          companyName: profileResult.company.name,
+          ticker: profileResult.company.ticker,
+          historyYears: 5,
+          text: text.slice(0, 120_000),
+        }),
+      }, "regulatoryData", signal, onStage, lang, 1);
+      regulatoryData = body as unknown as RegulatoryDataSnapshot;
+      parts.regulatoryData = regulatoryData;
+      onStage("regulatoryData", { attempt: 1, maxAttempts: 1, ...regulatoryStage(regulatoryData, lang) });
+    } catch {
+      // Preserve the first deterministic status; filing analysis remains usable.
+    }
+  }
+
+  if (parts.financials) {
+    parts.financials = attachRegulatoryAnnualHistory(
+      parts.financials as { financials: FilingAnalysis["financials"] },
+      regulatoryData,
+    );
+  }
+
   const historianPromise = runAgent("historian", { profiler: parts.profiler, financials: parts.financials });
   const marketResult = parts.market as MarketResult | undefined;
   const researchPromise = (async () => {
@@ -215,14 +253,9 @@ export async function executeAnalysisPipeline(input: {
       onStage("marketResearch", { status: "skipped", attempt: 0, detail: lang === "pt" ? "Ignorada porque Mercado não retornou contexto utilizável." : "Skipped because the Market module returned no usable context." });
       return;
     }
-    if ((marketResult.market.competitors?.length ?? 0) > 0) {
-      marketResult.market.externalResearchStatus = "not_needed";
-      onStage("marketResearch", { status: "skipped", attempt: 0, detail: lang === "pt" ? "O documento já contém concorrentes verificáveis." : "The filing already contains verifiable peers." });
-      return;
-    }
     try {
       const body = await requestJson("/api/market-research", {
-        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jurisdiction: market, text, marketResult }),
+        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jurisdiction: market, text, marketResult, company: profileResult?.company }),
       }, "marketResearch", signal, onStage, lang, 2);
       const enriched = body.result as MarketResult;
       parts.market = enriched;
@@ -230,8 +263,8 @@ export async function executeAnalysisPipeline(input: {
       onStage("marketResearch", {
         status: enriched.market.externalResearchStatus === "complete" ? "complete" : "partial",
         detail: enriched.market.externalResearchStatus === "complete"
-          ? (lang === "pt" ? "Concorrentes externos aceitos somente com URLs citadas." : "External peers accepted only with cited URLs.")
-          : (lang === "pt" ? "Pesquisa concluída sem concorrentes externos citáveis." : "Research finished without citable external peers."),
+          ? (lang === "pt" ? "Análise competitiva externa concluída com URLs verificadas." : "External competitive analysis completed with verified citation URLs.")
+          : (lang === "pt" ? "Pesquisa competitiva concluída com cobertura citável parcial ou vazia." : "Competitive research finished with partial or empty citable coverage."),
       });
     } catch (error) {
       if (error instanceof PipelineCancelled || (error instanceof PipelineError && error.terminal)) throw error;
