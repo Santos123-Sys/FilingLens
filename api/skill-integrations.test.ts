@@ -237,6 +237,51 @@ describe("bounded FilingLens skill integrations", () => {
     expect(verified.competitiveAnalysis.status).toBe("partial");
   });
 
+  it("does not discard useful competitive research because generated narrative exceeds UI length", () => {
+    const url = "https://www.coxautoinc.com/wp-content/uploads/2026/07/Q2-2026-EV-Sales.KBB-Counts.pdf";
+    const longSummary = `Tesla remains the largest U.S. EV brand in the cited quarterly estimates, while Chevrolet and Hyundai follow at materially lower volumes. This snapshot is specific to U.S. new-EV brand sales and should not be generalized to Tesla's global automotive and energy businesses. No HHI should be inferred without a complete brand-share distribution. ([coxautoinc.com](${url})) Additional explanatory language intentionally pushes this generated field beyond the former 420-character wire limit.`;
+    expect(longSummary.length).toBeGreaterThan(420);
+
+    const verified = verifyCompetitiveResearch({
+      peers: [{
+        name: "General Motors — Chevrolet EVs",
+        relationship: "Direct U.S. electric-vehicle segment peer.",
+        positioning: `Chevrolet competes in the same EV category. ([coxautoinc.com](${url}))`,
+        strengths: ["Broad EV nameplate coverage."],
+        vulnerabilities: ["Quarterly EV volumes can be volatile."],
+        url,
+      }],
+      findings: [{
+        insight: `Tesla's share changed while absolute units also changed. ([coxautoinc.com](${url}))`,
+        implication: "Read unit growth and share together.",
+        url,
+      }],
+      marketShareProxies: [],
+      marketStructure: { summary: longSummary, hhi: null, basis: "Quarterly brand-sales estimates.", url },
+    }, [{ url, title: "Cox Automotive" }], "2026-10-07");
+
+    expect(verified.peerEvidence).toHaveLength(1);
+    expect(verified.competitiveAnalysis.status).toBe("partial");
+    expect(verified.competitiveAnalysis.marketStructure?.summary.length).toBeLessThanOrEqual(900);
+    expect(verified.competitiveAnalysis.marketStructure?.summary).not.toContain("](https://");
+    expect(verified.competitiveAnalysis.researchDiagnostics).toMatchObject({
+      candidatePeers: 1,
+      verifiedPeers: 1,
+      citedSources: 1,
+      recoveryUsed: false,
+      strategy: "deterministic-citation-ranking-v1",
+    });
+  });
+
+  it("normalizes tracking parameters while preserving the provider-returned citation URL", () => {
+    const providerUrl = "https://fluenceenergy.com/gridstack-grid-energy-storage/?utm_source=openai";
+    const verified = verifyMarketResearchPeers([
+      { name: "Fluence Energy", url: "https://www.fluenceenergy.com/gridstack-grid-energy-storage/", reason: "Storage peer." },
+    ], [{ url: providerUrl, title: "Fluence Energy" }], "2026-10-07");
+    expect(verified).toHaveLength(1);
+    expect(verified[0].source.url).toBe(providerUrl);
+  });
+
   it("accepts web-researched peers only when the search provider returned their citation URL", () => {
     const peers = verifyMarketResearchPeers([
       { name: "Verified Motors", url: "https://industry.example/peer?utm_source=search", reason: "Direct competitor." },
