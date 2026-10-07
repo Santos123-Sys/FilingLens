@@ -98,6 +98,16 @@ def _slide_text(slide) -> str:
     return "\n".join(shape.text for shape in slide.shapes if hasattr(shape, "text_frame") and shape.has_text_frame)
 
 
+def _chart_categories(slide) -> list[str]:
+    values: list[str] = []
+    for shape in slide.shapes:
+        if not getattr(shape, "has_chart", False):
+            continue
+        for plot in shape.chart.plots:
+            values.extend(str(category.label) for category in plot.categories)
+    return values
+
+
 def test_pptx_roundtrip_and_financial_units():
     raw, filename = build_presentation(SAMPLE, "en")
     assert raw[:2] == b"PK"
@@ -108,9 +118,9 @@ def test_pptx_roundtrip_and_financial_units():
     assert "$46.7B" in financial_snapshot
     assert "$46.7K" not in financial_snapshot
     assert "USD millions" in financial_snapshot
-    performance = _slide_text(prs.slides[3])
     competitive = _slide_text(prs.slides[6])
-    assert "FY2022" in performance and "FY2026" in performance
+    categories = _chart_categories(prs.slides[3])
+    assert "FY2022" in categories and "FY2026" in categories
     assert "AMD" in competitive
     assert "Competition is increasingly platform-led" in competitive
 
