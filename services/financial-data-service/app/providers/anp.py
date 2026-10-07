@@ -62,9 +62,11 @@ def _resolve_columns(columns: list[str]) -> dict[str, str | None]:
             break
     if distributor is None:
         for column, key in normalized.items():
-            if key in {"distribuidor", "razao social", "razao social distribuidor"}:
+            if key in {"distribuidor", "razao social", "razao social distribuidor", "agente", "nome agente"}:
                 distributor = column
                 break
+    if distributor is None:
+        distributor = next((column for column, key in normalized.items() if "razao social" in key or "nome agente" in key), None)
 
     cnpj = None
     for column, key in normalized.items():
@@ -74,14 +76,15 @@ def _resolve_columns(columns: list[str]) -> dict[str, str | None]:
 
     volume = None
     for column, key in normalized.items():
-        if ("volume" in key or "quantidade" in key) and "preco" not in key:
-            if any(token in key for token in ("venda", "vendido", "comercial", "m3", "litro", "volume")):
+        if ("volume" in key or "quantidade" in key or key.startswith("vendas")) and "preco" not in key:
+            if any(token in key for token in ("venda", "vendido", "comercial", "m3", "litro", "volume", "quantidade")):
                 volume = column
                 break
 
     product = next((column for column, key in normalized.items() if "produto" in key), None)
     year = next((column for column, key in normalized.items() if key == "ano" or key.endswith(" ano")), None)
     month = next((column for column, key in normalized.items() if key == "mes" or key.endswith(" mes")), None)
+    date = next((column for column, key in normalized.items() if key in {"data", "data referencia", "periodo", "mes ano", "mes ano referencia"}), None)
     uf = next((column for column, key in normalized.items() if key in {"uf", "estado", "uf destino"}), None)
 
     return {
@@ -91,6 +94,7 @@ def _resolve_columns(columns: list[str]) -> dict[str, str | None]:
         "product": product,
         "year": year,
         "month": month,
+        "date": date,
         "uf": uf,
     }
 
@@ -133,8 +137,8 @@ def _select_table(raw: bytes) -> tuple[str, str, str, dict[str, str | None]]:
             score += 4 if "venda" in filename or "comercial" in filename else 0
             score += 3 if "distrib" in filename else 0
             score += 2 if columns["product"] else 0
-            score += 2 if columns["year"] else 0
-            score += 1 if columns["month"] else 0
+            score += 2 if columns["year"] or columns["date"] else 0
+            score += 1 if columns["month"] or columns["date"] else 0
             # Supplier-delivery tables can also contain distributors. Prefer the
             # distributor commercialization table when both are present.
             score -= 5 if "fornec" in filename or "entrega" in filename else 0
@@ -221,6 +225,7 @@ def calculate_market_share_from_zip(
             columns["product"],
             columns["year"],
             columns["month"],
+            columns["date"],
         ) if column
     ]
 
@@ -252,6 +257,9 @@ def calculate_market_share_from_zip(
 
                 if columns["year"]:
                     years = pd.to_numeric(chunk[columns["year"]], errors="coerce")
+                elif columns["date"]:
+                    parsed_dates = pd.to_datetime(chunk[columns["date"]], errors="coerce", dayfirst=True)
+                    years = parsed_dates.dt.year
                 else:
                     years = pd.Series(0, index=chunk.index, dtype=float)
                 chunk["_year"] = years.fillna(0).astype(int)
@@ -259,9 +267,14 @@ def calculate_market_share_from_zip(
 
                 if columns["month"]:
                     month_values = pd.to_numeric(chunk[columns["month"]], errors="coerce")
-                    for year, month in zip(chunk["_year"], month_values, strict=False):
-                        if 2000 <= int(year) <= 2100 and pd.notna(month):
-                            months[int(year)].add(int(month))
+                elif columns["date"]:
+                    parsed_dates = pd.to_datetime(chunk[columns["date"]], errors="coerce", dayfirst=True)
+                    month_values = parsed_dates.dt.month
+                else:
+                    month_values = pd.Series(float("nan"), index=chunk.index)
+                for year, month in zip(chunk["_year"], month_values, strict=False):
+                    if 2000 <= int(year) <= 2100 and pd.notna(month):
+                        months[int(year)].add(int(month))
 
                 if columns["product"]:
                     products = chunk[columns["product"]].astype(str).str.strip().replace("", "All liquid fuels")
