@@ -4,6 +4,7 @@ import {
   financialsSchema,
   historySchema,
   marketSchema,
+  marketFilingSchema,
   metadataSchema,
   risksSchema,
   summarySchema,
@@ -16,7 +17,7 @@ import {
   type MetadataResult,
   type Market,
 } from "../contracts/analysis";
-import { buildAgentInput, buildMetadataInput, runAgent, runMetadataAgent } from "./analyze";
+import { buildAgentInput, buildMetadataInput, buildRiskRecoveryInput, runAgent, runMetadataAgent } from "./analyze";
 import { assessCompleteness, assessMetadataCompleteness } from "./completeness";
 import { applyFinancialValidation } from "./financial-validation";
 import { validateHistorianOutput } from "./historian-validation";
@@ -28,7 +29,7 @@ import { applyExactTimelineValidation } from "./exact-timeline-skill";
 
 const AGENT_SCHEMAS = {
   profiler: companySchema,
-  market: marketSchema,
+  market: marketFilingSchema,
   risks: risksSchema,
   financials: financialsSchema,
   historian: historySchema,
@@ -213,8 +214,43 @@ export const agentManager = {
       }
       value = await applyExactTimelineValidation(history, exactContext);
       subtools.push("filing-timeline-extractor", "citation-verified-timeline-enrichment", "exact-validate_timeline.py");
+    } else if (agent === "market") {
+      try {
+        value = await runAgent(agent, market, input, schema, context);
+      } catch (error) {
+        console.warn("[agent:market] filing extraction degraded; continuing to independent competitive research", error);
+        value = {
+          market: {
+            industry: "",
+            competitors: [],
+            peerEvidence: [],
+            geographies: [],
+            segments: [],
+          },
+        };
+        subtools.push("market-filing-structured-output-fallback");
+      }
     } else {
       value = await runAgent(agent, market, input, schema, context);
+    }
+
+    if (agent === "risks") {
+      const initial = value as { risks?: unknown[] };
+      const filingType = context.filingType.toLowerCase();
+      if ((initial.risks?.length ?? 0) === 0 && market === "br" && (filingType.includes("formul") || filingType.includes("fre"))) {
+        const recoveryInput = buildRiskRecoveryInput(filingText);
+        if (recoveryInput.length > 2_000) {
+          try {
+            const recovered = await runAgent("risks", market, recoveryInput, risksSchema, context);
+            if ((recovered?.risks?.length ?? 0) > 0) {
+              value = recovered;
+              subtools.push("focused-formulario-risk-recovery");
+            }
+          } catch (error) {
+            console.warn("[agent:risks] focused Formulario recovery unavailable", error);
+          }
+        }
+      }
     }
 
     let result = value;
@@ -285,16 +321,38 @@ export const agentManager = {
   ) {
     const validated = validateMarketOutput(input);
     const excerpt = buildAgentInput("market", filingText);
-    const researched = await researchCompetitiveLandscape({
-      jurisdiction,
-      issuerName: company?.name ?? "",
-      ticker: company?.ticker ?? null,
-      industry: validated.market.industry,
-      filingExcerpt: excerpt,
-    });
-    const result = mergeMarketResearchPeers(validated, researched.peerEvidence, researched.competitiveAnalysis);
+    let result = validated;
+    let researchUnavailable = false;
+    try {
+      const researched = await researchCompetitiveLandscape({
+        jurisdiction,
+        issuerName: company?.name ?? "",
+        ticker: company?.ticker ?? null,
+        industry: validated.market.industry,
+        filingExcerpt: excerpt,
+      });
+      result = mergeMarketResearchPeers(validated, researched.peerEvidence, researched.competitiveAnalysis);
+    } catch (error) {
+      researchUnavailable = true;
+      console.warn("[market-research] cited web research unavailable; preserving public-data and filing lanes", error);
+      result = {
+        market: {
+          ...validated.market,
+          externalResearchStatus: "unavailable",
+          competitiveAnalysis: {
+            status: "unavailable",
+            methodology: "market-research-brief",
+            peerProfiles: [],
+            findings: [],
+          },
+        },
+      };
+    }
     const diagnostic = assessCompleteness("market", result, { jurisdiction });
     diagnostic.enrichmentStatus = result.market.externalResearchStatus === "complete" ? "full" : "skipped";
+    if (researchUnavailable) {
+      diagnostic.warnings = [...(diagnostic.warnings ?? []), "external_competitive_research_unavailable"];
+    }
     if (result.market.externalResearchStatus === "no_citable_results") {
       diagnostic.warnings = [...(diagnostic.warnings ?? []), "external_competitive_research_no_citations"];
     }
