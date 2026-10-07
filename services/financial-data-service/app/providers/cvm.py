@@ -13,6 +13,7 @@ import httpx
 import pandas as pd
 
 from ..models import Metric, RegulatorySnapshot, SourceRef
+from .http_retry import get_with_retry, retryable_status
 
 CVM_BASE = "https://dados.cvm.gov.br/dados/CIA_ABERTA/DOC"
 CVM_REGISTRY_URL = "https://dados.cvm.gov.br/dados/CIA_ABERTA/CAD/DADOS/cad_cia_aberta.csv"
@@ -45,14 +46,20 @@ async def _cached_bytes(url: str, timeout_seconds: float = 35.0) -> bytes:
         cached = _cache.get(url)
         if cached and now - cached[0] < CACHE_TTL_SECONDS:
             return cached[1]
-    async with httpx.AsyncClient(
-        timeout=httpx.Timeout(timeout_seconds, connect=10.0),
-        follow_redirects=True,
-        headers={"User-Agent": "FilingLens/1.0"},
-    ) as client:
-        response = await client.get(url)
-        response.raise_for_status()
-        raw = response.content
+    stale_raw = cached[1] if cached else None
+    try:
+        async with httpx.AsyncClient(
+            timeout=httpx.Timeout(timeout_seconds, connect=10.0),
+            follow_redirects=True,
+            headers={"User-Agent": "FilingLens/1.0"},
+        ) as client:
+            response = await get_with_retry(client, url)
+            raw = response.content
+    except (httpx.TimeoutException, httpx.TransportError, httpx.HTTPStatusError) as exc:
+        status = exc.response.status_code if isinstance(exc, httpx.HTTPStatusError) else None
+        if stale_raw is not None and (status is None or retryable_status(status)):
+            return stale_raw
+        raise
     async with _cache_lock:
         _cache[url] = (time.monotonic(), raw)
     return raw
