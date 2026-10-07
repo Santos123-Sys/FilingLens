@@ -47,6 +47,36 @@ class RegulatorySnapshot(BaseModel):
     historyRequested: int = 5
     resolvedIdentifier: str | None = None
 
+class MarketShareRequest(BaseModel):
+    companyName: str
+    cnpj: str | None = None
+    maxProducts: int = Field(default=4, ge=1, le=6)
+
+class MarketShareMetric(BaseModel):
+    label: str
+    valuePercent: float
+    numerator: float
+    denominator: float
+    unit: str
+    period: str
+    geography: str = "Brazil"
+    productScope: str
+    method: Literal["direct_public_data", "public_proxy"] = "direct_public_data"
+    provider: str
+    companyMatch: str
+    caveat: str | None = None
+    sourceUrl: str
+
+class MarketShareSnapshot(BaseModel):
+    status: Literal["complete", "partial", "unavailable", "company_not_found", "not_applicable"]
+    provider: str
+    companyName: str
+    matchedCompany: str | None = None
+    period: str | None = None
+    metrics: list[MarketShareMetric] = Field(default_factory=list)
+    warnings: list[str] = Field(default_factory=list)
+    sourceUrl: str
+
 class PresentationRequest(BaseModel):
     analysis: dict[str, Any]
     lang: Literal["en", "pt"] = "en"

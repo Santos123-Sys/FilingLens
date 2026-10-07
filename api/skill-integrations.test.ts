@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { analyzeFinancialSkillInputs } from "./financial-skill-analysis";
 import { validateHistorianOutput } from "./historian-validation";
 import { validateMarketOutput } from "./market-validation";
-import { buildAgentInput } from "./analyze";
+import { buildAgentInput, buildRiskRecoveryInput } from "./analyze";
 import { MODEL_PINS } from "./ai/provider";
 import { extractDatedFilingEvents } from "./timeline-skill-extraction";
 import { assessCompleteness } from "./completeness";
@@ -30,6 +30,45 @@ describe("bounded FilingLens skill integrations", () => {
     expect(result[0]).toMatchObject({ date: "2024-04-15", dateGranularity: "day", sourceType: "filing" });
     expect(result[0].source?.quote).toBe(line);
   });
+  it("builds a focused risk window for Brazilian Formulario de Referencia", () => {
+    const filing = [
+      "CAPA",
+      "Informações gerais do emissor.",
+      "4.1 - Descreva os fatores de risco que possam influenciar a decisão de investimento",
+      "A companhia está exposta a riscos de preço, crédito, regulação e segurança operacional.",
+      "5. Gerenciamento de riscos",
+    ].join("\n");
+    const excerpt = buildRiskRecoveryInput(filing);
+    expect(excerpt).toContain("fatores de risco");
+    expect(excerpt).toContain("riscos de preço");
+  });
+
+  it("treats an auditable public market-share proxy as usable market evidence", () => {
+    const diagnostic = assessCompleteness("market", {
+      market: {
+        industry: "",
+        competitors: [],
+        geographies: [],
+        segments: [],
+        marketShares: [{
+          label: "Brazil liquid-fuels distribution volume share proxy",
+          valuePercent: 24.5,
+          numerator: 245,
+          denominator: 1000,
+          unit: "m³",
+          period: "2026 YTD",
+          geography: "Brazil",
+          productScope: "Liquid fuels",
+          method: "public_proxy",
+          provider: "ANP SIMP",
+          companyMatch: "VIBRA ENERGIA S.A.",
+          source: { section: "Public market-share proxy", kind: "citation", url: "https://www.gov.br/anp/", publisher: "ANP", accessed: "2026-10-07" },
+        }],
+      },
+    }, { jurisdiction: "br" });
+    expect(diagnostic.status).toBe("complete");
+  });
+
   it("includes MD&A alongside Item 1 for market evidence", () => {
     const filing = [
       "Item 1. Business",

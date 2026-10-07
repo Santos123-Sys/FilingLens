@@ -74,6 +74,46 @@ function deterministicCnpj(text: string): string | null {
   return value ? value.replace(/\D/g, "") : null;
 }
 
+type PublicMarketShareSnapshot = {
+  status: "complete" | "partial" | "unavailable" | "company_not_found" | "not_applicable";
+  provider: string;
+  companyName: string;
+  matchedCompany?: string | null;
+  period?: string | null;
+  metrics: Array<{
+    label: string;
+    valuePercent: number;
+    numerator: number;
+    denominator: number;
+    unit: string;
+    period: string;
+    geography: string;
+    productScope: string;
+    method: "direct_public_data" | "public_proxy";
+    provider: string;
+    companyMatch: string;
+    caveat?: string | null;
+    sourceUrl: string;
+  }>;
+  warnings: string[];
+  sourceUrl: string;
+};
+
+function isBrazilFuelContext(
+  jurisdiction: Market,
+  text: string,
+  marketResult: MarketResult,
+  company?: FilingAnalysis["company"],
+): boolean {
+  if (jurisdiction !== "br") return false;
+  const haystack = [
+    marketResult.market.industry,
+    company?.description ?? "",
+    text.slice(0, 140_000),
+  ].join("\n").toLowerCase();
+  return /(combust[ií]ve|gasolina|diesel|etanol|lubrificant|distribui.{0,30}petr[oó]leo|posto[s]?\s+revendedor)/i.test(haystack);
+}
+
 function unavailableRegulatoryData(jurisdiction: Market, warning: string): RegulatoryDataSnapshot {
   return {
     status: "unavailable",
@@ -238,7 +278,101 @@ app.post("/api/market-research", async (c) => {
     if (text.length < 2000 || !marketResult?.market) {
       return c.json({ error: "bad_request" }, 400);
     }
-    return c.json(await agentManager.runMarketResearch(jurisdiction, text, marketResult, company));
+
+    const run = await agentManager.runMarketResearch(jurisdiction, text, marketResult, company);
+
+    // Sector-specific public-data resolvers run independently from the LLM web
+    // research lane. For Brazilian liquid fuels, ANP/SIMP provides a directly
+    // auditable denominator and issuer numerator, so market share is computed
+    // deterministically rather than inferred from prose.
+    if (
+      dataToolsConfigured()
+      && company?.name
+      && isBrazilFuelContext(jurisdiction, text, run.result, company)
+    ) {
+      try {
+        const snapshot = await dataToolsJson<PublicMarketShareSnapshot>("/v1/market-share/anp", {
+          companyName: company.name,
+          cnpj: typeof body.cnpj === "string" ? body.cnpj : undefined,
+          maxProducts: 4,
+        });
+        if (snapshot.metrics.length) {
+          const anpShares = snapshot.metrics.map(metric => ({
+            label: metric.label,
+            valuePercent: metric.valuePercent,
+            numerator: metric.numerator,
+            denominator: metric.denominator,
+            unit: metric.unit,
+            period: metric.period,
+            geography: metric.geography,
+            productScope: metric.productScope,
+            method: metric.method,
+            provider: metric.provider,
+            companyMatch: metric.companyMatch,
+            caveat: metric.caveat ?? null,
+            source: {
+              section: "Public market-share proxy",
+              kind: "citation" as const,
+              url: metric.sourceUrl,
+              publisher: "ANP",
+              accessed: new Date().toISOString().slice(0, 10),
+            },
+          }));
+          run.result.market.marketShares = [
+            ...anpShares,
+            ...(run.result.market.marketShares ?? []),
+          ].slice(0, 8);
+          run.diagnostic.warnings = [
+            ...(run.diagnostic.warnings ?? []),
+            "anp_public_volume_share_proxy",
+          ];
+          if (run.diagnostic.status !== "complete") {
+            run.diagnostic.status = "complete";
+            run.diagnostic.confidence = 0.88;
+            run.diagnostic.reason = undefined;
+          }
+          run.manager.subtools.push("anp-simp-public-market-share");
+        } else if (snapshot.warnings.length) {
+          run.diagnostic.warnings = [
+            ...(run.diagnostic.warnings ?? []),
+            ...snapshot.warnings.map(() => "anp_market_share_unavailable"),
+          ];
+        }
+      } catch (error) {
+        console.warn("[market-share] ANP public-data proxy unavailable; preserving other market evidence", error);
+        run.diagnostic.warnings = [
+          ...(run.diagnostic.warnings ?? []),
+          "anp_market_share_provider_unavailable",
+        ];
+      }
+    }
+
+    // Promote independently verified generic public proxies found by web
+    // research into the same auditable market-share contract.
+    const publicProxies = run.result.market.competitiveAnalysis?.marketShareProxies ?? [];
+    if (publicProxies.length) {
+      const genericShares = publicProxies.map(proxy => ({
+        label: proxy.label,
+        valuePercent: proxy.valuePercent,
+        numerator: proxy.numerator,
+        denominator: proxy.denominator,
+        unit: proxy.unit,
+        period: proxy.period,
+        geography: proxy.geography,
+        productScope: proxy.productScope,
+        method: "public_proxy" as const,
+        provider: proxy.source.publisher ?? "Public source",
+        companyMatch: company?.name ?? "Issuer",
+        caveat: proxy.basis,
+        source: proxy.source,
+      }));
+      run.result.market.marketShares = [
+        ...(run.result.market.marketShares ?? []),
+        ...genericShares,
+      ].slice(0, 8);
+    }
+
+    return c.json(run);
   } catch (err) {
     const { body, status } = errStatus(err);
     return c.json(body, status);

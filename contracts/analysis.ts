@@ -65,6 +65,55 @@ export const companySchema = z.object({
 });
 export type CompanyResult = z.infer<typeof companySchema>;
 
+export const marketShareMetricSchema = z.object({
+  label: z.string(),
+  valuePercent: z.number().min(0).max(100),
+  numerator: z.number().nonnegative(),
+  denominator: z.number().positive(),
+  unit: z.string(),
+  period: z.string(),
+  geography: z.string(),
+  productScope: z.string(),
+  method: z.enum(["direct_public_data", "public_proxy"]),
+  provider: z.string(),
+  companyMatch: z.string(),
+  caveat: z.string().nullable().optional(),
+  source: evidenceReferenceSchema,
+});
+export type MarketShareMetric = z.infer<typeof marketShareMetricSchema>;
+
+/**
+ * Narrow schema used only for the filing-extraction model. Web competitive
+ * intelligence and public-data market-share fields are attached downstream and
+ * intentionally excluded here to reduce structured-output failure surface.
+ */
+export const marketFilingSchema = z.object({
+  market: z.object({
+    industry: z.string(),
+    competitors: z.array(z.string()).max(12),
+    peerEvidence: z.array(z.object({
+      name: z.string(),
+      sourceType: z.literal("filing"),
+      source: evidenceReferenceSchema,
+    })).max(12).optional(),
+    geographies: z.array(z.object({
+      name: z.string(),
+      values: z.array(z.number()),
+      periods: z.array(z.string()).max(5).optional(),
+      sourceType: z.literal("filing").optional(),
+      source: evidenceReferenceSchema.nullable().optional(),
+    })).max(8),
+    segments: z.array(z.object({
+      name: z.string(),
+      revenue: z.array(z.number()),
+      earnings: z.array(z.number()).nullable(),
+      periods: z.array(z.string()).max(5).optional(),
+      sourceType: z.literal("filing").optional(),
+      source: evidenceReferenceSchema.nullable().optional(),
+    })).max(12),
+  }),
+});
+
 export const marketSchema = z.object({
   market: z.object({
     industry: z.string(),
@@ -75,6 +124,7 @@ export const marketSchema = z.object({
       source: evidenceReferenceSchema,
     })).max(12).optional(),
     externalResearchStatus: z.enum(["pending", "not_needed", "complete", "no_citable_results", "unavailable"]).optional(),
+    marketShares: z.array(marketShareMetricSchema).max(8).optional(),
     competitiveAnalysis: z.object({
       status: z.enum(["complete", "partial", "no_citable_results", "unavailable"]),
       methodology: z.literal("market-research-brief"),
@@ -91,6 +141,18 @@ export const marketSchema = z.object({
         implication: z.string(),
         source: evidenceReferenceSchema,
       })).max(8),
+      marketShareProxies: z.array(z.object({
+        label: z.string(),
+        valuePercent: z.number().min(0).max(100),
+        numerator: z.number().nonnegative(),
+        denominator: z.number().positive(),
+        unit: z.string(),
+        period: z.string(),
+        geography: z.string(),
+        productScope: z.string(),
+        basis: z.string(),
+        source: evidenceReferenceSchema,
+      })).max(4).optional(),
       marketStructure: z.object({
         summary: z.string(),
         hhi: z.number().nullable().optional(),

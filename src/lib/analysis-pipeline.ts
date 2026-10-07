@@ -59,6 +59,7 @@ function friendlyReason(reason: string | undefined, lang: PipelineLanguage): str
     sec_10q_financials_incomplete: ["The 10-Q did not yield the required comparable quarter and balance-sheet set.", "O 10-Q não forneceu o conjunto exigido de trimestre comparável e balanço patrimonial."],
     sec_10k_financials_incomplete: ["The 10-K did not yield the required historical statements.", "O 10-K não forneceu as demonstrações históricas exigidas."],
     historical_financials_not_found: ["Comparable historical financial series were not established.", "Não foi possível estabelecer séries financeiras históricas comparáveis."],
+    external_financial_history_partial: ["Official regulatory history was recovered, but fewer than five annual periods were available.", "O histórico regulatório oficial foi recuperado, mas havia menos de cinco períodos anuais disponíveis."],
     timeline_events_not_found: ["No validated dated events were captured.", "Nenhum evento datado validado foi capturado."],
     summary_not_found: ["Executive synthesis returned no supported summary.", "A síntese executiva não retornou resumo suportado."],
     agent_request_failed: ["This module remained unavailable after bounded attempts.", "Este módulo permaneceu indisponível após tentativas limitadas."],
@@ -241,15 +242,21 @@ export async function executeAnalysisPipeline(input: {
   }
 
   const historianPromise = runAgent("historian", { profiler: parts.profiler, financials: parts.financials });
-  const marketResult = parts.market as MarketResult | undefined;
+  const marketResult: MarketResult = (parts.market as MarketResult | undefined) ?? {
+    market: {
+      industry: "",
+      competitors: [],
+      peerEvidence: [],
+      geographies: [],
+      segments: [],
+      externalResearchStatus: "pending",
+    },
+  };
+  if (!parts.market) parts.market = marketResult;
   const researchPromise = (async () => {
-    if (!marketResult?.market) {
-      onStage("marketResearch", { status: "skipped", attempt: 0, detail: lang === "pt" ? "Ignorada porque Mercado não retornou contexto utilizável." : "Skipped because the Market module returned no usable context." });
-      return;
-    }
     try {
       const body = await requestJson("/api/market-research", {
-        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jurisdiction: market, text, marketResult, company: profileResult?.company }),
+        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jurisdiction: market, text, marketResult, company: profileResult?.company, cnpj: metadata.cnpj }),
       }, "marketResearch", signal, onStage, lang, 2);
       const enriched = body.result as MarketResult;
       parts.market = enriched;
@@ -288,6 +295,37 @@ export async function executeAnalysisPipeline(input: {
   const marketFallback: FilingAnalysis["market"] = { industry: "", competitors: [], geographies: [], segments: [], externalResearchStatus: "unavailable" };
   const filingFinancials = (parts.financials as { financials: FilingAnalysis["financials"] } | undefined)?.financials ?? financialsFallback;
   const enrichedFinancials = attachRegulatoryAnnualHistory({ financials: filingFinancials }, regulatoryData).financials;
+
+  // Coverage is a final-output property, not merely a filing-form property.
+  // A Formulário de Referência may not contain full financial statements, but
+  // official CVM DFP history can make the Financials module fully usable.
+  const annualYears = enrichedFinancials.annualHistory?.years ?? [];
+  if (annualYears.length >= 5) {
+    diagnostics.financials = {
+      status: "complete",
+      confidence: 0.93,
+      warnings: [
+        ...(diagnostics.financials?.warnings ?? []),
+        ...(diagnostics.financials?.status === "not_applicable" ? ["filing_financial_tables_not_applicable_external_history_used"] : []),
+      ],
+    };
+    onStage("financials", {
+      status: "complete",
+      detail: lang === "pt"
+        ? "Cinco anos de histórico financeiro oficial foram recuperados da CVM/SEC."
+        : "Five years of official financial history were recovered from CVM/SEC.",
+    });
+  } else if (annualYears.length >= 2 && diagnostics.financials?.status === "not_applicable") {
+    diagnostics.financials = {
+      status: "incomplete",
+      reason: "external_financial_history_partial",
+      confidence: 0.82,
+      missing: ["five annual regulatory periods"],
+      warnings: ["filing_financial_tables_not_applicable_external_history_used"],
+    };
+    onStage("financials", { status: "partial", detail: friendlyReason("external_financial_history_partial", lang) });
+  }
+
   const diagnosticMissing = Object.values(diagnostics).flatMap(item => item?.missing ?? []);
   const assembled: FilingAnalysis & { regulatoryData?: RegulatoryDataSnapshot } = {
     schemaVersion: "2.0", jurisdiction: market, metadata,

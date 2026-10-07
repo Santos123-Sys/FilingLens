@@ -3,13 +3,14 @@ from __future__ import annotations
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import Response
 
-from .models import RegulatoryRequest, RegulatorySnapshot, PresentationRequest
+from .models import RegulatoryRequest, RegulatorySnapshot, MarketShareRequest, MarketShareSnapshot, PresentationRequest
 from .providers.sec_edgar import enrich_sec, resolve_sec_identifier
 from .providers.cvm import enrich_cvm, resolve_cvm_identifier
+from .providers.anp import enrich_anp_market_share
 from .presentation import build_presentation
 from .skills import run_ratios, run_statements, validate_timeline, status as skill_status
 
-app = FastAPI(title="FilingLens Data Tools", version="1.1.0")
+app = FastAPI(title="FilingLens Data Tools", version="1.2.0")
 
 
 @app.get("/health")
@@ -17,11 +18,12 @@ async def health():
     return {
         "status": "healthy",
         "service": "filinglens-data-tools",
-        "version": "1.1.0",
+        "version": "1.2.0",
         "providers": {
             "sec": "configured",
             "cvm": "configured",
             "presentation": "configured",
+            "anpMarketShare": "configured",
             "historyYears": 5,
         },
         "skills": skill_status(),
@@ -62,6 +64,20 @@ async def regulatory_enrich(req: RegulatoryRequest):
             provider="sec_edgar" if req.jurisdiction == "us" else "cvm_open_data",
             warnings=[f"Regulatory provider unavailable: {type(exc).__name__}"],
             historyRequested=req.historyYears,
+        )
+
+
+@app.post("/v1/market-share/anp", response_model=MarketShareSnapshot)
+async def anp_market_share(req: MarketShareRequest):
+    try:
+        return await enrich_anp_market_share(req.companyName, req.cnpj, req.maxProducts)
+    except Exception as exc:
+        return MarketShareSnapshot(
+            status="unavailable",
+            provider="ANP SIMP",
+            companyName=req.companyName,
+            warnings=[f"ANP market-share provider unavailable: {type(exc).__name__}"],
+            sourceUrl="https://www.gov.br/anp/pt-br/centrais-de-conteudo/paineis-dinamicos-da-anp/paineis-dinamicos-do-abastecimento/painel-dinamico-do-mercado-brasileiro-de-combustiveis-liquidos",
         )
 
 

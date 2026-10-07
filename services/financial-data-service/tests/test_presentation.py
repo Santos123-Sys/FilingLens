@@ -49,6 +49,23 @@ SAMPLE = {
         "competitors": ["AMD", "Broadcom"],
         "segments": [],
         "geographies": [],
+        "marketShares": [
+            {
+                "label": "Brazil liquid-fuels distribution volume share proxy",
+                "valuePercent": 25.0,
+                "numerator": 50.0,
+                "denominator": 200.0,
+                "unit": "m³",
+                "period": "2026 YTD through M07",
+                "geography": "Brazil",
+                "productScope": "Liquid fuels",
+                "method": "public_proxy",
+                "provider": "ANP SIMP",
+                "companyMatch": "Example Distributor",
+                "caveat": "Public volume-share proxy.",
+                "source": {"section": "Public market-share proxy", "kind": "citation", "url": "https://www.gov.br/anp/", "publisher": "ANP", "accessed": "2026-10-07"},
+            }
+        ],
         "competitiveAnalysis": {
             "status": "complete",
             "methodology": "market-research-brief",
@@ -122,6 +139,8 @@ def test_pptx_roundtrip_and_financial_units():
     categories = _chart_categories(prs.slides[3])
     assert "FY2022" in categories and "FY2026" in categories
     assert "AMD" in competitive
+    assert "25.0%" in competitive
+    assert "ANP SIMP" in competitive
     assert "Competition is increasingly platform-led" in competitive
 
 
