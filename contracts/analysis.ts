@@ -159,6 +159,14 @@ export const marketSchema = z.object({
         basis: z.string().nullable().optional(),
         source: evidenceReferenceSchema.nullable().optional(),
       }).optional(),
+      researchDiagnostics: z.object({
+        candidatePeers: z.number().int().nonnegative(),
+        verifiedPeers: z.number().int().nonnegative(),
+        citedSources: z.number().int().nonnegative(),
+        droppedClaims: z.number().int().nonnegative(),
+        recoveryUsed: z.boolean(),
+        strategy: z.literal("deterministic-citation-ranking-v1"),
+      }).optional(),
     }).optional(),
       geographies: z
       .array(z.object({
