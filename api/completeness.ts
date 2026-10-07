@@ -72,10 +72,18 @@ export function assessCompleteness(
         ? { status: "complete", confidence: 0.85 }
         : { status: "incomplete", reason: "market_detail_not_found", missing: ["industry context plus peers, public market share, geographies, or operating segments"] };
     }
-    case "risks":
-      return array(root?.risks).length > 0
-        ? { status: "complete", confidence: 0.85 }
+    case "risks": {
+      if (array(root?.risks).length > 0) return { status: "complete", confidence: 0.85 };
+      const filingType = context?.filingType?.toLowerCase() ?? "";
+      const noStandaloneRiskSectionExpected = /relat[oó]rio de desempenho|earnings release|press release|apresenta(?:ç|c)[aã]o de resultados|fato relevante|(^|\s)8-k($|\s)|(^|\s)6-k($|\s)/i.test(filingType);
+      return noStandaloneRiskSectionExpected
+        ? {
+            status: "not_applicable",
+            reason: "risk_section_not_expected_for_filing",
+            warnings: ["risk_inventory_requires_annual_or_reference_filing"],
+          }
         : { status: "incomplete", reason: "risk_factors_not_found", missing: ["ranked risk factors"] };
+    }
     case "financials": {
       const financials = record(root?.financials);
       const years = array(financials?.years);
