@@ -17,6 +17,18 @@ const webResearchOutput = z.object({
     implication: z.string().min(1).max(360),
     url: z.string(),
   })).max(8),
+  marketShareProxies: z.array(z.object({
+    label: z.string().min(1).max(160),
+    valuePercent: z.number().min(0).max(100),
+    numerator: z.number().nonnegative(),
+    denominator: z.number().positive(),
+    unit: z.string().min(1).max(60),
+    period: z.string().min(1).max(80),
+    geography: z.string().min(1).max(80),
+    productScope: z.string().min(1).max(160),
+    basis: z.string().min(1).max(420),
+    url: z.string(),
+  })).max(4),
   marketStructure: z.object({
     summary: z.string().min(1).max(420),
     hhi: z.number().nullable().optional(),
@@ -137,6 +149,27 @@ export function verifyCompetitiveResearch(
     if (findings.length === 8) break;
   }
 
+  const marketShareProxies: NonNullable<MarketResult["market"]["competitiveAnalysis"]>["marketShareProxies"] = [];
+  for (const proxy of output.marketShareProxies) {
+    const source = evidenceFrom(proxy.url, citedSources, accessed);
+    if (!source || proxy.denominator <= 0 || proxy.numerator < 0) continue;
+    const recomputed = (proxy.numerator / proxy.denominator) * 100;
+    if (Math.abs(recomputed - proxy.valuePercent) > 0.15) continue;
+    marketShareProxies.push({
+      label: proxy.label.trim(),
+      valuePercent: Number(recomputed.toFixed(2)),
+      numerator: proxy.numerator,
+      denominator: proxy.denominator,
+      unit: proxy.unit.trim(),
+      period: proxy.period.trim(),
+      geography: proxy.geography.trim(),
+      productScope: proxy.productScope.trim(),
+      basis: proxy.basis.trim(),
+      source,
+    });
+    if (marketShareProxies.length === 4) break;
+  }
+
   let marketStructure: NonNullable<MarketResult["market"]["competitiveAnalysis"]>["marketStructure"];
   if (output.marketStructure?.url) {
     const source = evidenceFrom(output.marketStructure.url, citedSources, accessed);
@@ -161,6 +194,7 @@ export function verifyCompetitiveResearch(
       methodology: "market-research-brief",
       peerProfiles,
       findings,
+      ...(marketShareProxies.length ? { marketShareProxies } : {}),
       ...(marketStructure ? { marketStructure } : {}),
     },
   };
@@ -189,8 +223,10 @@ export async function researchCompetitiveLandscape(input: {
       "Use web search now; do not answer from memory. The uploaded filing is authoritative for issuer identity, while external sources are used to independently map the current competitive landscape.",
       "Apply the competition module: identify direct peers, characterize positioning, surface source-supported strengths and vulnerabilities, and synthesize only decision-useful findings that pass a concise 'so what?' test.",
       "Prefer regulator filings, official company investor-relations pages, exchanges, industry associations, and high-quality research sources.",
-      "Do not manufacture market shares, TAM, concentration, or HHI. Return hhi only when the cited source provides sufficient market-share evidence; otherwise use null and describe the market structure qualitatively.",
-      "Every peer, finding, and market-structure claim must carry the exact HTTPS URL that the web-search tool actually cited. Claims with ambiguous evidence should be omitted.",
+      "Actively search for a public, auditable way to estimate issuer market share. Prefer regulator/open-data datasets; otherwise use a close public proxy only when numerator and denominator are measured on the same period, geography and product basis.",
+      "For any market-share proxy, return the raw numerator and denominator and let the application recompute the percentage. Never infer a denominator from narrative language. If no defensible public basis exists, return no marketShareProxies.",
+      "Do not manufacture TAM, concentration, or HHI. Return hhi only when the cited source provides sufficient market-share evidence; otherwise use null and describe the market structure qualitatively.",
+      "Every peer, finding, market-share proxy, and market-structure claim must carry the exact HTTPS URL that the web-search tool actually cited. Claims with ambiguous evidence should be omitted.",
       "Do not provide investment recommendations, target prices, or uncited financial figures.",
     ].join(" "),
     prompt: [
