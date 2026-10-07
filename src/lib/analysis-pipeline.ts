@@ -56,6 +56,7 @@ function friendlyReason(reason: string | undefined, lang: PipelineLanguage): str
     profile_data_not_found: ["Issuer identity was found, but this filing did not provide enough profile/KPI evidence.", "A identidade do emissor foi encontrada, mas o documento não trouxe evidência suficiente de perfil/KPIs."],
     market_detail_not_found: ["No filing-supported peers, segment or geographic detail was captured.", "Não foram capturados concorrentes, segmentos ou geografias com suporte no documento."],
     risk_factors_not_found: ["No structured risk-factor list was captured from the supplied filing evidence.", "Nenhuma lista estruturada de fatores de risco foi capturada das evidências fornecidas."],
+    risk_section_not_expected_for_filing: ["This filing type does not normally contain a standalone risk-factor inventory; use the annual/reference filing for that module.", "Este tipo de documento normalmente não contém um inventário autônomo de fatores de risco; use o documento anual/de referência para esse módulo."],
     sec_10q_financials_incomplete: ["The 10-Q did not yield the required comparable quarter and balance-sheet set.", "O 10-Q não forneceu o conjunto exigido de trimestre comparável e balanço patrimonial."],
     sec_10k_financials_incomplete: ["The 10-K did not yield the required historical statements.", "O 10-K não forneceu as demonstrações históricas exigidas."],
     historical_financials_not_found: ["Comparable historical financial series were not established.", "Não foi possível estabelecer séries financeiras históricas comparáveis."],
@@ -261,11 +262,19 @@ export async function executeAnalysisPipeline(input: {
       const enriched = body.result as MarketResult;
       parts.market = enriched;
       if ((body.diagnostic as ModuleDiagnostic | undefined)?.status) diagnostics.market = body.diagnostic as ModuleDiagnostic;
+      const researchDiagnostics = enriched.market.competitiveAnalysis?.researchDiagnostics;
+      const verifiedPeers = researchDiagnostics?.verifiedPeers ?? enriched.market.competitors.length;
+      const citedSources = researchDiagnostics?.citedSources ?? 0;
+      const recoveryUsed = researchDiagnostics?.recoveryUsed === true;
       onStage("marketResearch", {
         status: enriched.market.externalResearchStatus === "complete" ? "complete" : "partial",
         detail: enriched.market.externalResearchStatus === "complete"
-          ? (lang === "pt" ? "Análise competitiva externa concluída com URLs verificadas." : "External competitive analysis completed with verified citation URLs.")
-          : (lang === "pt" ? "Pesquisa competitiva concluída com cobertura citável parcial ou vazia." : "Competitive research finished with partial or empty citable coverage."),
+          ? (lang === "pt"
+              ? `${verifiedPeers} concorrentes verificados · ${citedSources} fontes citadas${recoveryUsed ? " · recuperação determinística usada" : ""}.`
+              : `${verifiedPeers} verified peers · ${citedSources} cited sources${recoveryUsed ? " · deterministic recovery used" : ""}.`)
+          : (lang === "pt"
+              ? `Pesquisa concluída com ${verifiedPeers} concorrentes verificados e ${citedSources} fontes citadas.`
+              : `Research completed with ${verifiedPeers} verified peers and ${citedSources} cited sources.`),
       });
     } catch (error) {
       if (error instanceof PipelineCancelled || (error instanceof PipelineError && error.terminal)) throw error;
