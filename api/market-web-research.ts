@@ -149,7 +149,7 @@ export function verifyCompetitiveResearch(
     if (findings.length === 8) break;
   }
 
-  const marketShareProxies: NonNullable<MarketResult["market"]["competitiveAnalysis"]>["marketShareProxies"] = [];
+  const marketShareProxies: NonNullable<NonNullable<MarketResult["market"]["competitiveAnalysis"]>["marketShareProxies"]> = [];
   for (const proxy of output.marketShareProxies) {
     const source = evidenceFrom(proxy.url, citedSources, accessed);
     if (!source || proxy.denominator <= 0 || proxy.numerator < 0) continue;
