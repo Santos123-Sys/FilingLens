@@ -119,12 +119,23 @@ describe("bounded FilingLens skill integrations", () => {
     expect(result.market.validationFlags?.length).toBe(2);
   });
 
-  it("merges cited web peers only after the filing-first market stage is empty", () => {
+  it("preserves filing peers while adding independently cited competitive research", () => {
+    const source = {
+      section: "Independent competitive research",
+      kind: "citation" as const,
+      url: "https://industry.example/peer",
+      publisher: "Industry Association",
+      accessed: "2026-10-05",
+    };
     const result = mergeMarketResearchPeers({
       market: {
         industry: "Industrials",
-        competitors: [],
-        peerEvidence: [],
+        competitors: ["Filing Peer"],
+        peerEvidence: [{
+          name: "Filing Peer",
+          sourceType: "filing",
+          source: { section: "Item 1", quote: "We compete with Filing Peer." },
+        }],
         geographies: [],
         segments: [],
         externalResearchStatus: "pending",
@@ -132,18 +143,29 @@ describe("bounded FilingLens skill integrations", () => {
     }, [{
       name: "Verified Motors",
       sourceType: "external",
-      source: {
-        section: "Independent web research",
-        kind: "citation",
-        url: "https://industry.example/peer",
-        publisher: "Industry Association",
-        accessed: "2026-10-05",
-      },
-    }]);
+      source,
+    }], {
+      status: "complete",
+      methodology: "market-research-brief",
+      peerProfiles: [{
+        name: "Verified Motors",
+        relationship: "Direct competitor",
+        positioning: "Competes in the same core product category.",
+        strengths: ["Scale"],
+        vulnerabilities: ["Concentration"],
+        source,
+      }],
+      findings: [{
+        insight: "Competition is concentrated among scaled vendors.",
+        implication: "Platform differentiation matters.",
+        source,
+      }],
+    });
 
-    expect(result.market.competitors).toEqual(["Verified Motors"]);
+    expect(result.market.competitors).toEqual(["Filing Peer", "Verified Motors"]);
     expect(result.market.externalResearchStatus).toBe("complete");
-    expect(result.market.peerEvidence?.[0]?.sourceType).toBe("external");
+    expect(result.market.competitiveAnalysis?.methodology).toBe("market-research-brief");
+    expect(result.market.peerEvidence?.map(peer => peer.sourceType)).toEqual(["filing", "external"]);
   });
 
   it("accepts web-researched peers only when the search provider returned their citation URL", () => {
