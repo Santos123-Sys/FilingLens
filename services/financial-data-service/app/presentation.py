@@ -43,7 +43,7 @@ TEXT = {
         "performance_kicker": "Financial performance", "performance_title": "Five-year scale, earnings and trajectory",
         "history_source": "Authoritative annual history",
         "competitive_kicker": "Competitive landscape", "competitive_title": "How the issuer is positioned against direct peers",
-        "competitive_findings": "DECISION-USEFUL FINDINGS", "no_competitive": "No independently cited competitive analysis was available.",
+        "competitive_findings": "DECISION-USEFUL FINDINGS", "market_share": "PUBLIC MARKET-SHARE PROXY", "no_competitive": "No independently cited competitive analysis was available.",
         "cashflow_kicker": "Balance sheet & cash conversion", "cashflow_title": "Liquidity, leverage and cash generation", "cashflow_profile": "Cash flow profile", "capex": "Capex", "assets_equity": "Assets / Equity", "capital_structure": "capital structure", "latest_balance": "latest balance",
         "market_kicker": "Market & operating context", "market_title": "Where the company competes", "industry": "INDUSTRY", "peers": "VERIFIED PEERS", "segments": "OPERATING SEGMENTS", "geographies": "GEOGRAPHIES",
         "no_industry": "Not established from validated evidence", "no_peers": "No verified peers available", "no_segments": "No validated segment series", "no_geographies": "No validated geographic series",
@@ -73,7 +73,7 @@ TEXT = {
         "performance_kicker": "Desempenho financeiro", "performance_title": "Cinco anos de escala, resultado e trajetória",
         "history_source": "Histórico anual regulatório oficial",
         "competitive_kicker": "Cenário competitivo", "competitive_title": "Como a companhia se posiciona frente aos pares diretos",
-        "competitive_findings": "CONCLUSÕES ÚTEIS PARA DECISÃO", "no_competitive": "Não havia análise competitiva independente com citações verificadas.",
+        "competitive_findings": "CONCLUSÕES ÚTEIS PARA DECISÃO", "market_share": "PROXY PÚBLICO DE MARKET SHARE", "no_competitive": "Não havia análise competitiva independente com citações verificadas.",
         "cashflow_kicker": "Balanço e conversão de caixa", "cashflow_title": "Liquidez, alavancagem e geração de caixa", "cashflow_profile": "Perfil de fluxo de caixa", "capex": "Capex", "assets_equity": "Ativos / Patrimônio", "capital_structure": "estrutura de capital", "latest_balance": "último saldo",
         "market_kicker": "Mercado e operação", "market_title": "Onde a companhia compete", "industry": "INDÚSTRIA", "peers": "PARES VERIFICADOS", "segments": "SEGMENTOS OPERACIONAIS", "geographies": "GEOGRAFIAS",
         "no_industry": "Não estabelecido por evidência validada", "no_peers": "Nenhum par verificado disponível", "no_segments": "Nenhuma série de segmentos validada", "no_geographies": "Nenhuma série geográfica validada",
@@ -281,6 +281,7 @@ def build_presentation(analysis: dict[str, Any], lang: str = "en") -> tuple[byte
     regulatory = analysis.get("regulatoryData") or {}
     annual_history = financials.get("annualHistory") or {}
     competitive = market.get("competitiveAnalysis") or {}
+    market_shares = market.get("marketShares") or []
     jurisdiction = analysis.get("jurisdiction") or "us"
     unit = _clean(financials.get("unit"), "")
     name = _clean(company.get("name"), "Company")
@@ -402,14 +403,30 @@ def build_presentation(analysis: dict[str, Any], lang: str = "en") -> tuple[byte
     else:
         _textbox(s, .95, 2.05, 5.45, .4, t["no_competitive"], 10.5, MUTED)
     _rect(s, 7.0, 1.35, 5.65, 5.45, PANEL_2, BORDER)
-    _textbox(s, 7.28, 1.62, 5.05, .25, t["competitive_findings"], 9, GREEN, True)
-    if market_structure:
-        _textbox(s, 7.28, 2.00, 5.0, .70, _clean(market_structure.get("summary"), ""), 10.5, WHITE, True)
+    if market_shares:
+        _textbox(s, 7.28, 1.62, 5.05, .25, t["market_share"], 9, GREEN, True)
+        for i, share in enumerate(market_shares[:3]):
+            if not isinstance(share, dict):
+                continue
+            y = 2.00 + i * .72
+            value = share.get("valuePercent")
+            label = _clean(share.get("label"), "Market share")
+            pct = f"{float(value):.1f}%" if isinstance(value, (int, float)) else "—"
+            _textbox(s, 7.28, y, 3.95, .28, label, 9.2, WHITE, True)
+            _textbox(s, 11.05, y, 1.15, .28, pct, 12, GREEN, True, PP_ALIGN.RIGHT)
+            _textbox(s, 7.28, y + .27, 4.9, .23, f"{_clean(share.get('period'), '')} · {_clean(share.get('provider'), '')}", 7.5, MUTED)
+        findings_y = 4.35
+    else:
+        findings_y = 2.00
+        if market_structure:
+            _textbox(s, 7.28, 2.00, 5.0, .70, _clean(market_structure.get("summary"), ""), 10.5, WHITE, True)
+            findings_y = 2.85
+    _textbox(s, 7.28, findings_y, 5.05, .25, t["competitive_findings"], 9, GREEN, True)
     finding_items = []
-    for item in findings[:4]:
+    for item in findings[:3]:
         if isinstance(item, dict):
             finding_items.append(f"{_clean(item.get('insight'), '')} — {_clean(item.get('implication'), '')}")
-    _bullet_list(s, finding_items or [t["no_competitive"]], 7.3, 2.85, 4.95, 4, size=9.8, accent=GREEN)
+    _bullet_list(s, finding_items or [t["no_competitive"]], 7.3, findings_y + .35, 4.95, 3, size=9.0, accent=GREEN)
     _footer(s, t["hierarchy_3"])
 
     s = _blank(prs)
