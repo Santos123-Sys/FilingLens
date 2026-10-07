@@ -21,18 +21,12 @@ export function loadMarketResearchFramework(): string {
   return cachedFramework;
 }
 
-function section(markdown: string, heading: string, nextHeading?: string): string {
-  const start = markdown.indexOf(heading);
-  if (start < 0) return "";
-  const end = nextHeading ? markdown.indexOf(nextHeading, start + heading.length) : -1;
-  return markdown.slice(start, end >= 0 ? end : undefined).trim();
-}
-
 /**
- * The uploaded market-research-brief contains consumer/retail modules plus
- * reusable market-sizing, competition and data-to-insight methods. FilingLens
- * injects the exact relevant framework text into the market-research runtime
- * instead of merely naming the skill in a prompt.
+ * Load the complete analysis framework from the uploaded market-research-brief
+ * package. The research prompt decides which modules are relevant to the issuer
+ * and follows the package's own Adaptation Guide for B2B/energy companies.
+ * Keeping the complete file here makes this a real runtime skill binding rather
+ * than a prompt that merely mentions the skill by name.
  */
 export function marketResearchRuntimeMethodology(): string {
   const framework = loadMarketResearchFramework();
@@ -45,13 +39,7 @@ export function marketResearchRuntimeMethodology(): string {
       "- validate every insight and state the decision-useful implication.",
     ].join("\n");
   }
-
-  return [
-    section(framework, "## 1. Market Sizing Methodology", "## 2. Category & Growth Driver Analysis"),
-    section(framework, "## 5. Competitive Analysis", "## 6. Data-to-Insight Methodology"),
-    section(framework, "## 6. Data-to-Insight Methodology", "## Adaptation Guide"),
-    section(framework, "## Adaptation Guide"),
-  ].filter(Boolean).join("\n\n").slice(0, 18_000);
+  return framework;
 }
 
 export function marketResearchSkillStatus() {
@@ -60,6 +48,6 @@ export function marketResearchSkillStatus() {
     skill: "market-research-brief",
     runtimeFrameworkLoaded: framework.length > 0,
     runtimeFrameworkChars: framework.length,
-    modules: ["market-sizing", "competitive-analysis", "data-to-insight", "adaptation-guide"],
+    modules: ["market-sizing", "category-growth", "channel-analysis", "consumer-behavior", "competitive-analysis", "data-to-insight", "adaptation-guide"],
   };
 }
