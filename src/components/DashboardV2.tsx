@@ -67,6 +67,8 @@ const COPY = {
     annualHistorySource: "Authoritative external regulatory history",
     competitiveAnalysis: "Competitive analysis",
     competitiveFindings: "Competitive findings",
+    marketShare: "Public market-share proxy",
+    marketShareBasis: "Auditable numerator ÷ denominator",
     noCompetitive: "No independently cited competitive-analysis evidence was available.",
     noFinancial: "No comparable financial series were established from the supplied filing bundle.",
     industry: "Industry / business context",
@@ -132,6 +134,8 @@ const COPY = {
     annualHistorySource: "Histórico regulatório externo oficial",
     competitiveAnalysis: "Análise competitiva",
     competitiveFindings: "Conclusões competitivas",
+    marketShare: "Proxy público de participação de mercado",
+    marketShareBasis: "Numerador ÷ denominador auditáveis",
     noCompetitive: "Não havia evidência citável independente suficiente para análise competitiva.",
     noFinancial: "Não foi possível estabelecer séries financeiras comparáveis a partir do conjunto enviado.",
     industry: "Indústria / contexto do negócio",
@@ -309,6 +313,7 @@ export default function DashboardV2({ data, lang }: { data: FilingAnalysis; lang
   const chartRevenue = annual?.years?.length ? annual.revenue : f.revenue;
   const chartNetIncome = annual?.years?.length ? annual.netIncome : f.netIncome;
   const competitive = data.market.competitiveAnalysis;
+  const marketShares = data.market.marketShares ?? [];
 
   const financialOption = useMemo<EChartsOption>(() => ({
     color: [filingLensTheme.chart.blue, filingLensTheme.chart.green],
@@ -408,6 +413,10 @@ export default function DashboardV2({ data, lang }: { data: FilingAnalysis; lang
               <div className={`${filingLensTheme.surface} rounded-2xl p-5`}><Landmark className="h-4 w-4 text-blue-300" /><p className={`mt-3 ${filingLensTheme.label}`}>{c.segments}</p>{data.market.segments.length ? <div className="mt-3 space-y-2">{data.market.segments.slice(0, 8).map(segment => <div key={segment.name} className={`${filingLensTheme.inset} rounded-lg p-3`}><div className="flex items-center justify-between gap-3"><p className="text-xs font-semibold text-slate-200">{segment.name}</p><p className="text-[11px] text-blue-200">{amount(latest(segment.revenue), data, lang)}</p></div>{segment.periods?.length ? <p className="mt-1 text-[9px] text-slate-600">{segment.periods.at(-1)}</p> : null}</div>)}</div> : <p className="mt-3 text-xs text-slate-500">{c.noSegments}</p>}</div>
               <div className={`${filingLensTheme.surface} rounded-2xl p-5`}><Building2 className="h-4 w-4 text-violet-300" /><p className={`mt-3 ${filingLensTheme.label}`}>{c.geographies}</p>{data.market.geographies.length ? <div className="mt-3 space-y-2">{data.market.geographies.slice(0, 8).map(geo => <div key={geo.name} className={`${filingLensTheme.inset} rounded-lg p-3`}><div className="flex items-center justify-between gap-3"><p className="text-xs font-semibold text-slate-200">{geo.name}</p><p className="text-[11px] text-violet-200">{amount(latest(geo.values), data, lang)}</p></div></div>)}</div> : <p className="mt-3 text-xs text-slate-500">{c.noGeographies}</p>}</div>
             </div>
+            {marketShares.length > 0 && <div className={`${filingLensTheme.surfaceRaised} rounded-2xl p-5`}>
+              <div className="flex flex-wrap items-center justify-between gap-3"><div><p className={filingLensTheme.label}>{c.marketShare}</p><p className="mt-1 text-xs text-slate-500">{c.marketShareBasis}</p></div><Gauge className="h-4 w-4 text-emerald-300" /></div>
+              <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">{marketShares.slice(0, 6).map((share, index) => <article key={`${share.label}-${index}`} className={`${filingLensTheme.inset} rounded-xl p-4`}><div className="flex items-start justify-between gap-3"><div><p className="text-xs font-semibold leading-5 text-slate-200">{share.label}</p><p className="mt-1 text-[9px] uppercase tracking-wide text-slate-600">{share.period} · {share.geography}</p></div><span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-sm font-bold text-emerald-200">{percent(share.valuePercent, lang)}</span></div><p className="mt-3 text-[10px] leading-5 text-slate-400">{formatFilingNumber(share.numerator, lang === "pt" ? "pt-BR" : "en-US", 1)} / {formatFilingNumber(share.denominator, lang === "pt" ? "pt-BR" : "en-US", 1)} {share.unit}</p><p className="mt-1 text-[10px] text-cyan-300">{share.productScope}</p><p className="mt-2 text-[9px] text-slate-600">{share.provider} · {share.companyMatch}</p>{share.caveat && <p className="mt-2 text-[9px] leading-4 text-amber-300/70">{share.caveat}</p>}<p className="mt-3 border-t border-slate-800 pt-2 text-[9px] text-slate-600">{sourceText(share.source, lang)}</p></article>)}</div>
+            </div>}
             <div className={`${filingLensTheme.surfaceRaised} rounded-2xl p-5`}>
               <div className="flex flex-wrap items-center justify-between gap-3"><div><p className={filingLensTheme.label}>{c.competitiveAnalysis}</p><p className="mt-1 text-xs text-slate-500">market-research-brief · cited external research · filing facts remain primary</p></div>{competitive?.status && <span className="rounded-full border border-cyan-500/25 bg-cyan-500/10 px-2.5 py-1 text-[9px] font-semibold uppercase text-cyan-200">{competitive.status.replaceAll("_", " ")}</span>}</div>
               {competitive && (competitive.peerProfiles.length || competitive.findings.length || competitive.marketStructure) ? <div className="mt-4 space-y-4">
