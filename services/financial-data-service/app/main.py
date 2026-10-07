@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import httpx
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import Response
 
@@ -10,7 +11,17 @@ from .providers.anp import enrich_anp_market_share
 from .presentation import build_presentation
 from .skills import run_ratios, run_statements, validate_timeline, status as skill_status
 
-app = FastAPI(title="FilingLens Data Tools", version="1.2.0")
+app = FastAPI(title="FilingLens Data Tools", version="1.3.0")
+
+
+def _provider_warning(exc: Exception) -> str:
+    if isinstance(exc, httpx.HTTPStatusError):
+        return f"Regulatory provider returned HTTP {exc.response.status_code} after bounded retries."
+    if isinstance(exc, httpx.TimeoutException):
+        return "Regulatory provider timed out after bounded retries."
+    if isinstance(exc, httpx.TransportError):
+        return "Regulatory provider had a transport failure after bounded retries."
+    return f"Regulatory provider unavailable: {type(exc).__name__}"
 
 
 @app.get("/health")
@@ -18,13 +29,15 @@ async def health():
     return {
         "status": "healthy",
         "service": "filinglens-data-tools",
-        "version": "1.2.0",
+        "version": "1.3.0",
         "providers": {
             "sec": "configured",
             "cvm": "configured",
             "presentation": "configured",
             "anpMarketShare": "configured",
             "historyYears": 5,
+            "httpRetryAttempts": 3,
+            "staleCacheFallback": True,
         },
         "skills": skill_status(),
     }
@@ -62,7 +75,7 @@ async def regulatory_enrich(req: RegulatoryRequest):
             status="unavailable",
             jurisdiction=req.jurisdiction,
             provider="sec_edgar" if req.jurisdiction == "us" else "cvm_open_data",
-            warnings=[f"Regulatory provider unavailable: {type(exc).__name__}"],
+            warnings=[_provider_warning(exc)],
             historyRequested=req.historyYears,
         )
 
