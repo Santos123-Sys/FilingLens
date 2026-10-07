@@ -22,6 +22,9 @@ const BR_RISK_HEADINGS = [
   /fatores\s+de\s+risco/i,
   /principais\s+riscos/i,
   /gest[aã]o\s+de\s+riscos/i,
+  /4(?:\.\d+)?\s*[-–—:]?\s*(?:descri(?:ç|c)(?:ão|ao)\s+dos?\s+)?fatores\s+de\s+risco/i,
+  /riscos?\s+relacionad[oa]s?\s+(?:ao|aos|à|às)\s+(?:emissor|controlador|controladores|atividade|setor)/i,
+  /riscos?\s+(?:ambientais|sociais|clim[aá]ticos|regulat[oó]rios|operacionais|financeiros)/i,
 ];
 const BR_MARKET_HEADINGS = [
   /segmentos?\s+(?:operacionais|de\s+neg[oó]cios)/i,
@@ -255,6 +258,15 @@ function buildSingleAgentInput(agent: AgentName, text: string, budget: number): 
     default:
       return text.slice(0, budget);
   }
+}
+
+export function buildRiskRecoveryInput(text: string): string {
+  const documents = splitDocuments(text);
+  return proportionalJoin(documents, 145_000, (document, budget) => boundedJoin([
+    document.slice(0, Math.min(10_000, budget)),
+    surroundingMatches(document, BR_RISK_HEADINGS, Math.floor(budget * 0.86), 10, false),
+    document.slice(-Math.min(12_000, Math.floor(budget * 0.10))),
+  ], budget));
 }
 
 export function buildAgentInput(agent: AgentName, text: string): string {
