@@ -44,6 +44,16 @@ describe("bounded FilingLens skill integrations", () => {
     expect(excerpt).toContain("riscos de preço");
   });
 
+  it("does not report a missing risk module as a failure when the filing type does not normally contain standalone risks", () => {
+    expect(assessCompleteness("risks", { risks: [] }, {
+      jurisdiction: "br",
+      filingType: "Relatório de Desempenho",
+    })).toMatchObject({
+      status: "not_applicable",
+      reason: "risk_section_not_expected_for_filing",
+    });
+  });
+
   it("treats an auditable public market-share proxy as usable market evidence", () => {
     const diagnostic = assessCompleteness("market", {
       market: {
