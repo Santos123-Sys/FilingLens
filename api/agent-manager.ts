@@ -128,7 +128,7 @@ export const agentManager = {
   plan() {
     return {
       manager: "FilingLens Agent Manager",
-      schemaVersion: "2.4",
+      schemaVersion: "2.5",
       metadataStage: "metadata",
       agents: MANAGED_AGENT_ORDER,
       webResearchStage: {
@@ -142,7 +142,7 @@ export const agentManager = {
       executionMode: "dependency_aware_bounded_concurrency",
       integrations: [
         { skill: "equity-research", stage: "profiler", integration: "tear_sheet_method_and_cited_web_cross_check", mode: "filing-primary issuer identity/business-description cross-check only; no Equity Report, DCF, price target, multiples or recommendation", externalResearch: "bounded_openai_web_search" },
-        { skill: "market-research-brief", stage: "market", integration: "exact_analysis_framework_runtime_plus_peer_first_cited_web_search", mode: "exact bundled analysis framework drives market sizing/competition/insight methodology; filing extraction and external competitive research are independent; peer-only recovery preserves verified competitors when full structured synthesis fails", externalResearch: "bounded_openai_web_search" },
+        { skill: "market-research-brief", stage: "market", integration: "exact_framework_plus_decomposed_cited_research", mode: "probabilistic web research generates candidates; deterministic citation binding, peer ranking and numerical checks decide what enters the contract; catalog recovery separates source discovery from structured peer classification", externalResearch: "bounded_openai_web_search" },
         { skill: "financial-ratio-toolkit", stage: "financials", integration: "exact_python_runtime_plus_filinglens_binding", mode: "exact supplied scripts/analyze.py per usable period; filing-only inputs; market-data metrics omitted; FilingLens debt/period/locale conventions override incompatible toolkit formulas" },
         { skill: "financial-statement-analyzer", stage: "financials", integration: "exact_python_runtime_plus_filinglens_binding", mode: "exact supplied scripts/analyze_financials.py for comparable-period trends and anomaly screens; TypeScript reconciliation retained" },
         { skill: "filing-timeline-extractor", stage: "historian", integration: "full_workflow_cited_web_enrichment_and_exact_python_validation", mode: "filing events plus citation-backed gap filling, dedupe/reconcile, then exact supplied validate_timeline.py at the Agent Manager boundary before events bind", externalResearch: "bounded_openai_web_search" },
@@ -364,7 +364,7 @@ export const agentManager = {
         stage: "market-research",
         attempts: 1,
         excerptChars: excerpt.length,
-        subtools: ["market-research-brief-exact-analysis-framework", "cited-web-competitive-landscape", "peer-only-recovery"],
+        subtools: ["market-research-brief-exact-analysis-framework", "cited-web-competitive-landscape", "deterministic-citation-ranking", "source-catalog-recovery"],
       },
     };
   },
