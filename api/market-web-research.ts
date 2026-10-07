@@ -2,16 +2,23 @@ import { generateText, Output, stepCountIs } from "ai";
 import { z } from "zod";
 import type { MarketResult } from "../contracts/analysis";
 import { filingModel, marketWebSearchTool, openAIProviderOptions } from "./ai/provider";
+import { marketResearchRuntimeMethodology } from "./market-research-skill";
+
+const peerSchema = z.object({
+  name: z.string().min(1).max(100),
+  relationship: z.string().min(1).max(240),
+  positioning: z.string().min(1).max(320),
+  strengths: z.array(z.string().min(1).max(180)).max(3),
+  vulnerabilities: z.array(z.string().min(1).max(180)).max(3),
+  url: z.string(),
+});
+
+const peerDiscoveryOutput = z.object({
+  peers: z.array(peerSchema).max(8),
+});
 
 const webResearchOutput = z.object({
-  peers: z.array(z.object({
-    name: z.string().min(1).max(100),
-    relationship: z.string().min(1).max(240),
-    positioning: z.string().min(1).max(320),
-    strengths: z.array(z.string().min(1).max(180)).max(3),
-    vulnerabilities: z.array(z.string().min(1).max(180)).max(3),
-    url: z.string(),
-  })).max(8),
+  peers: z.array(peerSchema).max(8),
   findings: z.array(z.object({
     insight: z.string().min(1).max(360),
     implication: z.string().min(1).max(360),
@@ -38,6 +45,7 @@ const webResearchOutput = z.object({
 });
 
 type CompetitiveResearchOutput = z.infer<typeof webResearchOutput>;
+type PeerDiscoveryOutput = z.infer<typeof peerDiscoveryOutput>;
 type ResearchPeer = { name: string; url: string; reason?: string };
 
 function canonicalUrl(value: string): string | null {
@@ -106,20 +114,17 @@ export function verifyMarketResearchPeers(
   return verified;
 }
 
-export function verifyCompetitiveResearch(
-  output: CompetitiveResearchOutput,
+function verifyPeersWithProfiles(
+  peers: PeerDiscoveryOutput["peers"],
   sources: Array<{ url: string; title?: string }>,
   accessed = new Date().toISOString().slice(0, 10),
-): {
-  peerEvidence: NonNullable<MarketResult["market"]["peerEvidence"]>;
-  competitiveAnalysis: NonNullable<MarketResult["market"]["competitiveAnalysis"]>;
-} {
+) {
   const citedSources = citedSourceMap(sources);
   const seen = new Set<string>();
   const peerEvidence: NonNullable<MarketResult["market"]["peerEvidence"]> = [];
   const peerProfiles: NonNullable<MarketResult["market"]["competitiveAnalysis"]>["peerProfiles"] = [];
 
-  for (const peer of output.peers) {
+  for (const peer of peers) {
     const name = peer.name.trim();
     if (!name || seen.has(name.toLowerCase())) continue;
     const source = evidenceFrom(peer.url, citedSources, accessed);
@@ -136,6 +141,19 @@ export function verifyCompetitiveResearch(
     });
     if (peerProfiles.length === 8) break;
   }
+  return { peerEvidence, peerProfiles };
+}
+
+export function verifyCompetitiveResearch(
+  output: CompetitiveResearchOutput,
+  sources: Array<{ url: string; title?: string }>,
+  accessed = new Date().toISOString().slice(0, 10),
+): {
+  peerEvidence: NonNullable<MarketResult["market"]["peerEvidence"]>;
+  competitiveAnalysis: NonNullable<MarketResult["market"]["competitiveAnalysis"]>;
+} {
+  const { peerEvidence, peerProfiles } = verifyPeersWithProfiles(output.peers, sources, accessed);
+  const citedSources = citedSourceMap(sources);
 
   const findings: NonNullable<MarketResult["market"]["competitiveAnalysis"]>["findings"] = [];
   for (const finding of output.findings) {
@@ -200,54 +218,123 @@ export function verifyCompetitiveResearch(
   };
 }
 
-export async function researchCompetitiveLandscape(input: {
+function citedUrls(result: { sources: Array<{ sourceType: string; url?: string; title?: string }> }) {
+  return result.sources
+    .filter(source => source.sourceType === "url" && typeof source.url === "string")
+    .map(source => ({ url: source.url as string, title: source.title }));
+}
+
+function researchSystem(methodology: string) {
+  return [
+    "You are a cautious institutional competitive-intelligence researcher executing the exact market-research-brief analytical framework loaded by FilingLens.",
+    "Use web search now; do not answer from memory. The uploaded filing is authoritative for issuer identity and business scope. External sources are used to independently map the current competitive landscape.",
+    "A direct peer must overlap materially with the issuer in product/service, customer set, geography, asset type, or operating segment. For diversified issuers, segment peers are valid when the relationship is clearly stated; do not require identical conglomerate structures.",
+    "Apply the skill's competitive-analysis and data-to-insight modules: identify direct peers, characterize positioning, surface source-supported strengths/vulnerabilities, compare against a benchmark, and keep only decision-useful findings that pass the 'so what?' test.",
+    "Prefer government/regulator data, official company investor-relations pages and filings, exchanges, industry associations, then high-quality research sources, in that order.",
+    "Actively search for a public, auditable way to estimate issuer market share. Prefer regulator/open-data datasets; otherwise use a close public proxy only when numerator and denominator use the same period, geography and product basis.",
+    "For any market-share proxy, return the raw numerator and denominator and let the application recompute the percentage. Never infer a denominator from narrative language.",
+    "Do not manufacture TAM, concentration, CR3/CR5 or HHI. Calculate concentration only when cited share data are sufficient.",
+    "Every peer, finding, market-share proxy, and market-structure claim must carry the exact HTTPS URL actually returned by web search. Omit claims with ambiguous evidence.",
+    "Do not provide investment recommendations, target prices, or uncited financial figures.",
+    "",
+    "Loaded market-research-brief framework:",
+    methodology,
+  ].join("\n");
+}
+
+async function peerOnlyRecovery(input: {
   jurisdiction: "us" | "br";
   issuerName: string;
   ticker?: string | null;
   industry: string;
+  businessDescription?: string | null;
   filingExcerpt: string;
-}): Promise<{
-  peerEvidence: NonNullable<MarketResult["market"]["peerEvidence"]>;
-  competitiveAnalysis: NonNullable<MarketResult["market"]["competitiveAnalysis"]>;
-}> {
+  methodology: string;
+}) {
   const result = await generateText({
     model: filingModel("market"),
-    output: Output.object({ schema: webResearchOutput }),
+    output: Output.object({ schema: peerDiscoveryOutput }),
     tools: { web_search: marketWebSearchTool() as never },
-    stopWhen: stepCountIs(4),
+    stopWhen: stepCountIs(2),
     maxRetries: 0,
-    maxOutputTokens: 3_200,
-    providerOptions: openAIProviderOptions("market"),
+    maxOutputTokens: 4_500,
+    providerOptions: openAIProviderOptions("market", 7_500, "low"),
     system: [
-      "You are a cautious institutional competitive-intelligence researcher using the market-research-brief methodology supplied to FilingLens.",
-      "Use web search now; do not answer from memory. The uploaded filing is authoritative for issuer identity, while external sources are used to independently map the current competitive landscape.",
-      "Apply the competition module: identify direct peers, characterize positioning, surface source-supported strengths and vulnerabilities, and synthesize only decision-useful findings that pass a concise 'so what?' test.",
-      "Prefer regulator filings, official company investor-relations pages, exchanges, industry associations, and high-quality research sources.",
-      "Actively search for a public, auditable way to estimate issuer market share. Prefer regulator/open-data datasets; otherwise use a close public proxy only when numerator and denominator are measured on the same period, geography and product basis.",
-      "For any market-share proxy, return the raw numerator and denominator and let the application recompute the percentage. Never infer a denominator from narrative language. If no defensible public basis exists, return no marketShareProxies.",
-      "Do not manufacture TAM, concentration, or HHI. Return hhi only when the cited source provides sufficient market-share evidence; otherwise use null and describe the market structure qualitatively.",
-      "Every peer, finding, market-share proxy, and market-structure claim must carry the exact HTTPS URL that the web-search tool actually cited. Claims with ambiguous evidence should be omitted.",
-      "Do not provide investment recommendations, target prices, or uncited financial figures.",
-    ].join(" "),
+      researchSystem(input.methodology),
+      "RECOVERY MODE: return peers only. Keep each field concise so the JSON always completes. Find 3-6 verified direct or segment peers before doing anything else.",
+    ].join("\n\n"),
     prompt: [
       `Jurisdiction: ${input.jurisdiction === "br" ? "Brazil / CVM" : "United States / SEC"}`,
       `Issuer: ${input.issuerName || "not identified"}`,
       `Ticker: ${input.ticker || "not available"}`,
       `Filing-described industry: ${input.industry || "not identified"}`,
+      `Business description: ${input.businessDescription || "not separately available"}`,
       "",
-      "Filing excerpt for identity and business context only:",
-      input.filingExcerpt.slice(0, 18_000),
+      "Filing excerpt for business-scope disambiguation:",
+      input.filingExcerpt.slice(0, 10_000),
       "",
-      "Produce a source-verified competitive landscape with up to 8 direct peers and up to 8 concise insight → implication findings.",
+      "Return 3-6 source-verified direct or segment peers. Do not return market commentary outside the schema.",
     ].join("\n"),
   });
 
-  return verifyCompetitiveResearch(
-    result.output,
-    result.sources
-      .filter(source => source.sourceType === "url")
-      .map(source => ({ url: source.url, title: source.title })),
-  );
+  const { peerEvidence, peerProfiles } = verifyPeersWithProfiles(result.output.peers, citedUrls(result));
+  return {
+    peerEvidence,
+    competitiveAnalysis: {
+      status: peerProfiles.length >= 2 ? "partial" as const : "no_citable_results" as const,
+      methodology: "market-research-brief" as const,
+      peerProfiles,
+      findings: [],
+    },
+  };
+}
+
+export async function researchCompetitiveLandscape(input: {
+  jurisdiction: "us" | "br";
+  issuerName: string;
+  ticker?: string | null;
+  industry: string;
+  businessDescription?: string | null;
+  filingExcerpt: string;
+}): Promise<{
+  peerEvidence: NonNullable<MarketResult["market"]["peerEvidence"]>;
+  competitiveAnalysis: NonNullable<MarketResult["market"]["competitiveAnalysis"]>;
+}> {
+  const methodology = marketResearchRuntimeMethodology();
+
+  try {
+    const result = await generateText({
+      model: filingModel("market"),
+      output: Output.object({ schema: webResearchOutput }),
+      tools: { web_search: marketWebSearchTool() as never },
+      stopWhen: stepCountIs(3),
+      maxRetries: 0,
+      maxOutputTokens: 8_000,
+      providerOptions: openAIProviderOptions("market", 12_000, "low"),
+      system: researchSystem(methodology),
+      prompt: [
+        `Jurisdiction: ${input.jurisdiction === "br" ? "Brazil / CVM" : "United States / SEC"}`,
+        `Issuer: ${input.issuerName || "not identified"}`,
+        `Ticker: ${input.ticker || "not available"}`,
+        `Filing-described industry: ${input.industry || "not identified"}`,
+        `Business description: ${input.businessDescription || "not separately available"}`,
+        "",
+        "Filing excerpt for identity and business context only:",
+        input.filingExcerpt.slice(0, 12_000),
+        "",
+        "Produce a source-verified competitive landscape with 3-6 direct or segment peers, up to 5 concise insight → implication findings, and public market-share evidence when defensible.",
+      ].join("\n"),
+    });
+
+    const verified = verifyCompetitiveResearch(result.output, citedUrls(result));
+    if (verified.peerEvidence.length > 0) return verified;
+
+    console.warn("[market-research] full research returned no verified peers; running peer-only recovery");
+    return await peerOnlyRecovery({ ...input, methodology });
+  } catch (error) {
+    console.warn("[market-research] full structured research failed; running peer-only recovery", error);
+    return await peerOnlyRecovery({ ...input, methodology });
+  }
 }
 
 /** Compatibility wrapper used by older callers. */
