@@ -30,8 +30,8 @@ FACT_MAP: dict[str, list[str]] = {
     "cash": ["CashAndCashEquivalentsAtCarryingValue", "CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalents"],
     "operatingCashFlow": ["NetCashProvidedByUsedInOperatingActivities"],
     "capex": ["PaymentsToAcquirePropertyPlantAndEquipment"],
-    "shortTermDebt": ["ShortTermBorrowings", "LongTermDebtCurrent", "ShortTermDebtCurrent"],
-    "longTermDebt": ["LongTermDebtNoncurrent", "LongTermDebt"],
+    "shortTermDebt": ["LongTermDebtCurrent", "ShortTermBorrowings", "ShortTermDebtCurrent"],
+    "longTermDebt": ["LongTermDebtNoncurrent"],
 }
 DURATION_KEYS = {"revenue", "grossProfit", "ebit", "netIncome", "operatingCashFlow", "capex"}
 ANNUAL_FORMS = {"10-K", "10-K/A", "20-F", "20-F/A", "40-F", "40-F/A"}
