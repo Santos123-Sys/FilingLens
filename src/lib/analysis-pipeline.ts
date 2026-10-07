@@ -8,7 +8,7 @@ import type {
   ModuleDiagnostic,
 } from "@contracts/analysis";
 import type { RegulatoryDataSnapshot } from "@contracts/regulatory-data";
-import { attachRegulatoryAnnualHistory } from "../../api/regulatory-financial-history";
+import { attachRegulatoryAnnualHistory } from "./regulatory-financial-history";
 
 export type PipelineLanguage = "en" | "pt";
 export type PipelineStage = "metadata" | "regulatoryData" | AgentName | "marketResearch";
