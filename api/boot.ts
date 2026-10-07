@@ -6,6 +6,7 @@ import { agentManager } from "./agent-manager";
 import { buildPrebuiltDashboardData } from "./dashboard-manager";
 import { classifyFiling, metadataFallback } from "./classification";
 import { modelRuntimeConfig } from "./ai/provider";
+import { marketResearchSkillStatus } from "./market-research-skill";
 import { dataToolsBinary, dataToolsConfigured, dataToolsJson } from "./data-tools-client";
 import { calculateValuation, prepareValuation, reconcileValuations, ValuationGateError, ValuationInputError } from "./valuation-manager";
 import type {
@@ -132,6 +133,7 @@ app.get("/api/status", (c) => c.json({
   configured: Boolean(process.env.OPENAI_API_KEY),
   ai: modelRuntimeConfig(),
   dataTools: { configured: dataToolsConfigured() },
+  skills: { marketResearch: marketResearchSkillStatus() },
   intake: { maxDocuments: MAX_DOCUMENTS, maxFileMb: 20, maxBundleMb: 60 },
 }));
 
