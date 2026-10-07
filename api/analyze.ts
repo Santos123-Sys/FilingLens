@@ -305,7 +305,11 @@ export async function runAgent(
       schema,
       system: AGENTS[agent].system(market) + contextPrompt,
       messages: [{ role: "user", content: text }],
-      providerOptions: openAIProviderOptions(agent, AGENTS[agent].maxTokens),
+      providerOptions: openAIProviderOptions(
+        agent,
+        AGENTS[agent].maxTokens,
+        agent === "market" ? "low" : undefined,
+      ),
       abortSignal: AbortSignal.timeout(AGENT_TIMEOUT_MS),
     });
     console.log(`[agent:${agent}] OK in ${((Date.now() - t0) / 1000).toFixed(0)}s, tokens=${res.usage?.totalTokens}`);
