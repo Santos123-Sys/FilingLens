@@ -240,13 +240,6 @@ export async function executeAnalysisPipeline(input: {
     }
   }
 
-  if (parts.financials) {
-    parts.financials = attachRegulatoryAnnualHistory(
-      parts.financials as { financials: FilingAnalysis["financials"] },
-      regulatoryData,
-    );
-  }
-
   const historianPromise = runAgent("historian", { profiler: parts.profiler, financials: parts.financials });
   const marketResult = parts.market as MarketResult | undefined;
   const researchPromise = (async () => {
@@ -293,6 +286,8 @@ export async function executeAnalysisPipeline(input: {
     cash: null, forwardGuidance: [], evidence: [],
   };
   const marketFallback: FilingAnalysis["market"] = { industry: "", competitors: [], geographies: [], segments: [], externalResearchStatus: "unavailable" };
+  const filingFinancials = (parts.financials as { financials: FilingAnalysis["financials"] } | undefined)?.financials ?? financialsFallback;
+  const enrichedFinancials = attachRegulatoryAnnualHistory({ financials: filingFinancials }, regulatoryData).financials;
   const diagnosticMissing = Object.values(diagnostics).flatMap(item => item?.missing ?? []);
   const assembled: FilingAnalysis & { regulatoryData?: RegulatoryDataSnapshot } = {
     schemaVersion: "2.0", jurisdiction: market, metadata,
@@ -300,7 +295,7 @@ export async function executeAnalysisPipeline(input: {
     kpis: profiler?.kpis ?? [],
     market: (parts.market as MarketResult | undefined)?.market ?? marketFallback,
     risks: (parts.risks as { risks: FilingAnalysis["risks"] } | undefined)?.risks ?? [],
-    financials: (parts.financials as { financials: FilingAnalysis["financials"] } | undefined)?.financials ?? financialsFallback,
+    financials: enrichedFinancials,
     timeline: (parts.historian as { timeline: FilingAnalysis["timeline"] } | undefined)?.timeline ?? [],
     events: (parts.historian as { events: FilingAnalysis["events"] } | undefined)?.events ?? [],
     historyValidationFlags: (parts.historian as { validationFlags?: FilingAnalysis["historyValidationFlags"] } | undefined)?.validationFlags ?? [],
