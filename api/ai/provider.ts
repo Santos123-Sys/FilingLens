@@ -54,10 +54,14 @@ export const reasoningEffortFor = (stage: AnalysisStageName): ReasoningEffort =>
  * filingReference / validation period fields). Keep provider-side strict mode off
  * and retain Zod validation after generation at the application boundary.
  */
-export const openAIProviderOptions = (stage: AnalysisStageName, maxCompletionTokens?: number) => ({
+export const openAIProviderOptions = (
+  stage: AnalysisStageName,
+  maxCompletionTokens?: number,
+  reasoningEffortOverride?: ReasoningEffort,
+) => ({
   openai: {
     ...(maxCompletionTokens ? { maxCompletionTokens } : {}),
-    reasoningEffort: reasoningEffortFor(stage),
+    reasoningEffort: reasoningEffortOverride ?? reasoningEffortFor(stage),
     strictJsonSchema: false,
   },
 });
