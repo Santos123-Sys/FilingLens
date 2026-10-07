@@ -7,7 +7,8 @@ import { MODEL_PINS } from "./ai/provider";
 import { extractDatedFilingEvents } from "./timeline-skill-extraction";
 import { assessCompleteness } from "./completeness";
 import { mergeMarketResearchPeers, synthesisInput } from "./agent-manager";
-import { verifyMarketResearchPeers } from "./market-web-research";
+import { verifyCompetitiveResearch, verifyMarketResearchPeers } from "./market-web-research";
+import { marketResearchRuntimeMethodology, marketResearchSkillStatus } from "./market-research-skill";
 
 describe("bounded FilingLens skill integrations", () => {
   it("keeps a sourced issuer profile usable without headline KPI figures", () => {
@@ -205,6 +206,35 @@ describe("bounded FilingLens skill integrations", () => {
     expect(result.market.externalResearchStatus).toBe("complete");
     expect(result.market.competitiveAnalysis?.methodology).toBe("market-research-brief");
     expect(result.market.peerEvidence?.map(peer => peer.sourceType)).toEqual(["filing", "external"]);
+  });
+
+  it("loads the exact bundled market-research analysis framework at runtime", () => {
+    const methodology = marketResearchRuntimeMethodology();
+    const status = marketResearchSkillStatus();
+    expect(status.runtimeFrameworkLoaded).toBe(true);
+    expect(status.runtimeFrameworkChars).toBeGreaterThan(10_000);
+    expect(methodology).toContain("## 5. Competitive Analysis");
+    expect(methodology).toContain("CR3");
+    expect(methodology).toContain("The Insight Discovery Process");
+    expect(methodology).toContain("Adaptation Guide");
+  });
+
+  it("preserves verified peer profiles even when deeper competitive findings are absent", () => {
+    const output = {
+      peers: [{
+        name: "Peer SA",
+        relationship: "Direct peer in offshore production.",
+        positioning: "Operates overlapping offshore assets.",
+        strengths: ["Scale"],
+        vulnerabilities: ["Commodity exposure"],
+        url: "https://peer.example/ir",
+      }],
+      findings: [],
+      marketShareProxies: [],
+    };
+    const verified = verifyCompetitiveResearch(output, [{ url: "https://peer.example/ir", title: "Peer IR" }], "2026-10-07");
+    expect(verified.peerEvidence.map(item => item.name)).toEqual(["Peer SA"]);
+    expect(verified.competitiveAnalysis.status).toBe("partial");
   });
 
   it("accepts web-researched peers only when the search provider returned their citation URL", () => {
