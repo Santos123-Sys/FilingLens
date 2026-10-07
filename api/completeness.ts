@@ -62,12 +62,15 @@ export function assessCompleteness(
     case "market": {
       const market = record(root?.market);
       const hasIndustry = typeof market?.industry === "string" && market.industry.trim().length > 0;
-      const hasDetail = ["competitors", "geographies", "segments"].some(
+      const competitive = record(market?.competitiveAnalysis);
+      const hasDetail = ["competitors", "geographies", "segments", "marketShares"].some(
         key => array(market?.[key]).length > 0,
-      );
-      return hasIndustry && hasDetail
+      ) || array(competitive?.peerProfiles).length > 0
+        || array(competitive?.findings).length > 0
+        || array(competitive?.marketShareProxies).length > 0;
+      return hasDetail && (hasIndustry || array(market?.marketShares).length > 0 || array(competitive?.peerProfiles).length > 0)
         ? { status: "complete", confidence: 0.85 }
-        : { status: "incomplete", reason: "market_detail_not_found", missing: ["competitors, geographies, or operating segments"] };
+        : { status: "incomplete", reason: "market_detail_not_found", missing: ["industry context plus peers, public market share, geographies, or operating segments"] };
     }
     case "risks":
       return array(root?.risks).length > 0
