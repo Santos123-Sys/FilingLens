@@ -36,16 +36,17 @@ Acceptance criteria:
 - Regression test reproduces a >420-character market-structure summary.
 - Existing skill, financial, timeline, PowerPoint and build gates remain green.
 
-### Sprint 2 — P1 upstream reliability
+### Sprint 2 — P1 upstream reliability — implemented
 
 User story: As an analyst, temporary SEC/CVM provider failures should degrade gracefully rather than make authoritative history appear structurally missing.
 
 Acceptance criteria:
-- Retry only retryable network/429/5xx failures with bounded exponential backoff.
-- Do not retry 4xx data/identifier errors except 429.
-- Preserve cached authoritative responses.
-- Return actionable provider warnings without leaking stack traces.
-- Add deterministic provider retry tests.
+- [x] Retry only retryable network/429/5xx failures with bounded exponential backoff.
+- [x] Do not retry 4xx data/identifier errors except 429.
+- [x] Preserve stale cached authoritative responses during a temporary provider outage.
+- [x] Return actionable provider warnings without leaking stack traces.
+- [x] Add deterministic provider retry tests.
+- [x] Expose retry/cache-fallback capability in the data-tools health response.
 
 ### Sprint 3 — P1/P2 usefulness
 
