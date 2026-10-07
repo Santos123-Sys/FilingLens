@@ -10,6 +10,7 @@ from typing import Any
 import httpx
 
 from ..models import Metric, RegulatorySnapshot, SourceRef
+from .http_retry import get_with_retry, retryable_status
 
 SEC_BASE = "https://data.sec.gov"
 SEC_TICKERS_URL = "https://www.sec.gov/files/company_tickers.json"
@@ -57,19 +58,27 @@ async def _cached_json(url: str, *, timeout_seconds: float = 25.0) -> dict[str, 
         cached = _cache.get(url)
         if cached and now - cached[0] < CACHE_TTL_SECONDS:
             return cached[1]
+    stale_payload = cached[1] if cached else None
     headers = {
         "User-Agent": SEC_USER_AGENT,
         "Accept-Encoding": "gzip, deflate",
         "Accept": "application/json",
     }
-    async with httpx.AsyncClient(
-        headers=headers,
-        timeout=httpx.Timeout(timeout_seconds, connect=10.0),
-        follow_redirects=True,
-    ) as client:
-        response = await client.get(url)
-        response.raise_for_status()
-        payload = response.json()
+    try:
+        async with httpx.AsyncClient(
+            headers=headers,
+            timeout=httpx.Timeout(timeout_seconds, connect=10.0),
+            follow_redirects=True,
+        ) as client:
+            response = await get_with_retry(client, url)
+            payload = response.json()
+    except (httpx.TimeoutException, httpx.TransportError, httpx.HTTPStatusError) as exc:
+        status = exc.response.status_code if isinstance(exc, httpx.HTTPStatusError) else None
+        # When an authoritative response was previously cached, a temporary 429/5xx
+        # or transport outage should not erase five-year history from the dashboard.
+        if stale_payload is not None and (status is None or retryable_status(status)):
+            return stale_payload
+        raise
     async with _cache_lock:
         _cache[url] = (time.monotonic(), payload)
     return payload
