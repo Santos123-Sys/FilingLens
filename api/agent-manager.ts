@@ -224,7 +224,7 @@ export const agentManager = {
     }
     if (agent === "market") {
       const marketResult = validateMarketOutput(value as MarketResult);
-      marketResult.market.externalResearchStatus = marketResult.market.competitors.length ? "not_needed" : "pending";
+      marketResult.market.externalResearchStatus = "pending";
       result = marketResult;
       subtools.push("filing-source-provenance-validator", "market-research-brief-period-comparison", "market-research-brief-analysis-framework");
     }
@@ -246,7 +246,7 @@ export const agentManager = {
     }
     if (agent === "market") {
       const marketResult = result as MarketResult;
-      diagnostic.enrichmentStatus = marketResult.market.externalResearchStatus === "not_needed" ? "none" : "skipped";
+      diagnostic.enrichmentStatus = "skipped";
       if ((marketResult.market.validationFlags?.length ?? 0) > 0) {
         diagnostic.warnings = [...(diagnostic.warnings ?? []), "market_validation_flags"];
       }
@@ -308,5 +308,5 @@ export const agentManager = {
         subtools: ["market-research-brief", "cited-web-competitive-landscape"],
       },
     };
-
+  },
 };
