@@ -63,6 +63,11 @@ const COPY = {
     grossMargin: "Gross margin",
     operatingMargin: "Operating margin",
     trend: "Revenue and net income",
+    annualHistory: "Five-year annual history",
+    annualHistorySource: "Authoritative external regulatory history",
+    competitiveAnalysis: "Competitive analysis",
+    competitiveFindings: "Competitive findings",
+    noCompetitive: "No independently cited competitive-analysis evidence was available.",
     noFinancial: "No comparable financial series were established from the supplied filing bundle.",
     industry: "Industry / business context",
     peers: "Verified peers",
@@ -123,6 +128,11 @@ const COPY = {
     grossMargin: "Margem bruta",
     operatingMargin: "Margem operacional",
     trend: "Receita e lucro líquido",
+    annualHistory: "Histórico anual de cinco anos",
+    annualHistorySource: "Histórico regulatório externo oficial",
+    competitiveAnalysis: "Análise competitiva",
+    competitiveFindings: "Conclusões competitivas",
+    noCompetitive: "Não havia evidência citável independente suficiente para análise competitiva.",
     noFinancial: "Não foi possível estabelecer séries financeiras comparáveis a partir do conjunto enviado.",
     industry: "Indústria / contexto do negócio",
     peers: "Concorrentes verificados",
@@ -294,19 +304,24 @@ export default function DashboardV2({ data, lang }: { data: FilingAnalysis; lang
   const [tab, setTab] = useState<Tab>("overview");
   const c = COPY[lang];
   const f = data.financials;
+  const annual = f.annualHistory;
+  const chartYears = annual?.years?.length ? annual.years : f.years;
+  const chartRevenue = annual?.years?.length ? annual.revenue : f.revenue;
+  const chartNetIncome = annual?.years?.length ? annual.netIncome : f.netIncome;
+  const competitive = data.market.competitiveAnalysis;
 
   const financialOption = useMemo<EChartsOption>(() => ({
     color: [filingLensTheme.chart.blue, filingLensTheme.chart.green],
     tooltip: { trigger: "axis", backgroundColor: "#0f172a", borderColor: "#334155", textStyle: { color: "#e2e8f0" } },
     legend: { top: 4, right: 8, textStyle: { color: filingLensTheme.chart.axis } },
     grid: { left: 55, right: 20, top: 45, bottom: 35, containLabel: true },
-    xAxis: { type: "category", data: f.years, axisLabel: { color: filingLensTheme.chart.axis }, axisLine: { lineStyle: { color: "#334155" } } },
+    xAxis: { type: "category", data: chartYears, axisLabel: { color: filingLensTheme.chart.axis }, axisLine: { lineStyle: { color: "#334155" } } },
     yAxis: { type: "value", axisLabel: { color: filingLensTheme.chart.axis }, splitLine: { lineStyle: { color: filingLensTheme.chart.grid } } },
     series: [
-      { name: c.revenue, type: "bar", data: f.revenue, itemStyle: { borderRadius: [4, 4, 0, 0] }, barMaxWidth: 42 },
-      { name: c.netIncome, type: "line", data: f.netIncome, smooth: true, symbolSize: 7, lineStyle: { width: 3 } },
+      { name: c.revenue, type: "bar", data: chartRevenue, itemStyle: { borderRadius: [4, 4, 0, 0] }, barMaxWidth: 42 },
+      { name: c.netIncome, type: "line", data: chartNetIncome, smooth: true, symbolSize: 7, lineStyle: { width: 3 } },
     ],
-  }), [c.netIncome, c.revenue, f.netIncome, f.revenue, f.years]);
+  }), [c.netIncome, c.revenue, chartNetIncome, chartRevenue, chartYears]);
 
   const tabs: Array<{ key: Tab; label: string; icon: typeof Activity }> = [
     { key: "overview", label: c.overview, icon: Activity },
@@ -381,16 +396,26 @@ export default function DashboardV2({ data, lang }: { data: FilingAnalysis; lang
               <KpiCard label={c.debt} value={amount(latest(f.totalDebt), data, lang)} detail={latestPeriod} />
               <KpiCard label={c.cash} value={amount(latest(f.cash), data, lang)} detail={latestPeriod} />
             </div>
-            {f.years.length && (f.revenue.length || f.netIncome.length) ? <div className={`${filingLensTheme.surfaceRaised} rounded-2xl p-4 sm:p-5`}><div className="mb-2 flex items-center justify-between"><div><p className={filingLensTheme.label}>{c.trend}</p><p className="mt-1 text-xs text-slate-500">{f.unit}</p></div><Database className="h-4 w-4 text-slate-600" /></div><Chart option={financialOption} label={c.trend} /></div> : <EmptyState icon={BarChart3} title={c.financials} text={c.noFinancial} />}
+            {chartYears.length && (chartRevenue.length || chartNetIncome.length) ? <div className={`${filingLensTheme.surfaceRaised} rounded-2xl p-4 sm:p-5`}><div className="mb-2 flex flex-wrap items-center justify-between gap-3"><div><p className={filingLensTheme.label}>{annual?.years?.length ? c.annualHistory : c.trend}</p><p className="mt-1 text-xs text-slate-500">{annual?.unit ?? f.unit}</p></div><div className="flex items-center gap-2"><Database className="h-4 w-4 text-slate-600" />{annual?.provider && <span className="rounded-full border border-emerald-500/25 bg-emerald-500/10 px-2 py-1 text-[9px] font-semibold text-emerald-200">{c.annualHistorySource} · {annual.provider}</span>}</div></div><Chart option={financialOption} label={annual?.years?.length ? c.annualHistory : c.trend} /></div> : <EmptyState icon={BarChart3} title={c.financials} text={c.noFinancial} />}
             {(f.forwardGuidance?.length ?? 0) > 0 && <div className={`${filingLensTheme.surface} rounded-2xl p-5`}><p className={filingLensTheme.label}>{lang === "pt" ? "Guidance divulgado" : "Disclosed guidance"}</p><div className="mt-3 grid gap-2 md:grid-cols-2">{f.forwardGuidance!.slice(0, 8).map((item, index) => <div key={index} className={`${filingLensTheme.inset} rounded-lg p-3`}><p className="text-xs font-semibold text-slate-200">{item.metric} · {item.period}</p><p className="mt-1 text-xs text-cyan-300">{item.range}</p><p className="mt-2 text-[9px] text-slate-600">{sourceText(item.source, lang)}</p></div>)}</div></div>}
           </div>
         )}
 
         {tab === "market" && (
-          <div className="grid gap-4 lg:grid-cols-3">
-            <div className={`${filingLensTheme.surfaceRaised} rounded-2xl p-5`}><Globe2 className="h-4 w-4 text-cyan-300" /><p className={`mt-3 ${filingLensTheme.label}`}>{c.industry}</p><p className="mt-2 text-lg font-semibold text-white">{data.market.industry || "—"}</p><p className={`mt-5 ${filingLensTheme.label}`}>{c.peers}</p>{data.market.competitors.length ? <div className="mt-3 flex flex-wrap gap-2">{data.market.competitors.map(peer => { const evidence = data.market.peerEvidence?.find(item => item.name.toLowerCase() === peer.toLowerCase()); return <span key={peer} title={sourceText(evidence?.source, lang)} className={`rounded-full border px-2.5 py-1 text-[10px] font-medium ${evidence?.sourceType === "external" ? "border-amber-500/30 bg-amber-500/10 text-amber-200" : "border-blue-500/30 bg-blue-500/10 text-blue-200"}`}>{evidence?.sourceType === "external" ? c.external : c.filing} · {peer}</span>; })}</div> : <p className="mt-3 text-xs leading-5 text-slate-500">{c.noPeers}</p>}</div>
-            <div className={`${filingLensTheme.surface} rounded-2xl p-5`}><Landmark className="h-4 w-4 text-blue-300" /><p className={`mt-3 ${filingLensTheme.label}`}>{c.segments}</p>{data.market.segments.length ? <div className="mt-3 space-y-2">{data.market.segments.slice(0, 8).map(segment => <div key={segment.name} className={`${filingLensTheme.inset} rounded-lg p-3`}><div className="flex items-center justify-between gap-3"><p className="text-xs font-semibold text-slate-200">{segment.name}</p><p className="text-[11px] text-blue-200">{amount(latest(segment.revenue), data, lang)}</p></div>{segment.periods?.length ? <p className="mt-1 text-[9px] text-slate-600">{segment.periods.at(-1)}</p> : null}</div>)}</div> : <p className="mt-3 text-xs text-slate-500">{c.noSegments}</p>}</div>
-            <div className={`${filingLensTheme.surface} rounded-2xl p-5`}><Building2 className="h-4 w-4 text-violet-300" /><p className={`mt-3 ${filingLensTheme.label}`}>{c.geographies}</p>{data.market.geographies.length ? <div className="mt-3 space-y-2">{data.market.geographies.slice(0, 8).map(geo => <div key={geo.name} className={`${filingLensTheme.inset} rounded-lg p-3`}><div className="flex items-center justify-between gap-3"><p className="text-xs font-semibold text-slate-200">{geo.name}</p><p className="text-[11px] text-violet-200">{amount(latest(geo.values), data, lang)}</p></div></div>)}</div> : <p className="mt-3 text-xs text-slate-500">{c.noGeographies}</p>}</div>
+          <div className="space-y-4">
+            <div className="grid gap-4 lg:grid-cols-3">
+              <div className={`${filingLensTheme.surfaceRaised} rounded-2xl p-5`}><Globe2 className="h-4 w-4 text-cyan-300" /><p className={`mt-3 ${filingLensTheme.label}`}>{c.industry}</p><p className="mt-2 text-lg font-semibold text-white">{data.market.industry || "—"}</p><p className={`mt-5 ${filingLensTheme.label}`}>{c.peers}</p>{data.market.competitors.length ? <div className="mt-3 flex flex-wrap gap-2">{data.market.competitors.map(peer => { const evidence = data.market.peerEvidence?.find(item => item.name.toLowerCase() === peer.toLowerCase()); return <span key={peer} title={sourceText(evidence?.source, lang)} className={`rounded-full border px-2.5 py-1 text-[10px] font-medium ${evidence?.sourceType === "external" ? "border-amber-500/30 bg-amber-500/10 text-amber-200" : "border-blue-500/30 bg-blue-500/10 text-blue-200"}`}>{evidence?.sourceType === "external" ? c.external : c.filing} · {peer}</span>; })}</div> : <p className="mt-3 text-xs leading-5 text-slate-500">{c.noPeers}</p>}</div>
+              <div className={`${filingLensTheme.surface} rounded-2xl p-5`}><Landmark className="h-4 w-4 text-blue-300" /><p className={`mt-3 ${filingLensTheme.label}`}>{c.segments}</p>{data.market.segments.length ? <div className="mt-3 space-y-2">{data.market.segments.slice(0, 8).map(segment => <div key={segment.name} className={`${filingLensTheme.inset} rounded-lg p-3`}><div className="flex items-center justify-between gap-3"><p className="text-xs font-semibold text-slate-200">{segment.name}</p><p className="text-[11px] text-blue-200">{amount(latest(segment.revenue), data, lang)}</p></div>{segment.periods?.length ? <p className="mt-1 text-[9px] text-slate-600">{segment.periods.at(-1)}</p> : null}</div>)}</div> : <p className="mt-3 text-xs text-slate-500">{c.noSegments}</p>}</div>
+              <div className={`${filingLensTheme.surface} rounded-2xl p-5`}><Building2 className="h-4 w-4 text-violet-300" /><p className={`mt-3 ${filingLensTheme.label}`}>{c.geographies}</p>{data.market.geographies.length ? <div className="mt-3 space-y-2">{data.market.geographies.slice(0, 8).map(geo => <div key={geo.name} className={`${filingLensTheme.inset} rounded-lg p-3`}><div className="flex items-center justify-between gap-3"><p className="text-xs font-semibold text-slate-200">{geo.name}</p><p className="text-[11px] text-violet-200">{amount(latest(geo.values), data, lang)}</p></div></div>)}</div> : <p className="mt-3 text-xs text-slate-500">{c.noGeographies}</p>}</div>
+            </div>
+            <div className={`${filingLensTheme.surfaceRaised} rounded-2xl p-5`}>
+              <div className="flex flex-wrap items-center justify-between gap-3"><div><p className={filingLensTheme.label}>{c.competitiveAnalysis}</p><p className="mt-1 text-xs text-slate-500">market-research-brief · cited external research · filing facts remain primary</p></div>{competitive?.status && <span className="rounded-full border border-cyan-500/25 bg-cyan-500/10 px-2.5 py-1 text-[9px] font-semibold uppercase text-cyan-200">{competitive.status.replaceAll("_", " ")}</span>}</div>
+              {competitive && (competitive.peerProfiles.length || competitive.findings.length || competitive.marketStructure) ? <div className="mt-4 space-y-4">
+                {competitive.marketStructure && <div className={`${filingLensTheme.inset} rounded-xl p-4`}><p className="text-[9px] font-semibold uppercase tracking-wide text-slate-600">{lang === "pt" ? "Estrutura do mercado" : "Market structure"}</p><p className="mt-2 text-sm leading-6 text-slate-300">{competitive.marketStructure.summary}</p>{competitive.marketStructure.hhi != null && <p className="mt-2 text-xs font-semibold text-cyan-200">HHI: {formatFilingNumber(competitive.marketStructure.hhi, lang === "pt" ? "pt-BR" : "en-US", 0)}</p>}<p className="mt-2 text-[9px] text-slate-600">{sourceText(competitive.marketStructure.source, lang)}</p></div>}
+                <div className="grid gap-3 lg:grid-cols-2">{competitive.peerProfiles.slice(0, 8).map(peer => <article key={peer.name} className={`${filingLensTheme.inset} rounded-xl p-4`}><div className="flex items-start justify-between gap-3"><div><p className="text-sm font-semibold text-slate-100">{peer.name}</p><p className="mt-1 text-[10px] text-cyan-300">{peer.relationship}</p></div><span className="rounded-full bg-amber-500/10 px-2 py-1 text-[8px] font-semibold uppercase text-amber-200">{c.external}</span></div><p className="mt-3 text-xs leading-5 text-slate-400">{peer.positioning}</p>{peer.strengths.length > 0 && <p className="mt-3 text-[10px] leading-5 text-emerald-300/80">+ {peer.strengths.join(" · ")}</p>}{peer.vulnerabilities.length > 0 && <p className="mt-1 text-[10px] leading-5 text-amber-300/80">△ {peer.vulnerabilities.join(" · ")}</p>}<p className="mt-3 border-t border-slate-800 pt-2 text-[9px] text-slate-600">{sourceText(peer.source, lang)}</p></article>)}</div>
+                {competitive.findings.length > 0 && <div><p className={filingLensTheme.label}>{c.competitiveFindings}</p><div className="mt-3 grid gap-2 md:grid-cols-2">{competitive.findings.slice(0, 8).map((finding, index) => <div key={index} className={`${filingLensTheme.inset} rounded-lg p-3`}><p className="text-xs font-semibold leading-5 text-slate-200">{finding.insight}</p><p className="mt-2 text-[10px] leading-5 text-slate-500">{finding.implication}</p><p className="mt-2 text-[9px] text-slate-600">{sourceText(finding.source, lang)}</p></div>)}</div></div>}
+              </div> : <p className="mt-4 text-xs leading-5 text-slate-500">{c.noCompetitive}</p>}
+            </div>
           </div>
         )}
 

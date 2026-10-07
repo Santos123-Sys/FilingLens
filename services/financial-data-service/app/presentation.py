@@ -40,7 +40,10 @@ TEXT = {
         "evidence_1": "Regulatory structured data is an authoritative cross-check, not an invisible overwrite.",
         "evidence_2": "Uploaded filing evidence remains primary for narrative, risk and management-context interpretation.",
         "evidence_3": "Conflicts and missing fields remain visible instead of being silently reconciled by the model.",
-        "performance_kicker": "Financial performance", "performance_title": "Scale, earnings and trajectory",
+        "performance_kicker": "Financial performance", "performance_title": "Five-year scale, earnings and trajectory",
+        "history_source": "Authoritative annual history",
+        "competitive_kicker": "Competitive landscape", "competitive_title": "How the issuer is positioned against direct peers",
+        "competitive_findings": "DECISION-USEFUL FINDINGS", "no_competitive": "No independently cited competitive analysis was available.",
         "cashflow_kicker": "Balance sheet & cash conversion", "cashflow_title": "Liquidity, leverage and cash generation", "cashflow_profile": "Cash flow profile", "capex": "Capex", "assets_equity": "Assets / Equity", "capital_structure": "capital structure", "latest_balance": "latest balance",
         "market_kicker": "Market & operating context", "market_title": "Where the company competes", "industry": "INDUSTRY", "peers": "VERIFIED PEERS", "segments": "OPERATING SEGMENTS", "geographies": "GEOGRAPHIES",
         "no_industry": "Not established from validated evidence", "no_peers": "No verified peers available", "no_segments": "No validated segment series", "no_geographies": "No validated geographic series",
@@ -67,7 +70,10 @@ TEXT = {
         "evidence_1": "Dados regulatórios estruturados funcionam como verificação oficial, não como sobrescrita invisível.",
         "evidence_2": "O filing enviado permanece como fonte primária para narrativa, riscos e contexto gerencial.",
         "evidence_3": "Conflitos e lacunas permanecem visíveis em vez de serem reconciliados silenciosamente pelo modelo.",
-        "performance_kicker": "Desempenho financeiro", "performance_title": "Escala, resultado e trajetória",
+        "performance_kicker": "Desempenho financeiro", "performance_title": "Cinco anos de escala, resultado e trajetória",
+        "history_source": "Histórico anual regulatório oficial",
+        "competitive_kicker": "Cenário competitivo", "competitive_title": "Como a companhia se posiciona frente aos pares diretos",
+        "competitive_findings": "CONCLUSÕES ÚTEIS PARA DECISÃO", "no_competitive": "Não havia análise competitiva independente com citações verificadas.",
         "cashflow_kicker": "Balanço e conversão de caixa", "cashflow_title": "Liquidez, alavancagem e geração de caixa", "cashflow_profile": "Perfil de fluxo de caixa", "capex": "Capex", "assets_equity": "Ativos / Patrimônio", "capital_structure": "estrutura de capital", "latest_balance": "último saldo",
         "market_kicker": "Mercado e operação", "market_title": "Onde a companhia compete", "industry": "INDÚSTRIA", "peers": "PARES VERIFICADOS", "segments": "SEGMENTOS OPERACIONAIS", "geographies": "GEOGRAFIAS",
         "no_industry": "Não estabelecido por evidência validada", "no_peers": "Nenhum par verificado disponível", "no_segments": "Nenhuma série de segmentos validada", "no_geographies": "Nenhuma série geográfica validada",
@@ -215,7 +221,7 @@ def _add_chart(slide, x, y, w, h, title, categories, series, no_series, chart_ty
     for name, values in series:
         if not isinstance(values, list) or len(values) != len(categories):
             continue
-        normalized.append((name, [float(v) if isinstance(v, (int, float)) else 0.0 for v in values]))
+        normalized.append((name, [float(v) if isinstance(v, (int, float)) else None for v in values]))
     if not normalized:
         _textbox(slide, x + .3, y + 1.0, w - .6, .4, no_series, 10, MUTED, False, PP_ALIGN.CENTER)
         return
@@ -273,6 +279,8 @@ def build_presentation(analysis: dict[str, Any], lang: str = "en") -> tuple[byte
     summary = analysis.get("summary") or []
     diagnostics = analysis.get("diagnostics") or {}
     regulatory = analysis.get("regulatoryData") or {}
+    annual_history = financials.get("annualHistory") or {}
+    competitive = market.get("competitiveAnalysis") or {}
     jurisdiction = analysis.get("jurisdiction") or "us"
     unit = _clean(financials.get("unit"), "")
     name = _clean(company.get("name"), "Company")
@@ -315,6 +323,16 @@ def build_presentation(analysis: dict[str, Any], lang: str = "en") -> tuple[byte
     ocf = financials.get("operatingCashFlow") or []
     cash = financials.get("cash") or []
     debt = financials.get("totalDebt") or []
+    history_years = annual_history.get("years") or years
+    history_revenue = annual_history.get("revenue") or revenue
+    history_net_income = annual_history.get("netIncome") or net_income
+    history_ocf = annual_history.get("operatingCashFlow") or ocf
+    history_capex = annual_history.get("capex") or financials.get("capex") or []
+    history_cash = annual_history.get("cash") or cash
+    history_debt = annual_history.get("totalDebt") or debt
+    history_assets = annual_history.get("totalAssets") or financials.get("totalAssets") or []
+    history_equity = annual_history.get("totalEquity") or financials.get("totalEquity") or []
+    history_unit = _clean(annual_history.get("unit"), unit)
 
     s = _blank(prs)
     _title(s, t["financial_kicker"], t["financial_title"], 3)
@@ -334,21 +352,23 @@ def build_presentation(analysis: dict[str, Any], lang: str = "en") -> tuple[byte
 
     s = _blank(prs)
     _title(s, t["performance_kicker"], t["performance_title"], 4)
-    chart_unit = f" ({unit})" if unit else ""
-    _add_chart(s, .65, 1.35, 6.0, 5.45, f"{t['revenue']}{chart_unit}", years, [(t["revenue"], revenue)], t["no_series"], XL_CHART_TYPE.COLUMN_CLUSTERED)
-    _add_chart(s, 6.85, 1.35, 5.8, 5.45, f"{t['net_income']}{chart_unit}", years, [(t["net_income"], net_income)], t["no_series"], XL_CHART_TYPE.LINE_MARKERS)
-    _footer(s, source_footer)
+    chart_unit = f" ({history_unit})" if history_unit else ""
+    _add_chart(s, .65, 1.35, 6.0, 5.45, f"{t['revenue']}{chart_unit}", history_years, [(t["revenue"], history_revenue)], t["no_series"], XL_CHART_TYPE.COLUMN_CLUSTERED)
+    _add_chart(s, 6.85, 1.35, 5.8, 5.45, f"{t['net_income']}{chart_unit}", history_years, [(t["net_income"], history_net_income)], t["no_series"], XL_CHART_TYPE.LINE_MARKERS)
+    history_provider = annual_history.get("provider")
+    history_footer = f"{t['history_source']}: {history_provider}" if history_provider else source_footer
+    _footer(s, history_footer)
 
     s = _blank(prs)
     _title(s, t["cashflow_kicker"], t["cashflow_title"], 5)
-    _add_chart(s, .65, 1.35, 7.25, 5.45, f"{t['cashflow_profile']}{chart_unit}", years, [(t["ocf"], ocf), (t["capex"], financials.get("capex") or [])], t["no_series"], XL_CHART_TYPE.COLUMN_CLUSTERED)
+    _add_chart(s, .65, 1.35, 7.25, 5.45, f"{t['cashflow_profile']}{chart_unit}", history_years, [(t["ocf"], history_ocf), (t["capex"], history_capex)], t["no_series"], XL_CHART_TYPE.COLUMN_CLUSTERED)
     _rect(s, 8.15, 1.35, 4.5, 5.45, PANEL, BORDER)
-    _metric_card(s, 8.42, 1.72, 3.95, t["cash"], _money(_series_latest(cash), jurisdiction, unit), t["latest_balance"], GREEN)
-    _metric_card(s, 8.42, 3.02, 3.95, t["debt"], _money(_series_latest(debt), jurisdiction, unit), t["latest_balance"], AMBER)
-    assets = _series_latest(financials.get("totalAssets") or [])
-    equity = _series_latest(financials.get("totalEquity") or [])
-    _metric_card(s, 8.42, 4.32, 3.95, t["assets_equity"], f"{_money(assets, jurisdiction, unit)} / {_money(equity, jurisdiction, unit)}", t["capital_structure"], BLUE)
-    _footer(s, source_footer)
+    _metric_card(s, 8.42, 1.72, 3.95, t["cash"], _money(_series_latest(history_cash), jurisdiction, history_unit), t["latest_balance"], GREEN)
+    _metric_card(s, 8.42, 3.02, 3.95, t["debt"], _money(_series_latest(history_debt), jurisdiction, history_unit), t["latest_balance"], AMBER)
+    assets = _series_latest(history_assets)
+    equity = _series_latest(history_equity)
+    _metric_card(s, 8.42, 4.32, 3.95, t["assets_equity"], f"{_money(assets, jurisdiction, history_unit)} / {_money(equity, jurisdiction, history_unit)}", t["capital_structure"], BLUE)
+    _footer(s, history_footer)
 
     s = _blank(prs)
     _title(s, t["market_kicker"], t["market_title"], 6)
@@ -368,7 +388,32 @@ def build_presentation(analysis: dict[str, Any], lang: str = "en") -> tuple[byte
     _footer(s, source_footer)
 
     s = _blank(prs)
-    _title(s, t["risk_kicker"], t["risk_title"], 7)
+    _title(s, t["competitive_kicker"], t["competitive_title"], 7)
+    peer_profiles = competitive.get("peerProfiles") or []
+    findings = competitive.get("findings") or []
+    market_structure = competitive.get("marketStructure") or {}
+    _rect(s, .65, 1.35, 6.1, 5.45, PANEL, BORDER)
+    _textbox(s, .92, 1.62, 5.55, .25, t["peers"], 9, CYAN, True)
+    if peer_profiles:
+        for i, peer in enumerate(peer_profiles[:5]):
+            y = 2.02 + i * .86
+            _textbox(s, .95, y, 1.55, .25, _clean(peer.get("name"), "Peer"), 10.5, WHITE, True)
+            _textbox(s, 2.45, y, 3.95, .48, _clean(peer.get("positioning"), ""), 8.5, MUTED)
+    else:
+        _textbox(s, .95, 2.05, 5.45, .4, t["no_competitive"], 10.5, MUTED)
+    _rect(s, 7.0, 1.35, 5.65, 5.45, PANEL_2, BORDER)
+    _textbox(s, 7.28, 1.62, 5.05, .25, t["competitive_findings"], 9, GREEN, True)
+    if market_structure:
+        _textbox(s, 7.28, 2.00, 5.0, .70, _clean(market_structure.get("summary"), ""), 10.5, WHITE, True)
+    finding_items = []
+    for item in findings[:4]:
+        if isinstance(item, dict):
+            finding_items.append(f"{_clean(item.get('insight'), '')} — {_clean(item.get('implication'), '')}")
+    _bullet_list(s, finding_items or [t["no_competitive"]], 7.3, 2.85, 4.95, 4, size=9.8, accent=GREEN)
+    _footer(s, t["hierarchy_3"])
+
+    s = _blank(prs)
+    _title(s, t["risk_kicker"], t["risk_title"], 8)
     risk_items = []
     for item in risks[:6]:
         if isinstance(item, dict):
@@ -378,7 +423,7 @@ def build_presentation(analysis: dict[str, Any], lang: str = "en") -> tuple[byte
     _footer(s, source_footer)
 
     s = _blank(prs)
-    _title(s, t["events_kicker"], t["events_title"], 8)
+    _title(s, t["events_kicker"], t["events_title"], 9)
     _rect(s, .65, 1.35, 12.0, 5.45, PANEL_2, BORDER)
     if events:
         for i, item in enumerate(events[:7]):
@@ -393,7 +438,7 @@ def build_presentation(analysis: dict[str, Any], lang: str = "en") -> tuple[byte
     _footer(s, source_footer)
 
     s = _blank(prs)
-    _title(s, t["quality_kicker"], t["quality_title"], 9)
+    _title(s, t["quality_kicker"], t["quality_title"], 10)
     module_names = ["metadata", "profiler", "financials", "market", "risks", "historian", "synthesizer"]
     for i, module in enumerate(module_names):
         diagnostic = diagnostics.get(module) or {}
@@ -412,7 +457,7 @@ def build_presentation(analysis: dict[str, Any], lang: str = "en") -> tuple[byte
     _footer(s, source_footer)
 
     s = _blank(prs)
-    _title(s, t["sources_kicker"], t["sources_title"], 10)
+    _title(s, t["sources_kicker"], t["sources_title"], 11)
     _rect(s, .65, 1.35, 5.85, 5.45, PANEL, BORDER)
     _textbox(s, .95, 1.68, 5.2, .25, t["source_hierarchy"], 9, CYAN, True)
     hierarchy = [t["hierarchy_1"], t["hierarchy_2"], t["hierarchy_3"], t["hierarchy_4"]]

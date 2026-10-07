@@ -75,6 +75,29 @@ export const marketSchema = z.object({
       source: evidenceReferenceSchema,
     })).max(12).optional(),
     externalResearchStatus: z.enum(["pending", "not_needed", "complete", "no_citable_results", "unavailable"]).optional(),
+    competitiveAnalysis: z.object({
+      status: z.enum(["complete", "partial", "no_citable_results", "unavailable"]),
+      methodology: z.literal("market-research-brief"),
+      peerProfiles: z.array(z.object({
+        name: z.string(),
+        relationship: z.string(),
+        positioning: z.string(),
+        strengths: z.array(z.string()).max(3),
+        vulnerabilities: z.array(z.string()).max(3),
+        source: evidenceReferenceSchema,
+      })).max(8),
+      findings: z.array(z.object({
+        insight: z.string(),
+        implication: z.string(),
+        source: evidenceReferenceSchema,
+      })).max(8),
+      marketStructure: z.object({
+        summary: z.string(),
+        hhi: z.number().nullable().optional(),
+        basis: z.string().nullable().optional(),
+        source: evidenceReferenceSchema.nullable().optional(),
+      }).optional(),
+    }).optional(),
       geographies: z
       .array(z.object({
         name: z.string(),
@@ -197,6 +220,24 @@ export const financialsSchema = z.object({
       )
       .max(40)
       .optional(),
+    annualHistory: z.object({
+      years: z.array(z.string()).max(5),
+      unit: z.string(),
+      provider: z.string(),
+      status: z.enum(["complete", "partial"]),
+      revenue: z.array(z.number().nullable()).max(5),
+      grossProfit: z.array(z.number().nullable()).max(5),
+      ebit: z.array(z.number().nullable()).max(5),
+      netIncome: z.array(z.number().nullable()).max(5),
+      operatingCashFlow: z.array(z.number().nullable()).max(5),
+      capex: z.array(z.number().nullable()).max(5),
+      totalAssets: z.array(z.number().nullable()).max(5),
+      totalLiabilities: z.array(z.number().nullable()).max(5),
+      totalEquity: z.array(z.number().nullable()).max(5),
+      totalDebt: z.array(z.number().nullable()).max(5),
+      cash: z.array(z.number().nullable()).max(5),
+      sources: z.array(evidenceReferenceSchema).max(12),
+    }).optional(),
     validation: z
       .object({
         balanceSheetIdentity: z.enum(["reconciled", "mismatch", "not_available"]),

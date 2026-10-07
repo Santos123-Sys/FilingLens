@@ -12,6 +12,7 @@ class RegulatoryRequest(BaseModel):
     cnpj: str | None = None
     companyName: str | None = None
     ticker: str | None = None
+    historyYears: int = Field(default=5, ge=1, le=5)
 
 class SourceRef(BaseModel):
     provider: str
@@ -26,6 +27,8 @@ class Metric(BaseModel):
     value: float | None = None
     unit: str | None = None
     period: str | None = None
+    fiscalYear: int | None = None
+    statementType: Literal["annual", "interim", "instant"] | None = None
     status: Literal["verified", "single_source", "conflict", "missing"] = "single_source"
     source: SourceRef | None = None
     rawLabel: str | None = None
@@ -40,6 +43,9 @@ class RegulatorySnapshot(BaseModel):
     sources: list[SourceRef] = Field(default_factory=list)
     warnings: list[str] = Field(default_factory=list)
     raw: dict[str, Any] = Field(default_factory=dict)
+    coverageYears: list[str] = Field(default_factory=list)
+    historyRequested: int = 5
+    resolvedIdentifier: str | None = None
 
 class PresentationRequest(BaseModel):
     analysis: dict[str, Any]

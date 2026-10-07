@@ -129,8 +129,8 @@ describe("Agent and dashboard managers", () => {
     expect(agentManager.plan()).toMatchObject({
       retryBoundary: "browser-per-stage",
       requestPolicy: "one_primary_model_invocation_per_agent_request; provider web-search tool may execute inside profiler/historian; deterministic Python skills do not call a model",
-      executionMode: "sequential_staged",
-      webResearchStage: { endpoint: "/api/market-research" },
+      executionMode: "dependency_aware_bounded_concurrency",
+      webResearchStage: { endpoint: "/api/market-research", trigger: "always_after_market_agent" },
     });
   });
 

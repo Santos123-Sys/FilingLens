@@ -41,10 +41,13 @@ const PHASES: Phase[] = [
     id: "intake",
     en: "Read & classify",
     pt: "Ler e classificar",
-    enDetail: "Identify regulator, form and reporting period",
-    ptDetail: "Identifica regulador, formulário e período",
+    enDetail: "Identify regulator, issuer and retrieve authoritative five-year history",
+    ptDetail: "Identifica regulador e emissor e recupera cinco anos de histórico oficial",
     icon: FileSearch,
-    stages: [{ key: "metadata", en: "Regulatory metadata", pt: "Metadados regulatórios" }],
+    stages: [
+      { key: "metadata", en: "Regulatory metadata", pt: "Metadados regulatórios" },
+      { key: "regulatoryData", en: "SEC/CVM five-year history", pt: "Histórico SEC/CVM de cinco anos" },
+    ],
   },
   {
     id: "evidence",
@@ -64,12 +67,12 @@ const PHASES: Phase[] = [
     id: "validate",
     en: "Validate & enrich",
     pt: "Validar e enriquecer",
-    enDetail: "Timeline validation and conditional cited peer research",
-    ptDetail: "Validação da linha do tempo e pesquisa citada condicional",
+    enDetail: "Timeline validation and always-on cited competitive analysis",
+    ptDetail: "Validação temporal e análise competitiva citada sempre ativa",
     icon: Globe2,
     stages: [
       { key: "historian", en: "Timeline & events", pt: "Linha do tempo e eventos" },
-      { key: "marketResearch", en: "Cited peer research", pt: "Pesquisa citada de concorrentes", optional: true },
+      { key: "marketResearch", en: "Competitive analysis", pt: "Análise competitiva" },
     ],
   },
   {

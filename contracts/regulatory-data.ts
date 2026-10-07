@@ -5,6 +5,8 @@ export type RegulatoryDataMetric = {
   value: number | null;
   unit?: string | null;
   period?: string | null;
+  fiscalYear?: number | null;
+  statementType?: "annual" | "interim" | "instant" | null;
   status: "verified" | "single_source" | "conflict" | "missing";
   source?: RegulatoryDataSource | null;
   rawLabel?: string | null;
@@ -29,6 +31,9 @@ export type RegulatoryDataSnapshot = {
   sources: RegulatoryDataSource[];
   warnings: string[];
   raw: Record<string, unknown>;
+  coverageYears?: string[];
+  historyRequested?: number;
+  resolvedIdentifier?: string | null;
 };
 
 export type FilingAnalysisWithRegulatoryData<T> = T & {
