@@ -4,64 +4,93 @@ import type { MarketResult } from "../contracts/analysis";
 import { filingModel, marketWebSearchTool, openAIProviderOptions } from "./ai/provider";
 import { marketResearchRuntimeMethodology } from "./market-research-skill";
 
-const peerSchema = z.object({
-  name: z.string().min(1).max(100),
-  relationship: z.string().min(1).max(240),
-  positioning: z.string().min(1).max(320),
-  strengths: z.array(z.string().min(1).max(180)).max(3),
-  vulnerabilities: z.array(z.string().min(1).max(180)).max(3),
+/**
+ * Wire schemas are intentionally permissive for narrative length. The model is a
+ * probabilistic candidate generator; hard UI-length limits belong in deterministic
+ * post-processing. Rejecting an otherwise well-sourced research object because one
+ * summary is 421 characters is a reliability bug, not a data-quality safeguard.
+ */
+const peerWireSchema = z.object({
+  name: z.string().min(1),
+  relationship: z.string().min(1),
+  positioning: z.string().min(1),
+  strengths: z.array(z.string()),
+  vulnerabilities: z.array(z.string()),
   url: z.string(),
 });
 
 const peerDiscoveryOutput = z.object({
-  peers: z.array(peerSchema).max(8),
+  peers: z.array(peerWireSchema),
 });
 
 const webResearchOutput = z.object({
-  peers: z.array(peerSchema).max(8),
+  peers: z.array(peerWireSchema),
   findings: z.array(z.object({
-    insight: z.string().min(1).max(360),
-    implication: z.string().min(1).max(360),
+    insight: z.string().min(1),
+    implication: z.string().min(1),
     url: z.string(),
-  })).max(8),
+  })),
   marketShareProxies: z.array(z.object({
-    label: z.string().min(1).max(160),
+    label: z.string().min(1),
     valuePercent: z.number().min(0).max(100),
     numerator: z.number().nonnegative(),
     denominator: z.number().positive(),
-    unit: z.string().min(1).max(60),
-    period: z.string().min(1).max(80),
-    geography: z.string().min(1).max(80),
-    productScope: z.string().min(1).max(160),
-    basis: z.string().min(1).max(420),
+    unit: z.string().min(1),
+    period: z.string().min(1),
+    geography: z.string().min(1),
+    productScope: z.string().min(1),
+    basis: z.string().min(1),
     url: z.string(),
-  })).max(4),
+  })),
   marketStructure: z.object({
-    summary: z.string().min(1).max(420),
+    summary: z.string().min(1),
     hhi: z.number().nullable().optional(),
     basis: z.string().nullable().optional(),
     url: z.string().nullable().optional(),
-  }).optional(),
+  }).nullable().optional(),
 });
 
 type CompetitiveResearchOutput = z.infer<typeof webResearchOutput>;
 type PeerDiscoveryOutput = z.infer<typeof peerDiscoveryOutput>;
 type ResearchPeer = { name: string; url: string; reason?: string };
+type CitedSource = { url: string; title?: string };
+
+function cleanNarrative(value: string | null | undefined, max = 900): string {
+  if (!value) return "";
+  const cleaned = value
+    // The evidence URL is carried separately. Keeping generated Markdown citations
+    // inside prose creates duplicate URLs and was the cause of a production
+    // marketStructure.summary length failure.
+    .replace(/\s*\(\[[^\]]{1,160}\]\(https?:\/\/[^)]+\)\)\s*/gi, " ")
+    .replace(/\[[^\]]{1,160}\]\(https?:\/\/[^)]+\)/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (cleaned.length <= max) return cleaned;
+  const head = cleaned.slice(0, max);
+  const sentence = Math.max(head.lastIndexOf(". "), head.lastIndexOf("; "), head.lastIndexOf(": "));
+  return `${head.slice(0, sentence > Math.floor(max * 0.55) ? sentence + 1 : max).trim()}…`;
+}
 
 function canonicalUrl(value: string): string | null {
   try {
     const url = new URL(value);
     if (url.protocol !== "https:") return null;
-    url.hash = "";
-    url.search = "";
-    return `${url.origin}${url.pathname.replace(/\/$/, "")}`.toLowerCase();
+    const host = url.hostname.toLowerCase().replace(/^www\./, "");
+    let pathname = url.pathname.replace(/\/{2,}/g, "/");
+    try {
+      pathname = decodeURIComponent(pathname);
+    } catch {
+      // Keep the encoded path when malformed percent escapes are present.
+    }
+    pathname = pathname.replace(/\/index\.html?$/i, "").replace(/\/$/, "") || "/";
+    return `${host}${pathname}`.toLowerCase();
   } catch {
     return null;
   }
 }
 
-function citedSourceMap(sources: Array<{ url: string; title?: string }>) {
-  const citedSources = new Map<string, { url: string; title?: string }>();
+function citedSourceMap(sources: CitedSource[]) {
+  const citedSources = new Map<string, CitedSource>();
   for (const source of sources) {
     const key = canonicalUrl(source.url);
     if (key) citedSources.set(key, source);
@@ -71,7 +100,7 @@ function citedSourceMap(sources: Array<{ url: string; title?: string }>) {
 
 function evidenceFrom(
   url: string,
-  citedSources: Map<string, { url: string; title?: string }>,
+  citedSources: Map<string, CitedSource>,
   accessed: string,
 ) {
   const key = canonicalUrl(url);
@@ -93,17 +122,43 @@ function evidenceFrom(
   };
 }
 
+function sourceQuality(url: string): number {
+  try {
+    const host = new URL(url).hostname.toLowerCase().replace(/^www\./, "");
+    if (host.endsWith(".gov") || host.includes(".gov.") || host.includes("sec.gov") || host.includes("cvm.gov.br")) return 30;
+    if (host.includes("b3.com.br") || host.includes("nasdaq.com") || host.includes("nyse.com")) return 28;
+    if (host.startsWith("ir.") || host.includes("investor") || host.includes("investors")) return 24;
+    return 16;
+  } catch {
+    return 0;
+  }
+}
+
+function relationshipQuality(text: string): number {
+  const value = text.toLowerCase();
+  let score = 18;
+  if (/\bdirect\b/.test(value)) score = 52;
+  else if (/\bsegment\b|same (?:market|product|customer)|overlap|compete/.test(value)) score = 42;
+  else if (/adjacent|broad|partial/.test(value)) score = 24;
+  if (/not (?:an? )?(?:automotive|direct|core)?\s*peer|only at the broad|does not establish comparable/.test(value)) score -= 18;
+  return Math.max(0, score);
+}
+
+function peerScore(peer: PeerDiscoveryOutput["peers"][number], sourceUrl: string): number {
+  return relationshipQuality(`${peer.relationship} ${peer.positioning}`) + sourceQuality(sourceUrl);
+}
+
 /** Backward-compatible peer verifier retained for deterministic unit tests. */
 export function verifyMarketResearchPeers(
   peers: ResearchPeer[],
-  sources: Array<{ url: string; title?: string }>,
+  sources: CitedSource[],
   accessed = new Date().toISOString().slice(0, 10),
 ): NonNullable<MarketResult["market"]["peerEvidence"]> {
   const citedSources = citedSourceMap(sources);
   const seen = new Set<string>();
   const verified: NonNullable<MarketResult["market"]["peerEvidence"]> = [];
   for (const peer of peers) {
-    const name = peer.name.trim();
+    const name = cleanNarrative(peer.name, 140);
     if (!name || seen.has(name.toLowerCase())) continue;
     const source = evidenceFrom(peer.url, citedSources, accessed);
     if (!source) continue;
@@ -116,73 +171,85 @@ export function verifyMarketResearchPeers(
 
 function verifyPeersWithProfiles(
   peers: PeerDiscoveryOutput["peers"],
-  sources: Array<{ url: string; title?: string }>,
+  sources: CitedSource[],
   accessed = new Date().toISOString().slice(0, 10),
 ) {
   const citedSources = citedSourceMap(sources);
   const seen = new Set<string>();
-  const peerEvidence: NonNullable<MarketResult["market"]["peerEvidence"]> = [];
-  const peerProfiles: NonNullable<MarketResult["market"]["competitiveAnalysis"]>["peerProfiles"] = [];
+  const accepted: Array<{
+    score: number;
+    evidence: NonNullable<MarketResult["market"]["peerEvidence"]>[number];
+    profile: NonNullable<MarketResult["market"]["competitiveAnalysis"]>["peerProfiles"][number];
+  }> = [];
 
   for (const peer of peers) {
-    const name = peer.name.trim();
+    const name = cleanNarrative(peer.name, 140);
     if (!name || seen.has(name.toLowerCase())) continue;
     const source = evidenceFrom(peer.url, citedSources, accessed);
     if (!source) continue;
     seen.add(name.toLowerCase());
-    peerEvidence.push({ name, sourceType: "external", source });
-    peerProfiles.push({
-      name,
-      relationship: peer.relationship.trim(),
-      positioning: peer.positioning.trim(),
-      strengths: peer.strengths.map(item => item.trim()).filter(Boolean).slice(0, 3),
-      vulnerabilities: peer.vulnerabilities.map(item => item.trim()).filter(Boolean).slice(0, 3),
-      source,
+    accepted.push({
+      score: peerScore(peer, source.url ?? peer.url),
+      evidence: { name, sourceType: "external", source },
+      profile: {
+        name,
+        relationship: cleanNarrative(peer.relationship, 480),
+        positioning: cleanNarrative(peer.positioning, 700),
+        strengths: peer.strengths.map(item => cleanNarrative(item, 360)).filter(Boolean).slice(0, 3),
+        vulnerabilities: peer.vulnerabilities.map(item => cleanNarrative(item, 360)).filter(Boolean).slice(0, 3),
+        source,
+      },
     });
-    if (peerProfiles.length === 8) break;
   }
-  return { peerEvidence, peerProfiles };
+
+  accepted.sort((a, b) => b.score - a.score || a.profile.name.localeCompare(b.profile.name));
+  const top = accepted.slice(0, 8);
+  return {
+    peerEvidence: top.map(item => item.evidence),
+    peerProfiles: top.map(item => item.profile),
+    droppedPeers: Math.max(0, peers.length - top.length),
+  };
 }
 
 export function verifyCompetitiveResearch(
   output: CompetitiveResearchOutput,
-  sources: Array<{ url: string; title?: string }>,
+  sources: CitedSource[],
   accessed = new Date().toISOString().slice(0, 10),
+  recoveryUsed = false,
 ): {
   peerEvidence: NonNullable<MarketResult["market"]["peerEvidence"]>;
   competitiveAnalysis: NonNullable<MarketResult["market"]["competitiveAnalysis"]>;
 } {
-  const { peerEvidence, peerProfiles } = verifyPeersWithProfiles(output.peers, sources, accessed);
+  const { peerEvidence, peerProfiles, droppedPeers } = verifyPeersWithProfiles(output.peers.slice(0, 16), sources, accessed);
   const citedSources = citedSourceMap(sources);
 
   const findings: NonNullable<MarketResult["market"]["competitiveAnalysis"]>["findings"] = [];
-  for (const finding of output.findings) {
+  for (const finding of output.findings.slice(0, 12)) {
     const source = evidenceFrom(finding.url, citedSources, accessed);
     if (!source) continue;
-    findings.push({
-      insight: finding.insight.trim(),
-      implication: finding.implication.trim(),
-      source,
-    });
+    const insight = cleanNarrative(finding.insight, 720);
+    const implication = cleanNarrative(finding.implication, 600);
+    if (!insight || !implication) continue;
+    findings.push({ insight, implication, source });
     if (findings.length === 8) break;
   }
 
   const marketShareProxies: NonNullable<NonNullable<MarketResult["market"]["competitiveAnalysis"]>["marketShareProxies"]> = [];
-  for (const proxy of output.marketShareProxies) {
+  for (const proxy of output.marketShareProxies.slice(0, 8)) {
     const source = evidenceFrom(proxy.url, citedSources, accessed);
     if (!source || proxy.denominator <= 0 || proxy.numerator < 0) continue;
     const recomputed = (proxy.numerator / proxy.denominator) * 100;
     if (Math.abs(recomputed - proxy.valuePercent) > 0.15) continue;
     marketShareProxies.push({
-      label: proxy.label.trim(),
+      label: cleanNarrative(proxy.label, 220),
       valuePercent: Number(recomputed.toFixed(2)),
       numerator: proxy.numerator,
       denominator: proxy.denominator,
-      unit: proxy.unit.trim(),
-      period: proxy.period.trim(),
-      geography: proxy.geography.trim(),
-      productScope: proxy.productScope.trim(),
-      basis: proxy.basis.trim(),
+      unit: cleanNarrative(proxy.unit, 80),
+      period: cleanNarrative(proxy.period, 100),
+      geography: cleanNarrative(proxy.geography, 120),
+      productScope: cleanNarrative(proxy.productScope, 260),
+      basis: cleanNarrative(proxy.basis, 700),
       source,
     });
     if (marketShareProxies.length === 4) break;
@@ -193,9 +260,9 @@ export function verifyCompetitiveResearch(
     const source = evidenceFrom(output.marketStructure.url, citedSources, accessed);
     if (source) {
       marketStructure = {
-        summary: output.marketStructure.summary.trim(),
+        summary: cleanNarrative(output.marketStructure.summary, 900),
         hhi: output.marketStructure.hhi ?? null,
-        basis: output.marketStructure.basis?.trim() || null,
+        basis: cleanNarrative(output.marketStructure.basis, 700) || null,
         source,
       };
     }
@@ -204,6 +271,10 @@ export function verifyCompetitiveResearch(
   const status = peerProfiles.length || findings.length || marketStructure
     ? (peerProfiles.length >= 2 && findings.length >= 1 ? "complete" : "partial")
     : "no_citable_results";
+  const droppedClaims = droppedPeers
+    + Math.max(0, output.findings.length - findings.length)
+    + Math.max(0, output.marketShareProxies.length - marketShareProxies.length)
+    + (output.marketStructure && !marketStructure ? 1 : 0);
 
   return {
     peerEvidence,
@@ -214,14 +285,29 @@ export function verifyCompetitiveResearch(
       findings,
       ...(marketShareProxies.length ? { marketShareProxies } : {}),
       ...(marketStructure ? { marketStructure } : {}),
+      researchDiagnostics: {
+        candidatePeers: output.peers.length,
+        verifiedPeers: peerProfiles.length,
+        citedSources: new Set(sources.map(source => canonicalUrl(source.url)).filter(Boolean)).size,
+        droppedClaims,
+        recoveryUsed,
+        strategy: "deterministic-citation-ranking-v1",
+      },
     },
   };
 }
 
-function citedUrls(result: { sources: Array<{ sourceType: string; url?: string; title?: string }> }) {
-  return result.sources
-    .filter(source => source.sourceType === "url" && typeof source.url === "string")
-    .map(source => ({ url: source.url as string, title: source.title }));
+function citedUrls(result: { sources: Array<{ sourceType: string; url?: string; title?: string }> }): CitedSource[] {
+  const seen = new Set<string>();
+  const out: CitedSource[] = [];
+  for (const source of result.sources) {
+    if (source.sourceType !== "url" || typeof source.url !== "string") continue;
+    const key = canonicalUrl(source.url);
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    out.push({ url: source.url, title: source.title });
+  }
+  return out;
 }
 
 function researchSystem(methodology: string) {
@@ -234,7 +320,7 @@ function researchSystem(methodology: string) {
     "Actively search for a public, auditable way to estimate issuer market share. Prefer regulator/open-data datasets; otherwise use a close public proxy only when numerator and denominator use the same period, geography and product basis.",
     "For any market-share proxy, return the raw numerator and denominator and let the application recompute the percentage. Never infer a denominator from narrative language.",
     "Do not manufacture TAM, concentration, CR3/CR5 or HHI. Calculate concentration only when cited share data are sufficient.",
-    "Every peer, finding, market-share proxy, and market-structure claim must carry the exact HTTPS URL actually returned by web search. Omit claims with ambiguous evidence.",
+    "Every peer, finding, market-share proxy, and market-structure claim must carry one HTTPS URL actually returned by web search. Put that URL only in the url field; do not repeat Markdown citations inside narrative fields.",
     "Do not provide investment recommendations, target prices, or uncited financial figures.",
     "",
     "Loaded market-research-brief framework:",
@@ -242,51 +328,108 @@ function researchSystem(methodology: string) {
   ].join("\n");
 }
 
-async function peerOnlyRecovery(input: {
+/**
+ * Recovery uses computational decomposition instead of asking one model call to
+ * search, reason, structure and cite simultaneously:
+ * 1) search/discover sources in plain text;
+ * 2) classify only those source-catalog entries into peers;
+ * 3) bind citations and rank peers deterministically.
+ */
+async function catalogRecovery(input: {
   jurisdiction: "us" | "br";
   issuerName: string;
   ticker?: string | null;
   industry: string;
   businessDescription?: string | null;
   filingExcerpt: string;
-  methodology: string;
 }) {
-  const result = await generateText({
+  const discovery = await generateText({
     model: filingModel("market"),
-    output: Output.object({ schema: peerDiscoveryOutput }),
     tools: { web_search: marketWebSearchTool() as never },
     stopWhen: stepCountIs(2),
     maxRetries: 0,
-    maxOutputTokens: 4_500,
-    providerOptions: openAIProviderOptions("market", 7_500, "low"),
+    maxOutputTokens: 2_500,
+    providerOptions: openAIProviderOptions("market", 3_500, "low"),
     system: [
-      researchSystem(input.methodology),
-      "RECOVERY MODE: return peers only. Keep each field concise so the JSON always completes. Find 3-6 verified direct or segment peers before doing anything else.",
-    ].join("\n\n"),
+      "You are the source-discovery stage of a competitive-intelligence pipeline.",
+      "Use web search. Find authoritative pages that establish direct or segment competition for the issuer.",
+      "Prefer regulator/government data, official investor-relations/company pages, exchanges and industry associations.",
+      "Do not attempt JSON. Return a concise research memo naming candidate peers and why each source is relevant.",
+    ].join(" "),
     prompt: [
       `Jurisdiction: ${input.jurisdiction === "br" ? "Brazil / CVM" : "United States / SEC"}`,
       `Issuer: ${input.issuerName || "not identified"}`,
       `Ticker: ${input.ticker || "not available"}`,
-      `Filing-described industry: ${input.industry || "not identified"}`,
+      `Industry: ${input.industry || "not identified"}`,
       `Business description: ${input.businessDescription || "not separately available"}`,
       "",
-      "Filing excerpt for business-scope disambiguation:",
-      input.filingExcerpt.slice(0, 10_000),
+      "Filing context:",
+      input.filingExcerpt.slice(0, 6_000),
       "",
-      "Return 3-6 source-verified direct or segment peers. Do not return market commentary outside the schema.",
+      "Find evidence for 3-6 direct or segment peers. Diversified issuers may have different peer sets by segment.",
     ].join("\n"),
   });
 
-  const { peerEvidence, peerProfiles } = verifyPeersWithProfiles(result.output.peers, citedUrls(result));
-  return {
-    peerEvidence,
-    competitiveAnalysis: {
-      status: peerProfiles.length >= 2 ? "partial" as const : "no_citable_results" as const,
-      methodology: "market-research-brief" as const,
-      peerProfiles,
-      findings: [],
-    },
+  const sources = citedUrls(discovery);
+  if (!sources.length) {
+    return {
+      peerEvidence: [] as NonNullable<MarketResult["market"]["peerEvidence"]>,
+      competitiveAnalysis: {
+        status: "no_citable_results" as const,
+        methodology: "market-research-brief" as const,
+        peerProfiles: [],
+        findings: [],
+        researchDiagnostics: {
+          candidatePeers: 0,
+          verifiedPeers: 0,
+          citedSources: 0,
+          droppedClaims: 0,
+          recoveryUsed: true,
+          strategy: "deterministic-citation-ranking-v1" as const,
+        },
+      },
+    };
+  }
+
+  const catalog = sources.slice(0, 16).map((source, index) =>
+    `[${index + 1}] ${source.title ?? "Untitled source"} | ${source.url}`
+  ).join("\n");
+
+  const classified = await generateText({
+    model: filingModel("market"),
+    output: Output.object({ schema: peerDiscoveryOutput }),
+    maxRetries: 0,
+    maxOutputTokens: 3_200,
+    providerOptions: openAIProviderOptions("market", 4_500, "low"),
+    system: [
+      "You are the deterministic classification stage after web discovery.",
+      "Use only the supplied discovery memo and source catalog. Do not use memory.",
+      "Return 3-6 direct or segment peers when supported.",
+      "The url field MUST be copied exactly from one source-catalog line. Do not invent, shorten, canonicalize or add query parameters.",
+      "Keep relationship/positioning concise. Do not place Markdown links in narrative fields.",
+    ].join(" "),
+    prompt: [
+      `Issuer: ${input.issuerName || "not identified"}`,
+      `Business description: ${input.businessDescription || "not separately available"}`,
+      "",
+      "Discovery memo:",
+      discovery.text.slice(0, 8_000),
+      "",
+      "Allowed source catalog:",
+      catalog,
+    ].join("\n"),
+  });
+
+  const synthetic: CompetitiveResearchOutput = {
+    peers: classified.output.peers,
+    findings: [],
+    marketShareProxies: [],
   };
+  const verified = verifyCompetitiveResearch(synthetic, sources, undefined, true);
+  console.info(
+    `[market-research] recovery candidates=${synthetic.peers.length} verified=${verified.peerEvidence.length} sources=${sources.length}`,
+  );
+  return verified;
 }
 
 export async function researchCompetitiveLandscape(input: {
@@ -326,14 +469,18 @@ export async function researchCompetitiveLandscape(input: {
       ].join("\n"),
     });
 
-    const verified = verifyCompetitiveResearch(result.output, citedUrls(result));
+    const sources = citedUrls(result);
+    const verified = verifyCompetitiveResearch(result.output, sources);
+    console.info(
+      `[market-research] full candidates=${result.output.peers.length} verified=${verified.peerEvidence.length} sources=${sources.length} dropped=${verified.competitiveAnalysis.researchDiagnostics?.droppedClaims ?? 0}`,
+    );
     if (verified.peerEvidence.length > 0) return verified;
 
-    console.warn("[market-research] full research returned no verified peers; running peer-only recovery");
-    return await peerOnlyRecovery({ ...input, methodology });
+    console.warn("[market-research] full research returned no verified peers; using catalog recovery");
+    return await catalogRecovery(input);
   } catch (error) {
-    console.warn("[market-research] full structured research failed; running peer-only recovery", error);
-    return await peerOnlyRecovery({ ...input, methodology });
+    console.warn("[market-research] full structured research failed; using catalog recovery", error);
+    return await catalogRecovery(input);
   }
 }
 
