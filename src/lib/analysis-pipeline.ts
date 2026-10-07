@@ -173,6 +173,7 @@ export async function executeAnalysisPipeline(input: {
         reportingPeriod: metadata.reportingPeriod,
         cik: metadata.cik,
         cnpj: metadata.cnpj,
+        historyYears: 5,
         text: text.slice(0, 120_000),
       }),
     }, "regulatoryData", signal, onStage, lang, 1);
