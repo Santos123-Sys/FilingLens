@@ -17,14 +17,14 @@ export default function PeerBenchmarkPanel({data,lang}:{data:FilingAnalysis;lang
   <div className="flex flex-wrap items-start justify-between gap-2">
    <div><h3 className="text-sm font-semibold text-white">{pt?"Benchmark financeiro de concorrentes":"Peer financial benchmarking"}</h3>
     <p className="mt-1 text-xs text-slate-400">{pt?
-     "Valores normalizados em milhões da moeda original, com períodos e métodos contábeis explícitos.":
-     "Currency-preserving figures normalized to millions, with explicit fiscal period and accounting gates."}</p></div>
+     "Somente cifras confirmadas no SEC CompanyFacts, em milhões, com identificação de formulário, período e base contábil.":
+     "Only SEC CompanyFacts-corroborated figures, normalized to millions with explicit filing accession, fiscal period and accounting gates."}</p></div>
    <span className="rounded-lg border border-slate-700 px-2 py-1 text-[11px] text-slate-300">
     {result.facts.length} {pt?"observações elegíveis":"eligible observations"}</span>
   </div>
   {result.facts.length===0?<p className="mt-4 text-xs leading-5 text-slate-400">{pt?
-   "Nenhum ponto financeiro de concorrente passou pelos controles de fonte, métrica, escopo, período e moeda. Nenhum valor foi inferido.":
-   "No peer financial observations passed source, metric, scope, period and currency validation. No values were inferred."}</p>:
+   "Nenhum valor foi confirmado pelo SEC CompanyFacts com emissor, documento, número e período compatíveis; informações apenas citadas não entram no benchmark.":
+   "No SEC-corroborated peer observations passed issuer-identity, accession, amount, fiscal period and currency checks. Other cited financial claims are excluded from numerical benchmarking."}</p>:
    <div className="mt-4 overflow-x-auto"><table className="w-full min-w-[650px] text-left text-xs">
     <thead><tr className="border-b border-slate-700 text-slate-400">
      <th className="py-2 pr-3">{pt?"Concorrente":"Peer"}</th>
@@ -63,7 +63,7 @@ export default function PeerBenchmarkPanel({data,lang}:{data:FilingAnalysis;lang
    <ul className="mt-3 space-y-2">{result.flags.slice(0,20).map((f,i)=><li key={i}>{f.peer} · {f.code.replaceAll("_"," ")} — {f.detail}</li>)}</ul>
   </details>}
   <p className="mt-4 text-[11px] leading-5 text-slate-400">{pt?
-   "Os dados são candidatos ligados a citações da pesquisa, não confirmação independente dos números. A comparação exige mesma data de encerramento, moeda, escopo consolidado e base contábil. Não há conversão cambial, estimativa de valor justo nem ranking automático.":
-   "These are research-generated figures linked to citations, not independently audited numbers. Comparisons require identical fiscal year-end, currency, consolidated scope and accounting basis. No FX conversion, fair-value estimate or automatic ranking is performed."}</p>
+   "Os valores são confrontados com SEC CompanyFacts do mesmo emissor e documento; isso não substitui auditoria independente. Exigem-se exercício, moeda, escopo e base contábil idênticos. Não há câmbio, estimativa de valor justo nem ranking automático.":
+   "Figures are corroborated against SEC CompanyFacts for the exact issuer and filing accession; SEC matching is not a substitute for independent audit. Comparisons require identical fiscal year-end, currency, consolidated scope and accounting basis. No FX conversion, fair-value estimate or automatic ranking is performed."}</p>
  </section>;
 }
