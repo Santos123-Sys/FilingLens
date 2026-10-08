@@ -17,6 +17,30 @@ const peerWireSchema = z.object({
   positioning: z.string().min(1),
   strengths: z.array(z.string()),
   vulnerabilities: z.array(z.string()),
+  dataPoints: z.array(z.object({
+    label: z.string().min(1),
+    value: z.string().min(1),
+    period: z.string().min(1),
+    context: z.string().min(1),
+    url: z.string(),
+  })),
+  moatAssessment: z.object({
+    rating: z.enum(["strong", "moderate", "limited", "unclear"]),
+    summary: z.string().min(1),
+    evidence: z.array(z.object({
+      dimension: z.string().min(1),
+      assessment: z.string().min(1),
+      url: z.string(),
+    })),
+  }).nullable(),
+  outlook: z.object({
+    stance: z.enum(["favorable", "mixed", "challenged", "unclear"]),
+    horizon: z.string().min(1),
+    summary: z.string().min(1),
+    drivers: z.array(z.string()),
+    risks: z.array(z.string()),
+    url: z.string(),
+  }).nullable(),
   url: z.string(),
 });
 
@@ -182,6 +206,7 @@ function verifyPeersWithProfiles(
     evidence: NonNullable<MarketResult["market"]["peerEvidence"]>[number];
     profile: NonNullable<MarketResult["market"]["competitiveAnalysis"]>["peerProfiles"][number];
   }> = [];
+  let droppedDeepClaims = 0;
 
   for (const peer of peers) {
     const name = cleanNarrative(peer.name, 140);
@@ -189,6 +214,51 @@ function verifyPeersWithProfiles(
     const source = evidenceFrom(peer.url, citedSources, accessed);
     if (!source) continue;
     seen.add(name.toLowerCase());
+
+    const dataPoints = peer.dataPoints.slice(0, 10).flatMap(point => {
+      const pointSource = evidenceFrom(point.url, citedSources, accessed);
+      const label = cleanNarrative(point.label, 120);
+      const value = cleanNarrative(point.value, 120);
+      const period = cleanNarrative(point.period, 80);
+      const context = cleanNarrative(point.context, 280);
+      return pointSource && label && value && period && context
+        ? [{ label, value, period, context, source: pointSource }]
+        : [];
+    }).slice(0, 6);
+    droppedDeepClaims += Math.max(0, peer.dataPoints.length - dataPoints.length);
+
+    const moatEvidence = (peer.moatAssessment?.evidence ?? []).slice(0, 8).flatMap(item => {
+      const itemSource = evidenceFrom(item.url, citedSources, accessed);
+      const dimension = cleanNarrative(item.dimension, 100);
+      const assessment = cleanNarrative(item.assessment, 360);
+      return itemSource && dimension && assessment
+        ? [{ dimension, assessment, source: itemSource }]
+        : [];
+    }).slice(0, 5);
+    droppedDeepClaims += Math.max(0, (peer.moatAssessment?.evidence.length ?? 0) - moatEvidence.length);
+    const moatAssessment = peer.moatAssessment && moatEvidence.length
+      ? {
+          rating: peer.moatAssessment.rating,
+          confidence: (moatEvidence.length >= 3 ? "high" : moatEvidence.length === 2 ? "medium" : "low") as "high" | "medium" | "low",
+          summary: cleanNarrative(peer.moatAssessment.summary, 600),
+          evidence: moatEvidence,
+        }
+      : undefined;
+    if (peer.moatAssessment && !moatAssessment) droppedDeepClaims += 1;
+
+    const outlookSource = peer.outlook ? evidenceFrom(peer.outlook.url, citedSources, accessed) : null;
+    const outlook = peer.outlook && outlookSource
+      ? {
+          stance: peer.outlook.stance,
+          horizon: cleanNarrative(peer.outlook.horizon, 80),
+          summary: cleanNarrative(peer.outlook.summary, 600),
+          drivers: peer.outlook.drivers.map(item => cleanNarrative(item, 260)).filter(Boolean).slice(0, 4),
+          risks: peer.outlook.risks.map(item => cleanNarrative(item, 260)).filter(Boolean).slice(0, 4),
+          source: outlookSource,
+        }
+      : undefined;
+    if (peer.outlook && !outlook) droppedDeepClaims += 1;
+
     accepted.push({
       score: peerScore(peer, source.url ?? peer.url),
       evidence: { name, sourceType: "external", source },
@@ -198,6 +268,9 @@ function verifyPeersWithProfiles(
         positioning: cleanNarrative(peer.positioning, 700),
         strengths: peer.strengths.map(item => cleanNarrative(item, 360)).filter(Boolean).slice(0, 3),
         vulnerabilities: peer.vulnerabilities.map(item => cleanNarrative(item, 360)).filter(Boolean).slice(0, 3),
+        ...(dataPoints.length ? { dataPoints } : {}),
+        ...(moatAssessment?.summary ? { moatAssessment } : {}),
+        ...(outlook?.summary && outlook.horizon ? { outlook } : {}),
         source,
       },
     });
@@ -209,6 +282,7 @@ function verifyPeersWithProfiles(
     peerEvidence: top.map(item => item.evidence),
     peerProfiles: top.map(item => item.profile),
     droppedPeers: Math.max(0, peers.length - top.length),
+    droppedDeepClaims,
   };
 }
 
@@ -221,7 +295,7 @@ export function verifyCompetitiveResearch(
   peerEvidence: NonNullable<MarketResult["market"]["peerEvidence"]>;
   competitiveAnalysis: NonNullable<MarketResult["market"]["competitiveAnalysis"]>;
 } {
-  const { peerEvidence, peerProfiles, droppedPeers } = verifyPeersWithProfiles(output.peers.slice(0, 16), sources, accessed);
+  const { peerEvidence, peerProfiles, droppedPeers, droppedDeepClaims } = verifyPeersWithProfiles(output.peers.slice(0, 16), sources, accessed);
   const citedSources = citedSourceMap(sources);
 
   const findings: NonNullable<MarketResult["market"]["competitiveAnalysis"]>["findings"] = [];
@@ -269,10 +343,14 @@ export function verifyCompetitiveResearch(
     }
   }
 
+  const deepDivePeers = peerProfiles.filter(
+    peer => (peer.dataPoints?.length ?? 0) > 0 && peer.moatAssessment && peer.outlook,
+  ).length;
   const status = peerProfiles.length || findings.length || marketStructure
-    ? (peerProfiles.length >= 2 && findings.length >= 1 ? "complete" : "partial")
+    ? (peerProfiles.length >= 2 && findings.length >= 1 && deepDivePeers >= 2 ? "complete" : "partial")
     : "no_citable_results";
   const droppedClaims = droppedPeers
+    + droppedDeepClaims
     + Math.max(0, output.findings.length - findings.length)
     + Math.max(0, output.marketShareProxies.length - marketShareProxies.length)
     + (output.marketStructure && !marketStructure ? 1 : 0);
@@ -289,6 +367,7 @@ export function verifyCompetitiveResearch(
       researchDiagnostics: {
         candidatePeers: output.peers.length,
         verifiedPeers: peerProfiles.length,
+        deepDivePeers,
         citedSources: new Set(sources.map(source => canonicalUrl(source.url)).filter(Boolean)).size,
         droppedClaims,
         recoveryUsed,
@@ -317,11 +396,13 @@ function researchSystem(methodology: string) {
     "Use web search now; do not answer from memory. The uploaded filing is authoritative for issuer identity and business scope. External sources are used to independently map the current competitive landscape.",
     "A direct peer must overlap materially with the issuer in product/service, customer set, geography, asset type, or operating segment. For diversified issuers, segment peers are valid when the relationship is clearly stated; do not require identical conglomerate structures.",
     "Apply the skill's competitive-analysis and data-to-insight modules: identify direct peers, characterize positioning, surface source-supported strengths/vulnerabilities, compare against a benchmark, and keep only decision-useful findings that pass the 'so what?' test.",
+    "For each peer, perform a compact deep dive: capture 3-6 material financial or operating data points with period and context; assess the competitive moat across evidence-backed dimensions such as scale, cost position, switching costs, network effects, brand, distribution, scarce assets, regulation, IP or data; and give a 12-24 month competitive outlook with drivers and risks.",
+    "Moat ratings and outlook stances are analytical assessments, not company-reported facts or investment recommendations. Use 'unclear' when evidence is insufficient and do not force a moat conclusion.",
     "Prefer government/regulator data, official company investor-relations pages and filings, exchanges, industry associations, then high-quality research sources, in that order.",
     "Actively search for a public, auditable way to estimate issuer market share. Prefer regulator/open-data datasets; otherwise use a close public proxy only when numerator and denominator use the same period, geography and product basis.",
     "For any market-share proxy, return the raw numerator and denominator and let the application recompute the percentage. Never infer a denominator from narrative language.",
     "Do not manufacture TAM, concentration, CR3/CR5 or HHI. Calculate concentration only when cited share data are sufficient.",
-    "Every peer, finding, market-share proxy, and market-structure claim must carry one HTTPS URL actually returned by web search. Put that URL only in the url field; do not repeat Markdown citations inside narrative fields.",
+    "Every peer, peer data point, moat evidence item, outlook, finding, market-share proxy, and market-structure claim must carry one HTTPS URL actually returned by web search. Put that URL only in the url field; do not repeat Markdown citations inside narrative fields.",
     "Do not provide investment recommendations, target prices, or uncited financial figures.",
     "",
     "Loaded market-research-brief framework:",
@@ -355,8 +436,9 @@ async function catalogRecovery(input: {
     system: [
       "You are the source-discovery stage of a competitive-intelligence pipeline.",
       "Use web search. Find authoritative pages that establish direct or segment competition for the issuer.",
+      "For each candidate, also seek official financial or operating data, evidence of durable competitive advantages or erosion risks, and current guidance or industry evidence relevant to a 12-24 month outlook.",
       "Prefer regulator/government data, official investor-relations/company pages, exchanges and industry associations.",
-      "Do not attempt JSON. Return a concise research memo naming candidate peers and why each source is relevant.",
+      "Do not attempt JSON. Return a concise research memo naming candidate peers, material data points, moat evidence and outlook evidence.",
     ].join(" "),
     prompt: [
       `Jurisdiction: ${input.jurisdiction === "br" ? "Brazil / CVM" : "United States / SEC"}`,
@@ -409,7 +491,7 @@ async function catalogRecovery(input: {
       "Use only the supplied discovery memo and source catalog. Do not use memory.",
       "Return 3-6 direct or segment peers when supported.",
       "The url field MUST be copied exactly from one source-catalog line. Do not invent, shorten, canonicalize or add query parameters.",
-      "Keep relationship/positioning concise. Do not place Markdown links in narrative fields.",
+      "Keep relationship/positioning concise. Populate dataPoints, moatAssessment and outlook only from the memo and catalog; use empty dataPoints and null assessments when the catalog lacks support. Do not place Markdown links in narrative fields.",
     ].join(" "),
     prompt: [
       `Issuer: ${input.issuerName || "not identified"}`,
@@ -469,7 +551,7 @@ export async function researchCompetitiveLandscape(input: {
         "Filing excerpt for identity and business context only:",
         input.filingExcerpt.slice(0, 12_000),
         "",
-        "Produce a source-verified competitive landscape with 3-6 direct or segment peers, up to 5 concise insight → implication findings, and public market-share evidence when defensible.",
+        "Produce a source-verified competitive landscape with 3-6 direct or segment peers, a cited data/moat/outlook deep dive for each peer, up to 5 concise insight → implication findings, and public market-share evidence when defensible.",
       ].join("\n"),
     }), 80_000);
 
