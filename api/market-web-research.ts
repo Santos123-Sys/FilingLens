@@ -5,6 +5,7 @@ import type { MarketResult } from "../contracts/analysis";
 import { filingModel, marketWebSearchTool, openAIProviderOptions } from "./ai/provider";
 import { marketResearchRuntimeMethodology } from "./market-research-skill";
 import { crosscheckCompetitiveFacts } from "./peer-sec-crosscheck";
+import { crosscheckCvmPeers } from "./cvm-peer-crosscheck";
 
 /**
  * Wire schemas are intentionally permissive for narrative length. The model is a
@@ -16,6 +17,7 @@ const peerWireSchema = z.object({
   name: z.string().min(1),
   relationship: z.string().min(1),
   positioning: z.string().min(1),
+  cnpj: z.string().optional(),
   strengths: z.array(z.string()),
   vulnerabilities: z.array(z.string()),
   dataPoints: z.array(z.object({
@@ -280,6 +282,8 @@ function verifyPeersWithProfiles(
       evidence: { name, sourceType: "external", source },
       profile: {
         name,
+        ...(peer.cnpj && /^\d{14}$/.test(peer.cnpj.replace(/\D/g,""))
+          ? {candidateCnpj:peer.cnpj.replace(/\D/g,"")} : {}),
         relationship: cleanNarrative(peer.relationship, 480),
         positioning: cleanNarrative(peer.positioning, 700),
         strengths: peer.strengths.map(item => cleanNarrative(item, 360)).filter(Boolean).slice(0, 3),
@@ -417,6 +421,7 @@ function researchSystem(methodology: string) {
     "For every asserted moat, search for counter-evidence of durability erosion (customer churn, competitor scale, pricing pressure, loss of exclusivity, margin compression or entry). Report actual cited counterEvidence items in dimensions aligned to the claimed advantages. If none found, do not imply that no contrary evidence exists or that the moat is strong. Never invent contrary evidence or sources.",
     "Prefer government/regulator data, official company investor-relations pages and filings, exchanges, industry associations, then high-quality research sources, in that order.",
     "For US peers with annual reported numbers, seek the exact SEC EDGAR annual filing URL under https://www.sec.gov/Archives/edgar/data/{CIK}/{accession}/{document}. The peer financial amount cannot be treated as a confirmed benchmark merely because an IR page or search result cites it. Never invent an EDGAR accession or CIK; use actual returned sources.",
+    "For Brazilian companies seek the exact 14-digit CNPJ from official CVM filing or registry pages. Put the candidate as cnpj on the peer only when found in the cited original source. FilingLens independently validates that number, legal company name and financial facts against the CVM DFP open-data service. Never infer or invent a CNPJ.",
     "Actively search for a public, auditable way to estimate issuer market share. Prefer regulator/open-data datasets; otherwise use a close public proxy only when numerator and denominator use the same period, geography and product basis.",
     "For any market-share proxy, return the raw numerator and denominator and let the application recompute the percentage. Never infer a denominator from narrative language.",
     "Do not manufacture TAM, concentration, CR3/CR5 or HHI. Calculate concentration only when cited share data are sufficient.",
@@ -511,6 +516,7 @@ async function catalogRecovery(input: {
       "Return 3-6 direct or segment peers when supported.",
       "The url field MUST be copied exactly from one source-catalog line. Do not invent, shorten, canonicalize or add query parameters.",
       "Keep relationship/positioning concise. Populate dataPoints, moatAssessment and outlook only from the memo and catalog; use empty dataPoints and null assessments when the catalog lacks support. Do not place Markdown links in narrative fields.",
+      "For Brazilian peers, provide an exact 14-digit official CNPJ as cnpj only when present in the cited discovery catalog. Never manufacture identifiers.",
       "Include sourced counterEvidence (moat erosion, disconfirming metrics and challenged assumptions) when the discovery catalog supports it. Never manufacture sources or challenge narratives.",
       "When cited source material explicitly provides company-wide financial figures, format at most 3 dataPoints per peer with exact labels Revenue, Net income, Operating income or Gross profit; values as ISO currency and decimal US scale (e.g. USD 1,234.5 millions), period as FY2025, and context stating consolidated US GAAP/IFRS/BR GAAP and exact period end YYYY-MM-DD. Only include scope, currency, reporting basis and end date when explicitly present in that SAME cited source. Never guess or normalize absent fields; otherwise retain original disclosure wording or omit.",
     ].join(" "),
@@ -535,7 +541,7 @@ async function catalogRecovery(input: {
   console.info(
     `[market-research] recovery candidates=${synthetic.peers.length} verified=${verified.peerEvidence.length} sources=${sources.length}`,
   );
-  return crosscheckCompetitiveFacts(verified);
+  return input.jurisdiction==="br"?crosscheckCvmPeers(verified):crosscheckCompetitiveFacts(verified);
 }
 
 export async function researchCompetitiveLandscape(input: {
@@ -581,7 +587,7 @@ export async function researchCompetitiveLandscape(input: {
     console.info(
       `[market-research] full candidates=${result.output.peers.length} verified=${verified.peerEvidence.length} sources=${sources.length} dropped=${verified.competitiveAnalysis.researchDiagnostics?.droppedClaims ?? 0}`,
     );
-    if (verified.peerEvidence.length > 0) return crosscheckCompetitiveFacts(verified);
+    if (verified.peerEvidence.length > 0) return input.jurisdiction==="br"?crosscheckCvmPeers(verified):crosscheckCompetitiveFacts(verified);
 
     console.warn("[market-research] full research returned no verified peers; using catalog recovery");
   } catch (error) {

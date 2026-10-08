@@ -80,6 +80,24 @@ export function buildPeerFinancialBenchmarks(data:FilingAnalysis):PeerBenchmarkR
     millions:amount.millions,basis,source:point.source,raw:point.value});
   }
  }
+ // Independently sourced, issuer-verified CVM DFP observations are eligible
+ // even when the research model did not return a matching SEC URL.
+ for(const peer of data.market.competitiveAnalysis?.peerProfiles??[]){
+  for(const fact of peer.officialHistory??[]){
+   if(fact.accountingBasis!=="br_gaap"||fact.currency!=="BRL"||
+    !/^20\d{2}-\d{2}-\d{2}$/.test(fact.periodEnd)||
+    fact.year!==Number(fact.periodEnd.slice(0,4))||
+    !fact.filingAccession.startsWith("CVM-DFP-")||
+    !evidenceUrl(fact.source))continue;
+   try{
+    const u=new URL(fact.source.url??"");
+    if(u.protocol!=="https:"||u.hostname!=="dados.cvm.gov.br")continue;
+   }catch{continue;}
+   rawFacts.push({peer:peer.name,metric:fact.metric,year:fact.year,
+    periodEnd:fact.periodEnd,currency:fact.currency,millions:fact.amountMillions,
+    basis:"br_gaap",source:fact.source,raw:`CVM DFP: ${fact.amountMillions} million BRL`});
+  }
+ }
  const count=new Map<string,number>();
  const key=(x:PeerFact)=>[x.peer.toLowerCase(),x.metric,x.year,x.periodEnd,x.basis].join("|");
  for(const x of rawFacts)count.set(key(x),(count.get(key(x))??0)+1);

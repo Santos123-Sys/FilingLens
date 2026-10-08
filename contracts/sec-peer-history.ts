@@ -5,9 +5,9 @@ import type {BenchmarkMetric} from "./peer-financial-benchmark";
 type Peer = NonNullable<MarketResult["market"]["competitiveAnalysis"]>["peerProfiles"][number];
 export type OfficialHistoryFact=NonNullable<Peer["officialHistory"]>[number];
 export type HistoricalGrowth={peer:string;metric:BenchmarkMetric;fromYear:number;toYear:number;
- growthPercent:number;periodEnd:string;currency:"USD";source:OfficialHistoryFact["source"]};
+ growthPercent:number;periodEnd:string;currency:OfficialHistoryFact["currency"];source:OfficialHistoryFact["source"]};
 export type MatchedCohort={year:number;periodEnd:string;metric:BenchmarkMetric;
- currency:"USD";facts:Array<{peer:string;valueMillions:number;source:OfficialHistoryFact["source"]}>};
+ currency:OfficialHistoryFact["currency"];facts:Array<{peer:string;valueMillions:number;source:OfficialHistoryFact["source"]}>};
 const normalize=(s:string)=>s.toLowerCase().replace(/&/g,"and").replace(/[^a-z0-9 ]+/g," ")
  .replace(/\b(?:inc|incorporated|corporation|corp|limited|ltd|plc|company|co)\b/g,"")
  .replace(/\s+/g," ").trim();
@@ -81,7 +81,7 @@ export function secHistoricalPeerCohorts(peers:Peer[]):{
   if(!prev)continue;
   const percent=(fact.amountMillions/prev.fact.amountMillions-1)*100;
   if(Number.isFinite(percent))growth.push({peer,metric:fact.metric,fromYear:prev.fact.year,toYear:fact.year,
-   growthPercent:Number(percent.toFixed(2)),periodEnd:fact.periodEnd,currency:"USD",source:fact.source});
+   growthPercent:Number(percent.toFixed(2)),periodEnd:fact.periodEnd,currency:fact.currency,source:fact.source});
  }
  const buckets=new Map<string,typeof facts>();
  for(const item of facts){
@@ -93,7 +93,7 @@ export function secHistoricalPeerCohorts(peers:Peer[]):{
   const distinct=new Set(values.map(x=>x.peer.toLowerCase()));
   if(distinct.size<2||distinct.size!==values.length)continue;
   const first=values[0].fact;
-  matched.push({year:first.year,periodEnd:first.periodEnd,metric:first.metric,currency:"USD",
+  matched.push({year:first.year,periodEnd:first.periodEnd,metric:first.metric,currency:first.currency,
    facts:values.map(v=>({peer:v.peer,valueMillions:v.fact.amountMillions,source:v.fact.source}))});
  }
  return {growth:growth.sort((a,b)=>b.toYear-a.toYear),matched,dataPoints:facts.length};
