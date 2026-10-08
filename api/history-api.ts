@@ -4,6 +4,8 @@ import { z } from "zod";
 import { createHistoryStore } from "../db/history-store";
 import { buildAnnualHistory } from "../contracts/annual-history-adapter";
 import { reconcileFinancialHistory } from "../contracts/financial-history";
+import { financialsSchema } from "../contracts/analysis";
+import { prepareFinancialObservations } from "../contracts/history-ingestion";
 
 const date = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
 const observation = z.object({
@@ -45,6 +47,34 @@ export function registerHistoryApi(app:Hono) {
    await store.replaceObservations(source.id,observations);
    return c.json({companyId:issuer.id,filingId:source.id,count:observations.length});
   } catch(e) {console.error("[history] ingestion failed",e instanceof Error?e.name:"unknown");return c.json({error:"history_store_unavailable"},503);}
+  finally {await store.close();}
+ });
+
+ const analyzedUpload = upload.omit({ observations: true }).extend({
+  financials: financialsSchema.shape.financials,
+  periods: z.array(z.object({
+   label:z.string().min(1),endDate:date,fiscalYear:z.number().int().min(1900).max(2200),
+   periodKind:z.enum(["FY","Q","YTD","LTM"]),
+   fiscalQuarter:z.union([z.literal(1),z.literal(2),z.literal(3),z.literal(4)]).optional(),
+  })).min(1).max(5),
+  currency:z.string().min(1).max(8),
+  unit:z.string().min(1).max(64),
+ });
+ app.post("/api/internal/history/ingest-analysis",async c=>{
+  const parsed=analyzedUpload.safeParse(await c.req.json().catch(()=>null));
+  if(!parsed.success) return c.json({error:"invalid_analysis_payload"},400);
+  const {company,filing,financials,periods,currency,unit}=parsed.data;
+  const mapped=prepareFinancialObservations({
+    financials,periods,filingId:filing.filingKey,filedAt:filing.filedAt,currency,unit,sourceUrl:filing.sourceUrl ?? undefined,
+  });
+  if(!mapped.observations.length) return c.json({error:"no_verified_observations",issues:mapped.issues},422);
+  const store=createHistoryStore(process.env.DATABASE_URL!);
+  try {
+   const issuer=await store.saveCompany(company);
+   const source=await store.saveFiling({...filing,companyId:issuer.id});
+   await store.replaceObservations(source.id,mapped.observations);
+   return c.json({companyId:issuer.id,filingId:source.id,stored:mapped.observations.length,excluded:mapped.issues.length,issues:mapped.issues});
+  } catch(e) {console.error("[history] analysis ingestion failed",e instanceof Error?e.name:"unknown");return c.json({error:"history_store_unavailable"},503);}
   finally {await store.close();}
  });
  app.get("/api/internal/history/company/:id",async c=>{
