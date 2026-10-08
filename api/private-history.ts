@@ -63,7 +63,6 @@ export function registerPrivateHistory(app:Hono) {
   if(!secret || secret.length<32 || !process.env.DATABASE_URL)return c.json({error:"history_disabled"},503);
   const session=sessionFromCookie(c.req.header("Cookie"),secret);
   if(!session)return c.json({error:"history_session_required"},401);
-  c.set("historySession" as never,session);
   c.header("Cache-Control","no-store");
   await next();
  });
