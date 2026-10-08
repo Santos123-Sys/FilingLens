@@ -39,7 +39,15 @@ Still pending for full milestone completion: officially authenticated CVM/IFRS p
 - Tests include cross-currency, mismatched year-end, unknown issuer basis, ambiguous formats, negative net income and duplicate handling.
 - No new database service, agent or outside research calls are added merely to calculate comparisons.
 
-## Milestone 2.4 — Forward outlook and valuation-driver bridge (pending)
+## Milestone 2.4 — Forward outlook and valuation-driver bridge (first implementation)
+- Deterministic evidence-gated historical driver baseline: consecutive source-cited FY revenue growth, matching EBIT margin, capex intensity.
+- Separate cited management guidance from peer analyst outlook; never equate them.
+- User explicitly initializes, edits and approves bear/base/bull assumptions with probability weights summing to 100%. All scenario deltas are analyst illustrations, never company guidance or AI predictions.
+- Project third-year revenue, EBIT, capex and EBIT-less-capex as an *operating contribution proxy*, NOT FCFF, intrinsic enterprise value or equity price.
+- Rank the impact of a 1-percentage-point perturbation in operating driver assumptions on that proxy; never represent proxy sensitivity as valuation sensitivity.
+- Connect to the existing independently approved DCF WACC × terminal growth and implied per-share valuation if and only if a completed valuation exists.
+- Fail closed on missing source evidence, inconsistent FY periods and incomplete assumption validation.
+- Full valuation impact from scenario-driven multi-year DCF reruns remains outside this initial increment; pre-existing assumption-gated DCF is preserved.
 - Turn cited company/segment guidance and independently cited competitor outlook into explicitly probabilistic revenue/margin/capex drivers.
 - Quantify model sensitivity and flag which inputs are material to valuation instead of amplifying interesting but irrelevant news.
 - Never equate a competitor analyst's narrative with management guidance; label source nature.
