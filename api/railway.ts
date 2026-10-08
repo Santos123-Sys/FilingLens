@@ -4,8 +4,10 @@ import { readFile } from "node:fs/promises";
 import app, { registerRegulatoryArchiver } from "./boot";
 import { persistPublicRegulatorySnapshot, readPublicRegulatorySnapshots } from "./regulatory-snapshot-store";
 import { registerHistoryApi } from "./history-api";
+import { registerPrivateHistory } from "./private-history";
 
 registerHistoryApi(app);
+registerPrivateHistory(app);
 registerRegulatoryArchiver(persistPublicRegulatorySnapshot);
 app.get("/api/regulatory-history/:jurisdiction/:registryId",async c=>{
   const jurisdiction=c.req.param("jurisdiction");
