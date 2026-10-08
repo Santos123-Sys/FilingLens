@@ -100,11 +100,11 @@ export function buildValuationDriverBridge(
  const scenarios=scenarioInputs.map(calc);
  const base=scenarioInputs.find(x=>x.name==="base")!;
  const sensitivity:DriverBridge["sensitivity"]=[
-  {name:"revenueGrowth",deltaOnePoint:calc({...base,revenueGrowthPercent:base.revenueGrowthPercent+1}).thirdYearEbitLessCapex
+  {name:"revenueGrowth" as const,deltaOnePoint:calc({...base,revenueGrowthPercent:base.revenueGrowthPercent+1}).thirdYearEbitLessCapex
     -calc(base).thirdYearEbitLessCapex},
-  {name:"ebitMargin",deltaOnePoint:calc({...base,ebitMarginPercent:base.ebitMarginPercent+1}).thirdYearEbitLessCapex
+  {name:"ebitMargin" as const,deltaOnePoint:calc({...base,ebitMarginPercent:base.ebitMarginPercent+1}).thirdYearEbitLessCapex
     -calc(base).thirdYearEbitLessCapex},
-  {name:"capexIntensity",deltaOnePoint:calc({...base,capexPercentRevenue:base.capexPercentRevenue+1}).thirdYearEbitLessCapex
+  {name:"capexIntensity" as const,deltaOnePoint:calc({...base,capexPercentRevenue:base.capexPercentRevenue+1}).thirdYearEbitLessCapex
     -calc(base).thirdYearEbitLessCapex},
  ].sort((a,b)=>Math.abs(b.deltaOnePoint)-Math.abs(a.deltaOnePoint));
  return {status:"ready",historical,guidance,peerOutlooks,scenarios,sensitivity,dcfLink,flags};
