@@ -48,7 +48,7 @@ export function buildValuationDriverBridge(
  const ebitPeriod=ebit?f.years[ebit.index]:"";
  const capexPeriod=capex?f.years[capex.index]:"";
  const alignment=Boolean(revenue&&revenue.value>0&&ebit?.year===revenue.year&&capex?.year===revenue.year);
- const metrics:[
+ const metrics=[
   {name:"revenueGrowth" as const,period:revPeriod,value:growth,evidence:revenue&&previous.length===1
    ?[metricEvidence(data,"revenue",revPeriod),metricEvidence(data,"revenue",previous[0].period)] : []},
   {name:"ebitMargin" as const,period:ebitPeriod,value:alignment&&ebit ?ebit.value/revenue!.value*100:null,
