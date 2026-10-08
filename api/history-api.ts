@@ -64,10 +64,6 @@ export function registerHistoryApi(app:Hono) {
   const parsed=analyzedUpload.safeParse(await c.req.json().catch(()=>null));
   if(!parsed.success) return c.json({error:"invalid_analysis_payload"},400);
   const {company,filing,financials,periods,currency,unit}=parsed.data;
-  if(periods.some(p=>p.endDate!==filing.periodEnd && p.fiscalYear===Number(filing.periodEnd.slice(0,4)) && p.periodKind==="FY")) {
-    // Different fiscal years may coexist; do not infer annual period-end dates from labels.
-    return c.json({error:"filing_period_conflict"},422);
-  }
   const mapped=prepareFinancialObservations({
     financials,periods,filingId:filing.filingKey,filedAt:filing.filedAt,currency,unit,sourceUrl:filing.sourceUrl ?? undefined,
   });
