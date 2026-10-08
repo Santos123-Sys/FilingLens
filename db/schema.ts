@@ -48,3 +48,15 @@ export const regulatorySnapshots = mysqlTable("regulatory_snapshots", {
   payloadJson: text("payload_json").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 },t=>[uniqueIndex("uq_reg_snapshot_day").on(t.companyId,t.snapshotDay),index("ix_reg_snapshot_company").on(t.companyId,t.createdAt)]);
+
+/** Browser-scoped, opt-in analysis history; no public registry lookup is allowed. */
+export const privateAnalysisHistory = mysqlTable("private_analysis_history",{
+ id:bigint("id",{mode:"number",unsigned:true}).autoincrement().primaryKey(),
+ workspaceHash:varchar("workspace_hash",{length:64}).notNull(),
+ filingKeyHash:varchar("filing_key_hash",{length:64}).notNull(),
+ jurisdiction:varchar("jurisdiction",{length:2}).notNull(),
+ issuerName:varchar("issuer_name",{length:255}).notNull(),
+ periodEnd:varchar("period_end",{length:32}).notNull(),
+ payloadJson:text("payload_json").notNull(),
+ savedAt:timestamp("saved_at").notNull().defaultNow(),
+},t=>[uniqueIndex("uq_private_history").on(t.workspaceHash,t.filingKeyHash),index("ix_private_workspace").on(t.workspaceHash,t.savedAt)]);
