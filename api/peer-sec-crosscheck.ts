@@ -1,6 +1,7 @@
 import type { MarketResult } from "../contracts/analysis";
 import { corroborateSecPeerPoint, secFilingIdentity, secProofUrl } from "../contracts/sec-peer-proof";
 import type { SecCompanyFacts } from "../contracts/sec-peer-proof";
+import { collectSecHistoricalFacts } from "../contracts/sec-peer-history";
 
 type Profiles=NonNullable<MarketResult["market"]["competitiveAnalysis"]>;
 type Research={peerEvidence:NonNullable<MarketResult["market"]["peerEvidence"]>;competitiveAnalysis:Profiles};
@@ -38,16 +39,21 @@ export async function crosscheckCompetitiveFacts(
    catch{results.set(cik,null);}
   }));
  }
- const peers=research.competitiveAnalysis.peerProfiles.map(peer=>({
-  ...peer,
-  ...(peer.dataPoints ? {dataPoints:peer.dataPoints.map(item=>{
+ const peers=research.competitiveAnalysis.peerProfiles.map(peer=>{
+  const dataPoints=(peer.dataPoints??[]).map(item=>{
    const id=secFilingIdentity(item.source);
    const proof=corroborateSecPeerPoint(peer.name,item,id?(results.get(id.cik)??null):null);
    return {...item,primaryVerification:proof};
-  })}:{}),
- }));
+  });
+  const verifiedCiks=[...new Set(dataPoints.filter(x=>x.primaryVerification.status==="verified")
+   .map(x=>x.primaryVerification.cik).filter((x):x is string=>Boolean(x)))];
+  const history=verifiedCiks.length===1
+   ?collectSecHistoricalFacts(peer.name,verifiedCiks[0],results.get(verifiedCiks[0])??null)
+   :[];
+  return {...peer,...(peer.dataPoints?{dataPoints}:{}),...(history.length?{officialHistory:history}:{})};
+ });
  const validated=peers.reduce((sum,peer)=>sum+(peer.dataPoints??[])
   .filter(x=>x.primaryVerification?.status==="verified").length,0);
- console.info(`[peer-sec-proof] candidate_peers=${peers.length} matched_xbrl_points=${validated} lookups=${results.size}`);
+ console.info(`[peer-sec-proof] candidate_peers=${peers.length} matched_xbrl_points=${validated} lookups=${results.size} peer_history=${peers.reduce((n,p)=>n+(p.officialHistory?.length??0),0)}`);
  return {...research,competitiveAnalysis:{...research.competitiveAnalysis,peerProfiles:peers}};
 }

@@ -12,7 +12,7 @@ export type SecCompanyFacts = {
     fp?:string; fy?:number; val?:number;
   }>>}>>;
 };
-const tags:Record<string,string[]>={
+export const SEC_METRIC_TAGS:Record<string,string[]>={
  revenue:["RevenueFromContractWithCustomerExcludingAssessedTax","Revenues","SalesRevenueNet"],
  netIncome:["NetIncomeLoss","ProfitLoss"],
  operatingIncome:["OperatingIncomeLoss"],
@@ -64,7 +64,7 @@ export function corroborateSecPeerPoint(peerName:string,point:Point,companyFacts
  const namespace=companyFacts.facts?.["us-gaap"];
  if(!namespace)return fallback("source_mismatch",identity);
  const valid:number[]=[];
- for(const tag of tags[metric]??[]){
+ for(const tag of SEC_METRIC_TAGS[metric]??[]){
   for(const row of namespace[tag]?.units?.USD??[]){
    if(!Number.isFinite(row.val)||row.form!=="10-K"&&row.form!=="10-K/A"||
       row.fp!=="FY"||row.end!==end||!row.start||!isoDate(row.start))continue;

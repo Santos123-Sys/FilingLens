@@ -152,6 +152,16 @@ export const marketSchema = z.object({
             proofUrl: z.string().optional(),
           }).optional(),
         })).max(6).optional(),
+        officialHistory: z.array(z.object({
+          metric: z.enum(["revenue","netIncome","operatingIncome","grossProfit"]),
+          year: z.number().int().min(2000).max(2200),
+          periodEnd: z.string(),
+          amountMillions: z.number(),
+          currency: z.literal("USD"),
+          accountingBasis: z.literal("us_gaap"),
+          filingAccession: z.string(),
+          source: evidenceReferenceSchema,
+        })).max(20).optional(),
         moatAssessment: z.object({
           rating: z.enum(["strong", "moderate", "limited", "unclear"]),
           confidence: z.enum(["high", "medium", "low"]),

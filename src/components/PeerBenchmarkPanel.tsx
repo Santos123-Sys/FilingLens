@@ -3,6 +3,7 @@ import type { FilingAnalysis } from "@contracts/analysis";
 import { buildPeerFinancialBenchmarks } from "@contracts/peer-financial-benchmark";
 import type { PeerFact } from "@contracts/peer-financial-benchmark";
 import { evidenceUrl } from "@contracts/peer-evidence-audit";
+import { secHistoricalPeerCohorts } from "@contracts/sec-peer-history";
 type Lang="en"|"pt";
 const num=(value:number,lang:Lang)=>new Intl.NumberFormat(lang==="pt"?"pt-BR":"en-US",{maximumFractionDigits:2}).format(value);
 const metricName=(metric:PeerFact["metric"],pt:boolean):string=>({
@@ -12,6 +13,7 @@ const metricName=(metric:PeerFact["metric"],pt:boolean):string=>({
 })[metric];
 export default function PeerBenchmarkPanel({data,lang}:{data:FilingAnalysis;lang:Lang}){
  const result=useMemo(()=>buildPeerFinancialBenchmarks(data),[data]);
+ const official=useMemo(()=>secHistoricalPeerCohorts(data.market.competitiveAnalysis?.peerProfiles??[]),[data]);
  const pt=lang==="pt";
  return <section className="rounded-2xl border border-slate-700 bg-slate-900/65 p-4 sm:p-5">
   <div className="flex flex-wrap items-start justify-between gap-2">
@@ -57,6 +59,23 @@ export default function PeerBenchmarkPanel({data,lang}:{data:FilingAnalysis;lang
    <ul className="mt-2 space-y-2 text-xs text-slate-300">{result.comparisons.slice(0,12).map((v,index)=>
     <li key={index}>{v.peer} · {metricName(v.metric,pt)} · FY{v.year}: {v.currency} {num(v.peerMillions,lang)}m {pt?"vs. emissor":"vs. issuer"} {num(v.issuerMillions,lang)}m
      {v.differencePercent!==null?` (${num(v.differencePercent,lang)}%)`:""}</li>)}</ul>
+  </div>}
+  {official.dataPoints>0 && <div className="mt-5 rounded-xl border border-slate-700 bg-slate-950/40 p-3">
+   <h4 className="text-xs font-semibold text-white">{pt?"Histórico oficial de concorrentes — SEC":"Official peer history — SEC"} ({official.dataPoints})</h4>
+   <p className="mt-2 text-[11px] text-slate-400">{pt?
+    "Dados extraídos do SEC CompanyFacts para companhias cuja identidade e ao menos um indicador foram corroborados. Conflitos de tags ou revisões são omitidos; períodos, moeda e escopo devem coincidir para benchmarks.":
+    "Regulator-derived annual data for peers with a corroborated identity and at least one verified metric. Conflicting tags or restatements are omitted; peer comparison requires matching fiscal year-end, currency and scope."}</p>
+   <div className="mt-3 overflow-x-auto"><table className="w-full min-w-[530px] text-left text-xs">
+    <thead><tr className="border-b border-slate-700 text-slate-400"><th className="p-2">{pt?"Concorrente":"Peer"}</th><th className="p-2">{pt?"Indicador":"Metric"}</th><th className="p-2">{pt?"Ano":"Year"}</th><th className="p-2">{pt?"Crescimento YoY":"YoY growth"}</th><th className="p-2">{pt?"Fonte oficial":"Official source"}</th></tr></thead>
+    <tbody>{official.growth.slice(0,22).map((g,i)=><tr key={g.peer+g.metric+g.toYear+i} className="border-b border-slate-800">
+     <td className="p-2 text-slate-200">{g.peer}</td><td className="p-2 text-slate-300">{metricName(g.metric,pt)}</td>
+     <td className="p-2 text-slate-300">{g.fromYear} → {g.toYear}</td>
+     <td className="p-2 tabular-nums text-cyan-200">{num(g.growthPercent,lang)}%</td>
+     <td className="p-2">{evidenceUrl(g.source)?<a href={evidenceUrl(g.source)!} target="_blank" rel="noopener noreferrer" className="text-cyan-300 underline">SEC</a>:"—"}</td>
+    </tr>)}</tbody>
+   </table></div>
+   {official.matched.length>0?<p className="mt-3 text-[11px] text-emerald-300">{official.matched.length} {pt?"coortes com período final e GAAP idênticos":"cohorts with identical period end and GAAP basis"}</p>:
+    <p className="mt-3 text-[11px] text-amber-300">{pt?"Sem coorte de múltiplos concorrentes com mesmo fechamento fiscal; não forçar comparações.":"No multi-peer cohort with identical fiscal year-end; cross-company comparisons are withheld."}</p>}
   </div>}
   {result.flags.length>0 && <details className="mt-4 rounded-xl border border-amber-900/40 bg-amber-950/10 p-3 text-xs text-amber-200">
    <summary className="cursor-pointer">{pt?"Dados excluídos ou não comparáveis":"Excluded or non-comparable observations"} ({result.flags.length})</summary>
