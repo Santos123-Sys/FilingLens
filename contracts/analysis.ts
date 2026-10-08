@@ -107,6 +107,9 @@ export const marketFilingSchema = z.object({
       name: z.string(),
       revenue: z.array(z.number()),
       earnings: z.array(z.number()).nullable(),
+      /** Source-disclosed reporting scale; never infer from consolidated accounts. */
+      unit: z.string().max(64).optional(),
+      currency: z.string().max(8).optional(),
       periods: z.array(z.string()).max(5).optional(),
       sourceType: z.literal("filing").optional(),
       source: evidenceReferenceSchema.nullable().optional(),
@@ -208,6 +211,9 @@ export const marketSchema = z.object({
         name: z.string(),
         revenue: z.array(z.number()),
         earnings: z.array(z.number()).nullable(),
+        /** Source-disclosed reporting scale; never infer from consolidated accounts. */
+        unit: z.string().max(64).optional(),
+        currency: z.string().max(8).optional(),
         periods: z.array(z.string()).max(5).optional(),
         sourceType: z.enum(["filing", "external"]).optional(),
         source: evidenceReferenceSchema.nullable().optional(),

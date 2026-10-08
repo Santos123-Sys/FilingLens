@@ -1,4 +1,5 @@
 import type { MarketResult } from "../contracts/analysis";
+import { buildSegmentIntelligence } from "../contracts/segment-intelligence";
 
 function parsePeriod(period: string): { year: number; quarter: number | null } | null {
   const value = period.trim();
@@ -69,6 +70,13 @@ export function validateMarketOutput(input: MarketResult): MarketResult {
 
   const geographies = validatedSeries(market.geographies, "geography");
   const segments = validatedSeries(market.segments, "segment");
+  // Deterministic, non-AI Phase 2 source and comparability audit.
+  const segmentAudit = buildSegmentIntelligence({ ...market, segments });
+  flags.push(...segmentAudit.flags.map(flag => ({
+    code: `SEGMENT_${flag.code}`,
+    note: `${flag.segment}: ${flag.detail}`,
+  })));
+
   const insights: NonNullable<typeof market.insights> = [];
   const series = [
     ...segments.flatMap(item => [

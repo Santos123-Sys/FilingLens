@@ -1,0 +1,34 @@
+import {describe,expect,it} from "vitest";
+import type {MarketResult} from "./analysis";
+import {auditPeerEvidence,evidenceUrl} from "./peer-evidence-audit";
+const citation=(url:string)=>({section:"Investor relations",kind:"citation" as const,url});
+describe("competitive evidence audit",()=>{
+ it("refuses unsafe or uncited source URLs",()=>{
+  expect(evidenceUrl(citation("http://example.org"))).toBeNull();
+  expect(evidenceUrl({...citation("https://example.org"),kind:"excerpt"})).toBeNull();
+ });
+ it("marks missing numerical, moat and outlook support without inventing a score",()=>{
+  const data={status:"partial",methodology:"market-research-brief",peerProfiles:[{
+   name:"Peer A",relationship:"competes",positioning:"similar market",strengths:[],vulnerabilities:[],
+   source:citation("https://example.org/peers")
+  }],findings:[]} as unknown as NonNullable<MarketResult["market"]["competitiveAnalysis"]>;
+  const a=auditPeerEvidence(data);
+  expect(a[0].numericDataPoints).toBe(0);
+  expect(a[0].moatEvidencePoints).toBe(0);
+  expect(a[0].hasOutlookEvidence).toBe(false);
+  expect(a[0].gaps).toHaveLength(4);
+ });
+ it("counts distinct source hosts, not duplicate citations as independent publications",()=>{
+  const data={peerProfiles:[{name:"B",source:citation("https://a.example/a"),
+   relationship:"direct",positioning:"",strengths:[],vulnerabilities:[],
+   dataPoints:[{label:"Sales",value:"10",period:"FY2025",context:"",source:citation("https://a.example/b")}],
+   moatAssessment:{rating:"unclear",confidence:"low",summary:"",evidence:[
+    {dimension:"Switching costs",assessment:"Limited",source:citation("https://b.example/c")} ]},
+   outlook:{stance:"mixed",horizon:"12 months",summary:"",drivers:[],risks:[],source:citation("https://b.example/c")}}],
+  } as unknown as NonNullable<MarketResult["market"]["competitiveAnalysis"]>;
+  const a=auditPeerEvidence(data);
+  expect(a[0].uniqueSourceHosts).toBe(2);
+  expect(a[0].numericDataPoints).toBe(1);
+  expect(a[0].gaps).toEqual([]);
+ });
+});
