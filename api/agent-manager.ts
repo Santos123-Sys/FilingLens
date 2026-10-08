@@ -86,9 +86,9 @@ export function mergeMarketResearchPeers(
   const peerEvidence = [...(market.peerEvidence ?? []), ...uniqueExternal]
     .filter((peer, index, all) => all.findIndex(candidate => candidate.name.trim().toLowerCase() === peer.name.trim().toLowerCase()) === index)
     .slice(0, 12);
-  const status = competitiveAnalysis?.status === "complete" || competitiveAnalysis?.status === "partial"
-    ? "complete"
-    : uniqueExternal.length ? "complete" : "no_citable_results";
+  const hasSourceBoundResearch=(competitiveAnalysis?.peerProfiles.length??0)>0 ||
+    (competitiveAnalysis?.findings.length??0)>0 || uniqueExternal.length>0;
+  const status=hasSourceBoundResearch?"complete":"no_citable_results";
   return {
     market: {
       ...market,
@@ -353,6 +353,17 @@ export const agentManager = {
     }
     const diagnostic = assessCompleteness("market", result, { jurisdiction });
     diagnostic.enrichmentStatus = result.market.externalResearchStatus === "complete" ? "full" : "skipped";
+    // Filing-derived industry context may be complete even when external
+    // competitive research fails. Never label the market-research stage a
+    // completed peer deep dive with zero source-bound peer profiles/findings.
+    const hasCitedResearch=(result.market.competitiveAnalysis?.peerProfiles.length??0)>0 ||
+      (result.market.competitiveAnalysis?.findings.length??0)>0;
+    if(!hasCitedResearch && !((result.market.peerEvidence??[]).length)){
+      diagnostic.status="incomplete";
+      diagnostic.reason="external_competitive_research_no_citations";
+      diagnostic.missing=[...(diagnostic.missing??[]),"source-bound external peer research"];
+      diagnostic.warnings=[...(diagnostic.warnings??[]),"external_competitive_research_empty"];
+    }
     if (researchUnavailable) {
       diagnostic.warnings = [...(diagnostic.warnings ?? []), "external_competitive_research_unavailable"];
     }
