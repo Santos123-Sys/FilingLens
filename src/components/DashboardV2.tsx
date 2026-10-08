@@ -24,6 +24,7 @@ import type {
   ModuleDiagnostic,
 } from "@contracts/analysis";
 import { formatFilingNumber } from "@/lib/number-format";
+import HistoryWorkbench from "./HistoryWorkbench";
 import { filingLensTheme, qualityClasses, type QualityTone } from "@/lib/design-system";
 
 type Lang = "en" | "pt";
@@ -416,6 +417,7 @@ export default function DashboardV2({ data, lang }: { data: FilingAnalysis; lang
               <KpiCard label={c.cash} value={amount(latest(f.cash), data, lang)} detail={latestPeriod} />
             </div>
             {chartYears.length && (chartRevenue.length || chartNetIncome.length) ? <div className={`${filingLensTheme.surfaceRaised} rounded-2xl p-4 sm:p-5`}><div className="mb-2 flex flex-wrap items-center justify-between gap-3"><div><p className={filingLensTheme.label}>{annual?.years?.length ? c.annualHistory : c.trend}</p><p className="mt-1 text-xs text-slate-500">{annual?.unit ?? f.unit}</p></div><div className="flex items-center gap-2"><Database className="h-4 w-4 text-slate-600" />{annual?.provider && <span className="rounded-full border border-emerald-500/25 bg-emerald-500/10 px-2 py-1 text-[9px] font-semibold text-emerald-200">{c.annualHistorySource} · {annual.provider}</span>}</div></div><Chart option={financialOption} label={annual?.years?.length ? c.annualHistory : c.trend} /></div> : <EmptyState icon={BarChart3} title={c.financials} text={c.noFinancial} />}
+            <HistoryWorkbench data={data} lang={lang} />
             {(f.forwardGuidance?.length ?? 0) > 0 && <div className={`${filingLensTheme.surface} rounded-2xl p-5`}><p className={filingLensTheme.label}>{lang === "pt" ? "Guidance divulgado" : "Disclosed guidance"}</p><div className="mt-3 grid gap-2 md:grid-cols-2">{f.forwardGuidance!.slice(0, 8).map((item, index) => <div key={index} className={`${filingLensTheme.inset} rounded-lg p-3`}><p className="text-xs font-semibold text-slate-200">{item.metric} · {item.period}</p><p className="mt-1 text-xs text-cyan-300">{item.range}</p><p className="mt-2 text-[9px] text-slate-600">{sourceText(item.source, lang)}</p></div>)}</div></div>}
           </div>
         )}
