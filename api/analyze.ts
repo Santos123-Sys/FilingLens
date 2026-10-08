@@ -26,6 +26,14 @@ const BR_RISK_HEADINGS = [
   /riscos?\s+relacionad[oa]s?\s+(?:ao|aos|à|às)\s+(?:emissor|controlador|controladores|atividade|setor)/i,
   /riscos?\s+(?:ambientais|sociais|clim[aá]ticos|regulat[oó]rios|operacionais|financeiros)/i,
 ];
+const BR_SEGMENT_HEADINGS = [
+  /segmentos?\s+(?:operacionais|de\s+neg[oó]cios)/i,
+  /informa(?:ç|c)(?:ões|oes)\s+(?:cont[aá]beis?\s+)?por\s+segmento/i,
+  /resultados?\s+por\s+segmento(?:\s+de\s+neg[oó]cios?)?/i,
+  /receita(?:\s+l[ií]quida)?\s+por\s+segmento/i,
+  /desempenho\s+por\s+segmento/i,
+  /segmento\s+de\s+neg[oó]cios?\s*[-–—:]?\s*(?:receita|resultado|informa(?:ç|c)(?:ões|oes))/i,
+];
 const BR_MARKET_HEADINGS = [
   /segmentos?\s+(?:operacionais|de\s+neg[oó]cios)/i,
   /informa(?:ç|c)(?:ões|oes)\s+por\s+segmento/i,
@@ -49,6 +57,13 @@ const SEC_RISK_HEADINGS = [
   /item\s+1a\.?\s+risk\s+factors/i,
   /no\s+material\s+changes?.{0,140}risk\s+factors/i,
   /risk\s+factors?\s+(?:set\s+forth|described|disclosed)/i,
+];
+const SEC_SEGMENT_HEADINGS = [
+  /segment\s+information/i,
+  /reportable\s+segments?/i,
+  /segment(?:ed)?\s+(?:net\s+)?sales/i,
+  /revenue\s+by\s+(?:specialized\s+market|market\s+platform|segment|geograph)/i,
+  /operating\s+segments?/i,
 ];
 const SEC_MARKET_HEADINGS = [
   /segment\s+information/i,
@@ -113,11 +128,11 @@ function matchStarts(text: string, patterns: RegExp[]): number[] {
  * Income" can consume separate windows while a distant balance sheet or cash
  * flow statement is starved from the bounded prompt.
  */
-function spacedSectionStarts(starts: number[]): number[] {
+function spacedSectionStarts(starts: number[], minSpacing = MIN_SECTION_SPACING): number[] {
   const spaced: number[] = [];
   for (const start of starts) {
     const previous = spaced.at(-1);
-    if (previous === undefined || start - previous >= MIN_SECTION_SPACING) spaced.push(start);
+    if (previous === undefined || start - previous >= minSpacing) spaced.push(start);
   }
   return spaced;
 }
@@ -133,11 +148,13 @@ function surroundingMatches(
   totalBudget: number,
   maxMatches = 5,
   preferLast = false,
+  minSpacing = MIN_SECTION_SPACING,
+  minWindowChars = 4_000,
 ): string {
-  const starts = spacedSectionStarts(matchStarts(text, patterns));
+  const starts = spacedSectionStarts(matchStarts(text, patterns), minSpacing);
   if (!starts.length) return "";
   const selected = preferLast ? starts.slice(-maxMatches) : starts.slice(0, maxMatches);
-  const perMatch = Math.max(4_000, Math.floor(totalBudget / selected.length));
+  const perMatch = Math.max(minWindowChars, Math.floor(totalBudget / selected.length));
   return selected
     .map(start => text.slice(Math.max(0, start - 1_200), Math.min(text.length, start + perMatch - 1_200)))
     .join("\n\n");
@@ -237,8 +254,16 @@ function buildSingleAgentInput(agent: AgentName, text: string, budget: number): 
     case "market":
       return cap([
         first,
-        surroundingMatches(text, SEC_MARKET_HEADINGS, Math.floor(budget * 0.75), 6),
-        surroundingMatches(text, BR_MARKET_HEADINGS, Math.floor(budget * 0.70), 5),
+        surroundingMatches(
+          text,
+          [...SEC_SEGMENT_HEADINGS, ...BR_SEGMENT_HEADINGS],
+          Math.floor(budget * 0.76),
+          4,
+          false,
+          1_500,
+          12_000,
+        ),
+        surroundingMatches(text, [...SEC_MARKET_HEADINGS, ...BR_MARKET_HEADINGS], Math.floor(budget * 0.64), 6),
       ]);
     case "profiler":
       return cap([
