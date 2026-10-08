@@ -254,8 +254,16 @@ function buildSingleAgentInput(agent: AgentName, text: string, budget: number): 
     case "market":
       return cap([
         first,
-        surroundingMatches(text, SEC_MARKET_HEADINGS, Math.floor(budget * 0.75), 6),
-        surroundingMatches(text, BR_MARKET_HEADINGS, Math.floor(budget * 0.70), 5),
+        surroundingMatches(
+          text,
+          [...SEC_SEGMENT_HEADINGS, ...BR_SEGMENT_HEADINGS],
+          Math.floor(budget * 0.76),
+          4,
+          false,
+          1_500,
+          12_000,
+        ),
+        surroundingMatches(text, [...SEC_MARKET_HEADINGS, ...BR_MARKET_HEADINGS], Math.floor(budget * 0.64), 6),
       ]);
     case "profiler":
       return cap([
