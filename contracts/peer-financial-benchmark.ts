@@ -3,7 +3,7 @@ import { evidenceUrl } from "./peer-evidence-audit";
 
 export type BenchmarkMetric = "revenue" | "netIncome" | "operatingIncome" | "grossProfit";
 type Basis = "us_gaap" | "ifrs" | "br_gaap";
-type Currency = "USD" | "BRL";
+export type Currency = "USD" | "BRL" | "EUR" | "GBP" | "CHF";
 type Scale = "thousands" | "millions" | "billions";
 export type PeerFact = { peer:string; metric:BenchmarkMetric; year:number; periodEnd:string;
  currency:Currency; millions:number; basis:Basis; source:EvidenceReference; raw:string };
@@ -32,11 +32,11 @@ export const metricOf=(s:string):BenchmarkMetric|null=>{
 };
 const factor=(s:Scale)=>s==="thousands"?0.001:s==="billions"?1000:1;
 const unitOf=(s:string):{currency:Currency;scale:Scale}|null=>{
- const m=/^(USD|BRL)\s+(thousands|millions|billions)$/i.exec(s.trim());
+ const m=/^(USD|BRL|EUR|GBP|CHF)\s+(thousands|millions|billions)$/i.exec(s.trim());
  return m?{currency:m[1].toUpperCase() as Currency,scale:m[2].toLowerCase() as Scale}:null;
 };
 export const parseValue=(s:string):{currency:Currency;millions:number}|null=>{
- const m=/^(USD|BRL)\s+(-?(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d{1,3})?)\s+(thousands?|millions?|billions?)$/i.exec(s.trim());
+ const m=/^(USD|BRL|EUR|GBP|CHF)\s+(-?(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d{1,3})?)\s+(thousands?|millions?|billions?)$/i.exec(s.trim());
  if(!m)return null;
  const scale=m[3].toLowerCase().replace(/s$/,"")+"s";
  const value=Number(m[2].replaceAll(",",""))*factor(scale as Scale);
@@ -68,6 +68,10 @@ export function buildPeerFinancialBenchmarks(data:FilingAnalysis):PeerBenchmarkR
    const periodEnd=periodEndOf(point.context);
    if(!periodEnd||Number(periodEnd.slice(0,4))!==year){reject("MISSING_FISCAL_YEAR_END",`${metric} FY${year}`);continue;}
    if(!evidenceUrl(point.source)){reject("NO_HTTPS_SOURCE",`${metric} FY${year}`);continue;}
+   if(point.primaryVerification?.status==="verified"&&
+      ((point.primaryVerification.accountingBasis??"us_gaap")!==basis)){
+    reject("PRIMARY_ACCOUNTING_BASIS_MISMATCH",`${metric} FY${year}`);continue;
+   }
    if(point.primaryVerification?.status!=="verified"){
     reject("UNVERIFIED_PRIMARY_FIGURE",`${metric} FY${year}: ${point.primaryVerification?.status??"not_checked"}; excludes unsupported official numeric values`);
     continue;
