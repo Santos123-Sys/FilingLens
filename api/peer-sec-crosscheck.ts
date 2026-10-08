@@ -2,6 +2,7 @@ import type { MarketResult } from "../contracts/analysis";
 import { corroborateSecPeerPoint, secFilingIdentity, secProofUrl } from "../contracts/sec-peer-proof";
 import type { SecCompanyFacts } from "../contracts/sec-peer-proof";
 import { collectSecHistoricalFacts } from "../contracts/sec-peer-history";
+import {cachedSecCompanyFacts} from "./sec-bulk-cache";
 
 type Profiles=NonNullable<MarketResult["market"]["competitiveAnalysis"]>;
 type Research={peerEvidence:NonNullable<MarketResult["market"]["peerEvidence"]>;competitiveAnalysis:Profiles};
@@ -12,7 +13,11 @@ const MAX_CIK=3;
  */
 export async function crosscheckCompetitiveFacts(
   research:Research,
-  options:{userAgent?:string;retrieve?: (url:string,agent:string)=>Promise<SecCompanyFacts|null>}={}
+  options:{
+    userAgent?:string;
+    retrieve?: (url:string,agent:string)=>Promise<SecCompanyFacts|null>;
+    readBulk?: (cik:string)=>Promise<{facts:SecCompanyFacts;retrievedDay:string}|null>;
+  }={}
 ):Promise<Research>{
  const agent=(options.userAgent??process.env.SEC_USER_AGENT??"").trim();
  const uniqueCiks=[...new Set(research.competitiveAnalysis.peerProfiles.flatMap(peer=>
@@ -39,11 +44,29 @@ export async function crosscheckCompetitiveFacts(
    catch{results.set(cik,null);}
   }));
  }
+ const sourceModes=new Map<string,"sec_api"|"operator_attested_sec_bulk">();
+ for(const [cik,facts] of results)if(facts)sourceModes.set(cik,"sec_api");
+ // SEC fair-access restrictions may block cloud egress (HTTP 403). Do not
+ // rotate egress IPs, proxy, scrape alternate SEC hosts or retry forbidden calls.
+ // A separately imported *official ZIP member* is checked using the same
+ // exact accession/identity/numeric validator as live SEC API data.
+ const bulk=options.readBulk??cachedSecCompanyFacts;
+ await Promise.all(uniqueCiks.filter(cik=>!results.get(cik)).map(async cik=>{
+  try{
+   const saved=await bulk(cik);
+   if(saved){
+    results.set(cik,saved.facts);
+    sourceModes.set(cik,"operator_attested_sec_bulk");
+   }
+  }catch{ /* fail closed */ }
+ }));
  const peers=research.competitiveAnalysis.peerProfiles.map(peer=>{
   const dataPoints=(peer.dataPoints??[]).map(item=>{
    const id=secFilingIdentity(item.source);
    const proof=corroborateSecPeerPoint(peer.name,item,id?(results.get(id.cik)??null):null);
-   return {...item,primaryVerification:proof};
+   return {...item,primaryVerification:{...proof,
+    ...(proof.status==="verified"&&id&&sourceModes.get(id.cik)?
+      {sourceMode:sourceModes.get(id.cik)}:{})}};
   });
   const verifiedCiks=[...new Set(dataPoints.filter(x=>x.primaryVerification.status==="verified")
    .map(x=>x.primaryVerification.cik).filter((x):x is string=>Boolean(x)))];
