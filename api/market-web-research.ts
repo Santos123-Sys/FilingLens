@@ -33,6 +33,11 @@ const peerWireSchema = z.object({
       assessment: z.string().min(1),
       url: z.string(),
     })),
+    counterEvidence: z.array(z.object({
+      dimension: z.string().min(1),
+      challenge: z.string().min(1),
+      url: z.string(),
+    })).optional(),
   }).nullable().optional(),
   outlook: z.object({
     stance: z.enum(["favorable", "mixed", "challenged", "unclear"]),
@@ -238,12 +243,21 @@ function verifyPeersWithProfiles(
         : [];
     }).slice(0, 5);
     droppedDeepClaims += Math.max(0, (peer.moatAssessment?.evidence.length ?? 0) - moatEvidence.length);
+    const counterEvidence = (peer.moatAssessment?.counterEvidence ?? []).slice(0,8).flatMap(item=>{
+      const itemSource=evidenceFrom(item.url,citedSources,accessed);
+      const dimension=cleanNarrative(item.dimension,100);
+      const challenge=cleanNarrative(item.challenge,360);
+      return itemSource&&dimension&&challenge?[{dimension,challenge,source:itemSource}]:[];
+    }).slice(0,5);
+    droppedDeepClaims += Math.max(0,(peer.moatAssessment?.counterEvidence?.length??0)-counterEvidence.length);
     const moatAssessment = peer.moatAssessment && moatEvidence.length
       ? {
           rating: peer.moatAssessment.rating,
-          confidence: (moatEvidence.length >= 3 ? "high" : moatEvidence.length === 2 ? "medium" : "low") as "high" | "medium" | "low",
+          confidence: (moatEvidence.length >= 3 && counterEvidence.length >= 1 ? "high" :
+            moatEvidence.length >= 2 && counterEvidence.length >= 1 ? "medium" : "low") as "high" | "medium" | "low",
           summary: cleanNarrative(peer.moatAssessment.summary, 600),
           evidence: moatEvidence,
+          ...(counterEvidence.length?{counterEvidence}:{}),
         }
       : undefined;
     if (peer.moatAssessment && !moatAssessment) droppedDeepClaims += 1;
@@ -400,6 +414,7 @@ function researchSystem(methodology: string) {
     "Apply the skill's competitive-analysis and data-to-insight modules: identify direct peers, characterize positioning, surface source-supported strengths/vulnerabilities, compare against a benchmark, and keep only decision-useful findings that pass the 'so what?' test.",
     "For each peer, perform a compact deep dive: capture 3-6 material financial or operating data points with period and context; assess the competitive moat across evidence-backed dimensions such as scale, cost position, switching costs, network effects, brand, distribution, scarce assets, regulation, IP or data; and give a 12-24 month competitive outlook with drivers and risks.",
     "Moat ratings and outlook stances are analytical assessments, not company-reported facts or investment recommendations. Use 'unclear' when evidence is insufficient and do not force a moat conclusion.",
+    "For every asserted moat, search for counter-evidence of durability erosion (customer churn, competitor scale, pricing pressure, loss of exclusivity, margin compression or entry). Report actual cited counterEvidence items in dimensions aligned to the claimed advantages. If none found, do not imply that no contrary evidence exists or that the moat is strong. Never invent contrary evidence or sources.",
     "Prefer government/regulator data, official company investor-relations pages and filings, exchanges, industry associations, then high-quality research sources, in that order.",
     "For US peers with annual reported numbers, seek the exact SEC EDGAR annual filing URL under https://www.sec.gov/Archives/edgar/data/{CIK}/{accession}/{document}. The peer financial amount cannot be treated as a confirmed benchmark merely because an IR page or search result cites it. Never invent an EDGAR accession or CIK; use actual returned sources.",
     "Actively search for a public, auditable way to estimate issuer market share. Prefer regulator/open-data datasets; otherwise use a close public proxy only when numerator and denominator use the same period, geography and product basis.",
@@ -496,6 +511,7 @@ async function catalogRecovery(input: {
       "Return 3-6 direct or segment peers when supported.",
       "The url field MUST be copied exactly from one source-catalog line. Do not invent, shorten, canonicalize or add query parameters.",
       "Keep relationship/positioning concise. Populate dataPoints, moatAssessment and outlook only from the memo and catalog; use empty dataPoints and null assessments when the catalog lacks support. Do not place Markdown links in narrative fields.",
+      "Include sourced counterEvidence (moat erosion, disconfirming metrics and challenged assumptions) when the discovery catalog supports it. Never manufacture sources or challenge narratives.",
       "When cited source material explicitly provides company-wide financial figures, format at most 3 dataPoints per peer with exact labels Revenue, Net income, Operating income or Gross profit; values as ISO currency and decimal US scale (e.g. USD 1,234.5 millions), period as FY2025, and context stating consolidated US GAAP/IFRS/BR GAAP and exact period end YYYY-MM-DD. Only include scope, currency, reporting basis and end date when explicitly present in that SAME cited source. Never guess or normalize absent fields; otherwise retain original disclosure wording or omit.",
     ].join(" "),
     prompt: [
