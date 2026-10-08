@@ -63,6 +63,7 @@ export default function ValuationDriverBridge({analysis,dcf,dcfAssumptions,lang}
  };
  const change=(index:number,key:keyof Omit<DriverScenario,"name">,value:number)=>{
   setInputs(previous=>previous.map((s,i)=>i===index?{...s,[key]:value}:s));setAccepted(false);
+  setFullDcf(null);setDcfError(null);
  };
  return <section className="mt-5 rounded-2xl border border-slate-700 bg-slate-950/50 p-4 sm:p-5">
   <h3 className="text-sm font-semibold text-slate-100">{pt?"Ponte de drivers para valuation":"Valuation-driver bridge"}</h3>
