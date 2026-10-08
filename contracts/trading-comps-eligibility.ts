@@ -16,7 +16,7 @@ export type TradingPeerSnapshot={
 };
 export type ValuationMultiple="EV/EBITDA"|"EV/Revenue"|"P/E";
 export type TradingPeerResult={name:string;multiple:number;quotationDate:string;
- periodEnd:string;sourceUrls:string[]};
+ periodEnd:string;sourceUrls:string[];snapshot:TradingPeerSnapshot};
 const date=(raw:string)=>/^20\d{2}-\d{2}-\d{2}$/.test(raw)&&
  !Number.isNaN(Date.parse(raw))&&new Date(raw).toISOString().slice(0,10)===raw;
 const http=(raw:string)=>{try{const u=new URL(raw);return u.protocol==="https:";}catch{return false;}};
@@ -55,7 +55,7 @@ export function evaluateTradingPeer(snapshot:TradingPeerSnapshot,metric:Valuatio
  if(!Number.isFinite(value)||value<=0||value>1000)return null;
  return {name:snapshot.name,multiple:Number(value.toFixed(6)),
    quotationDate:snapshot.quotation_date,periodEnd:snapshot.financial_period_end,
-   sourceUrls:[snapshot.quotation_source_url,snapshot.financial_source_url]};
+   sourceUrls:[snapshot.quotation_source_url,snapshot.financial_source_url],snapshot:{...snapshot}};
 }
 /** One coherent quote snapshot date is needed for median peer multiples. */
 export function commonQuoteDate(peers:TradingPeerResult[]):string|null {

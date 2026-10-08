@@ -23,6 +23,7 @@ import type {
   CompsValuationResult,
 } from "../contracts/analysis";
 import type { RegulatoryDataSnapshot } from "../contracts/regulatory-data";
+import {tradingSnapshotSchema} from "../contracts/analysis";
 import {
   AiUnavailable,
   ContentRejected,
@@ -445,7 +446,13 @@ app.post("/api/valuation/propose", async (c) => {
     if (!analysis?.company || !analysis?.financials || !["dcf", "comps"].includes(method)) {
       return c.json({ error: "bad_request" }, 400);
     }
-    return c.json({ proposal: await prepareValuation(analysis, method) });
+    const input=body.tradingSnapshots;
+    const tradingSnapshots=method==="comps"&&input!==undefined
+      ?tradingSnapshotSchema.array().min(3).max(12).safeParse(input):null;
+    if(tradingSnapshots && !tradingSnapshots.success)return c.json({error:"invalid_trading_components"},422);
+    if(tradingSnapshots && body.analystAttested!==true)
+      return c.json({error:"trading_sources_require_analyst_attestation"},422);
+    return c.json({ proposal: await prepareValuation(analysis, method,tradingSnapshots?.data) });
   } catch (err) {
     if (err instanceof ValuationInputError) return c.json({ error: err.message }, 422);
     const { body, status } = errStatus(err);

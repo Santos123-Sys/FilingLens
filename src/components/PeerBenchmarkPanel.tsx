@@ -15,6 +15,8 @@ export default function PeerBenchmarkPanel({data,lang}:{data:FilingAnalysis;lang
  const result=useMemo(()=>buildPeerFinancialBenchmarks(data),[data]);
  const official=useMemo(()=>secHistoricalPeerCohorts(data.market.competitiveAnalysis?.peerProfiles??[]),[data]);
  const pt=lang==="pt";
+ const imported=(data.market.competitiveAnalysis?.peerProfiles??[]).flatMap(p=>p.dataPoints??[])
+  .filter(p=>p.primaryVerification?.sourceMode==="operator_attested_sec_bulk").length;
  return <section className="rounded-2xl border border-slate-700 bg-slate-900/65 p-4 sm:p-5">
   <div className="flex flex-wrap items-start justify-between gap-2">
    <div><h3 className="text-sm font-semibold text-white">{pt?"Benchmark financeiro de concorrentes":"Peer financial benchmarking"}</h3>
@@ -24,6 +26,8 @@ export default function PeerBenchmarkPanel({data,lang}:{data:FilingAnalysis;lang
    <span className="rounded-lg border border-slate-700 px-2 py-1 text-[11px] text-slate-300">
     {result.facts.length} {pt?"observações elegíveis":"eligible observations"}</span>
   </div>
+  {imported>0&&<p className="mt-3 rounded-md border border-amber-700/40 bg-amber-900/10 p-2 text-[11px] text-amber-200">{pt?
+   "Fonte alternativa: "+imported+" cifra(s) confirmadas contra um arquivo SEC CompanyFacts baixado e importado por operador autorizado. A aplicação verifica CIK, accession, período e número, mas não confirmou independentemente a origem do arquivo.":"Alternate source: "+imported+" fact(s) matched to an operator-imported SEC CompanyFacts ZIP extract. The app checks CIK, accession, period and amount; the original archive download provenance was attested by the operator, not independently fetched by FilingLens."}</p>}
   {result.facts.length===0?<p className="mt-4 text-xs leading-5 text-slate-400">{pt?
    "Nenhuma cifra passou os controles SEC/CVM de identidade, moeda, período e fonte. Alegações apenas citadas não entram nos cálculos.":
    "No primary SEC/CVM peer observations passed issuer identity, filing, period, currency and scale checks. Merely cited financial claims remain excluded."}</p>:

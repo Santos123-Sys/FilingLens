@@ -1,10 +1,11 @@
 import type { CompsValuationResult, DcfValuationResult, FilingAnalysis, ValuationAssumption, ValuationMethod, ValuationReconciliation } from "../contracts/analysis";
 import { calculateComps, prepareComps } from "./valuation/comps";
+import type {TradingPeerSnapshot} from "../contracts/trading-comps-eligibility";
 import { calculateDcf, prepareDcf } from "./valuation/dcf";
 export { ValuationGateError, ValuationInputError } from "./valuation/common";
 
-export async function prepareValuation(analysis:FilingAnalysis, method:ValuationMethod) {
-  return method === "dcf" ? prepareDcf(analysis) : prepareComps(analysis);
+export async function prepareValuation(analysis:FilingAnalysis, method:ValuationMethod, tradingSnapshots?:TradingPeerSnapshot[]) {
+  return method === "dcf" ? prepareDcf(analysis) : prepareComps(analysis,tradingSnapshots);
 }
 export function calculateValuation(analysis:FilingAnalysis, method:ValuationMethod, assumptions:ValuationAssumption[]) {
   return method === "dcf" ? calculateDcf(analysis,assumptions) : calculateComps(analysis,assumptions);

@@ -65,6 +65,8 @@ export default function ValuationWorkspace({
 }) {
   const locale = lang === "pt" ? "pt-BR" : "en-US";
   const [active, setActive] = useState<ValuationMethod>("dcf");
+  const [manualTradingJson,setManualTradingJson]=useState("");
+  const [tradingAttested,setTradingAttested]=useState(false);
   const [dcfState, setDcfState] = useState<MethodState>(emptyState);
   const [compsState, setCompsState] = useState<MethodState>(emptyState);
   const [dcfResult, setDcfResult] = useState<DcfValuationResult | undefined>(analysis.valuation?.dcf);
@@ -102,10 +104,17 @@ export default function ValuationWorkspace({
     const setter = method === "dcf" ? setDcfState : setCompsState;
     setter(prev => ({ ...prev, loading: true, error: null }));
     try {
+      let tradingSnapshots:unknown=undefined;
+      if(method==="comps"&&manualTradingJson.trim()){
+        if(!tradingAttested)throw new Error("trading_sources_require_analyst_attestation");
+        try{tradingSnapshots=JSON.parse(manualTradingJson);}catch{throw new Error("trading_components_invalid_json");}
+        if(!Array.isArray(tradingSnapshots)||tradingSnapshots.length<3)
+          throw new Error("three_trading_snapshots_required");
+      }
       const response = await fetch("/api/valuation/propose", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ analysis, method }),
+        body: JSON.stringify({ analysis, method, ...(tradingSnapshots?{tradingSnapshots,analystAttested:true}:{}) }),
       });
       const body = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(typeof body.error === "string" ? body.error : "proposal_failed");
@@ -234,6 +243,21 @@ export default function ValuationWorkspace({
           {(["dcf", "comps"] as ValuationMethod[]).map(method => <button key={method} onClick={() => setActive(method)} className={`rounded-lg px-4 py-2 text-xs font-semibold transition ${active === method ? "bg-slate-800 text-white" : "text-slate-500 hover:text-slate-200"}`}>{method === "dcf" ? "DCF" : "Trading Comps"}</button>)}
         </div>
       </div>
+
+      {active==="comps"&&<details className="mt-4 rounded-xl border border-slate-700/60 bg-slate-950/30 p-3">
+        <summary className="cursor-pointer text-xs font-semibold text-cyan-200">
+          {lang==="pt"?"Inserir componentes documentados dos pares (opcional)":"Enter documented peer quote and financial components (optional)"}
+        </summary>
+        <p className="mt-2 text-[11px] leading-5 text-slate-400">{lang==="pt"?
+          "Cole um JSON com 3–12 registros: empresa, currency, basis, consolidated, quotation_date, financial_period_end, debt_as_of, market_cap_millions, net_debt_millions, ebitda_millions, revenue_millions, net_income_millions, quotation_source_url e financial_source_url. Use datas e moedas iguais; nenhuma conversão cambial é inferida. Esta opção exige atestação do analista e não substitui verificação independente dos documentos.":
+          "Paste a JSON array of 3–12 dated peer records: name, currency, basis, consolidated, quotation_date, financial_period_end, debt_as_of, market_cap_millions, net_debt_millions, ebitda_millions, revenue_millions, net_income_millions, quotation_source_url and financial_source_url. Fiscal year-end, quote date, currency and accounting basis must align; no FX is inferred. Analyst attestation does not independently verify source figures."}</p>
+        <textarea value={manualTradingJson} onChange={e=>{setManualTradingJson(e.target.value);setCompsResult(undefined);}}
+          rows={6} placeholder='[{"name":"Peer issuer","currency":"USD","basis":"us_gaap", ...}]'
+          className="mt-3 w-full rounded-lg border border-slate-700 bg-slate-950 p-3 font-mono text-[11px] text-slate-200 outline-none focus:border-cyan-500"/>
+        <label className="mt-2 flex gap-2 text-[11px] text-slate-300"><input type="checkbox" checked={tradingAttested} onChange={e=>setTradingAttested(e.target.checked)}/>
+          {lang==="pt"?"Confirmo que revisei as cifras, datas e os dois documentos por emissor.":"I have reviewed the raw values, dates and both source documents for every peer."}
+        </label>
+      </details>}
 
       {!state.assumptions.length ? (
         <div className="mt-5 rounded-xl border border-slate-800 bg-slate-950/35 p-5">

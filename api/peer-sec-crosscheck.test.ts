@@ -37,4 +37,30 @@ describe("official financial enrichment",()=>{
   expect(r.competitiveAnalysis.peerProfiles[0].dataPoints?.[0].primaryVerification?.status).toBe("identity_mismatch");
   expect(r.competitiveAnalysis.peerProfiles[0].officialHistory).toBeUndefined();
  });
+ it("uses documented SEC bulk fallback only on unavailable live API",async()=>{
+  const got=await crosscheckCompetitiveFacts(research(),{
+   userAgent:"FilingLens contact@example.com",
+   retrieve:async()=>null,
+   readBulk:async()=>({facts,retrievedDay:"2026-10-08"}),
+  });
+  expect(got.competitiveAnalysis.peerProfiles[0].dataPoints?.[0].primaryVerification).toMatchObject({
+   status:"verified",sourceMode:"operator_attested_sec_bulk"});
+ });
+ it("keeps wrong-CIK imported SEC data out of peer benchmarks",async()=>{
+  const got=await crosscheckCompetitiveFacts(research(),{
+   userAgent:"FilingLens contact@example.com",
+   retrieve:async()=>null,
+   readBulk:async()=>({facts:{...facts,cik:1},retrievedDay:"2026-10-08"}),
+  });
+  expect(got.competitiveAnalysis.peerProfiles[0].dataPoints?.[0].primaryVerification?.status).toBe("identity_mismatch");
+ });
+ it("labels genuinely accessible direct SEC data separately from operator imports",async()=>{
+  const got=await crosscheckCompetitiveFacts(research(),{
+   userAgent:"FilingLens contact@example.com",
+   retrieve:async()=>facts,
+   readBulk:async()=>{throw new Error("not supposed to call archive");},
+  });
+  expect(got.competitiveAnalysis.peerProfiles[0].dataPoints?.[0].primaryVerification?.sourceMode).toBe("sec_api");
+ });
+
 });
