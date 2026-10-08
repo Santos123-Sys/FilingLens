@@ -22,7 +22,7 @@ const basisOf=(s:string):Basis|null=>{
 };
 const scopeOf=(s:string)=>/\bconsolidated\b|\bconsolidado\b|\bconsolidadas\b/i.test(s)
  && !/\bstandalone\b|\bseparate financial\b|\bindividual\b/i.test(s);
-const metricOf=(s:string):BenchmarkMetric|null=>{
+export const metricOf=(s:string):BenchmarkMetric|null=>{
  const v=s.trim().toLowerCase().replace(/\s+/g," ");
  if(/^(?:total )?revenues?$|^net sales$|^net revenue$/.test(v))return "revenue";
  if(/^(net income|net profit)$/.test(v))return "netIncome";
@@ -35,7 +35,7 @@ const unitOf=(s:string):{currency:Currency;scale:Scale}|null=>{
  const m=/^(USD|BRL)\s+(thousands|millions|billions)$/i.exec(s.trim());
  return m?{currency:m[1].toUpperCase() as Currency,scale:m[2].toLowerCase() as Scale}:null;
 };
-const parseValue=(s:string):{currency:Currency;millions:number}|null=>{
+export const parseValue=(s:string):{currency:Currency;millions:number}|null=>{
  const m=/^(USD|BRL)\s+(-?(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d{1,3})?)\s+(thousands?|millions?|billions?)$/i.exec(s.trim());
  if(!m)return null;
  const scale=m[3].toLowerCase().replace(/s$/,"")+"s";
@@ -44,7 +44,7 @@ const parseValue=(s:string):{currency:Currency;millions:number}|null=>{
 };
 const dateValid=(s:string)=>/^20\d{2}-\d{2}-\d{2}$/.test(s) &&
  !Number.isNaN(Date.parse(s)) && new Date(s).toISOString().slice(0,10)===s;
-const periodEndOf=(s:string):string|null=>{
+export const periodEndOf=(s:string):string|null=>{
  const match=[...s.matchAll(/\b(?:period\s*end(?:ed|ing)?|fiscal\s*year\s*end(?:ed|ing)?)\s*:?\s*(20\d{2}-\d{2}-\d{2})\b/gi)];
  const unique=new Set(match.map(x=>x[1]));
  if(unique.size!==1)return null;
@@ -68,6 +68,10 @@ export function buildPeerFinancialBenchmarks(data:FilingAnalysis):PeerBenchmarkR
    const periodEnd=periodEndOf(point.context);
    if(!periodEnd||Number(periodEnd.slice(0,4))!==year){reject("MISSING_FISCAL_YEAR_END",`${metric} FY${year}`);continue;}
    if(!evidenceUrl(point.source)){reject("NO_HTTPS_SOURCE",`${metric} FY${year}`);continue;}
+   if(point.primaryVerification?.status!=="verified"){
+    reject("UNVERIFIED_PRIMARY_FIGURE",`${metric} FY${year}: ${point.primaryVerification?.status??"not_checked"}; excludes unsupported official numeric values`);
+    continue;
+   }
    rawFacts.push({peer:peer.name,metric,year,periodEnd,currency:amount.currency,
     millions:amount.millions,basis,source:point.source,raw:point.value});
   }
