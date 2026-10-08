@@ -3,8 +3,10 @@ import { serveStatic } from "@hono/node-server/serve-static";
 import { readFile } from "node:fs/promises";
 import app from "./boot";
 import { registerHistoryApi } from "./history-api";
+import { registerBrowserHistoryApi } from "./browser-history";
 
 registerHistoryApi(app);
+registerBrowserHistoryApi(app);
 
 const clientRoot = "./dist/client";
 const indexPath = `${clientRoot}/index.html`;
