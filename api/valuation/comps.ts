@@ -5,7 +5,7 @@ import type { CompsValuationResult, FilingAnalysis, ValuationAssumption } from "
 import { filingModel, marketWebSearchTool, openAIProviderOptions } from "../ai/provider";
 import { classifyAiError } from "../lib/ai-client";
 import {evaluateTradingPeer,commonQuoteDate} from "../../contracts/trading-comps-eligibility";
-import type {TradingPeerSnapshot,TradingPeerResult} from "../../contracts/trading-comps-eligibility";
+import type {TradingPeerResult} from "../../contracts/trading-comps-eligibility";
 import { ValuationGateError, ValuationInputError, latest, makeAssumption, netDebt, num, resolved, round, shares, text, validatedRows } from "./common";
 
 const tradingPeer=z.object({
@@ -18,7 +18,6 @@ const tradingPeer=z.object({
  quotation_source_url:z.string(),financial_source_url:z.string(),
 });
 const peerOutput=z.object({peers:z.array(tradingPeer).max(12)});
-type Peer=TradingPeerSnapshot;
 const canon = (value:string) => { try { const u=new URL(value); u.hash=""; return `${u.origin}${u.pathname}`.replace(/\/$/,"").toLowerCase(); } catch { return null; } };
 
 function preferredMetric(a:FilingAnalysis): "EV/EBITDA"|"EV/Revenue"|"P/E" {
