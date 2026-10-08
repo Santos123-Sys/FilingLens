@@ -33,6 +33,10 @@ jobs:
       - name: Install data-tools dependencies
         run: python -m pip install -r services/financial-data-service/requirements.txt pytest==8.3.5
 
+      - name: Lint (non-blocking existing baseline)
+        run: npm run lint
+        continue-on-error: true
+
       - name: Typecheck
         run: npm run check
 
