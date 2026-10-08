@@ -9,7 +9,7 @@ import { classifyFiling, metadataFallback } from "./classification";
 import { modelRuntimeConfig } from "./ai/provider";
 import { marketResearchSkillStatus } from "./market-research-skill";
 import { dataToolsBinary, dataToolsConfigured, dataToolsJson } from "./data-tools-client";
-import { persistPublicRegulatorySnapshot, readPublicRegulatorySnapshots } from "./regulatory-snapshot-store";
+
 import { calculateValuation, prepareValuation, reconcileValuations, ValuationGateError, ValuationInputError } from "./valuation-manager";
 import type {
   AgentName,
@@ -30,6 +30,10 @@ import {
   AiInvalidRequest,
   AiTransient,
 } from "./lib/ai-client";
+
+type RegulatoryArchiveFn = (snapshot: RegulatoryDataSnapshot, registryId:string)=>Promise<boolean>;
+let regulatoryArchive: RegulatoryArchiveFn | null = null;
+export function registerRegulatoryArchiver(callback:RegulatoryArchiveFn) {regulatoryArchive=callback;}
 
 const app = new Hono();
 
@@ -246,9 +250,9 @@ app.post("/api/regulatory-data", async (c) => {
       historyYears: typeof body.historyYears === "number" ? Math.max(1, Math.min(5, Math.floor(body.historyYears))) : 5,
     });
     const registryFromFiling = jurisdiction === "us" ? deterministicCik(text) : deterministicCnpj(text);
-    if (registryFromFiling) {
+    if (registryFromFiling && regulatoryArchive) {
       try {
-        await persistPublicRegulatorySnapshot(result,registryFromFiling);
+        await regulatoryArchive(result,registryFromFiling);
       } catch (error) {
         console.warn("[regulatory-history] snapshot archive unavailable",safeErrorName(error));
       }
@@ -495,23 +499,10 @@ app.post("/api/dashboard-data", async (c) => {
   }
 });
 
-/* Public access is restricted to verified SEC/CVM-derived structured facts only. */
-app.get("/api/regulatory-history/:jurisdiction/:registryId",async c=>{
-  const jurisdiction=c.req.param("jurisdiction");
-  if(jurisdiction!=="us" && jurisdiction!=="br")return c.json({error:"invalid_jurisdiction"},400);
-  try {
-    const snapshots=await readPublicRegulatorySnapshots(jurisdiction,c.req.param("registryId"));
-    c.header("Cache-Control","no-store");
-    return c.json({jurisdiction,registryId:c.req.param("registryId"),snapshots});
-  }catch(error){
-    console.warn("[regulatory-history] retrieval unavailable",safeErrorName(error));
-    return c.json({error:"regulatory_history_unavailable"},503);
-  }
-});
 app.all("/api/*", async (c, next) => {
   // Railway registers internal history routes after importing this shared app.
   // Let only those requests continue to the Node-only handlers.
-  if (c.req.path.startsWith("/api/internal/history/")) return next();
+  if (c.req.path.startsWith("/api/internal/history/") || c.req.path.startsWith("/api/regulatory-history/")) return next();
   return c.json({ error: "Not Found" }, 404);
 });
 
