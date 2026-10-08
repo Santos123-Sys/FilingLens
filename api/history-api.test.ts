@@ -2,6 +2,17 @@ import { describe, it, expect, vi } from "vitest";
 import { Hono } from "hono";
 import { registerHistoryApi } from "./history-api";
 describe("internal history auth gate",()=>{
+ it("requires token and rejects invalid analysis ingestion before DB access",async()=>{
+  vi.stubEnv("HISTORY_API_TOKEN","b".repeat(40));
+  vi.stubEnv("DATABASE_URL","mysql://unreachable");
+  const app=new Hono();registerHistoryApi(app);
+  const denied=await app.request("/api/internal/history/ingest-analysis",{method:"POST",headers:{"Content-Type":"application/json"},body:"{}"});
+  expect(denied.status).toBe(401);
+  const bad=await app.request("/api/internal/history/ingest-analysis",{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+"b".repeat(40)},body:"{}"});
+  expect(bad.status).toBe(400);
+  vi.unstubAllEnvs();
+ });
+
  it("keeps history unavailable without DB and token",async()=>{
   vi.stubEnv("HISTORY_API_TOKEN","");
   vi.stubEnv("DATABASE_URL","");
