@@ -4,6 +4,7 @@ import { z } from "zod";
 import type { MarketResult } from "../contracts/analysis";
 import { filingModel, marketWebSearchTool, openAIProviderOptions } from "./ai/provider";
 import { marketResearchRuntimeMethodology } from "./market-research-skill";
+import { crosscheckCompetitiveFacts } from "./peer-sec-crosscheck";
 
 /**
  * Wire schemas are intentionally permissive for narrative length. The model is a
@@ -516,7 +517,7 @@ async function catalogRecovery(input: {
   console.info(
     `[market-research] recovery candidates=${synthetic.peers.length} verified=${verified.peerEvidence.length} sources=${sources.length}`,
   );
-  return verified;
+  return crosscheckCompetitiveFacts(verified);
 }
 
 export async function researchCompetitiveLandscape(input: {
@@ -562,7 +563,7 @@ export async function researchCompetitiveLandscape(input: {
     console.info(
       `[market-research] full candidates=${result.output.peers.length} verified=${verified.peerEvidence.length} sources=${sources.length} dropped=${verified.competitiveAnalysis.researchDiagnostics?.droppedClaims ?? 0}`,
     );
-    if (verified.peerEvidence.length > 0) return verified;
+    if (verified.peerEvidence.length > 0) return crosscheckCompetitiveFacts(verified);
 
     console.warn("[market-research] full research returned no verified peers; using catalog recovery");
   } catch (error) {
