@@ -164,7 +164,7 @@ const COPY = {
     impact: "Impact",
     all: "All",
     results: "results",
-    noSegments: "No segment data reported.",
+    noSegments: "No segment series could be verified from this filing. Check the filing's segment note for available figures.",
     noFinancials: "No financial series available for charting.",
     incomplete: "This section could not be completed from the uploaded filing.",
     marketIncomplete: "No verified peers, geographic revenue, or operating-segment figures were available. Unverified market claims were left out.",
@@ -242,7 +242,7 @@ const COPY = {
     impact: "Impacto",
     all: "Todos",
     results: "resultados",
-    noSegments: "Nenhum dado por segmento foi divulgado.",
+    noSegments: "Não foi possível verificar uma série por segmento neste documento. Confira a nota de segmentos para ver os valores divulgados.",
     noFinancials: "Não há séries financeiras disponíveis para o gráfico.",
     incomplete: "Esta seção não pôde ser concluída a partir do documento enviado.",
     marketIncomplete: "Não foram encontrados concorrentes verificáveis, receita geográfica ou valores por segmento. Afirmações de mercado sem fonte foram omitidas.",
@@ -1639,8 +1639,27 @@ export default function Dashboard({ data, lang }: Props) {
                   </section>
                 )}
 
+                <nav aria-label={lang === "pt" ? "Navegação financeira" : "Financial sections"} className="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-lg border border-slate-700/70 bg-slate-900/50 px-4 py-3 text-xs">
+                  <span className="font-semibold text-slate-300">{lang === "pt" ? "Ir para" : "Jump to"}:</span>
+                  <a className="text-cyan-300 underline underline-offset-2" href="#financial-trends">{lang === "pt" ? "Gráficos de KPIs" : "KPI charts"}</a>
+                  <a className="text-cyan-300 underline underline-offset-2" href="#financial-additional-indicators">{lang === "pt" ? "Outros indicadores" : "Other indicators"}</a>
+                  <a className="text-cyan-300 underline underline-offset-2" href="#financial-history">{lang === "pt" ? "Histórico e índices" : "History and ratios"}</a>
+                </nav>
+
+                <section id="financial-trends" className="scroll-mt-6 space-y-3" aria-label={lang === "pt" ? "Gráficos de tendências financeiras" : "Financial trend charts"}>
+                  <h3 className="text-base font-semibold text-cyan-200">{lang === "pt" ? "Tendências dos KPIs" : "KPI trends"}</h3>
+                  <div className="grid gap-4 xl:grid-cols-2">
+                  {f.revenue.length > 0 && <article className="rounded-xl border border-slate-700 bg-slate-800/25 p-4"><h3 className="mb-1 text-sm font-semibold text-cyan-200">{lang === "pt" ? "Receita e crescimento" : "Revenue and growth"}</h3><Chart option={revenueGrowthOption} label={lang === "pt" ? "Receita e crescimento" : "Revenue and growth"} /></article>}
+                  {f.ebitda && f.ebitda.length > 0 && <article className="rounded-xl border border-slate-700 bg-slate-800/25 p-4"><h3 className="mb-1 text-sm font-semibold text-cyan-200">{lang === "pt" ? "EBITDA e margem" : "EBITDA and margin"}</h3><Chart option={ebitdaMarginOption} label={lang === "pt" ? "EBITDA e margem" : "EBITDA and margin"} /></article>}
+                  {f.netIncome.length > 0 && <article className="rounded-xl border border-slate-700 bg-slate-800/25 p-4"><h3 className="mb-1 text-sm font-semibold text-cyan-200">{lang === "pt" ? "Lucro líquido e margem" : "Net income and margin"}</h3><Chart option={netIncomeMarginOption} label={lang === "pt" ? "Lucro líquido e margem" : "Net income and margin"} /></article>}
+                  {(f.operatingCashFlow || f.freeCashFlow || f.dividends || f.buybacks) && <article className="rounded-xl border border-slate-700 bg-slate-800/25 p-4"><h3 className="mb-1 text-sm font-semibold text-cyan-200">{t.cash}</h3><Chart option={cashOption} label={t.cash} /></article>}
+                  {!isFinancialInstitution && (f.totalDebt || f.cash) && <article className="rounded-xl border border-slate-700 bg-slate-800/25 p-4"><h3 className="mb-1 text-sm font-semibold text-cyan-200">{lang === "pt" ? "Dívida, caixa e dívida líquida" : "Debt, cash and net debt"}</h3><Chart option={debtCashOption} label={lang === "pt" ? "Dívida, caixa e dívida líquida" : "Debt, cash and net debt"} /></article>}
+                  {(f.grossMargin || f.operatingMargin) && <article className="rounded-xl border border-slate-700 bg-slate-800/25 p-4"><h3 className="mb-1 text-sm font-semibold text-cyan-200">{t.margins}</h3><Chart option={marginOption} label={t.margins} /></article>}
+                  </div>
+                </section>
+
                 {years.length > 0 && (
-                  <section className="rounded-xl border border-slate-700 bg-slate-800/25 p-4" aria-label={lang === "pt" ? "Indicadores complementares" : "Additional indicators"}>
+                  <section id="financial-additional-indicators" className="scroll-mt-6 rounded-xl border border-slate-700 bg-slate-800/25 p-4" aria-label={lang === "pt" ? "Indicadores complementares" : "Additional indicators"}>
                     <h3 className="text-base font-semibold text-cyan-200">{lang === "pt" ? "Indicadores complementares" : "Additional indicators"}</h3>
                     <p className="mt-2 text-sm text-slate-400">{isFinancialInstitution
                       ? (lang === "pt" ? "Estes indicadores corporativos não são apresentados para instituições financeiras. Consulte ROE, ROA e os indicadores regulatórios divulgados pela companhia." : "These corporate indicators are not displayed for financial institutions. See ROE, ROA and company-disclosed regulatory metrics.")
@@ -1705,17 +1724,10 @@ export default function Dashboard({ data, lang }: Props) {
                   </section>
                 )}
 
-                <div className="grid gap-4 xl:grid-cols-2">
-                  {f.revenue.length > 0 && <article className="rounded-xl border border-slate-700 bg-slate-800/25 p-4"><h3 className="mb-1 text-sm font-semibold text-cyan-200">{lang === "pt" ? "Receita e crescimento" : "Revenue and growth"}</h3><Chart option={revenueGrowthOption} label={lang === "pt" ? "Receita e crescimento" : "Revenue and growth"} /></article>}
-                  {f.ebitda && f.ebitda.length > 0 && <article className="rounded-xl border border-slate-700 bg-slate-800/25 p-4"><h3 className="mb-1 text-sm font-semibold text-cyan-200">{lang === "pt" ? "EBITDA e margem" : "EBITDA and margin"}</h3><Chart option={ebitdaMarginOption} label={lang === "pt" ? "EBITDA e margem" : "EBITDA and margin"} /></article>}
-                  {f.netIncome.length > 0 && <article className="rounded-xl border border-slate-700 bg-slate-800/25 p-4"><h3 className="mb-1 text-sm font-semibold text-cyan-200">{lang === "pt" ? "Lucro líquido e margem" : "Net income and margin"}</h3><Chart option={netIncomeMarginOption} label={lang === "pt" ? "Lucro líquido e margem" : "Net income and margin"} /></article>}
-                  {(f.operatingCashFlow || f.freeCashFlow || f.dividends || f.buybacks) && <article className="rounded-xl border border-slate-700 bg-slate-800/25 p-4"><h3 className="mb-1 text-sm font-semibold text-cyan-200">{t.cash}</h3><Chart option={cashOption} label={t.cash} /></article>}
-                  {!isFinancialInstitution && (f.totalDebt || f.cash) && <article className="rounded-xl border border-slate-700 bg-slate-800/25 p-4"><h3 className="mb-1 text-sm font-semibold text-cyan-200">{lang === "pt" ? "Dívida, caixa e dívida líquida" : "Debt, cash and net debt"}</h3><Chart option={debtCashOption} label={lang === "pt" ? "Dívida, caixa e dívida líquida" : "Debt, cash and net debt"} /></article>}
-                  {(f.grossMargin || f.operatingMargin) && <article className="rounded-xl border border-slate-700 bg-slate-800/25 p-4"><h3 className="mb-1 text-sm font-semibold text-cyan-200">{t.margins}</h3><Chart option={marginOption} label={t.margins} /></article>}
-                </div>
+
 
                 {selectedHistoricalRows.length > 0 && (
-                  <section className="overflow-hidden rounded-xl border border-slate-700 bg-slate-800/25">
+                  <section id="financial-history" className="scroll-mt-6 overflow-hidden rounded-xl border border-slate-700 bg-slate-800/25">
                     <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-700 px-4 py-3"><h3 className="text-sm font-semibold text-cyan-200">{lang === "pt" ? "Indicadores e dados financeiros" : "Financial metrics and ratios"}</h3><span className="text-[10px] text-slate-500">{lang === "pt" ? "Até 6 métricas · períodos divulgados" : "Up to 6 metrics · disclosed periods"}</span></div>
                     <div className="overflow-x-auto"><table className="w-full min-w-[760px] text-left text-xs"><thead className="bg-slate-900/60 text-[10px] uppercase tracking-wider text-slate-500"><tr><th className="px-4 py-3">{lang === "pt" ? "Métrica" : "Metric"}</th>{years.map(year => <th key={year} className="px-3 py-3 text-right">{year}</th>)}<th className="px-4 py-3">{lang === "pt" ? "Base" : "Basis"}</th><th className="px-4 py-3">{t.sourceRef}</th></tr></thead><tbody>{selectedHistoricalRows.map(row => <tr key={row.key} className="border-t border-slate-800 text-slate-300"><th className="px-4 py-3 font-medium text-slate-200">{row.label}</th>{years.map((_, index) => <td key={index} className="px-3 py-3 text-right tabular-nums">{historicalCell(row.values[index], row.unit)}</td>)}<td className="px-4 py-3 text-[10px] text-slate-500">{row.type === "reported" ? (lang === "pt" ? "Reportado" : "Reported") : row.type === "adjusted" ? (lang === "pt" ? "Ajustado" : "Adjusted") : (lang === "pt" ? "Calculado" : "Calculated")}</td><td className="px-4 py-3 text-[10px] text-slate-500">{sourceText(row.source) || "—"}</td></tr>)}</tbody></table></div>
                   </section>
