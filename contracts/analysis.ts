@@ -472,6 +472,19 @@ export type ValuationMethod = z.infer<typeof valuationMethodSchema>;
 export const valuationAssumptionValueSchema = z.union([z.number(), z.string(), z.boolean(), z.null()]);
 export type ValuationAssumptionValue = z.infer<typeof valuationAssumptionValueSchema>;
 
+export const tradingSnapshotSchema=z.object({
+ name:z.string().min(1),
+ currency:z.enum(["USD","BRL","EUR","GBP","CHF"]),
+ basis:z.enum(["us_gaap","ifrs","br_gaap"]),
+ consolidated:z.boolean(),
+ quotation_date:z.string(),financial_period_end:z.string(),debt_as_of:z.string(),
+ market_cap_millions:z.number().nullable(),
+ net_debt_millions:z.number().nullable(),
+ ebitda_millions:z.number().nullable(),
+ revenue_millions:z.number().nullable(),
+ net_income_millions:z.number().nullable(),
+ quotation_source_url:z.string(),financial_source_url:z.string(),
+});
 export const valuationAssumptionSchema = z.object({
   id: z.string(),
   method: valuationMethodSchema,
@@ -482,6 +495,9 @@ export const valuationAssumptionSchema = z.object({
   unit: z.string().nullable().optional(),
   rationale: z.string(),
   source: evidenceReferenceSchema.nullable().optional(),
+  /** Source-linked, dated raw quote/debt/financial inputs. Never just a claimed multiple. */
+  tradingSnapshot: tradingSnapshotSchema.optional(),
+  snapshotOrigin: z.enum(["web_cited","analyst_attested"]).optional(),
   confidence: z.enum(["high", "medium", "low"]),
   impact: z.enum(["high", "medium", "low"]),
   status: z.enum(["proposed", "accepted", "edited", "rejected"]),
