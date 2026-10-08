@@ -19,7 +19,7 @@ describe("moat source coverage",()=>{
   expect(result[0].challenges).toHaveLength(1);
  });
  it("rejects uncited counterclaims as evidence",()=>{
-  const a=make(true);const item=a.peerProfiles[0].moatAssessment.counterEvidence![0];
+  const a=make(true);const item=a.peerProfiles[0].moatAssessment!.counterEvidence![0];
   item.source.url="http://invalid.example";
   expect(auditMoatDurability(a).at(0)?.challenges).toHaveLength(0);
  });
