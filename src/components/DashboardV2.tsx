@@ -67,6 +67,13 @@ const COPY = {
     annualHistorySource: "Authoritative external regulatory history",
     competitiveAnalysis: "Competitive analysis",
     competitiveFindings: "Competitive findings",
+    competitorDeepDive: "Competitor deep dives",
+    competitorData: "Operating & financial data",
+    moatAssessment: "Competitive moat",
+    competitiveOutlook: "12–24 month outlook",
+    outlookDrivers: "Drivers",
+    outlookRisks: "Risks to watch",
+    analyticalAssessment: "Analytical assessment",
     marketShare: "Public market-share proxy",
     marketShareBasis: "Auditable numerator ÷ denominator",
     noCompetitive: "No independently cited competitive-analysis evidence was available.",
@@ -134,6 +141,13 @@ const COPY = {
     annualHistorySource: "Histórico regulatório externo oficial",
     competitiveAnalysis: "Análise competitiva",
     competitiveFindings: "Conclusões competitivas",
+    competitorDeepDive: "Análise aprofundada dos concorrentes",
+    competitorData: "Dados operacionais e financeiros",
+    moatAssessment: "Vantagem competitiva (moat)",
+    competitiveOutlook: "Perspectiva de 12–24 meses",
+    outlookDrivers: "Direcionadores",
+    outlookRisks: "Riscos a acompanhar",
+    analyticalAssessment: "Avaliação analítica",
     marketShare: "Proxy público de participação de mercado",
     marketShareBasis: "Numerador ÷ denominador auditáveis",
     noCompetitive: "Não havia evidência citável independente suficiente para análise competitiva.",
@@ -421,7 +435,50 @@ export default function DashboardV2({ data, lang }: { data: FilingAnalysis; lang
               <div className="flex flex-wrap items-center justify-between gap-3"><div><p className={filingLensTheme.label}>{c.competitiveAnalysis}</p><p className="mt-1 text-xs text-slate-500">market-research-brief · cited external research · filing facts remain primary</p>{competitive?.researchDiagnostics && <p className="mt-1 text-[9px] text-slate-600">{lang === "pt" ? `${competitive.researchDiagnostics.verifiedPeers} concorrentes verificados de ${competitive.researchDiagnostics.candidatePeers} candidatos · ${competitive.researchDiagnostics.citedSources} fontes citadas${competitive.researchDiagnostics.recoveryUsed ? " · recuperação determinística" : ""}` : `${competitive.researchDiagnostics.verifiedPeers} verified peers from ${competitive.researchDiagnostics.candidatePeers} candidates · ${competitive.researchDiagnostics.citedSources} cited sources${competitive.researchDiagnostics.recoveryUsed ? " · deterministic recovery" : ""}`}</p>}</div>{competitive?.status && <span className="rounded-full border border-cyan-500/25 bg-cyan-500/10 px-2.5 py-1 text-[9px] font-semibold uppercase text-cyan-200">{competitive.status.replaceAll("_", " ")}</span>}</div>
               {competitive && (competitive.peerProfiles.length || competitive.findings.length || competitive.marketStructure) ? <div className="mt-4 space-y-4">
                 {competitive.marketStructure && <div className={`${filingLensTheme.inset} rounded-xl p-4`}><p className="text-[9px] font-semibold uppercase tracking-wide text-slate-600">{lang === "pt" ? "Estrutura do mercado" : "Market structure"}</p><p className="mt-2 text-sm leading-6 text-slate-300">{competitive.marketStructure.summary}</p>{competitive.marketStructure.hhi != null && <p className="mt-2 text-xs font-semibold text-cyan-200">HHI: {formatFilingNumber(competitive.marketStructure.hhi, lang === "pt" ? "pt-BR" : "en-US", 0)}</p>}<p className="mt-2 text-[9px] text-slate-600">{sourceText(competitive.marketStructure.source, lang)}</p></div>}
-                <div className="grid gap-3 lg:grid-cols-2">{competitive.peerProfiles.slice(0, 8).map(peer => <article key={peer.name} className={`${filingLensTheme.inset} rounded-xl p-4`}><div className="flex items-start justify-between gap-3"><div><p className="text-sm font-semibold text-slate-100">{peer.name}</p><p className="mt-1 text-[10px] text-cyan-300">{peer.relationship}</p></div><span className="rounded-full bg-amber-500/10 px-2 py-1 text-[8px] font-semibold uppercase text-amber-200">{c.external}</span></div><p className="mt-3 text-xs leading-5 text-slate-400">{peer.positioning}</p>{peer.strengths.length > 0 && <p className="mt-3 text-[10px] leading-5 text-emerald-300/80">+ {peer.strengths.join(" · ")}</p>}{peer.vulnerabilities.length > 0 && <p className="mt-1 text-[10px] leading-5 text-amber-300/80">△ {peer.vulnerabilities.join(" · ")}</p>}<p className="mt-3 border-t border-slate-800 pt-2 text-[9px] text-slate-600">{sourceText(peer.source, lang)}</p></article>)}</div>
+                <div>
+                  <p className={filingLensTheme.label}>{c.competitorDeepDive}</p>
+                  <div className="mt-3 grid gap-3 lg:grid-cols-2">
+                    {competitive.peerProfiles.slice(0, 8).map(peer => (
+                      <article key={peer.name} className={`${filingLensTheme.inset} rounded-xl p-4`}>
+                        <div className="flex items-start justify-between gap-3">
+                          <div><p className="text-sm font-semibold text-slate-100">{peer.name}</p><p className="mt-1 text-[10px] text-cyan-300">{peer.relationship}</p></div>
+                          <span className="rounded-full bg-amber-500/10 px-2 py-1 text-[8px] font-semibold uppercase text-amber-200">{c.external}</span>
+                        </div>
+                        <p className="mt-3 text-xs leading-5 text-slate-400">{peer.positioning}</p>
+                        {peer.strengths.length > 0 && <p className="mt-3 text-[10px] leading-5 text-emerald-300/80">+ {peer.strengths.join(" · ")}</p>}
+                        {peer.vulnerabilities.length > 0 && <p className="mt-1 text-[10px] leading-5 text-amber-300/80">△ {peer.vulnerabilities.join(" · ")}</p>}
+                        {(peer.dataPoints?.length ?? 0) > 0 && (
+                          <section className="mt-4 border-t border-slate-800 pt-3">
+                            <p className="text-[9px] font-semibold uppercase tracking-wide text-slate-600">{c.competitorData}</p>
+                            <div className="mt-2 grid gap-2 sm:grid-cols-2">
+                              {peer.dataPoints!.map((point, index) => <div key={`${point.label}-${index}`} className="rounded-lg bg-slate-950/35 p-2.5"><p className="text-[9px] uppercase tracking-wide text-slate-600">{point.label}</p><p className="mt-1 text-xs font-semibold text-slate-100">{point.value}</p><p className="mt-1 text-[9px] text-cyan-300">{point.period}</p><p className="mt-1 text-[9px] leading-4 text-slate-500">{point.context}</p><p className="mt-2 text-[8px] text-slate-700">{sourceText(point.source, lang)}</p></div>)}
+                            </div>
+                          </section>
+                        )}
+                        {peer.moatAssessment && (
+                          <section className="mt-4 border-t border-slate-800 pt-3">
+                            <div className="flex flex-wrap items-center justify-between gap-2"><p className="text-[9px] font-semibold uppercase tracking-wide text-slate-600">{c.moatAssessment}</p><span className="rounded-full border border-violet-500/25 bg-violet-500/10 px-2 py-1 text-[8px] font-semibold uppercase text-violet-200">{peer.moatAssessment.rating} · {peer.moatAssessment.confidence}</span></div>
+                            <p className="mt-2 text-[10px] leading-5 text-slate-400">{peer.moatAssessment.summary}</p>
+                            <div className="mt-2 space-y-2">{peer.moatAssessment.evidence.map((item, index) => <div key={`${item.dimension}-${index}`} className="rounded-lg bg-slate-950/35 p-2.5"><p className="text-[9px] font-semibold text-violet-200">{item.dimension}</p><p className="mt-1 text-[9px] leading-4 text-slate-500">{item.assessment}</p><p className="mt-2 text-[8px] text-slate-700">{sourceText(item.source, lang)}</p></div>)}</div>
+                            <p className="mt-2 text-[8px] text-slate-700">{c.analyticalAssessment}</p>
+                          </section>
+                        )}
+                        {peer.outlook && (
+                          <section className="mt-4 border-t border-slate-800 pt-3">
+                            <div className="flex flex-wrap items-center justify-between gap-2"><p className="text-[9px] font-semibold uppercase tracking-wide text-slate-600">{c.competitiveOutlook}</p><span className="rounded-full border border-cyan-500/25 bg-cyan-500/10 px-2 py-1 text-[8px] font-semibold uppercase text-cyan-200">{peer.outlook.stance} · {peer.outlook.horizon}</span></div>
+                            <p className="mt-2 text-[10px] leading-5 text-slate-400">{peer.outlook.summary}</p>
+                            <div className="mt-2 grid gap-2 sm:grid-cols-2">
+                              {peer.outlook.drivers.length > 0 && <div><p className="text-[9px] font-semibold text-emerald-300/80">{c.outlookDrivers}</p><ul className="mt-1 space-y-1 text-[9px] leading-4 text-slate-500">{peer.outlook.drivers.map((item, index) => <li key={index}>• {item}</li>)}</ul></div>}
+                              {peer.outlook.risks.length > 0 && <div><p className="text-[9px] font-semibold text-amber-300/80">{c.outlookRisks}</p><ul className="mt-1 space-y-1 text-[9px] leading-4 text-slate-500">{peer.outlook.risks.map((item, index) => <li key={index}>• {item}</li>)}</ul></div>}
+                            </div>
+                            <p className="mt-2 text-[8px] text-slate-700">{sourceText(peer.outlook.source, lang)}</p>
+                          </section>
+                        )}
+                        <p className="mt-3 border-t border-slate-800 pt-2 text-[9px] text-slate-600">{sourceText(peer.source, lang)}</p>
+                      </article>
+                    ))}
+                  </div>
+                </div>
                 {competitive.findings.length > 0 && <div><p className={filingLensTheme.label}>{c.competitiveFindings}</p><div className="mt-3 grid gap-2 md:grid-cols-2">{competitive.findings.slice(0, 8).map((finding, index) => <div key={index} className={`${filingLensTheme.inset} rounded-lg p-3`}><p className="text-xs font-semibold leading-5 text-slate-200">{finding.insight}</p><p className="mt-2 text-[10px] leading-5 text-slate-500">{finding.implication}</p><p className="mt-2 text-[9px] text-slate-600">{sourceText(finding.source, lang)}</p></div>)}</div></div>}
               </div> : <p className="mt-4 text-xs leading-5 text-slate-500">{c.noCompetitive}</p>}
             </div>

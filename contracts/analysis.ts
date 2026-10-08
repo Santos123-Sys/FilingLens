@@ -134,6 +134,31 @@ export const marketSchema = z.object({
         positioning: z.string(),
         strengths: z.array(z.string()).max(3),
         vulnerabilities: z.array(z.string()).max(3),
+        dataPoints: z.array(z.object({
+          label: z.string(),
+          value: z.string(),
+          period: z.string(),
+          context: z.string(),
+          source: evidenceReferenceSchema,
+        })).max(6).optional(),
+        moatAssessment: z.object({
+          rating: z.enum(["strong", "moderate", "limited", "unclear"]),
+          confidence: z.enum(["high", "medium", "low"]),
+          summary: z.string(),
+          evidence: z.array(z.object({
+            dimension: z.string(),
+            assessment: z.string(),
+            source: evidenceReferenceSchema,
+          })).max(5),
+        }).optional(),
+        outlook: z.object({
+          stance: z.enum(["favorable", "mixed", "challenged", "unclear"]),
+          horizon: z.string(),
+          summary: z.string(),
+          drivers: z.array(z.string()).max(4),
+          risks: z.array(z.string()).max(4),
+          source: evidenceReferenceSchema,
+        }).optional(),
         source: evidenceReferenceSchema,
       })).max(8),
       findings: z.array(z.object({
@@ -162,6 +187,7 @@ export const marketSchema = z.object({
       researchDiagnostics: z.object({
         candidatePeers: z.number().int().nonnegative(),
         verifiedPeers: z.number().int().nonnegative(),
+        deepDivePeers: z.number().int().nonnegative().optional(),
         citedSources: z.number().int().nonnegative(),
         droppedClaims: z.number().int().nonnegative(),
         recoveryUsed: z.boolean(),
