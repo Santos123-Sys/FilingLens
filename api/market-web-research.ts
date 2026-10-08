@@ -493,6 +493,7 @@ async function catalogRecovery(input: {
       "Return 3-6 direct or segment peers when supported.",
       "The url field MUST be copied exactly from one source-catalog line. Do not invent, shorten, canonicalize or add query parameters.",
       "Keep relationship/positioning concise. Populate dataPoints, moatAssessment and outlook only from the memo and catalog; use empty dataPoints and null assessments when the catalog lacks support. Do not place Markdown links in narrative fields.",
+      "When cited source material explicitly provides company-wide financial figures, format at most 3 dataPoints per peer with exact labels Revenue, Net income, Operating income or Gross profit; values as ISO currency and decimal US scale (e.g. USD 1,234.5 millions), period as FY2025, and context stating consolidated US GAAP/IFRS/BR GAAP and exact period end YYYY-MM-DD. Only include scope, currency, reporting basis and end date when explicitly present in that SAME cited source. Never guess or normalize absent fields; otherwise retain original disclosure wording or omit.",
     ].join(" "),
     prompt: [
       `Issuer: ${input.issuerName || "not identified"}`,
