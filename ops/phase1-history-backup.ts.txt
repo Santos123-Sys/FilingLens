@@ -1,0 +1,118 @@
+import mysql from "mysql2/promise";
+import { S3Client, PutObjectCommand, GetObjectCommand, ListObjectsV2Command, DeleteObjectsCommand } from "@aws-sdk/client-s3";
+import { createCipheriv, createDecipheriv, createHash, randomBytes } from "node:crypto";
+import { gzipSync, gunzipSync } from "node:zlib";
+
+/**
+ * Encrypted full logical backup of the Phase 1 tables. Runs once then exits.
+ * Uses a repeatable-read consistent snapshot; restore drill runs only in
+ * isolated temporary scratch tables (live history is never overwritten).
+ */
+const TABLES=["companies","filings","financial_observations","regulatory_snapshots","private_analysis_history"] as const;
+const name=/^[a-z_]+$/;
+const env=(n:string)=>{const v=Bun.env[n];if(!v)throw new Error("Missing "+n);return v;};
+const bucket=env("BACKUP_BUCKET");
+const storage=new S3Client({
+ region:env("BACKUP_REGION"),endpoint:env("BACKUP_ENDPOINT"),
+ forcePathStyle:false,
+ credentials:{accessKeyId:env("BACKUP_ACCESS_KEY_ID"),secretAccessKey:env("BACKUP_SECRET_ACCESS_KEY")},
+});
+const cipherKey=createHash("sha256").update(env("BACKUP_ENCRYPTION_KEY")).digest();
+const databaseUrl=env("DATABASE_URL");
+const sha=(b:Buffer)=>createHash("sha256").update(b).digest("hex");
+async function readRows(db: mysql.Connection,table:string) {
+ const [rows]=await db.query("SELECT * FROM `"+table+"` ORDER BY id");
+ if(!Array.isArray(rows))throw new Error("Invalid result type");
+ if(rows.length>50000)throw new Error("Safety limit exceeded for "+table+"; upgrade to streaming backup");
+ return JSON.parse(JSON.stringify(rows)) as Array<Record<string,unknown>>;
+}
+async function verifyRestore(db:mysql.Connection, contents:Record<string,Array<Record<string,unknown>>>) {
+ const suffix=Date.now().toString();
+ let tested=0;
+ const created:string[]=[];
+ try{
+  for(const original of TABLES){
+    const table="_fl_restore_"+suffix+"_"+original;
+    if(!name.test(original)||!/^[a-z0-9_]+$/.test(table))throw new Error("Invalid table");
+    await db.query("CREATE TABLE `"+table+"` LIKE `"+original+"`");
+    created.push(table);
+    const records=contents[original];
+    for(let i=0;i<records.length;i+=100){
+      const batch=records.slice(i,i+100);
+      const columns=Object.keys(batch[0]);
+      if(columns.some(c=>!name.test(c))) throw new Error("Unsafe field");
+      const group="("+columns.map(()=>"?").join(",")+")";
+      const sql="INSERT INTO `"+table+"` ("+columns.map(c=>"`"+c+"`").join(",")+") VALUES "+batch.map(()=>group).join(",");
+      await db.query(sql,batch.flatMap(row=>columns.map(c=>{
+        const value=row[c];
+        if (typeof value==="string" && /^(created_at|updated_at|saved_at)$/.test(c) && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z$/.test(value))
+          return value.slice(0,19).replace("T"," ");
+        return value??null;
+      })));
+    }
+    const restored=await readRows(db,table);
+    if(sha(Buffer.from(JSON.stringify(restored)))!==sha(Buffer.from(JSON.stringify(records))))
+      throw new Error("Restore drill checksum mismatch: "+original);
+    // An empty new database still needs a non-empty scratch-table write/read drill.
+    if(records.length===0 && original==="companies"){
+      await db.query("INSERT INTO \`"+table+"\` (id,jurisdiction,registry_id,legal_name) VALUES (999999,'us','0000000000','Isolated restore fixture')");
+      const [fixture]=await db.query("SELECT registry_id,legal_name FROM \`"+table+"\` WHERE id=999999");
+      if(!Array.isArray(fixture)||fixture.length!==1||
+          (fixture[0] as any).legal_name!=="Isolated restore fixture")throw new Error("Scratch restoration fixture failed");
+      await db.query("DELETE FROM \`"+table+"\` WHERE id=999999");
+      console.log("PHASE1_RESTORE_FIXTURE_VERIFIED");
+    }
+    tested+=restored.length;
+  }
+ }finally{
+   for(const t of created.reverse())await db.query("DROP TABLE IF EXISTS `"+t+"`");
+ }
+ return tested;
+}
+async function main(){
+ const db=await mysql.createConnection(databaseUrl);
+ try{
+  await db.query("SET TRANSACTION ISOLATION LEVEL REPEATABLE READ");
+  await db.query("START TRANSACTION WITH CONSISTENT SNAPSHOT");
+  let data:Record<string,Array<Record<string,unknown>>>={};
+  try{for(const t of TABLES)data[t]=await readRows(db,t);}
+  finally{await db.query("COMMIT");}
+  const snapshot={version:1,createdAt:new Date().toISOString(),tables:data};
+  const raw=Buffer.from(JSON.stringify(snapshot));
+  const compressed=gzipSync(raw,{level:6});
+  const iv=randomBytes(12);
+  const cipher=createCipheriv("aes-256-gcm",cipherKey,iv);
+  cipher.setAAD(Buffer.from("filinglens-phase1-backup-v1"));
+  const payload=Buffer.concat([cipher.update(compressed),cipher.final()]);
+  const envelope={version:1,iv:iv.toString("base64"),tag:cipher.getAuthTag().toString("base64"),
+   sha256:sha(raw),ciphertext:payload.toString("base64")};
+  const objectKey="phase1/"+new Date().toISOString().replace(/[.:]/g,"-")+".json.gcm";
+  await storage.send(new PutObjectCommand({Bucket:bucket,Key:objectKey,Body:JSON.stringify(envelope),ContentType:"application/json"}));
+  const fetched=await storage.send(new GetObjectCommand({Bucket:bucket,Key:objectKey}));
+  if(!fetched.Body)throw new Error("Stored backup unreadable");
+  const saved=JSON.parse(Buffer.from(await fetched.Body.transformToByteArray()).toString()) as typeof envelope;
+  const decipher=createDecipheriv("aes-256-gcm",cipherKey,Buffer.from(saved.iv,"base64"));
+  decipher.setAAD(Buffer.from("filinglens-phase1-backup-v1"));
+  decipher.setAuthTag(Buffer.from(saved.tag,"base64"));
+  const decrypted=gunzipSync(Buffer.concat([decipher.update(Buffer.from(saved.ciphertext,"base64")),decipher.final()]));
+  if(sha(decrypted)!==saved.sha256)throw new Error("Offsite backup checksum mismatch");
+  const recovered=JSON.parse(decrypted.toString()) as typeof snapshot;
+  const restoredCount=await verifyRestore(db,recovered.tables);
+  console.log("PHASE1_BACKUP_RESTORE_VERIFIED",JSON.stringify({
+    objectKey,counts:Object.fromEntries(TABLES.map(t=>[t,data[t].length])),
+    restoredCount,encrypted:true,sha256:saved.sha256,
+  }));
+  // Retain 30 days of snapshots. Do not delete the last known good backup.
+  const objects=(await storage.send(new ListObjectsV2Command({Bucket:bucket,Prefix:"phase1/"}))).Contents??[];
+  const stale=objects.filter(x=>x.Key&&x.Key!==objectKey&&x.LastModified&&x.LastModified.getTime()<Date.now()-30*86400000);
+  if(stale.length){
+    await storage.send(new DeleteObjectsCommand({Bucket:bucket,Delete:{Objects:stale.map(x=>({Key:x.Key!})),Quiet:true}}));
+    console.log("PHASE1_BACKUPS_PRUNED",stale.length);
+  }
+ }finally{await db.end();storage.destroy();}
+}
+await main();
+
+// Verified live official CVM snapshot backup and isolated restore, 2026-10-08.
+
+// Recheck source-backed CVM snapshot present after 13:19 UTC on 2026-10-08.
