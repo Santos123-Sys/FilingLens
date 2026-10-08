@@ -11,6 +11,19 @@ export function createHistoryStore(databaseUrl: string) {
   const db = drizzle(pool);
   return {
     async close() { await pool.end(); },
+    async findCompany(jurisdiction:"us"|"br",registryId:string) {
+      const rows=await db.select().from(companies).where(and(eq(companies.jurisdiction,jurisdiction),eq(companies.registryId,registryId))).limit(1);
+      return rows[0] ?? null;
+    },
+    async deleteCompanyHistory(companyId:number) {
+      // This is scoped to a company identity derived from a private session token.
+      await db.transaction(async tx=>{
+        const fs=await tx.select({id:filings.id}).from(filings).where(eq(filings.companyId,companyId));
+        for(const f of fs) await tx.delete(financialObservations).where(eq(financialObservations.filingId,f.id));
+        await tx.delete(filings).where(eq(filings.companyId,companyId));
+        await tx.delete(companies).where(eq(companies.id,companyId));
+      });
+    },
     async saveCompany(input:{jurisdiction:"us"|"br";registryId:string;legalName:string;ticker?:string|null}) {
       if(!input.registryId.trim() || !input.legalName.trim()) throw new Error("Verified registry ID and legal name required");
       await db.insert(companies).values({jurisdiction:input.jurisdiction,registryId:input.registryId,legalName:input.legalName,ticker:input.ticker ?? null})
