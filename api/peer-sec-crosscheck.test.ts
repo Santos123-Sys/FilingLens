@@ -25,6 +25,7 @@ describe("official financial enrichment",()=>{
    retrieve:async (url)=>{called=url;return facts;}});
   expect(called).toBe("https://data.sec.gov/api/xbrl/companyfacts/CIK0000320193.json");
   expect(r.competitiveAnalysis.peerProfiles[0].dataPoints?.[0].primaryVerification?.status).toBe("verified");
+  expect(r.competitiveAnalysis.peerProfiles[0].officialHistory).toHaveLength(1);
  });
  it("stays unverified when the SEC user agent is not configured",async()=>{
   const r=await crosscheckCompetitiveFacts(research(),{userAgent:""});
@@ -34,5 +35,6 @@ describe("official financial enrichment",()=>{
   const r=await crosscheckCompetitiveFacts(research(),{userAgent:"FilingLens research contact@example.com",
    retrieve:async()=>({...facts,cik:10})});
   expect(r.competitiveAnalysis.peerProfiles[0].dataPoints?.[0].primaryVerification?.status).toBe("identity_mismatch");
+  expect(r.competitiveAnalysis.peerProfiles[0].officialHistory).toBeUndefined();
  });
 });
