@@ -8,13 +8,14 @@ export default function CompetitorEvidencePanel({market,lang}:{market:MarketResu
  return <section className="rounded-2xl border border-slate-700 bg-slate-900/65 p-4 sm:p-5">
   <div className="flex flex-wrap items-start justify-between gap-3"><div>
    <h3 className="text-sm font-semibold text-white">{pt?"Auditoria da evidência competitiva":"Competitive evidence audit"}</h3>
-   <p className="mt-1 text-xs text-slate-400">{pt?"Cobertura de dados quantitativos, fontes do moat e perspectivas por concorrente":"Coverage of numerical data, moat evidence and peer outlook"}</p>
+   <p className="mt-1 text-xs text-slate-400">{pt?"Cobertura de citações, valores confirmados no SEC, moat e perspectiva por concorrente":"Coverage of cited data, SEC-confirmed values, moat evidence and outlook"}</p>
   </div><span className="rounded-lg border border-slate-700 px-2.5 py-1 text-[11px] text-slate-300">{audits.length} {pt?"empresas":"peers"}</span></div>
   {audits.length===0?<p className="mt-4 text-xs leading-5 text-slate-500">{pt?"Nenhum perfil de concorrente com fontes externas suficientes.":"No independently sourced peer profiles currently available."}</p>:
   <div className="mt-4 overflow-x-auto"><table className="w-full min-w-[570px] text-left text-xs">
    <thead><tr className="border-b border-slate-700 text-slate-400">
     <th className="py-2 pr-2">{pt?"Concorrente":"Competitor"}</th>
-    <th className="px-2 py-2">{pt?"Dados quantitativos":"Numeric data"}</th>
+    <th className="px-2 py-2">{pt?"Dados citados":"Cited facts"}</th>
+    <th className="px-2 py-2">{pt?"Conferidos no SEC":"SEC matched"}</th>
     <th className="px-2 py-2">{pt?"Evidência do moat":"Moat citations"}</th>
     <th className="px-2 py-2">{pt?"Perspectiva citada":"Cited outlook"}</th>
     <th className="py-2 pl-2">{pt?"Domínios distintos":"Distinct source hosts"}</th>
@@ -22,6 +23,7 @@ export default function CompetitorEvidencePanel({market,lang}:{market:MarketResu
    <tbody>{audits.map(peer=><tr key={peer.name} className="border-b border-slate-800 text-slate-200">
     <td className="py-3 pr-2 font-medium">{peer.name}</td>
     <td className="px-2 py-3 tabular-nums">{peer.numericDataPoints}</td>
+    <td className="px-2 py-3 tabular-nums text-cyan-200">{peer.secCorroboratedPoints}</td>
     <td className="px-2 py-3 tabular-nums">{peer.moatEvidencePoints}</td>
     <td className="px-2 py-3">{peer.hasOutlookEvidence?(pt?"Sim":"Yes"):(pt?"Não":"No")}</td>
     <td className="py-3 pl-2 tabular-nums">{peer.uniqueSourceHosts}</td>
