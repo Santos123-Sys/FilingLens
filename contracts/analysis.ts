@@ -143,6 +143,14 @@ export const marketSchema = z.object({
           period: z.string(),
           context: z.string(),
           source: evidenceReferenceSchema,
+          /** SEC CompanyFacts corroboration, performed server-side only. A citation is not proof. */
+          primaryVerification: z.object({
+            status: z.enum(["verified", "amount_mismatch", "identity_mismatch", "not_in_sec", "unavailable", "source_mismatch"]),
+            provider: z.literal("sec_companyfacts"),
+            cik: z.string().optional(),
+            filingAccession: z.string().optional(),
+            proofUrl: z.string().optional(),
+          }).optional(),
         })).max(6).optional(),
         moatAssessment: z.object({
           rating: z.enum(["strong", "moderate", "limited", "unclear"]),
