@@ -18,12 +18,24 @@ Updated: 2026-10-08. Phase 1 provides a source-aware financial foundation; Phase
 - Tests: malformed URLs, uncited claims, source-host deduplication.
 - Still needed for a full peer benchmarking engine: semantic metric mapping and period/unit/currency normalization; no cross-company margin or multiple comparison without that mapping.
 
-## Milestone 2.3 — Competitive benchmark model (pending)
+## Milestone 2.3 — Competitive benchmark model (partial implementation in PR #35)
+Implemented: deterministic normalization of existing citation-linked peer facts to a whitelist of financial metrics; explicit FY period-end dates, consolidated reporting scope, accounting basis, ISO currency and scaled numeric amounts; intra-peer net margin; and issuer-versus-peer absolute comparisons only when all fields including exact fiscal-year-end match. Duplicate or malformed data are excluded with visible explanations. Uses existing cited research lane; **does not claim independent audit of model-extracted figures**.
+
+Still pending for full milestone completion: verified peer identifiers against official issuer registries; robust IFRS/US GAAP crosswalks and non-GAAP definition mapping; broader historical cohort ingestion; source passage-level numeric corroboration; optional FX rates with explicit timestamps; true comparable valuation multiples. Missing support must result in empty rather than invented charts.
 - Add independently sourced competitor financial data with issuer entity identifiers (CIK/CNPJ/ticker), metric definitions, accounting frameworks and period types.
 - Build like-for-like comparison cohorts by fiscal period, currency conversion date, business scope and non-GAAP definitions. Reject mismatched peers.
 - Separate moat mechanisms (switching costs, scale/cost advantage, network effects, intangible assets and regulation) from observed manifestations such as retention, ROIC persistence or pricing.
 - Add uncertainties, source coverage and counter-evidence. No derived moat rating without direct supporting evidence.
 - Acceptance: reproducible, source-cited peer metrics with tests preventing quarter-vs-FY, mixed-currency and unsupported moat comparisons.
+
+
+### Milestone 2.3 release acceptance gates
+- Inputs: candidate peer facts retain an external research citation that was present in the verified source catalog; no fictional fact or number is added on the client.
+- Accepted peer observations must state a whitelisted metric, FY period label, exact fiscal year end, consolidated basis, named accounting standard, ISO currency and numeric scale. The engine refuses unsupported locales, ambiguous currencies, duplicate facts, and interim/annual period mixing.
+- Peer income margins are only computed using revenue and net income in the same issuer, currency, period end and accounting basis.
+- Issuer–peer values must additionally match exact year-end date, reported unit, issuer statement scope and accounting standard. Same calendar year alone is not enough.
+- Tests include cross-currency, mismatched year-end, unknown issuer basis, ambiguous formats, negative net income and duplicate handling.
+- No new database service, agent or outside research calls are added merely to calculate comparisons.
 
 ## Milestone 2.4 — Forward outlook and valuation-driver bridge (pending)
 - Turn cited company/segment guidance and independently cited competitor outlook into explicitly probabilistic revenue/margin/capex drivers.
