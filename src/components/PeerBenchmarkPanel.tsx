@@ -19,14 +19,14 @@ export default function PeerBenchmarkPanel({data,lang}:{data:FilingAnalysis;lang
   <div className="flex flex-wrap items-start justify-between gap-2">
    <div><h3 className="text-sm font-semibold text-white">{pt?"Benchmark financeiro de concorrentes":"Peer financial benchmarking"}</h3>
     <p className="mt-1 text-xs text-slate-400">{pt?
-     "Somente cifras confirmadas no SEC CompanyFacts, em milhões, com identificação de formulário, período e base contábil.":
-     "Only SEC CompanyFacts-corroborated figures, normalized to millions with explicit filing accession, fiscal period and accounting gates."}</p></div>
+     "Cifras corroboradas por SEC CompanyFacts ou CVM DFP com identidade, período e moeda verificáveis.":
+     "Only regulator-backed SEC CompanyFacts or CVM DFP figures, with explicit issuer, period, currency and accounting gates."}</p></div>
    <span className="rounded-lg border border-slate-700 px-2 py-1 text-[11px] text-slate-300">
     {result.facts.length} {pt?"observações elegíveis":"eligible observations"}</span>
   </div>
   {result.facts.length===0?<p className="mt-4 text-xs leading-5 text-slate-400">{pt?
-   "Nenhum valor foi confirmado pelo SEC CompanyFacts com emissor, documento, número e período compatíveis; informações apenas citadas não entram no benchmark.":
-   "No SEC-corroborated peer observations passed issuer-identity, accession, amount, fiscal period and currency checks. Other cited financial claims are excluded from numerical benchmarking."}</p>:
+   "Nenhuma cifra passou os controles SEC/CVM de identidade, moeda, período e fonte. Alegações apenas citadas não entram nos cálculos.":
+   "No primary SEC/CVM peer observations passed issuer identity, filing, period, currency and scale checks. Merely cited financial claims remain excluded."}</p>:
    <div className="mt-4 overflow-x-auto"><table className="w-full min-w-[650px] text-left text-xs">
     <thead><tr className="border-b border-slate-700 text-slate-400">
      <th className="py-2 pr-3">{pt?"Concorrente":"Peer"}</th>
@@ -61,17 +61,17 @@ export default function PeerBenchmarkPanel({data,lang}:{data:FilingAnalysis;lang
      {v.differencePercent!==null?` (${num(v.differencePercent,lang)}%)`:""}</li>)}</ul>
   </div>}
   {official.dataPoints>0 && <div className="mt-5 rounded-xl border border-slate-700 bg-slate-950/40 p-3">
-   <h4 className="text-xs font-semibold text-white">{pt?"Histórico oficial de concorrentes — SEC":"Official peer history — SEC"} ({official.dataPoints})</h4>
+   <h4 className="text-xs font-semibold text-white">{pt?"Histórico oficial de concorrentes — SEC/CVM":"Official peer history — SEC/CVM"} ({official.dataPoints})</h4>
    <p className="mt-2 text-[11px] text-slate-400">{pt?
-    "Dados extraídos do SEC CompanyFacts para companhias cuja identidade e ao menos um indicador foram corroborados. Conflitos de tags ou revisões são omitidos; períodos, moeda e escopo devem coincidir para benchmarks.":
-    "Regulator-derived annual data for peers with a corroborated identity and at least one verified metric. Conflicting tags or restatements are omitted; peer comparison requires matching fiscal year-end, currency and scope."}</p>
+    "Dados provenientes de SEC CompanyFacts ou CVM DFP para emissores com identidade comprovada. Conflitos de tags ou revisões são omitidos; períodos, moeda e escopo devem coincidir para benchmarks.":
+    "Regulator-derived annual data from SEC CompanyFacts or CVM DFP for identified peers. Conflicting tags or restatements are omitted; peer comparison requires matching fiscal year-end, currency and scope."}</p>
    <div className="mt-3 overflow-x-auto"><table className="w-full min-w-[530px] text-left text-xs">
     <thead><tr className="border-b border-slate-700 text-slate-400"><th className="p-2">{pt?"Concorrente":"Peer"}</th><th className="p-2">{pt?"Indicador":"Metric"}</th><th className="p-2">{pt?"Ano":"Year"}</th><th className="p-2">{pt?"Crescimento YoY":"YoY growth"}</th><th className="p-2">{pt?"Fonte oficial":"Official source"}</th></tr></thead>
     <tbody>{official.growth.slice(0,22).map((g,i)=><tr key={g.peer+g.metric+g.toYear+i} className="border-b border-slate-800">
      <td className="p-2 text-slate-200">{g.peer}</td><td className="p-2 text-slate-300">{metricName(g.metric,pt)}</td>
      <td className="p-2 text-slate-300">{g.fromYear} → {g.toYear}</td>
      <td className="p-2 tabular-nums text-cyan-200">{num(g.growthPercent,lang)}%</td>
-     <td className="p-2">{evidenceUrl(g.source)?<a href={evidenceUrl(g.source)!} target="_blank" rel="noopener noreferrer" className="text-cyan-300 underline">SEC</a>:"—"}</td>
+     <td className="p-2">{evidenceUrl(g.source)?<a href={evidenceUrl(g.source)!} target="_blank" rel="noopener noreferrer" className="text-cyan-300 underline">{g.source.publisher??"Regulator"}</a>:"—"}</td>
     </tr>)}</tbody>
    </table></div>
    {official.matched.length>0?<p className="mt-3 text-[11px] text-emerald-300">{official.matched.length} {pt?"coortes com período final e GAAP idênticos":"cohorts with identical period end and GAAP basis"}</p>:
@@ -82,7 +82,7 @@ export default function PeerBenchmarkPanel({data,lang}:{data:FilingAnalysis;lang
    <ul className="mt-3 space-y-2">{result.flags.slice(0,20).map((f,i)=><li key={i}>{f.peer} · {f.code.replaceAll("_"," ")} — {f.detail}</li>)}</ul>
   </details>}
   <p className="mt-4 text-[11px] leading-5 text-slate-400">{pt?
-   "Os valores são confrontados com SEC CompanyFacts do mesmo emissor e documento; isso não substitui auditoria independente. Exigem-se exercício, moeda, escopo e base contábil idênticos. Não há câmbio, estimativa de valor justo nem ranking automático.":
-   "Figures are corroborated against SEC CompanyFacts for the exact issuer and filing accession; SEC matching is not a substitute for independent audit. Comparisons require identical fiscal year-end, currency, consolidated scope and accounting basis. No FX conversion, fair-value estimate or automatic ranking is performed."}</p>
+   "Os valores usam fontes oficiais SEC/CVM e não substituem auditoria independente. Exigem-se exercício, moeda, escopo e base contábil idênticos. Não há câmbio, estimativa de valor justo nem ranking automático.":
+   "Figures use primary SEC/CVM reporting evidence and are not a substitute for independent audit. Comparisons require identical fiscal year-end, currency, consolidated scope and accounting basis. No FX conversion, fair-value estimate or automatic ranking is performed."}</p>
  </section>;
 }
