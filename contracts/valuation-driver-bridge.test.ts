@@ -50,8 +50,7 @@ describe("Phase 2 valuation driver bridge",()=>{
  });
  it("links only an actually completed DCF, not a fabricated valuation",()=>{
   const dcf={status:"complete",figures:{implied_per_share:{value:123}},
-   sensitivity:{wacc:[8,9],terminal_growth:[2,3]}}
-  as unknown as DcfValuationResult;
+   sensitivity:{wacc:[8,9],terminal_growth:[2,3]}} as unknown as DcfValuationResult;
   const r=buildValuationDriverBridge(fixture(),inputs,dcf);
   expect(r.dcfLink?.status).toBe("validated_dcf");
   expect(r.dcfLink?.perShareBase).toBe(123);
