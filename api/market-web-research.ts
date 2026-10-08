@@ -397,10 +397,20 @@ export function verifyCompetitiveResearch(
   };
 }
 
-function citedUrls(result: { sources: Array<{ sourceType: string; url?: string; title?: string }> }): CitedSource[] {
+type ProviderSource={sourceType:string;url?:string;title?:string};
+type ProviderStep={sources?:ProviderSource[];toolResults?:Array<{toolName:string;output:unknown}>};
+export function citedUrls(result: { sources: ProviderSource[]; steps?:ProviderStep[] }): CitedSource[] {
+  const stepSources=(result.steps??[]).flatMap(step=>step.sources??[]);
+  const toolSources=(result.steps??[]).flatMap(step=>(step.toolResults??[]).flatMap(item=>{
+    if(item.toolName!=="web_search" || !item.output || typeof item.output!=="object")return [];
+    const output=item.output as {sources?:Array<{url?:string;title?:string;type?:string}>;action?:{sources?:Array<{url?:string;title?:string;type?:string}>}};
+    const data=output.sources??output.action?.sources??[];
+    return Array.isArray(data)?data.filter(x=>typeof x.url==="string").map(x=>({sourceType:"url",url:x.url,title:x.title})):[];
+  }));
+  const sources=[...result.sources,...stepSources,...toolSources];
   const seen = new Set<string>();
   const out: CitedSource[] = [];
-  for (const source of result.sources) {
+  for (const source of sources) {
     if (source.sourceType !== "url" || typeof source.url !== "string") continue;
     const key = canonicalUrl(source.url);
     if (!key || seen.has(key)) continue;
@@ -452,6 +462,7 @@ async function catalogRecovery(input: {
     abortSignal: signal,
     model: filingModel("market"),
     tools: { web_search: marketWebSearchTool() as never },
+    prepareStep: ({stepNumber})=>({toolChoice:stepNumber===0?{type:"tool",toolName:"web_search"}:"auto"}),
     stopWhen: stepCountIs(2),
     maxRetries: 0,
     maxOutputTokens: 2_500,
@@ -563,6 +574,7 @@ export async function researchCompetitiveLandscape(input: {
       model: filingModel("market"),
       output: Output.object({ schema: webResearchOutput }),
       tools: { web_search: marketWebSearchTool() as never },
+      prepareStep: ({stepNumber})=>({toolChoice:stepNumber===0?{type:"tool",toolName:"web_search"}:"auto"}),
       stopWhen: stepCountIs(3),
       maxRetries: 0,
       maxOutputTokens: 8_000,
