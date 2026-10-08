@@ -486,6 +486,11 @@ app.post("/api/dashboard-data", async (c) => {
   }
 });
 
-app.all("/api/*", (c) => c.json({ error: "Not Found" }, 404));
+app.all("/api/*", async (c, next) => {
+  // Railway registers internal history routes after importing this shared app.
+  // Let only those requests continue to the Node-only handlers.
+  if (c.req.path.startsWith("/api/internal/history/")) return next();
+  return c.json({ error: "Not Found" }, 404);
+});
 
 export default app;
