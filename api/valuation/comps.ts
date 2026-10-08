@@ -4,10 +4,21 @@ import { z } from "zod";
 import type { CompsValuationResult, FilingAnalysis, ValuationAssumption } from "../../contracts/analysis";
 import { filingModel, marketWebSearchTool, openAIProviderOptions } from "../ai/provider";
 import { classifyAiError } from "../lib/ai-client";
+import {evaluateTradingPeer,commonQuoteDate} from "../../contracts/trading-comps-eligibility";
+import type {TradingPeerSnapshot,TradingPeerResult} from "../../contracts/trading-comps-eligibility";
 import { ValuationGateError, ValuationInputError, latest, makeAssumption, netDebt, num, resolved, round, shares, text, validatedRows } from "./common";
 
-const peerOutput = z.object({ peers: z.array(z.object({ name:z.string(), ev_ebitda:z.number().positive().nullable(), ev_revenue:z.number().positive().nullable(), pe:z.number().positive().nullable(), source_url:z.string().url(), source_label:z.string() })).max(12) });
-type Peer = z.infer<typeof peerOutput>["peers"][number];
+const tradingPeer=z.object({
+ name:z.string(),currency:z.enum(["USD","BRL","EUR","GBP","CHF"]),
+ basis:z.enum(["us_gaap","ifrs","br_gaap"]),consolidated:z.boolean(),
+ quotation_date:z.string(),financial_period_end:z.string(),debt_as_of:z.string(),
+ market_cap_millions:z.number().nullable(),net_debt_millions:z.number().nullable(),
+ ebitda_millions:z.number().nullable(),revenue_millions:z.number().nullable(),
+ net_income_millions:z.number().nullable(),
+ quotation_source_url:z.string(),financial_source_url:z.string(),
+});
+const peerOutput=z.object({peers:z.array(tradingPeer).max(12)});
+type Peer=TradingPeerSnapshot;
 const canon = (value:string) => { try { const u=new URL(value); u.hash=""; return `${u.origin}${u.pathname}`.replace(/\/$/,"").toLowerCase(); } catch { return null; } };
 
 function preferredMetric(a:FilingAnalysis): "EV/EBITDA"|"EV/Revenue"|"P/E" {
@@ -17,24 +28,35 @@ function preferredMetric(a:FilingAnalysis): "EV/EBITDA"|"EV/Revenue"|"P/E" {
   return "P/E";
 }
 function metricValue(a:FilingAnalysis, metric:string) { return metric === "EV/EBITDA" ? latest(a.financials.ebitda) ?? latest(a.financials.adjustedEbitda) : metric === "EV/Revenue" ? latest(a.financials.revenue) : latest(a.financials.netIncome); }
-function multiple(p:Peer, metric:string) { return metric === "EV/EBITDA" ? p.ev_ebitda : metric === "EV/Revenue" ? p.ev_revenue : p.pe; }
-
-async function research(a:FilingAnalysis, metric:string, names:string[]): Promise<Peer[]> {
-  if (!process.env.OPENAI_API_KEY || names.length === 0) return [];
-  try {
-    const result = await withModelExecution("market", signal => generateText({
-      abortSignal: signal,
-      model: filingModel("market"), output: Output.object({schema:peerOutput}),
-      tools:{ web_search: marketWebSearchTool() as never }, stopWhen:stepCountIs(3), maxRetries:0, maxOutputTokens:2500,
-      providerOptions: openAIProviderOptions("market",2500),
-      system:"You are a cautious valuation researcher. Use web search now. For the supplied named public peers, return only current trading multiples explicitly supported by cited URLs. Never estimate a missing multiple. Prefer exchange, company filings, investor relations or reputable market-data pages. Return null for unsupported fields.",
-      prompt:`Issuer: ${a.company.name}. Jurisdiction: ${a.jurisdiction}. Industry: ${a.market.industry}. Required primary multiple: ${metric}. Named peers: ${names.join(", ")}. Find exact current multiples and exact citation URLs.`,
-    }));
-    const cited = new Set(result.sources.filter(s=>s.sourceType==="url").map(s=>canon(s.url)).filter(Boolean));
-    return result.output.peers.filter(p=>cited.has(canon(p.source_url)));
-  } catch (e) { const mapped=classifyAiError(e); console.warn("[valuation:comps] research unavailable",mapped.name,mapped.message); return []; }
+async function research(a:FilingAnalysis, metric:"EV/EBITDA"|"EV/Revenue"|"P/E", names:string[]):Promise<TradingPeerResult[]> {
+ if(!process.env.OPENAI_API_KEY||!names.length)return [];
+ const unit=/^(USD|BRL|EUR|GBP|CHF) /i.exec(a.financials.unit)?.[1]?.toUpperCase();
+ const basis=a.financials.accountingBasis;
+ if(!unit||!basis||basis==="unknown"||a.financials.statementScope!=="consolidated")return [];
+ const today=new Date().toISOString().slice(0,10);
+ try {
+  const result=await withModelExecution("market",signal=>generateText({
+   abortSignal:signal,model:filingModel("market"),
+   output:Output.object({schema:peerOutput}),
+   tools:{web_search:marketWebSearchTool() as never},stopWhen:stepCountIs(3),maxRetries:0,
+   maxOutputTokens:3600,providerOptions:openAIProviderOptions("market",3600),
+   system:"Use cited web search sources, never memory. Return only issuer-identified, consolidated peer market and annual financial components needed to calculate a multiple. Include actual quotation_date, financial_period_end, and debt_as_of dates and explicit currency and accounting basis. market_cap_millions and net_debt_millions must be components of a traceable enterprise value at the quoted dates. NEVER report a pre-computed trading multiple as if its raw numerator and denominator were verified. When a component or exact date cannot be sourced, return null (numbers) or empty dates. Never invent source URLs or market quotes.",
+   prompt:`Issuer: ${a.company.name}. Required metric: ${metric}. Fiscal year end: ${a.company.periodEnd}. Reporting currency: ${unit}. Accounting basis: ${basis}. As of ${today}. Named peers: ${names.join(", ")}. Provide two real cited sources per peer: quotation_source_url and financial_source_url. Explicitly distinguish the equity quote date from the financial/debt reporting date.`,
+  }));
+  const catalog=new Set(result.sources.filter(x=>x.sourceType==="url").map(x=>canon(x.url)).filter((x):x is string=>Boolean(x)));
+  const permitted=new Set(result.sources.filter(x=>x.sourceType==="url").map(x=>x.url));
+  const vetted:TradingPeerResult[]=[];
+  for(const raw of result.output.peers){
+   if(!permitted.has(raw.quotation_source_url)||!permitted.has(raw.financial_source_url)||
+      !catalog.has(canon(raw.quotation_source_url)??"")||!catalog.has(canon(raw.financial_source_url)??""))continue;
+   const candidate=evaluateTradingPeer(raw,metric,{peer:raw.name,issuerPeriodEnd:a.company.periodEnd,
+    currency:unit,basis,today,sourceUrls:permitted});
+   if(candidate&&names.some(n=>n.trim().toLowerCase()===raw.name.trim().toLowerCase()))vetted.push(candidate);
+  }
+  const distinct=vetted.filter((v,i,all)=>all.findIndex(x=>x.name.toLowerCase()===v.name.toLowerCase())===i);
+  return commonQuoteDate(distinct)?distinct:[];
+ }catch(e){const mapped=classifyAiError(e);console.warn("[valuation:comps] sourced inputs unavailable",mapped.name,mapped.message);return [];}
 }
-
 export async function prepareComps(a:FilingAnalysis) {
   const metric=preferredMetric(a), target=metricValue(a,metric), debt=netDebt(a), sh=shares(a);
   const names=[...new Set(a.market.competitors.map(x=>x.trim()).filter(Boolean))].slice(0,12);
@@ -47,10 +69,10 @@ export async function prepareComps(a:FilingAnalysis) {
     makeAssumption("comps","comps.shares_outstanding","equity_bridge","Shares outstanding",sh,"shares","Derived from net income / EPS when available; validate carefully.",sh===null?"low":"medium","high"),
   ];
   const values:number[]=[];
-  peerNames.forEach((name,i)=>{ const p=byName.get(name.toLowerCase()); const v=p?multiple(p,metric):null; if(v!==null&&v!==undefined) values.push(v); const row=makeAssumption("comps",`comps.peer.${i+1}`,"peer_multiple",`${name} — ${metric}`,v,"x",p?`Citation-backed ${metric} recovered by bounded web research.`:"No citable multiple recovered; enter a value manually or exclude this peer.",p?"medium":"low","high"); if(p) row.source={section:"Independent web valuation research",kind:"citation",url:p.source_url,publisher:p.source_label,accessed:new Date().toISOString().slice(0,10)}; assumptions.push(row); });
+  peerNames.forEach((name,i)=>{ const p=byName.get(name.toLowerCase()); const v=p?p.multiple:null; if(v!==null&&v!==undefined) values.push(v); const row=makeAssumption("comps",`comps.peer.${i+1}`,"peer_multiple",`${name} — ${metric}`,v,"x",p?`Recomputed ${metric} from source-catalog market cap, debt and annual financial components. Quote as of ${p.quotationDate}; financial FY end ${p.periodEnd}. Verify manually before accepting.`:"No complete same-date, same-basis source-backed numerator/denominator; enter a manually verified value or exclude this peer.",p?"medium":"low","high"); if(p) row.source={section:"Trading quote and financial components (two cited sources)",kind:"citation",url:p.sourceUrls[0],publisher:"Cited market-price source",accessed:p.quotationDate}; assumptions.push(row); });
   values.sort((a,b)=>a-b); const median=values.length ? values[Math.floor(values.length/2)] : null;
-  assumptions.splice(1,0,makeAssumption("comps","comps.selected_multiple","framework","Selected multiple",median,"x",median===null?"No citation-backed peer median available; validate a selected multiple manually.":"Proposed from recovered peer multiples; user validation is mandatory.",median===null?"low":"medium","high"));
-  return {method:"comps" as const,status:"awaiting_validation" as const,assumptions,notes:["Valuation is gated until assumptions are accepted/edited and at least three peer multiples are validated.","Web-researched multiples are accepted only when the provider returned the same URL as a citation; otherwise the ledger stays blank."]};
+  assumptions.splice(1,0,makeAssumption("comps","comps.selected_multiple","framework","Selected multiple",median,"x",median===null?"No comparable, same-date market multiple cohort; validate sources and a selected multiple manually.":"Proposed from recovered peer multiples; user validation is mandatory.",median===null?"low":"medium","high"));
+  return {method:"comps" as const,status:"awaiting_validation" as const,assumptions,notes:["Valuation is gated until assumptions are accepted/edited and at least three peer multiples are validated.","Automated proposals require three distinct peers, one quote date, explicit financial year end, common accounting basis/currency and verified source-catalog links; model-supplied multiples are never trusted."]};
 }
 
 function quantile(values:number[],q:number){ const a=[...values].sort((x,y)=>x-y), pos=(a.length-1)*q, lo=Math.floor(pos), hi=Math.ceil(pos); return lo===hi?a[lo]:a[lo]+(a[hi]-a[lo])*(pos-lo); }
