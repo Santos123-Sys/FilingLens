@@ -71,6 +71,17 @@ async function migrate() {
  UNIQUE KEY uq_private_history (workspace_hash, filing_key_hash),
  KEY ix_private_workspace (workspace_hash, saved_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4`
+,`CREATE TABLE IF NOT EXISTS sec_companyfacts_snapshots (
+  cik CHAR(10) NOT NULL,
+  retrieved_day CHAR(10) NOT NULL,
+  archive_sha256 CHAR(64) NOT NULL,
+  payload_sha256 CHAR(64) NOT NULL,
+  source_url VARCHAR(255) NOT NULL,
+  payload_json LONGTEXT NOT NULL,
+  imported_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY(cik),
+  KEY ix_sec_import_age(retrieved_day)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4`
    ];
    for(const sql of statements) await db.query(sql);
    const [tables] = await db.query("SELECT table_name FROM information_schema.tables WHERE table_schema=DATABASE() AND table_name IN ('companies','filings','financial_observations','regulatory_snapshots','private_analysis_history') ORDER BY table_name");
