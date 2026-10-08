@@ -9,6 +9,7 @@ import { classifyFiling, metadataFallback } from "./classification";
 import { modelRuntimeConfig } from "./ai/provider";
 import { marketResearchSkillStatus } from "./market-research-skill";
 import { dataToolsBinary, dataToolsConfigured, dataToolsJson } from "./data-tools-client";
+
 import { calculateValuation, prepareValuation, reconcileValuations, ValuationGateError, ValuationInputError } from "./valuation-manager";
 import type {
   AgentName,
@@ -29,6 +30,10 @@ import {
   AiInvalidRequest,
   AiTransient,
 } from "./lib/ai-client";
+
+type RegulatoryArchiveFn = (snapshot: RegulatoryDataSnapshot, registryId:string)=>Promise<boolean>;
+let regulatoryArchive: RegulatoryArchiveFn | null = null;
+export function registerRegulatoryArchiver(callback:RegulatoryArchiveFn) {regulatoryArchive=callback;}
 
 const app = new Hono();
 
@@ -244,6 +249,14 @@ app.post("/api/regulatory-data", async (c) => {
       ticker: typeof body.ticker === "string" ? body.ticker : undefined,
       historyYears: typeof body.historyYears === "number" ? Math.max(1, Math.min(5, Math.floor(body.historyYears))) : 5,
     });
+    const registryFromFiling = jurisdiction === "us" ? deterministicCik(text) : deterministicCnpj(text);
+    if (registryFromFiling && regulatoryArchive) {
+      try {
+        await regulatoryArchive(result,registryFromFiling);
+      } catch (error) {
+        console.warn("[regulatory-history] snapshot archive unavailable",safeErrorName(error));
+      }
+    }
     return c.json(result);
   } catch (error) {
     console.warn("[regulatory-data] enrichment unavailable; preserving filing-only analysis", safeErrorName(error));
@@ -489,7 +502,7 @@ app.post("/api/dashboard-data", async (c) => {
 app.all("/api/*", async (c, next) => {
   // Railway registers internal history routes after importing this shared app.
   // Let only those requests continue to the Node-only handlers.
-  if (c.req.path.startsWith("/api/internal/history/")) return next();
+  if (c.req.path.startsWith("/api/internal/history/") || c.req.path.startsWith("/api/regulatory-history/")) return next();
   return c.json({ error: "Not Found" }, 404);
 });
 

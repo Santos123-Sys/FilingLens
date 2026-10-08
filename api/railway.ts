@@ -1,10 +1,24 @@
 import { serve } from "@hono/node-server";
 import { serveStatic } from "@hono/node-server/serve-static";
 import { readFile } from "node:fs/promises";
-import app from "./boot";
+import app, { registerRegulatoryArchiver } from "./boot";
+import { persistPublicRegulatorySnapshot, readPublicRegulatorySnapshots } from "./regulatory-snapshot-store";
 import { registerHistoryApi } from "./history-api";
 
 registerHistoryApi(app);
+registerRegulatoryArchiver(persistPublicRegulatorySnapshot);
+app.get("/api/regulatory-history/:jurisdiction/:registryId",async c=>{
+  const jurisdiction=c.req.param("jurisdiction");
+  if(jurisdiction!=="us"&&jurisdiction!=="br")return c.json({error:"invalid_jurisdiction"},400);
+  try{
+   const snapshots=await readPublicRegulatorySnapshots(jurisdiction,c.req.param("registryId"));
+   c.header("Cache-Control","no-store");
+   return c.json({jurisdiction,registryId:c.req.param("registryId"),snapshots});
+  }catch(error){
+   console.warn("[regulatory-history] retrieval unavailable",error instanceof Error?error.name:"unknown");
+   return c.json({error:"regulatory_history_unavailable"},503);
+  }
+});
 
 const clientRoot = "./dist/client";
 const indexPath = `${clientRoot}/index.html`;

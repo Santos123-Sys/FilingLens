@@ -37,3 +37,14 @@ export const financialObservations = mysqlTable("financial_observations", {
   sourceUrl:text("source_url"),
   createdAt:timestamp("created_at").notNull().defaultNow(),
 },t=>[index("ix_observation_filing").on(t.filingId),index("ix_observation_period").on(t.metric,t.periodKind,t.fiscalYear)]);
+
+/** Public SEC/CVM structured-data snapshots only; no uploaded PDF content. */
+export const regulatorySnapshots = mysqlTable("regulatory_snapshots", {
+  id: bigint("id", {mode:"number",unsigned:true}).autoincrement().primaryKey(),
+  companyId: bigint("company_id",{mode:"number",unsigned:true}).notNull().references(()=>companies.id),
+  provider: varchar("provider",{length:64}).notNull(),
+  snapshotDay: varchar("snapshot_day",{length:10}).notNull(),
+  snapshotHash: varchar("snapshot_hash",{length:64}).notNull(),
+  payloadJson: text("payload_json").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+},t=>[uniqueIndex("uq_reg_snapshot_day").on(t.companyId,t.snapshotDay),index("ix_reg_snapshot_company").on(t.companyId,t.createdAt)]);

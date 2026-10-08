@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { FilingAnalysis, EvidenceReference } from "@contracts/analysis";
 import type { RegulatoryDataSnapshot } from "@contracts/regulatory-data";
 
@@ -49,6 +49,19 @@ export function compareAnnualHistory(data: FilingAnalysis): HistoryComparison[] 
   });
  });
 }
+type PublicArchivedMetric={key:string;year:number;value:number;unit:string|null;status:string;source:{url:string}};
+type PublicArchive={snapshotDay:string;snapshotHash:string;provider:string;metrics:PublicArchivedMetric[]};
+export function compareArchivedSnapshots(snapshots:PublicArchive[]) {
+ if(snapshots.length<2)return [];
+ const [newest,previous]=snapshots;
+ const previousMap=new Map(previous.metrics.map(m=>[`${m.key}|${m.year}|${m.unit??""}`,m]));
+ return newest.metrics.flatMap(m=>{
+  const old=previousMap.get(`${m.key}|${m.year}|${m.unit??""}`);
+  if(!old || !Number.isFinite(m.value)||!Number.isFinite(old.value))return [];
+  return Math.abs(m.value-old.value)>0.000001*Math.max(1,Math.abs(m.value),Math.abs(old.value))
+    ?[{metric:m.key,year:m.year,previous:old.value,current:m.value,unit:m.unit}]:[];
+ });
+}
 const fval=(value:number|null,lang:Props["lang"])=>value===null?"—":new Intl.NumberFormat(lang==="pt"?"pt-BR":"en-US",{maximumFractionDigits:2}).format(value);
 function safeLink(ref:EvidenceReference):string|null {
  try{const u=new URL(ref.url??"");return u.protocol==="https:"?u.toString():null;}catch{return null;}
@@ -56,6 +69,22 @@ function safeLink(ref:EvidenceReference):string|null {
 export default function HistoryWorkbench({data,lang}:Props) {
  const [metric,setMetric]=useState<Metric>("revenue");
  const [showIssues,setShowIssues]=useState(false);
+
+ const [archives,setArchives] = useState<PublicArchive[]>([]);
+ const [archiveStatus,setArchiveStatus] = useState<"idle"|"unavailable"|"ready">("idle");
+ const registry=data.jurisdiction==="us"
+  ?data.metadata.cik?.replace(/\D/g,"").padStart(10,"0")
+  :data.metadata.cnpj?.replace(/\D/g,"");
+ useEffect(()=>{
+  if(!registry || !/^\d{10,14}$/.test(registry))return;
+  const controller=new AbortController();
+  fetch(`/api/regulatory-history/${data.jurisdiction}/${registry}`,{signal:controller.signal})
+   .then(r=>{if(!r.ok)throw Error("History unavailable");return r.json();})
+   .then(body=>{if(controller.signal.aborted)return;setArchives(Array.isArray(body.snapshots)?body.snapshots:[]);setArchiveStatus("ready");})
+   .catch(()=>{if(!controller.signal.aborted)setArchiveStatus("unavailable");});
+  return ()=>controller.abort();
+ },[registry,data.jurisdiction]);
+ const archiveChanges=useMemo(()=>compareArchivedSnapshots(archives),[archives]);
  const annual=data.financials.annualHistory;
  const comparisons=useMemo(()=>compareAnnualHistory(data),[data]);
  const dataIssues=useMemo(()=>{
@@ -79,6 +108,16 @@ export default function HistoryWorkbench({data,lang}:Props) {
    <span className="rounded-lg border border-slate-600 px-2 py-1 text-slate-300">{missing.length} {lang==="pt"?"não divulgados":"unavailable"}</span>
    <span className="rounded-lg border border-amber-600/50 px-2 py-1 text-amber-200">{conflicts.length+dataIssues.length} {lang==="pt"?"alertas":"flags"}</span>
   </div></div>
+  {archiveStatus==="ready" && <div className="mt-3 rounded-lg border border-slate-700 bg-slate-950/50 px-3 py-2 text-[11px] text-slate-300">
+   {archives.length
+    ?(lang==="pt"?"Instantâneos regulatórios arquivados":"Archived regulatory snapshots")+": "+archives.length+
+      " · "+(lang==="pt"?"Último arquivo":"Last archived")+": "+archives[0].snapshotDay
+    :(lang==="pt"?"Nenhum arquivo regulatório persistido para esta companhia ainda.":"No persisted regulatory snapshots for this company yet.")}
+   {archiveChanges.length>0 && <ul className="mt-2 list-disc pl-4 text-amber-200">
+     {archiveChanges.slice(0,12).map(c=><li key={c.metric+"-"+c.year}>{c.metric} · FY{c.year}: {fval(c.previous,lang)} → {fval(c.current,lang)} ({c.unit??"?"}) — {lang==="pt"?"revisão necessária":"review required"}</li>)}
+   </ul>}
+  </div>}
+  {archiveStatus==="unavailable" && <p className="mt-2 text-[11px] text-slate-500">{lang==="pt"?"O arquivo persistido não está disponível; o histórico da análise atual permanece visível.":"Persisted history is unavailable; this analysis's financial history remains available."}</p>}
   <div className="mt-4 flex flex-wrap items-center gap-3">
    <label htmlFor="filinglens-history-metric" className="text-xs text-slate-300">{lang==="pt"?"Indicador":"Metric"}</label>
    <select id="filinglens-history-metric" value={metric} onChange={e=>setMetric(e.target.value as Metric)}
