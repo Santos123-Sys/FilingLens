@@ -7,6 +7,7 @@ import {cachedSecCompanyFacts} from "./sec-bulk-cache";
 type Profiles=NonNullable<MarketResult["market"]["competitiveAnalysis"]>;
 type Research={peerEvidence:NonNullable<MarketResult["market"]["peerEvidence"]>;competitiveAnalysis:Profiles};
 const MAX_CIK=3;
+let secRestrictedUntil=0;
 /**
  * Official SEC HTTP calls use a fixed host and a numeric CIK derived from an
  * SEC filing URL, never a generated/arbitrary model URL. Runs only on server.
@@ -28,6 +29,11 @@ export async function crosscheckCompetitiveFacts(
   try{
    const response=await fetch(url,{headers:{"User-Agent":ua,"Accept":"application/json"},
     redirect:"error",signal:AbortSignal.timeout(7_000)});
+   if(response.status===403||response.status===429){
+    secRestrictedUntil=Date.now()+60*60*1000;
+    console.warn("[peer-sec-proof] SEC access restricted; pause further API calls, use official bulk cache if available");
+    return null;
+   }
    if(!response.ok)return null;
    const length=Number(response.headers.get("content-length")??0);
    if(length>12_000_000)return null;
@@ -38,7 +44,7 @@ export async function crosscheckCompetitiveFacts(
  }
  const fetcher=options.retrieve??retrieve;
  const results=new Map<string,SecCompanyFacts|null>();
- if(agent.length>=12){
+ if(agent.length>=12&&Date.now()>=secRestrictedUntil){
   await Promise.all(uniqueCiks.map(async cik=>{
    try{results.set(cik,await fetcher(secProofUrl(cik),agent));}
    catch{results.set(cik,null);}
