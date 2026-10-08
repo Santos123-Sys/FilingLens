@@ -401,6 +401,7 @@ function researchSystem(methodology: string) {
     "For each peer, perform a compact deep dive: capture 3-6 material financial or operating data points with period and context; assess the competitive moat across evidence-backed dimensions such as scale, cost position, switching costs, network effects, brand, distribution, scarce assets, regulation, IP or data; and give a 12-24 month competitive outlook with drivers and risks.",
     "Moat ratings and outlook stances are analytical assessments, not company-reported facts or investment recommendations. Use 'unclear' when evidence is insufficient and do not force a moat conclusion.",
     "Prefer government/regulator data, official company investor-relations pages and filings, exchanges, industry associations, then high-quality research sources, in that order.",
+    "For US peers with annual reported numbers, seek the exact SEC EDGAR annual filing URL under https://www.sec.gov/Archives/edgar/data/{CIK}/{accession}/{document}. The peer financial amount cannot be treated as a confirmed benchmark merely because an IR page or search result cites it. Never invent an EDGAR accession or CIK; use actual returned sources.",
     "Actively search for a public, auditable way to estimate issuer market share. Prefer regulator/open-data datasets; otherwise use a close public proxy only when numerator and denominator use the same period, geography and product basis.",
     "For any market-share proxy, return the raw numerator and denominator and let the application recompute the percentage. Never infer a denominator from narrative language.",
     "Do not manufacture TAM, concentration, CR3/CR5 or HHI. Calculate concentration only when cited share data are sufficient.",
@@ -440,6 +441,7 @@ async function catalogRecovery(input: {
       "Use web search. Find authoritative pages that establish direct or segment competition for the issuer.",
       "For each candidate, also seek official financial or operating data, evidence of durable competitive advantages or erosion risks, and current guidance or industry evidence relevant to a 12-24 month outlook.",
       "Prefer regulator/government data, official investor-relations/company pages, exchanges and industry associations.",
+      "For US peer annual revenue and net income prioritize official SEC EDGAR 10-K filing URLs with genuine CIK and accession, so primary SEC CompanyFacts may corroborate numbers independently.",
       "Do not attempt JSON. Return a concise research memo naming candidate peers, material data points, moat evidence and outlook evidence.",
     ].join(" "),
     prompt: [
