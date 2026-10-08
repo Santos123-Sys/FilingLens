@@ -4,7 +4,7 @@ import {buildPeerFinancialBenchmarks} from "./peer-financial-benchmark";
 const source=(url="https://www.sec.gov/Archives/edgar/data/1/filing"):EvidenceReference=>
  ({section:"FY audited financial statements",kind:"citation",url});
 const point=(label:string,value:string,period="FY2025",context="consolidated US GAAP; period end 2025-12-31",url?:string)=>
- ({label,value,period,context,source:source(url)});
+ ({label,value,period,context,source:source(url),primaryVerification:{status:"verified" as const,provider:"sec_companyfacts" as const,cik:"0000000001"}});
 const fixture=(points:ReturnType<typeof point>[],overrides:Record<string,unknown>={}):FilingAnalysis=>({
  jurisdiction:"us",
  company:{name:"Issuer",periodEnd:"2025-12-31"},
@@ -73,4 +73,15 @@ describe("peer financial benchmark",()=>{
   expect(r.facts).toHaveLength(1);
   expect(r.comparisons).toHaveLength(0);
  });
+ it("does not compute peer comparisons from a citation without official SEC numeric confirmation",()=>{
+  const data=fixture([point("Revenue","USD 300 millions")]);
+  const peer=data.market.competitiveAnalysis!.peerProfiles[0];
+  peer.dataPoints![0].primaryVerification={status:"amount_mismatch",provider:"sec_companyfacts"};
+  const r=buildPeerFinancialBenchmarks(data);
+  expect(r.facts).toHaveLength(0);
+  expect(r.margins).toHaveLength(0);
+  expect(r.comparisons).toHaveLength(0);
+  expect(r.flags.some(x=>x.code==="UNVERIFIED_PRIMARY_FIGURE")).toBe(true);
+ });
+
 });
