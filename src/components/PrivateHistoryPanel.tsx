@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { FilingAnalysis } from "@contracts/analysis";
 
-type Observation={metric:string;periodEnd:string;fiscalYear:number;value:number|null;unit:string;currency:string|null;sourceSection:string;sourceUrl?:string;filingId:string;status:"verified"|"single_source"|"conflicted"|"missing";candidates:Array<{value:number|null;filingId:string;sourceSection:string;sourceUrl?:string}>};
+type Observation={periodKind:"FY"|"Q"|"YTD"|"LTM";metric:string;periodEnd:string;fiscalYear:number;value:number|null;unit:string;currency:string|null;sourceSection:string;sourceUrl?:string;filingId:string;status:"verified"|"single_source"|"conflicted"|"missing";candidates:Array<{value:number|null;filingId:string;sourceSection:string;sourceUrl?:string}>};
 type Reconciliation={points:Observation[];flags:Array<{code:string;key:string;detail:string}>};
 type HistoryReply={status:"available"|"empty";annualHistory:null|{years:string[];unit:string;status:string;[key:string]:unknown};reconciliation:Reconciliation};
 const METRICS=[["revenue","Revenue","Receita"],["netIncome","Net income","Lucro líquido"],["operatingCashFlow","Operating cash flow","Fluxo de caixa operacional"],["ebit","Operating income","Resultado operacional"],["totalDebt","Total debt","Dívida total"],["cash","Cash","Caixa"]] as const;
