@@ -35,6 +35,19 @@ describe("section-aware filing retrieval", () => {
     expect(risks).toContain("Cybersecurity and supply concentration risks");
   });
 
+  it("prioritizes Brazilian segment disclosures even when they appear late in a long filing", () => {
+    const filing = [
+      "Relatório trimestral",
+      "X".repeat(70_000),
+      "Informações contábeis por segmento de negócio",
+      "Segmento Exploração e Produção | Receita líquida R$ 87,2 bilhões | Resultado R$ 25,4 bilhões",
+      "Y".repeat(55_000),
+    ].join("\n");
+    const market = buildAgentInput("market", filing);
+    expect(market).toContain("Informações contábeis por segmento de negócio");
+    expect(market).toContain("Receita líquida R$ 87,2 bilhões");
+  });
+
   it("preserves evidence from every document in a filing bundle", () => {
     const bundle = [
       "[FILINGLENS_DOCUMENT 1/2: quarterly.pdf]\nFORM 10-Q\nITEM 1. FINANCIAL STATEMENTS\nRevenue 100\n[/FILINGLENS_DOCUMENT 1]",
