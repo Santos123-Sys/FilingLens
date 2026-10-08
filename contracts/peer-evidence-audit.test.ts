@@ -21,7 +21,7 @@ describe("competitive evidence audit",()=>{
  it("counts distinct source hosts, not duplicate citations as independent publications",()=>{
   const data={peerProfiles:[{name:"B",source:citation("https://a.example/a"),
    relationship:"direct",positioning:"",strengths:[],vulnerabilities:[],
-   dataPoints:[{label:"Sales",value:"10",period:"FY2025",context:"",source:citation("https://a.example/b")}],
+   dataPoints:[{label:"Sales",value:"10",period:"FY2025",context:"",source:citation("https://a.example/b"),primaryVerification:{status:"verified",provider:"sec_companyfacts"}}],
    moatAssessment:{rating:"unclear",confidence:"low",summary:"",evidence:[
     {dimension:"Switching costs",assessment:"Limited",source:citation("https://b.example/c")} ]},
    outlook:{stance:"mixed",horizon:"12 months",summary:"",drivers:[],risks:[],source:citation("https://b.example/c")}}],
@@ -29,6 +29,19 @@ describe("competitive evidence audit",()=>{
   const a=auditPeerEvidence(data);
   expect(a[0].uniqueSourceHosts).toBe(2);
   expect(a[0].numericDataPoints).toBe(1);
+  expect(a[0].secCorroboratedPoints).toBe(1);
   expect(a[0].gaps).toEqual([]);
  });
+ it("keeps a cited but unverified peer figure out of confirmed SEC evidence",()=>{
+  const item={peerProfiles:[{name:"Unverified",source:citation("https://a.example/info"),
+   dataPoints:[{label:"Revenue",value:"USD 100 millions",period:"FY2025",
+    context:"consolidated US GAAP; period end 2025-12-31",
+    source:citation("https://a.example/report"),primaryVerification:{status:"unavailable",provider:"sec_companyfacts"}}]}]}
+    as unknown as NonNullable<MarketResult["market"]["competitiveAnalysis"]>;
+  const audit=auditPeerEvidence(item);
+  expect(audit[0].numericDataPoints).toBe(1);
+  expect(audit[0].secCorroboratedPoints).toBe(0);
+  expect(audit[0].gaps.some(g=>g.includes("primary SEC"))).toBe(true);
+ });
+
 });
