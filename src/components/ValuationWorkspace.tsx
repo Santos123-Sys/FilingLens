@@ -288,7 +288,7 @@ export default function ValuationWorkspace({
 
       {reconciliation && dcfResult && compsResult && <div className={`mt-5 rounded-xl border p-4 ${reconciliation.status === "divergent" ? "border-amber-500/35 bg-amber-500/8" : "border-emerald-500/25 bg-emerald-500/6"}`}><div className="flex flex-wrap items-center justify-between gap-2"><div><div className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">{lang === "pt" ? "Triangulação DCF × Comps" : "DCF × Comps triangulation"}</div><div className="mt-1 text-sm font-semibold text-white">{reconciliation.divergence_percent === null ? "—" : `${reconciliation.divergence_percent.toFixed(1)}%`} {lang === "pt" ? "de divergência" : "divergence"}</div></div><span className={`rounded-full border px-3 py-1 text-[9px] font-semibold uppercase ${reconciliation.status === "divergent" ? "border-amber-500/40 text-amber-300" : "border-emerald-500/40 text-emerald-300"}`}>{reconciliation.status}</span></div><p className="mt-2 text-[10px] leading-relaxed text-slate-400">{reconciliation.notes.join(" ")}</p></div>}
 
-      <ValuationDriverBridge analysis={analysis} dcf={dcfResult} lang={lang} />
+      <ValuationDriverBridge analysis={analysis} dcf={dcfResult} dcfAssumptions={dcfState.assumptions} lang={lang} />
 
       <p className="mt-5 border-t border-slate-800 pt-4 text-[9px] leading-relaxed text-slate-600">{lang === "pt" ? "Valuation para fins informacionais. Premissas de mercado, estimativas e múltiplos exigem validação do usuário e não constituem recomendação de investimento." : "Valuation is for informational purposes. Market assumptions, estimates and trading multiples require user validation and do not constitute investment advice."}</p>
     </section>
