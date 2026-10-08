@@ -122,3 +122,7 @@ This hierarchy is intentional: users should understand whether an analysis is tr
 ## PowerPoint generation
 
 The PowerPoint renderer is deterministic and generated from the same `FilingAnalysis` contract. OOXML identifiers and package relationships must comply with Microsoft Office constraints. Presentation generation has a dedicated regression test so an export may not be marked ready if its package contract is invalid.
+
+## Shared execution boundary
+
+The browser DAG now uses a shared Node-process generation gate, shorter request-local deadlines, bounded competitive recovery, zero SDK retries and sanitized run/request-correlated model traces. See [Bounded specialist execution](BOUNDED_AGENT_EXECUTION.md) for the design alternatives, implemented controls, limits and evaluation/release plan. No additional specialists or deployment services are introduced.

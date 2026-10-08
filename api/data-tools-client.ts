@@ -1,3 +1,5 @@
+import { executionAbortSignal } from "./ai/execution";
+
 const DATA_TOOLS_TIMEOUT_MS = 60_000;
 
 export function dataToolsBaseUrl(): string | null {
@@ -16,7 +18,7 @@ export async function dataToolsJson<T>(path: string, payload: unknown, timeoutMs
     method: "POST",
     headers: { "Content-Type": "application/json", Accept: "application/json" },
     body: JSON.stringify(payload),
-    signal: AbortSignal.timeout(timeoutMs),
+    signal: executionAbortSignal(timeoutMs),
   });
   if (!response.ok) {
     const detail = await response.text().catch(() => "");
@@ -32,6 +34,6 @@ export async function dataToolsBinary(path: string, payload: unknown, timeoutMs 
     method: "POST",
     headers: { "Content-Type": "application/json", Accept: "application/vnd.openxmlformats-officedocument.presentationml.presentation" },
     body: JSON.stringify(payload),
-    signal: AbortSignal.timeout(timeoutMs),
+    signal: executionAbortSignal(timeoutMs),
   });
 }

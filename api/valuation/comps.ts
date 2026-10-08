@@ -1,3 +1,4 @@
+import { withModelExecution } from "../ai/execution";
 import { generateText, Output, stepCountIs } from "ai";
 import { z } from "zod";
 import type { CompsValuationResult, FilingAnalysis, ValuationAssumption } from "../../contracts/analysis";
@@ -21,13 +22,14 @@ function multiple(p:Peer, metric:string) { return metric === "EV/EBITDA" ? p.ev_
 async function research(a:FilingAnalysis, metric:string, names:string[]): Promise<Peer[]> {
   if (!process.env.OPENAI_API_KEY || names.length === 0) return [];
   try {
-    const result = await generateText({
+    const result = await withModelExecution("market", signal => generateText({
+      abortSignal: signal,
       model: filingModel("market"), output: Output.object({schema:peerOutput}),
       tools:{ web_search: marketWebSearchTool() as never }, stopWhen:stepCountIs(3), maxRetries:0, maxOutputTokens:2500,
       providerOptions: openAIProviderOptions("market",2500),
       system:"You are a cautious valuation researcher. Use web search now. For the supplied named public peers, return only current trading multiples explicitly supported by cited URLs. Never estimate a missing multiple. Prefer exchange, company filings, investor relations or reputable market-data pages. Return null for unsupported fields.",
       prompt:`Issuer: ${a.company.name}. Jurisdiction: ${a.jurisdiction}. Industry: ${a.market.industry}. Required primary multiple: ${metric}. Named peers: ${names.join(", ")}. Find exact current multiples and exact citation URLs.`,
-    });
+    }));
     const cited = new Set(result.sources.filter(s=>s.sourceType==="url").map(s=>canon(s.url)).filter(Boolean));
     return result.output.peers.filter(p=>cited.has(canon(p.source_url)));
   } catch (e) { const mapped=classifyAiError(e); console.warn("[valuation:comps] research unavailable",mapped.name,mapped.message); return []; }

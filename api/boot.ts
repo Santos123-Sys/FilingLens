@@ -1,3 +1,4 @@
+import { executionRuntimeStatus, withExecutionScope, safeErrorName } from "./ai/execution";
 import { Hono } from "hono";
 import { bodyLimit } from "hono/body-limit";
 
@@ -31,10 +32,20 @@ import {
 
 const app = new Hono();
 
+app.use(bodyLimit({ maxSize: 65 * 1024 * 1024 }));
+
+const MODEL_ROUTES = new Set(["/api/metadata", "/api/agent", "/api/market-research", "/api/valuation/propose"]);
+app.use("/api/*", async (c, next) => {
+  if (!MODEL_ROUTES.has(c.req.path)) return next();
+  const body = await c.req.json().catch(() => ({})) as { agent?: unknown };
+  const stage = c.req.path === "/api/agent" && typeof body.agent === "string"
+    ? body.agent : c.req.path.slice("/api/".length);
+  return withExecutionScope(stage, c.req.header("X-FilingLens-Run-Id"), c.req.raw.signal, next);
+});
+
 const MAX_DOCUMENTS = 6;
 const MAX_FILE_BYTES = 20 * 1024 * 1024;
 const MAX_BUNDLE_BYTES = 60 * 1024 * 1024;
-app.use(bodyLimit({ maxSize: 65 * 1024 * 1024 }));
 
 function errStatus(err: unknown): { body: { error: string }; status: 400 | 403 | 422 | 500 | 503 } {
   if (err instanceof BadFiling) return { body: { error: err.message }, status: 422 };
@@ -43,12 +54,12 @@ function errStatus(err: unknown): { body: { error: string }; status: 400 | 403 |
   if (err instanceof AiMisconfigured) return { body: { error: "ai_misconfigured" }, status: 500 };
   if (err instanceof AiInvalidRequest) return { body: { error: "ai_invalid_request" }, status: 422 };
   if (err instanceof AiTransient) return { body: { error: "ai_transient" }, status: 503 };
-  console.error("request failed:", err);
+  console.error("request failed:", safeErrorName(err));
   return { body: { error: "internal" }, status: 500 };
 }
 
 function safeDocumentName(name: string): string {
-  return name.replace(/[\r\n\[\]]+/g, " ").trim().slice(0, 180) || "filing.pdf";
+  return name.replace(/[\r\n[\]]+/g, " ").trim().slice(0, 180) || "filing.pdf";
 }
 
 function firstCapture(text: string, patterns: RegExp[]): string | null {
@@ -132,6 +143,7 @@ function unavailableRegulatoryData(jurisdiction: Market, warning: string): Regul
 app.get("/api/status", (c) => c.json({
   configured: Boolean(process.env.OPENAI_API_KEY),
   ai: modelRuntimeConfig(),
+  execution: executionRuntimeStatus(),
   dataTools: { configured: dataToolsConfigured() },
   skills: { marketResearch: marketResearchSkillStatus() },
   intake: { maxDocuments: MAX_DOCUMENTS, maxFileMb: 20, maxBundleMb: 60 },
@@ -234,7 +246,7 @@ app.post("/api/regulatory-data", async (c) => {
     });
     return c.json(result);
   } catch (error) {
-    console.warn("[regulatory-data] enrichment unavailable; preserving filing-only analysis", error);
+    console.warn("[regulatory-data] enrichment unavailable; preserving filing-only analysis", safeErrorName(error));
     return c.json(unavailableRegulatoryData(jurisdiction, "Authoritative structured-data lookup was unavailable; filing evidence was preserved."));
   }
 });
@@ -341,7 +353,7 @@ app.post("/api/market-research", async (c) => {
           ];
         }
       } catch (error) {
-        console.warn("[market-share] ANP public-data proxy unavailable; preserving other market evidence", error);
+        console.warn("[market-share] ANP public-data proxy unavailable; preserving other market evidence", safeErrorName(error));
         run.diagnostic.warnings = [
           ...(run.diagnostic.warnings ?? []),
           "anp_market_share_provider_unavailable",
