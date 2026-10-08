@@ -23,7 +23,7 @@ const peerWireSchema = z.object({
     period: z.string().min(1),
     context: z.string().min(1),
     url: z.string(),
-  })),
+  })).optional(),
   moatAssessment: z.object({
     rating: z.enum(["strong", "moderate", "limited", "unclear"]),
     summary: z.string().min(1),
@@ -32,7 +32,7 @@ const peerWireSchema = z.object({
       assessment: z.string().min(1),
       url: z.string(),
     })),
-  }).nullable(),
+  }).nullable().optional(),
   outlook: z.object({
     stance: z.enum(["favorable", "mixed", "challenged", "unclear"]),
     horizon: z.string().min(1),
@@ -40,7 +40,7 @@ const peerWireSchema = z.object({
     drivers: z.array(z.string()),
     risks: z.array(z.string()),
     url: z.string(),
-  }).nullable(),
+  }).nullable().optional(),
   url: z.string(),
 });
 
@@ -215,7 +215,8 @@ function verifyPeersWithProfiles(
     if (!source) continue;
     seen.add(name.toLowerCase());
 
-    const dataPoints = peer.dataPoints.slice(0, 10).flatMap(point => {
+    const candidateDataPoints = peer.dataPoints ?? [];
+    const dataPoints = candidateDataPoints.slice(0, 10).flatMap(point => {
       const pointSource = evidenceFrom(point.url, citedSources, accessed);
       const label = cleanNarrative(point.label, 120);
       const value = cleanNarrative(point.value, 120);
@@ -225,7 +226,7 @@ function verifyPeersWithProfiles(
         ? [{ label, value, period, context, source: pointSource }]
         : [];
     }).slice(0, 6);
-    droppedDeepClaims += Math.max(0, peer.dataPoints.length - dataPoints.length);
+    droppedDeepClaims += Math.max(0, candidateDataPoints.length - dataPoints.length);
 
     const moatEvidence = (peer.moatAssessment?.evidence ?? []).slice(0, 8).flatMap(item => {
       const itemSource = evidenceFrom(item.url, citedSources, accessed);
