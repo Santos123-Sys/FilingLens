@@ -65,7 +65,7 @@ export function reconcileFinancialHistory(observations: FinancialObservation[], 
     const present = candidates.filter(x=>x.value !== null);
     const chosen = present[0] ?? candidates[0];
     const distinct = present.some(x=>!close(x.value!, present[0].value!, tolerance));
-    const status: ReconciledPoint["status"] = distinct ? "conflicted" : !present.length ? "missing" : present.length > 1 ? "verified" : "single_source";
+    const status: ReconciledPoint["status"] = distinct ? "conflicted" : !present.length ? "missing" : new Set(present.map(o=>o.filingId)).size > 1 ? "verified" : "single_source";
     if (distinct) flags.push({code:"CONFLICT",key,detail:`Different reported values across ${[...new Set(present.map(x=>x.filingId))].join(", ")}; manual restatement review required`});
     if (distinct) flags.push({code:"UNRESOLVED",key,detail:"Conflicting values must not enter calculations without review"});
     points.push({...chosen, value: distinct ? null : chosen.value, candidates, status});
