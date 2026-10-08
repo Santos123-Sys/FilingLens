@@ -84,4 +84,16 @@ describe("peer financial benchmark",()=>{
   expect(r.flags.some(x=>x.code==="UNVERIFIED_PRIMARY_FIGURE")).toBe(true);
  });
 
+ it("permits same-currency IFRS peer comparisons only when proof basis agrees",()=>{
+  const d=fixture([point("Revenue","EUR 300 millions","FY2025",
+   "consolidated IFRS; period end 2025-12-31")]);
+  d.financials.unit="EUR millions";d.financials.accountingBasis="ifrs";
+  d.market.competitiveAnalysis!.peerProfiles[0].dataPoints![0].primaryVerification={
+   status:"verified",provider:"sec_companyfacts",accountingBasis:"ifrs"};
+  const out=buildPeerFinancialBenchmarks(d);
+  expect(out.comparisons).toHaveLength(1);
+  d.financials.accountingBasis="us_gaap";
+  expect(buildPeerFinancialBenchmarks(d).comparisons).toHaveLength(0);
+ });
+
 });
