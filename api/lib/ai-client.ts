@@ -1,3 +1,5 @@
+import { NoObjectGeneratedError } from "ai";
+
 /**
  * ai-client.ts — 网站大模型能力客户端（平台预置，拷进项目后请勿改契约）
  *
@@ -168,6 +170,10 @@ export function classifyAiError(err: unknown): Error {
     err instanceof AiTransient
   ) {
     return err;
+  }
+
+  if (NoObjectGeneratedError.isInstance(err)) {
+    return new AiInvalidRequest("Model output did not satisfy the analysis contract");
   }
 
   const anyErr = err as {

@@ -1,3 +1,4 @@
+import { safeErrorName, withModelExecution } from "./ai/execution";
 import { generateText, Output, stepCountIs } from "ai";
 import { z } from "zod";
 import type { MarketResult } from "../contracts/analysis";
@@ -343,7 +344,8 @@ async function catalogRecovery(input: {
   businessDescription?: string | null;
   filingExcerpt: string;
 }) {
-  const discovery = await generateText({
+  const discovery = await withModelExecution("market", signal => generateText({
+    abortSignal: signal,
     model: filingModel("market"),
     tools: { web_search: marketWebSearchTool() as never },
     stopWhen: stepCountIs(2),
@@ -368,7 +370,7 @@ async function catalogRecovery(input: {
       "",
       "Find evidence for 3-6 direct or segment peers. Diversified issuers may have different peer sets by segment.",
     ].join("\n"),
-  });
+  }), 40_000);
 
   const sources = citedUrls(discovery);
   if (!sources.length) {
@@ -395,7 +397,8 @@ async function catalogRecovery(input: {
     `[${index + 1}] ${source.title ?? "Untitled source"} | ${source.url}`
   ).join("\n");
 
-  const classified = await generateText({
+  const classified = await withModelExecution("market", signal => generateText({
+    abortSignal: signal,
     model: filingModel("market"),
     output: Output.object({ schema: peerDiscoveryOutput }),
     maxRetries: 0,
@@ -418,7 +421,7 @@ async function catalogRecovery(input: {
       "Allowed source catalog:",
       catalog,
     ].join("\n"),
-  });
+  }), 30_000);
 
   const synthetic: CompetitiveResearchOutput = {
     peers: classified.output.peers,
@@ -446,7 +449,8 @@ export async function researchCompetitiveLandscape(input: {
   const methodology = marketResearchRuntimeMethodology();
 
   try {
-    const result = await generateText({
+    const result = await withModelExecution("market", signal => generateText({
+    abortSignal: signal,
       model: filingModel("market"),
       output: Output.object({ schema: webResearchOutput }),
       tools: { web_search: marketWebSearchTool() as never },
@@ -467,7 +471,7 @@ export async function researchCompetitiveLandscape(input: {
         "",
         "Produce a source-verified competitive landscape with 3-6 direct or segment peers, up to 5 concise insight → implication findings, and public market-share evidence when defensible.",
       ].join("\n"),
-    });
+    }), 80_000);
 
     const sources = citedUrls(result);
     const verified = verifyCompetitiveResearch(result.output, sources);
@@ -477,11 +481,11 @@ export async function researchCompetitiveLandscape(input: {
     if (verified.peerEvidence.length > 0) return verified;
 
     console.warn("[market-research] full research returned no verified peers; using catalog recovery");
-    return await catalogRecovery(input);
   } catch (error) {
-    console.warn("[market-research] full structured research failed; using catalog recovery", error);
-    return await catalogRecovery(input);
+    console.warn("[market-research] full structured research failed; using catalog recovery", safeErrorName(error));
   }
+  // Exactly one recovery lane: a failure inside recovery must not restart it.
+  return catalogRecovery(input);
 }
 
 /** Compatibility wrapper used by older callers. */

@@ -1,3 +1,4 @@
+import { safeErrorName, EXECUTION_POLICY } from "./ai/execution";
 import type { z } from "zod";
 import {
   companySchema,
@@ -140,6 +141,7 @@ export const agentManager = {
       retryBoundary: "browser-per-stage",
       requestPolicy: "one_primary_model_invocation_per_agent_request; provider web-search tool may execute inside profiler/historian; deterministic Python skills do not call a model",
       executionMode: "dependency_aware_bounded_concurrency",
+      executionPolicy: EXECUTION_POLICY,
       integrations: [
         { skill: "equity-research", stage: "profiler", integration: "tear_sheet_method_and_cited_web_cross_check", mode: "filing-primary issuer identity/business-description cross-check only; no Equity Report, DCF, price target, multiples or recommendation", externalResearch: "bounded_openai_web_search" },
         { skill: "market-research-brief", stage: "market", integration: "exact_framework_plus_decomposed_cited_research", mode: "probabilistic web research generates candidates; deterministic citation binding, peer ranking and numerical checks decide what enters the contract; catalog recovery separates source discovery from structured peer classification", externalResearch: "bounded_openai_web_search" },
@@ -218,7 +220,7 @@ export const agentManager = {
       try {
         value = await runAgent(agent, market, input, schema, context);
       } catch (error) {
-        console.warn("[agent:market] filing extraction degraded; continuing to independent competitive research", error);
+        console.warn("[agent:market] filing extraction degraded; continuing to independent competitive research", safeErrorName(error));
         value = {
           market: {
             industry: "",
@@ -247,7 +249,7 @@ export const agentManager = {
               subtools.push("focused-formulario-risk-recovery");
             }
           } catch (error) {
-            console.warn("[agent:risks] focused Formulario recovery unavailable", error);
+            console.warn("[agent:risks] focused Formulario recovery unavailable", safeErrorName(error));
           }
         }
       }
@@ -335,7 +337,7 @@ export const agentManager = {
       result = mergeMarketResearchPeers(validated, researched.peerEvidence, researched.competitiveAnalysis);
     } catch (error) {
       researchUnavailable = true;
-      console.warn("[market-research] cited web research unavailable; preserving public-data and filing lanes", error);
+      console.warn("[market-research] cited web research unavailable; preserving public-data and filing lanes", safeErrorName(error));
       result = {
         market: {
           ...validated.market,

@@ -3,11 +3,11 @@ import type { z } from "zod";
 import pdfParse from "./pdf";
 import { filingModel, openAIProviderOptions } from "./ai/provider";
 import { AiMisconfigured, classifyAiError } from "./lib/ai-client";
+import { withModelExecution } from "./ai/execution";
 import { AGENTS, METADATA_AGENT, type AgentName } from "./engines";
 import type { Jurisdiction, Market } from "../contracts/analysis";
 
 const MAX_TEXT_CHARS = 320_000;
-const AGENT_TIMEOUT_MS = 5 * 60 * 1000;
 const MIN_SECTION_SPACING = 8_000;
 
 const BR_FINANCIAL_HEADINGS = [
@@ -300,7 +300,7 @@ export async function runAgent(
     const contextPrompt = context
       ? `\n## Confirmed filing context\n- Jurisdiction: ${context.jurisdiction}\n- Filing type: ${context.filingType}\nApply the matching regulator and filing-type contract. For filing bundles, reconcile the documents without inventing values; prefer the most specific filing disclosure and retain period labels.\n`
       : "";
-    const res = await generateObject({
+    const res = await withModelExecution(agent, async signal => generateObject({
       model: await model(agent),
       schema,
       system: AGENTS[agent].system(market) + contextPrompt,
@@ -310,8 +310,9 @@ export async function runAgent(
         AGENTS[agent].maxTokens,
         agent === "market" ? "low" : undefined,
       ),
-      abortSignal: AbortSignal.timeout(AGENT_TIMEOUT_MS),
-    });
+      maxRetries: 0,
+      abortSignal: signal,
+    }));
     console.log(`[agent:${agent}] OK in ${((Date.now() - t0) / 1000).toFixed(0)}s, tokens=${res.usage?.totalTokens}`);
     return res.object;
   } catch (err) {
@@ -324,14 +325,15 @@ export async function runAgent(
 export async function runMetadataAgent(market: Market, text: string, schema: z.ZodTypeAny): Promise<any> {
   try {
     const t0 = Date.now();
-    const res = await generateObject({
+    const res = await withModelExecution("metadata", async signal => generateObject({
       model: await model("metadata"),
       schema,
       system: METADATA_AGENT.system(market),
       messages: [{ role: "user", content: buildMetadataInput(text) }],
       providerOptions: openAIProviderOptions("metadata", METADATA_AGENT.maxTokens),
-      abortSignal: AbortSignal.timeout(AGENT_TIMEOUT_MS),
-    });
+      maxRetries: 0,
+      abortSignal: signal,
+    }));
     console.log(`[agent:metadata] OK in ${((Date.now() - t0) / 1000).toFixed(0)}s, tokens=${res.usage?.totalTokens}`);
     return res.object;
   } catch (err) {

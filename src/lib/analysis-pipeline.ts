@@ -90,7 +90,7 @@ async function requestJson(
       if (response.ok) return body;
       const code = typeof body.error === "string" ? body.error : "internal";
       const terminal = ["ai_unavailable", "ai_misconfigured", "content_rejected"].includes(code);
-      const transient = code === "ai_transient" || response.status >= 500;
+      const transient = code === "ai_transient";
       if (terminal) throw new PipelineError(code, true);
       if (transient && attempt < maxAttempts) {
         onStage(stage, { status: "retrying", detail: lang === "pt" ? "Falha transitória; uma nova chamada limitada será iniciada." : "Transient failure; starting one fresh bounded request." });
@@ -147,12 +147,13 @@ export async function executeAnalysisPipeline(input: {
 }): Promise<PipelineResult> {
   const { text, classification, fileName, lang, signal, onStage } = input;
   const market = classification.jurisdiction;
+  const requestHeaders = { "Content-Type": "application/json", "X-FilingLens-Run-Id": crypto.randomUUID() };
   const diagnostics: AnalysisDiagnostics = {};
   const parts: Record<string, unknown> = {};
   const failed = new Set<string>();
 
   const metadataBody = await requestJson("/api/metadata", {
-    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text, classification }),
+    method: "POST", headers: requestHeaders, body: JSON.stringify({ text, classification }),
   }, "metadata", signal, onStage, lang, 2);
 
   const fallbackMetadata: MetadataResult["metadata"] = {
@@ -168,7 +169,7 @@ export async function executeAnalysisPipeline(input: {
   try {
     const body = await requestJson("/api/regulatory-data", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: requestHeaders,
       body: JSON.stringify({
         jurisdiction: market,
         filingType: metadata.filingType || classification.filingType,
@@ -191,7 +192,7 @@ export async function executeAnalysisPipeline(input: {
       const enrichedPrior = { ...(priorResults ?? {}), ...(regulatoryData ? { regulatoryData } : {}) };
       const body = await requestJson("/api/agent", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: requestHeaders,
         body: JSON.stringify({
           agent, market, filingType: metadata.filingType || classification.filingType,
           filingDate: metadata.filedAt, text, priorResults: enrichedPrior,
@@ -221,7 +222,7 @@ export async function executeAnalysisPipeline(input: {
     try {
       const body = await requestJson("/api/regulatory-data", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: requestHeaders,
         body: JSON.stringify({
           jurisdiction: market,
           filingType: metadata.filingType || classification.filingType,
@@ -257,7 +258,7 @@ export async function executeAnalysisPipeline(input: {
   const researchPromise = (async () => {
     try {
       const body = await requestJson("/api/market-research", {
-        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jurisdiction: market, text, marketResult, company: profileResult?.company, cnpj: metadata.cnpj }),
+        method: "POST", headers: requestHeaders, body: JSON.stringify({ jurisdiction: market, text, marketResult, company: profileResult?.company, cnpj: metadata.cnpj }),
       }, "marketResearch", signal, onStage, lang, 2);
       const enriched = body.result as MarketResult;
       parts.market = enriched;
@@ -353,7 +354,7 @@ export async function executeAnalysisPipeline(input: {
 
   try {
     const dashboardResponse = await fetch("/api/dashboard-data", {
-      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ analysis: assembled }), signal,
+      method: "POST", headers: requestHeaders, body: JSON.stringify({ analysis: assembled }), signal,
     });
     if (dashboardResponse.ok) {
       const body = await dashboardResponse.json();
