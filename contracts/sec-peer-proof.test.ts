@@ -54,4 +54,25 @@ describe("SEC primary issuer and XBRL proof",()=>{
   expect(corroborateSecPeerPoint("Apple Inc.",point(),null).status).toBe("unavailable");
   expect(corroborateSecPeerPoint("Apple Inc.",point("https://investor.example.com/annual"),data()).status).toBe("not_in_sec");
  });
+ it("corroborates exact IFRS 20-F EUR amounts without conflating US GAAP",()=>{
+  const ifrs={cik:320193,entityName:"APPLE INC.",facts:{"ifrs-full":{
+   Revenue:{units:{EUR:[{...record,form:"20-F",val:300000000}]}}
+  }}} as SecCompanyFacts;
+  const candidate={...point(),value:"EUR 300 millions",
+   context:"consolidated IFRS; period end 2025-12-31"};
+  expect(corroborateSecPeerPoint("Apple Inc.",candidate,ifrs)).toMatchObject({
+   status:"verified",provider:"sec_companyfacts",accountingBasis:"ifrs"});
+  expect(corroborateSecPeerPoint("Apple Inc.",candidate,data()).status).toBe("source_mismatch");
+  expect(corroborateSecPeerPoint("Apple Inc.",{
+   ...candidate,context:"consolidated US GAAP IFRS; period end 2025-12-31"},ifrs).status).toBe("source_mismatch");
+ });
+ it("rejects IFRS 10-K forms and currency mismatches",()=>{
+  const ifrs={cik:320193,entityName:"APPLE INC.",facts:{"ifrs-full":{
+   Revenue:{units:{EUR:[{...record,form:"10-K"}]}}
+  }}} as SecCompanyFacts;
+  const candidate={...point(),value:"EUR 300 millions",context:"consolidated IFRS; period end 2025-12-31"};
+  expect(corroborateSecPeerPoint("Apple Inc.",candidate,ifrs).status).toBe("source_mismatch");
+  expect(corroborateSecPeerPoint("Apple Inc.",{...candidate,value:"CHF 300 millions"},ifrs).status).toBe("source_mismatch");
+ });
+
 });
