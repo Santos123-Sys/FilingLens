@@ -254,6 +254,9 @@ export type RisksResult = z.infer<typeof risksSchema>;
 export const financialsSchema = z.object({
   financials: z.object({
     unit: z.string(),
+    /** Optional. Explicitly confirmed from the issuer's filing, never inferred by country alone. */
+    accountingBasis: z.enum(["us_gaap", "ifrs", "br_gaap", "unknown"]).optional(),
+    statementScope: z.enum(["consolidated", "standalone", "unknown"]).optional(),
     years: z.array(z.string()).max(5),
     revenue: z.array(z.number()),
     grossProfit: z.array(z.number()).nullable().optional(),
