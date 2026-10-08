@@ -161,6 +161,11 @@ export const marketSchema = z.object({
             assessment: z.string(),
             source: evidenceReferenceSchema,
           })).max(5),
+          counterEvidence: z.array(z.object({
+            dimension: z.string(),
+            challenge: z.string(),
+            source: evidenceReferenceSchema,
+          })).max(5).optional(),
         }).optional(),
         outlook: z.object({
           stance: z.enum(["favorable", "mixed", "challenged", "unclear"]),
