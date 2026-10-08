@@ -15,6 +15,7 @@ import {
   Trash2,
 } from "lucide-react";
 import AnalysisProgressV2 from "@/components/AnalysisProgressV2";
+import { buildHistorySubmission } from "@/lib/history-submission";
 import DashboardV2 from "@/components/DashboardV2";
 import ValuationWorkspace from "@/components/ValuationWorkspace";
 import {
@@ -170,6 +171,10 @@ export default function HomeV2() {
   const [dragging, setDragging] = useState(false);
   const [pptxError, setPptxError] = useState(false);
   const [pptxGenerating, setPptxGenerating] = useState(false);
+  const [historyEnabled,setHistoryEnabled] = useState(false);
+  const [historyMessage,setHistoryMessage] = useState("");
+  const [historyVersion,setHistoryVersion] = useState(0);
+  const historyLastRef=useRef<FilingAnalysis|null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const controllerRef = useRef<AbortController | null>(null);
   const c = COPY[lang];
@@ -177,6 +182,39 @@ export default function HomeV2() {
   useEffect(() => {
     fetch("/api/status").then(r => r.json()).then(body => setConfigured(Boolean(body.configured))).catch(() => setConfigured(false));
   }, []);
+
+  useEffect(()=>{
+    fetch("/api/history/session",{credentials:"same-origin"})
+     .then(r=>r.ok?r.json():null)
+     .then(x=>setHistoryEnabled(Boolean(x?.enabled)))
+     .catch(()=>setHistoryEnabled(false));
+  },[]);
+  useEffect(()=>{
+    if(!historyEnabled || !analysis || historyLastRef.current===analysis)return;
+    historyLastRef.current=analysis;
+    const payload=buildHistorySubmission(analysis);
+    if(!payload){
+      setHistoryMessage(lang==="pt"?"Histórico não salvo: período anual, moeda ou identificador não comprovado.":"History not saved: a verified annual date, currency or identifier is missing.");
+      return;
+    }
+    let mounted=true;
+    fetch("/api/history/ingest",{method:"POST",credentials:"same-origin",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)})
+      .then(async r=>({ok:r.ok,body:await r.json()}))
+      .then(({ok,body})=>{if(!mounted)return;setHistoryMessage(ok
+        ? (lang==="pt" ? `Histórico privado salvo: ${body.stored} observações.` : `Private history saved: ${body.stored} observations.`)
+        : (lang==="pt"?"Nenhuma observação pôde ser salva com evidência suficiente.":"No sufficiently evidenced observations could be saved."));
+        if(ok)setHistoryVersion(v=>v+1);
+      }).catch(()=>{if(mounted)setHistoryMessage(lang==="pt"?"Armazenamento privado temporariamente indisponível.":"Private history storage temporarily unavailable.");});
+    return ()=>{mounted=false;};
+  },[analysis,historyEnabled,lang]);
+  const enableHistory=async()=>{
+    try{
+      const r=await fetch("/api/history/session",{method:"POST",credentials:"same-origin"});
+      if(!r.ok)throw Error(String(r.status));
+      setHistoryEnabled(true);
+      setHistoryMessage(lang==="pt"?"Histórico privado habilitado neste navegador.":"Private history enabled in this browser.");
+    }catch{setHistoryMessage(lang==="pt"?"Não foi possível habilitar o histórico.":"Could not enable private history.");}
+  };
 
   const errorMessage = useCallback((code: string) => ERROR_COPY[code]?.[lang === "pt" ? 1 : 0] ?? code.replaceAll("_", " "), [lang]);
 
@@ -309,7 +347,14 @@ export default function HomeV2() {
 
         {phase === "done" && analysis && <div className="mt-8">
           <div className="mb-5 rounded-2xl border border-emerald-500/20 bg-gradient-to-r from-emerald-500/[0.06] via-slate-900/75 to-cyan-500/[0.05] p-5"><div className="flex flex-wrap items-start justify-between gap-4"><div><div className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-emerald-300" /><span className="text-[9px] font-semibold uppercase tracking-[0.15em] text-emerald-300">{analysis.jurisdiction === "br" ? "CVM" : "SEC"} · {analysis.company.filingType}</span></div><h2 className="mt-2 text-xl font-semibold text-white">{c.complete}: {analysis.company.name}</h2><p className="mt-1 text-xs text-slate-500">{c.exportCopy}</p></div><div className="flex flex-wrap gap-2"><button type="button" disabled={pptxGenerating} onClick={downloadPptx} className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-cyan-500 px-3.5 py-2.5 text-[11px] font-semibold text-white hover:brightness-110 disabled:cursor-wait disabled:opacity-60"><Presentation className="h-3.5 w-3.5" />{pptxGenerating ? c.pptxGenerating : c.pptx}</button><button type="button" onClick={downloadJson} className="inline-flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-900 px-3 py-2.5 text-[11px] font-semibold text-slate-200 hover:border-slate-500"><FileJson className="h-3.5 w-3.5" />{c.json}</button><button type="button" onClick={() => window.print()} className="inline-flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-900 px-3 py-2.5 text-[11px] font-semibold text-slate-200 hover:border-slate-500"><Printer className="h-3.5 w-3.5" />{c.pdf}</button><button type="button" onClick={reset} className="inline-flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-900 px-3 py-2.5 text-[11px] font-semibold text-slate-200 hover:border-slate-500"><RotateCcw className="h-3.5 w-3.5" />{c.again}</button></div></div>{pptxError && <div className="mt-3 rounded-lg border border-rose-500/30 bg-rose-500/[0.07] px-3 py-2 text-[10px] text-rose-200">{c.pptxError}</div>}</div>
-          <DashboardV2 data={analysis} lang={lang} />
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-700 bg-slate-900/70 p-4">
+            <div><p className="text-xs font-semibold text-white">{lang==="pt"?"Histórico privado da companhia":"Private company history"}</p>
+            <p className="mt-1 max-w-2xl text-xs text-slate-400">{lang==="pt"?"Consentimento opcional: salva apenas métricas com data anual e referência. Vinculado a este navegador, não a uma conta.":"Optional opt-in: saves only dated annual metrics with filing citations. Scoped to this browser, not a user account."}</p>
+            {historyMessage&&<p role="status" className="mt-2 text-xs text-cyan-200">{historyMessage}</p>}</div>
+            {!historyEnabled?<button type="button" onClick={enableHistory} className="rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-4 py-2 text-xs font-semibold text-cyan-200">{lang==="pt"?"Ativar histórico privado":"Enable private history"}</button>
+            :<span className="rounded-full border border-emerald-500/30 px-3 py-1.5 text-xs text-emerald-300">{lang==="pt"?"Histórico privado ativo":"Private history active"}</span>}
+          </div>
+          <DashboardV2 data={analysis} lang={lang} historyEnabled={historyEnabled} historyVersion={historyVersion} />
           <div className="mt-5"><ValuationWorkspace analysis={analysis} lang={lang} onChange={handleValuationChange} /></div>
         </div>}
 
