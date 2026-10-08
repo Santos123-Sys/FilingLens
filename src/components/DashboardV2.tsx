@@ -27,6 +27,7 @@ import { formatFilingNumber } from "@/lib/number-format";
 import HistoryWorkbench from "./HistoryWorkbench";
 import SegmentEconomicsPanel from "./SegmentEconomicsPanel";
 import CompetitorEvidencePanel from "./CompetitorEvidencePanel";
+import MoatDiligencePanel from "./MoatDiligencePanel";
 import PeerBenchmarkPanel from "./PeerBenchmarkPanel";
 import { filingLensTheme, qualityClasses, type QualityTone } from "@/lib/design-system";
 
@@ -434,6 +435,7 @@ export default function DashboardV2({ data, lang }: { data: FilingAnalysis; lang
             </div>
             <SegmentEconomicsPanel market={data.market} lang={lang} />
             <CompetitorEvidencePanel market={data.market} lang={lang} />
+            <MoatDiligencePanel market={data.market} lang={lang} />
             <PeerBenchmarkPanel data={data} lang={lang} />
             {marketShares.length > 0 && <div className={`${filingLensTheme.surfaceRaised} rounded-2xl p-5`}>
               <div className="flex flex-wrap items-center justify-between gap-3"><div><p className={filingLensTheme.label}>{c.marketShare}</p><p className="mt-1 text-xs text-slate-500">{c.marketShareBasis}</p></div><Gauge className="h-4 w-4 text-emerald-300" /></div>
