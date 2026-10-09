@@ -19,6 +19,8 @@ const facts=()=>({cik:320193,entityName:"Apple Inc.",facts:{
 describe("SEC GitHub OIDC intake",()=>{
  it("requires exact repository, workflow, dispatch event and short-lived token",()=>{
   expect(()=>assertAuthorizedClaims(claim(),now)).not.toThrow();
+  expect(()=>assertAuthorizedClaims({...claim(),event_name:"push"},now)).toThrow();
+  expect(()=>assertAuthorizedClaims({...claim(),run_id:"not-a-valid-run"},now)).toThrow();
   for(const change of [
    {repository:"attacker/FilingLens"}, {ref:"refs/heads/feature"},
    {event_name:"pull_request"},{aud:"incorrect"},{exp:Math.floor(now/1000)-2},

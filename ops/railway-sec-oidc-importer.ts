@@ -41,7 +41,7 @@ export function assertAuthorizedClaims(c:Claims,now=Date.now()){
   typeof c.exp!=="number"||!Number.isInteger(c.exp)||
   typeof c.iat!=="number"||!Number.isInteger(c.iat)||
   typeof c.nbf!=="number"||!Number.isInteger(c.nbf)||
-  !/^\\d{6,}$/.test(String(c.run_id??""))||
+  !/^\d{6,}$/.test(String(c.run_id??""))||
   Number(c.iat)>epoch+60||Number(c.nbf)>epoch+60||
   Number(c.exp)<=epoch||Number(c.exp)>epoch+1800||
   Number(c.iat)<epoch-1800)
