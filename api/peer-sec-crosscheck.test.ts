@@ -63,4 +63,21 @@ describe("official financial enrichment",()=>{
   expect(got.competitiveAnalysis.peerProfiles[0].dataPoints?.[0].primaryVerification?.sourceMode).toBe("sec_api");
  });
 
+ it("labels a single-company operator JSON fallback and retains exact numerical gates",async()=>{
+  const got=await crosscheckCompetitiveFacts(research(),{
+   userAgent:"",
+   readBulk:async()=>({facts,retrievedDay:"2026-10-09",source:"operator_attested_sec_json"}),
+  });
+  expect(got.competitiveAnalysis.peerProfiles[0].dataPoints?.[0].primaryVerification).toMatchObject({
+   status:"verified",sourceMode:"operator_attested_sec_json",cik:"0000320193",
+  });
+  const bad=research();
+  if(bad.competitiveAnalysis.peerProfiles[0].dataPoints?.[0])
+   bad.competitiveAnalysis.peerProfiles[0].dataPoints[0].value="USD 700 millions";
+  const rejected=await crosscheckCompetitiveFacts(bad,{userAgent:"",
+   readBulk:async()=>({facts,retrievedDay:"2026-10-09",source:"operator_attested_sec_json"})});
+  expect(rejected.competitiveAnalysis.peerProfiles[0].dataPoints?.[0].primaryVerification?.status)
+   .toBe("amount_mismatch");
+ });
+
 });
