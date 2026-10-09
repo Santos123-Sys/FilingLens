@@ -43,18 +43,16 @@ export function issuerApple2025Point(peerName:string,point:Point){
 }
 function annualRowAmount(text:string,label:string):number|null{
  // pdftotext and pdf-parse differ: adjacent PDF columns can become
- // "102,46694,930416,161391,035" with *no* whitespace.
- // Extract groups of comma-formatted monetary amounts from the row only.
+ // "102,46694,930416,161391,035" with no whitespace.
  const head=text.slice(0,Math.min(text.length,24_000));
  const values=new Set<number>();
- const pattern=new RegExp(label.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"),"gi");
+ const pattern=new RegExp(label,"gi"); // Labels are fixed letters/spaces from rows map.
  let match:RegExpExecArray|null;
  while((match=pattern.exec(head))!==null){
   const after=head.slice(match.index+match[0].length,match.index+match[0].length+260);
-  // Remove a footnote (1) and/or currency symbol following the label.
-  const content=after.replace(/^\\s*(?:\\(\\s*1\\s*\\))?\\s*\\$?\\s*/,"");
-  const firstLine=content.split(/\\r?\\n(?=\\s*[A-Za-z])/)[0].slice(0,180);
-  const cells=[...firstLine.matchAll(/\\(?-?\\d{1,3}(?:,\\d{3})+(?:\\.\\d+)?\\)?/g)];
+  const content=after.replace(/^\s*(?:\(\s*1\s*\))?\s*\$?\s*/,"");
+  const firstLine=content.split(/\r?\n(?=\s*[A-Za-z])/)[0].slice(0,180);
+  const cells=[...firstLine.matchAll(/\(?-?\d{1,3}(?:,\d{3})+(?:\.\d+)?\)?/g)];
   if(cells.length!==4)continue;
   const candidate=numeric(cells[2][0].replace(/[()]/g,""));
   if(Number.isFinite(candidate))values.add(candidate);
