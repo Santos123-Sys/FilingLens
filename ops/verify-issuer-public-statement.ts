@@ -43,7 +43,11 @@ async function main(){
   sourceUrl:doc.url,sourceSha256:doc.sha256,retrievedAt:doc.retrievedAt,
   matched:positives.map(p=>({metric:p.metric,amountMillions:p.amountMillions,status:p.proof.status})),
   negativeControls:controls}));
- if(!passed)process.exitCode=1;
+ if(!passed){
+  // Public Apple PDF only; no user/private data ever enters this command.
+  console.warn("ISSUER_PUBLIC_PDF_TEXT_SAMPLE",JSON.stringify(doc.text.slice(0,2400)));
+  process.exitCode=1;
+ }
 }
 main().catch(e=>{console.error("ISSUER_DISCLOSURE_ACCEPTANCE_UNAVAILABLE",
  e instanceof Error?e.message:"unknown");process.exitCode=1;});
