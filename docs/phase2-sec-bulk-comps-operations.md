@@ -80,3 +80,27 @@ Rules:
 ## Acceptance limitations
 
 CI covers schema typing, SEC ZIP member identity validation, fallback source-mode labels, and the raw-components valuation gate. A successful test does not establish that the Railway SEC network restriction has lifted, that an SEC ZIP has been imported to production, or that three real public peers' live price and debt datasets have been independently reconciled. Report these as operational acceptance requirements, not as completed until verified.
+
+
+## Supplied Apple transformed extracts: offline fixture validation (not SEC production data)
+
+The repository includes the two user-supplied files under `tests/fixtures/sec/`:
+
+- `apple_sec_companyfacts_transformed.json`: a **lossy** transformation with a 505-concept inventory and 40 sample facts.
+- `apple_sec_key_financials.json`: eight metrics, five observations per metric. These are **not five unique fiscal years**: there are only three unique fiscal period ends (2023-09-30, 2024-09-28, 2025-09-27). FY2021 and FY2022 are missing. Some observations carry `fy: 2025` but concern an earlier fiscal period end; the validator groups by **period end**, not comparative filing `fy`.
+
+To reconcile the two supplied files without SEC network access or database credentials:
+
+```bash
+npx --yes tsx ops/import-sec-companyfacts-json.ts \
+  --format transformed --fixture-only \
+  --file tests/fixtures/sec/apple_sec_companyfacts_transformed.json \
+  --key-financials tests/fixtures/sec/apple_sec_key_financials.json \
+  --cik 0000320193
+```
+
+This outputs a machine-readable `sec_transformed_validation_fixture` report, including concept and observation counts, cross-file numeric consistency, balance-sheet equation checks, deduplicated fiscal periods, missing years, and a `proofGate.status: "blocked"`. No `DATABASE_URL` is needed; the fixture branch **never opens a MySQL connection or writes** `sec_companyfacts_snapshots`. The validator rejects tampered CIK, source URL claim, taxonomy inventory, samples, comparative amounts and dates.
+
+**Important provenance distinction:** `metadata.source_url` in the attachments is a self-declared URL, not proof that the attachments are an authentic, complete SEC download. They omit accession numbers (`accn`), XBRL fiscal-period fields (`fp`) and annual period start (`start`); these must never be invented or inferred. A transformed fixture is never labeled `sec_api`, `operator_attested_sec_json` or `operator_attested_sec_bulk`. Passing this validation does **not** satisfy the real-data production acceptance gate.
+
+The **official** path above remains unchanged: import the original, unmodified SEC `CIK##########.json` with `--file --cik --retrieved-day` (optionally `--format official`), then run `ops/verify-sec-acceptance.ts` with the actual accession and filing. The official importer rejects both transformed attachments.
