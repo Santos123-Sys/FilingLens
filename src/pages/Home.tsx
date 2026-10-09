@@ -12,6 +12,8 @@ import Dashboard from "@/components/Dashboard";
 import ValuationWorkspace from "@/components/ValuationWorkspace";
 import FilingChangeWorkspace from "@/components/FilingChangeWorkspace";
 import InvestmentDecisionWorkspace from "@/components/InvestmentDecisionWorkspace";
+import InvestmentMemoWorkspace from "@/components/InvestmentMemoWorkspace";
+import {emptyAnalystReview,type AnalystReview} from "@contracts/decision-dossier";
 import type {FilingDelta} from "@contracts/filing-change-intelligence";
 import AnalysisProgress, {
   type ExecutionStageKey,
@@ -180,6 +182,7 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [analysis, setAnalysis] = useState<FilingAnalysis | null>(null);
   const [filingDelta, setFilingDelta] = useState<FilingDelta | null>(null);
+  const [analystReview, setAnalystReview] = useState<AnalystReview>(emptyAnalystReview);
   const [failed, setFailed] = useState<string[]>([]);
   const [classification, setClassification] = useState<FilingClassification | null>(null);
   const [pendingText, setPendingText] = useState<string | null>(null);
@@ -318,6 +321,7 @@ export default function Home() {
     setPhase("idle");
     setAnalysis(null);
     setFilingDelta(null);
+    setAnalystReview(emptyAnalystReview());
     setClassification(null);
     setPendingText(null);
     setExecution(initialExecution());
@@ -497,6 +501,7 @@ export default function Home() {
     setError(null);
     setAnalysis(null);
     setFilingDelta(null);
+    setAnalystReview(emptyAnalystReview());
     setFailed([]);
     setExecution(initialExecution());
     try {
@@ -557,6 +562,7 @@ export default function Home() {
     if (inputRef.current) inputRef.current.value = "";
     setAnalysis(null);
     setFilingDelta(null);
+    setAnalystReview(emptyAnalystReview());
     setFailed([]);
     setPhase("idle");
     setExtracting(false);
@@ -687,6 +693,7 @@ export default function Home() {
             <ValuationWorkspace analysis={analysis} lang={lang} onChange={handleValuationChange} />
             <FilingChangeWorkspace analysis={analysis} lang={lang} onReport={setFilingDelta} />
             <InvestmentDecisionWorkspace analysis={analysis} delta={filingDelta} lang={lang} />
+            <InvestmentMemoWorkspace analysis={analysis} delta={filingDelta} lang={lang} value={analystReview} onChange={setAnalystReview} />
           </div>
         )}
 
