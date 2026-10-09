@@ -58,3 +58,10 @@ The shared schemas live in `contracts/analysis.ts`; model instructions live in `
 The React UI and stateless Hono API deploy as a Cloudflare Worker with static assets. Configure `OPENAI_API_KEY` as a server-side Sites secret. Filing analysis uses `gpt-5.6-terra`. Without the secret, the UI displays a setup notice and disables analysis. Files are processed within the current session; there is no saved filing history.
 
 `npm run build` generates `dist/server/index.js` and `dist/client`. PDFs must be text-based, at most 20 MB. The browser owns bounded retries per stage, while the Agent Manager owns ordering, source slicing and validation. A server request performs at most one expensive model/tool call. If no filing-cited competitor survives validation, the browser may start one separate bounded `/api/market-research` stage. PowerPoint creation is local to the browser and never triggers a second company analysis.
+
+
+### Privacy-first issuer financial verification (Phase 2)
+
+For peer research when SEC CompanyFacts egress is unavailable, FilingLens supports a distinctly labeled **issuer-published financial-statement corroboration** path. The first supported issuer is Apple FY2025, matching annual net sales, gross margin, operating income and net income directly to Apple's public **unaudited** consolidated statement. Live SEC peer API requests are opt-in (`SEC_LIVE_LOOKUP_ENABLED=true`); otherwise source verification uses issuer publications or pre-imported official facts where available. No private analysis data is sent with the fixed public issuer PDF GET.
+
+See [privacy and source boundaries](docs/phase2-issuer-primary-private-proof.md) and [verified real-data acceptance](docs/phase2-issuer-primary-acceptance-record.md). **Issuer-verified ≠ SEC CompanyFacts-verified.**
