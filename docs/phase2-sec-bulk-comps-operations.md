@@ -14,9 +14,17 @@ Production Railway egress returned HTTP 403 from `data.sec.gov` for multiple CIK
 DATABASE_URL="<secure admin MySQL URL>" npx --yes tsx ops/import-sec-companyfacts.ts --archive /secure/companyfacts.zip --cik 0000320193 --retrieved-day 2026-10-08
 ```
 
-4. Repeat only for specific competitor CIKs needed, at most once for each updated SEC bulk archive. The importer extracts `CIK##########.json` **directly from the ZIP**, checks exact CIK and supported taxonomy, hashes the entire ZIP and member, and saves the JSON (not a company PDF) with retrieval-day provenance. No archive data is fetched by FilingLens from a non-SEC mirror.
-5. If direct data.sec.gov retrieval is unavailable, the server accepts a stored import **only when** the archive source is the official URL, payload SHA-256 matches, issuer CIK agrees, and the retrieval date is within 14 days. The original accession, fiscal date, reporting basis and amount must **still** match the candidate peer number before it is eligible for calculation.
-6. The UI explicitly distinguishes `operator_attested_sec_bulk` from live `sec_api`. This is **operator-attested official-file provenance**, not an independent live SEC HTTP verification. If no archive was loaded, the numerical proof remains unavailable, not guessed.
+4. For an explicit peer cohort, a single bounded atomic import is also supported (1–12 unique, exactly ten-digit CIKs):
+
+```bash
+DATABASE_URL="<secure admin MySQL URL>" npx --yes tsx ops/import-sec-companyfacts.ts --archive /secure/companyfacts.zip --ciks 0000320193,0000789019 --retrieved-day 2026-10-09
+```
+
+The operator must supply the actual date of retrieval, not the example date. All requested ZIP members are validated before any SQL write. The writes occur inside one transaction; a failed member extraction or SQL operation does not partially update the selected cohort. The script does not download the SEC archive and does not bypass an HTTP 403.
+
+5. Repeat only for specific competitor CIKs needed, at most once for each updated SEC bulk archive. The importer extracts `CIK##########.json` **directly from the ZIP**, checks exact CIK and supported taxonomy, hashes the entire ZIP and member, and saves the JSON (not a company PDF) with retrieval-day provenance. No archive data is fetched by FilingLens from a non-SEC mirror.
+6. If direct data.sec.gov retrieval is unavailable, the server accepts a stored import **only when** the archive source is the official URL, payload SHA-256 matches, issuer CIK agrees, and the retrieval date is within 14 days. The original accession, fiscal date, reporting basis and amount must **still** match the candidate peer number before it is eligible for calculation.
+7. The UI explicitly distinguishes `operator_attested_sec_bulk` from live `sec_api`. This is **operator-attested official-file provenance**, not an independent live SEC HTTP verification. If no archive was loaded, the numerical proof remains unavailable, not guessed.
 
 ## Trading-comps evidence
 
