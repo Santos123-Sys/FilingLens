@@ -6,7 +6,8 @@ type Basis = "us_gaap" | "ifrs" | "br_gaap";
 export type Currency = "USD" | "BRL" | "EUR" | "GBP" | "CHF";
 type Scale = "thousands" | "millions" | "billions";
 export type PeerFact = { peer:string; metric:BenchmarkMetric; year:number; periodEnd:string;
- currency:Currency; millions:number; basis:Basis; source:EvidenceReference; raw:string };
+ currency:Currency; millions:number; basis:Basis; source:EvidenceReference; raw:string;
+ sourceTier?:"sec_companyfacts"|"issuer_published_statement"|"cvm_dfp" };
 export type PeerMargin = { peer:string; year:number; marginPercent:number; currency:Currency;
  periodEnd:string; basis:Basis; sources:EvidenceReference[] };
 export type PeerComparison = { peer:string; metric:"revenue"|"netIncome"; year:number; periodEnd:string;
@@ -72,12 +73,29 @@ export function buildPeerFinancialBenchmarks(data:FilingAnalysis):PeerBenchmarkR
       ((point.primaryVerification.accountingBasis??"us_gaap")!==basis)){
     reject("PRIMARY_ACCOUNTING_BASIS_MISMATCH",`${metric} FY${year}`);continue;
    }
-   if(point.primaryVerification?.status!=="verified"){
-    reject("UNVERIFIED_PRIMARY_FIGURE",`${metric} FY${year}: ${point.primaryVerification?.status??"not_checked"}; excludes unsupported official numeric values`);
+   const secVerified=point.primaryVerification?.status==="verified";
+   const secConflict=["amount_mismatch","identity_mismatch","source_mismatch"]
+    .includes(point.primaryVerification?.status??"");
+   const issuer=point.issuerVerification;
+   const issuerVerified=!secConflict&&issuer?.status==="verified"&&
+    issuer.provider==="issuer_published_statement"&&
+    issuer.sourceMode==="issuer_published_unaudited_pdf"&&
+    issuer.issuer?.trim().toLowerCase()===peer.name.trim().toLowerCase()&&
+    issuer.periodEnd===periodEnd&&issuer.currency===amount.currency&&basis==="us_gaap"&&
+    Boolean(issuer.proofUrl?.startsWith("https://www.apple.com/newsroom/pdfs/"))&&
+    /^[a-f0-9]{64}$/.test(issuer.pdfSha256??"");
+   if(!secVerified&&!issuerVerified){
+    reject("UNVERIFIED_PRIMARY_FIGURE",`${metric} FY${year}: ${point.primaryVerification?.status??"not_checked"}; source did not pass numeric verification`);
     continue;
    }
+   const source=secVerified?point.source:{
+    section:"Issuer-published unaudited consolidated FY financial statements",
+    kind:"citation" as const,url:issuer!.proofUrl,publisher:issuer!.issuer,
+    page:String(issuer!.page??1),
+   };
    rawFacts.push({peer:peer.name,metric,year,periodEnd,currency:amount.currency,
-    millions:amount.millions,basis,source:point.source,raw:point.value});
+    millions:amount.millions,basis,source,raw:point.value,
+    sourceTier:secVerified?"sec_companyfacts":"issuer_published_statement"});
   }
  }
  // Independently sourced, issuer-verified CVM DFP observations are eligible
@@ -95,7 +113,7 @@ export function buildPeerFinancialBenchmarks(data:FilingAnalysis):PeerBenchmarkR
    }catch{continue;}
    rawFacts.push({peer:peer.name,metric:fact.metric,year:fact.year,
     periodEnd:fact.periodEnd,currency:fact.currency,millions:fact.amountMillions,
-    basis:"br_gaap",source:fact.source,raw:`CVM DFP: ${fact.amountMillions} million BRL`});
+    basis:"br_gaap",source:fact.source,sourceTier:"cvm_dfp",raw:`CVM DFP: ${fact.amountMillions} million BRL`});
   }
  }
  const count=new Map<string,number>();

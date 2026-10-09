@@ -3,6 +3,8 @@ import { corroborateSecPeerPoint, secFilingIdentity, secProofUrl } from "../cont
 import type { SecCompanyFacts } from "../contracts/sec-peer-proof";
 import { collectSecHistoricalFacts } from "../contracts/sec-peer-history";
 import {cachedSecCompanyFacts} from "./sec-bulk-cache";
+import {corroborateIssuerPublishedPeers} from "./issuer-pdf-proof";
+import type {IssuerDisclosureDocument} from "../contracts/issuer-statement-proof";
 
 type Profiles=NonNullable<MarketResult["market"]["competitiveAnalysis"]>;
 type Research={peerEvidence:NonNullable<MarketResult["market"]["peerEvidence"]>;competitiveAnalysis:Profiles};
@@ -16,6 +18,7 @@ export async function crosscheckCompetitiveFacts(
   research:Research,
   options:{
     userAgent?:string;
+    retrieveIssuer?:()=>Promise<IssuerDisclosureDocument|null>;
     retrieve?: (url:string,agent:string)=>Promise<SecCompanyFacts|null>;
     readBulk?: (cik:string)=>Promise<{facts:SecCompanyFacts;retrievedDay:string;source?:"operator_attested_sec_bulk"|"operator_attested_sec_json"}|null>;
   }={}
@@ -44,7 +47,7 @@ export async function crosscheckCompetitiveFacts(
  }
  const fetcher=options.retrieve??retrieve;
  const results=new Map<string,SecCompanyFacts|null>();
- if(agent.length>=12&&Date.now()>=secRestrictedUntil){
+ if(agent.length>=12&&(options.retrieve||process.env.SEC_LIVE_LOOKUP_ENABLED==="true")&&Date.now()>=secRestrictedUntil){
   await Promise.all(uniqueCiks.map(async cik=>{
    try{results.set(cik,await fetcher(secProofUrl(cik),agent));}
    catch{results.set(cik,null);}
@@ -81,8 +84,9 @@ export async function crosscheckCompetitiveFacts(
    :[];
   return {...peer,...(peer.dataPoints?{dataPoints}:{}),...(history.length?{officialHistory:history}:{})};
  });
- const validated=peers.reduce((sum,peer)=>sum+(peer.dataPoints??[])
+ const issuerPeers=await corroborateIssuerPublishedPeers(peers,{retrieve:options.retrieveIssuer});
+ const validated=issuerPeers.reduce((sum,peer)=>sum+(peer.dataPoints??[])
   .filter(x=>x.primaryVerification?.status==="verified").length,0);
- console.info(`[peer-sec-proof] candidate_peers=${peers.length} matched_xbrl_points=${validated} lookups=${results.size} peer_history=${peers.reduce((n,p)=>n+(p.officialHistory?.length??0),0)}`);
- return {...research,competitiveAnalysis:{...research.competitiveAnalysis,peerProfiles:peers}};
+ console.info(`[peer-sec-proof] candidate_peers=${peers.length} matched_xbrl_points=${validated} lookups=${results.size} peer_history=${issuerPeers.reduce((n,p)=>n+(p.officialHistory?.length??0),0)}`);
+ return {...research,competitiveAnalysis:{...research.competitiveAnalysis,peerProfiles:issuerPeers}};
 }

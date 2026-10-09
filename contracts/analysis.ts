@@ -144,6 +144,18 @@ export const marketSchema = z.object({
           context: z.string(),
           source: evidenceReferenceSchema,
           /** SEC CompanyFacts corroboration, performed server-side only. A citation is not proof. */
+          /** Issuer-owned unaudited disclosure corroboration. NOT SEC CompanyFacts. */
+          issuerVerification: z.object({
+            status: z.enum(["verified","unavailable","source_mismatch","amount_mismatch"]),
+            provider: z.literal("issuer_published_statement"),
+            sourceMode: z.literal("issuer_published_unaudited_pdf").optional(),
+            issuer: z.string().optional(),
+            periodEnd: z.string().optional(),
+            currency: z.string().optional(),
+            pdfSha256: z.string().optional(),
+            proofUrl: z.string().optional(),
+            page: z.number().int().min(1).optional(),
+          }).optional(),
           primaryVerification: z.object({
             status: z.enum(["verified", "amount_mismatch", "identity_mismatch", "not_in_sec", "unavailable", "source_mismatch"]),
             provider: z.literal("sec_companyfacts"),

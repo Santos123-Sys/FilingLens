@@ -15,22 +15,26 @@ export default function PeerBenchmarkPanel({data,lang}:{data:FilingAnalysis;lang
  const result=useMemo(()=>buildPeerFinancialBenchmarks(data),[data]);
  const official=useMemo(()=>secHistoricalPeerCohorts(data.market.competitiveAnalysis?.peerProfiles??[]),[data]);
  const pt=lang==="pt";
+ const issuerCount=result.facts.filter(f=>f.sourceTier==="issuer_published_statement").length;
  const imported=(data.market.competitiveAnalysis?.peerProfiles??[]).flatMap(p=>p.dataPoints??[])
   .filter(p=>["operator_attested_sec_bulk","operator_attested_sec_json"].includes(p.primaryVerification?.sourceMode??"")).length;
  return <section className="rounded-2xl border border-slate-700 bg-slate-900/65 p-4 sm:p-5">
   <div className="flex flex-wrap items-start justify-between gap-2">
    <div><h3 className="text-sm font-semibold text-white">{pt?"Benchmark financeiro de concorrentes":"Peer financial benchmarking"}</h3>
     <p className="mt-1 text-xs text-slate-400">{pt?
-     "Cifras corroboradas por SEC CompanyFacts ou CVM DFP com identidade, período e moeda verificáveis.":
-     "Only regulator-backed SEC CompanyFacts or CVM DFP figures, with explicit issuer, period, currency and accounting gates."}</p></div>
+     "Cifras corroboradas por SEC/CVM ou demonstrações publicadas pelo emissor (fonte identificada separadamente).":
+     "SEC/CVM corroboration or separately labeled issuer-published statements, with explicit issuer, period, currency and accounting gates."}</p></div>
    <span className="rounded-lg border border-slate-700 px-2 py-1 text-[11px] text-slate-300">
     {result.facts.length} {pt?"observações elegíveis":"eligible observations"}</span>
   </div>
   {imported>0&&<p className="mt-3 rounded-md border border-amber-700/40 bg-amber-900/10 p-2 text-[11px] text-amber-200">{pt?
    "Fonte alternativa: "+imported+" cifra(s) confirmadas contra dados oficiais SEC CompanyFacts baixados e importados por operador autorizado. A aplicação verifica CIK, accession, período e número, mas não confirmou independentemente a origem e autenticidade do arquivo.":"Alternate source: "+imported+" fact(s) matched to an operator-imported SEC CompanyFacts ZIP extract or single-company JSON file. The app checks CIK, accession, period and amount; the original file download provenance was attested by the operator, not independently fetched by FilingLens."}</p>}
+  {issuerCount>0&&<p className="mt-3 rounded-md border border-sky-700/40 bg-sky-900/10 p-2 text-[11px] text-sky-200">{pt?
+   issuerCount+" cifra(s) conferidas diretamente contra demonstrações financeiras não auditadas publicadas pelo emissor. Esta evidência NÃO representa verificação SEC CompanyFacts; o PDF é obtido por consulta pública, sem transmitir dados privados do FilingLens.":
+   issuerCount+" figure(s) matched directly to issuer-published unaudited financial statements. This is NOT SEC CompanyFacts verification; only the public issuer PDF is requested, with no private FilingLens information transmitted."}</p>}
   {result.facts.length===0?<p className="mt-4 text-xs leading-5 text-slate-400">{pt?
-   "Nenhuma cifra passou os controles SEC/CVM de identidade, moeda, período e fonte. Alegações apenas citadas não entram nos cálculos.":
-   "No primary SEC/CVM peer observations passed issuer identity, filing, period, currency and scale checks. Merely cited financial claims remain excluded."}</p>:
+   "Nenhuma cifra passou os controles SEC/CVM ou das demonstrações do emissor. Alegações apenas citadas não entram nos cálculos.":
+   "No regulator or issuer-published peer observations passed issuer, period, currency and scale checks. Merely cited claims remain excluded."}</p>:
    <div className="mt-4 overflow-x-auto"><table className="w-full min-w-[650px] text-left text-xs">
     <thead><tr className="border-b border-slate-700 text-slate-400">
      <th className="py-2 pr-3">{pt?"Concorrente":"Peer"}</th>
@@ -38,6 +42,7 @@ export default function PeerBenchmarkPanel({data,lang}:{data:FilingAnalysis;lang
      <th className="p-2">{pt?"Período encerrado":"Period ended"}</th>
      <th className="p-2">{pt?"Valor (milhões)":"Value (millions)"}</th>
      <th className="p-2">{pt?"Base":"Basis"}</th>
+     <th className="p-2">{pt?"Tipo de fonte":"Source tier"}</th>
      <th className="py-2 pl-2">{pt?"Fonte":"Source"}</th>
     </tr></thead>
     <tbody>{result.facts.slice(0,32).map((fact,index)=><tr key={fact.peer+fact.metric+fact.year+index} className="border-b border-slate-800 text-slate-200">
@@ -46,6 +51,7 @@ export default function PeerBenchmarkPanel({data,lang}:{data:FilingAnalysis;lang
      <td className="p-2 tabular-nums">{fact.periodEnd}</td>
      <td className="p-2 tabular-nums">{fact.currency} {num(fact.millions,lang)}</td>
      <td className="p-2">{fact.basis.replaceAll("_"," ").toUpperCase()}</td>
+     <td className="p-2">{fact.sourceTier==="issuer_published_statement"?(pt?"Emissor (não auditado)":"Issuer (unaudited)"):(fact.sourceTier==="cvm_dfp"?"CVM DFP":"SEC CompanyFacts")}</td>
      <td className="py-2 pl-2">{evidenceUrl(fact.source)?<a href={evidenceUrl(fact.source)!} target="_blank" rel="noopener noreferrer" className="text-cyan-300 underline">{pt?"Abrir":"View"}</a>:"—"}</td>
     </tr>)}</tbody>
    </table></div>}
@@ -86,7 +92,7 @@ export default function PeerBenchmarkPanel({data,lang}:{data:FilingAnalysis;lang
    <ul className="mt-3 space-y-2">{result.flags.slice(0,20).map((f,i)=><li key={i}>{f.peer} · {f.code.replaceAll("_"," ")} — {f.detail}</li>)}</ul>
   </details>}
   <p className="mt-4 text-[11px] leading-5 text-slate-400">{pt?
-   "Os valores usam fontes oficiais SEC/CVM e não substituem auditoria independente. Exigem-se exercício, moeda, escopo e base contábil idênticos. Não há câmbio, estimativa de valor justo nem ranking automático.":
-   "Figures use primary SEC/CVM reporting evidence and are not a substitute for independent audit. Comparisons require identical fiscal year-end, currency, consolidated scope and accounting basis. No FX conversion, fair-value estimate or automatic ranking is performed."}</p>
+   "Os valores podem usar SEC/CVM ou demonstrações não auditadas do próprio emissor, com identificação separada. Não substituem auditoria e não comprovam acesso ao SEC. Exigem-se períodos, moeda, escopo e base compatíveis.":
+   "Figures use SEC/CVM or separately labeled issuer-published unaudited statements. Issuer disclosures are not SEC API proof or an independent audit. Comparisons require matching fiscal year-end, currency, consolidated scope and accounting basis. No FX conversion is performed."}</p>
  </section>;
 }
