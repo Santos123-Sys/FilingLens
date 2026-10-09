@@ -17,7 +17,7 @@ export async function crosscheckCompetitiveFacts(
   options:{
     userAgent?:string;
     retrieve?: (url:string,agent:string)=>Promise<SecCompanyFacts|null>;
-    readBulk?: (cik:string)=>Promise<{facts:SecCompanyFacts;retrievedDay:string}|null>;
+    readBulk?: (cik:string)=>Promise<{facts:SecCompanyFacts;retrievedDay:string;source?:"operator_attested_sec_bulk"|"operator_attested_sec_json"}|null>;
   }={}
 ):Promise<Research>{
  const agent=(options.userAgent??process.env.SEC_USER_AGENT??"").trim();
@@ -50,7 +50,7 @@ export async function crosscheckCompetitiveFacts(
    catch{results.set(cik,null);}
   }));
  }
- const sourceModes=new Map<string,"sec_api"|"operator_attested_sec_bulk">();
+ const sourceModes=new Map<string,"sec_api"|"operator_attested_sec_bulk"|"operator_attested_sec_json">();
  for(const [cik,facts] of results)if(facts)sourceModes.set(cik,"sec_api");
  // SEC fair-access restrictions may block cloud egress (HTTP 403). Do not
  // rotate egress IPs, proxy, scrape alternate SEC hosts or retry forbidden calls.
@@ -62,7 +62,7 @@ export async function crosscheckCompetitiveFacts(
    const saved=await bulk(cik);
    if(saved){
     results.set(cik,saved.facts);
-    sourceModes.set(cik,"operator_attested_sec_bulk");
+    sourceModes.set(cik,saved.source??"operator_attested_sec_bulk");
    }
   }catch{ /* fail closed */ }
  }));
