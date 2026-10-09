@@ -49,4 +49,12 @@ describe("issuer-first disclosure numeric proof",()=>{
   expect(verifyIssuerApple2025Point("Apple Inc.",point(),null).status).toBe("unavailable");
   expect(verifyIssuerApple2025Point("Apple Inc.",point(),{...doc,text:doc.text.replaceAll("September 27, 2025","September 27, 2024")}).status).toBe("source_mismatch");
  });
+ it("parses the four PDF monetary columns when pdf-parse removes inter-column spaces",()=>{
+  const compressed=doc.text
+   .replaceAll("102,466 94,930 416,161 391,035","102,46694,930416,161391,035")
+   .replaceAll("32,427 29,591 133,050 123,216","32,42729,591133,050123,216")
+   .replaceAll("27,466 14,736 112,010 93,736","27,46614,736112,01093,736");
+  expect(verifyIssuerApple2025Point("Apple Inc.",point(),{...doc,text:compressed}).status).toBe("verified");
+  expect(verifyIssuerApple2025Point("Apple Inc.",point("Operating income","USD 133050 millions"),{...doc,text:compressed}).status).toBe("verified");
+ });
 });
