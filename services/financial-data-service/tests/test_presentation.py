@@ -3,6 +3,7 @@ from io import BytesIO
 from pptx import Presentation
 
 from app.presentation import build_presentation
+from app.presentation_agent import plan_presentation
 
 SAMPLE = {
     "jurisdiction": "us",
@@ -126,11 +127,14 @@ def _chart_categories(slide) -> list[str]:
 
 
 def test_pptx_roundtrip_and_financial_units():
-    raw, filename = build_presentation(SAMPLE, "en")
+    raw, filename, quality = build_presentation(SAMPLE, "en")
     assert raw[:2] == b"PK"
     assert filename.endswith(".pptx")
     prs = Presentation(BytesIO(raw))
     assert len(prs.slides) == 11
+    assert quality.verdict == "pass" and quality.score == 100
+    assert "Revenue rose" in _slide_text(prs.slides[3])
+    assert "No unsupported facts may be added" in prs.slides[3].notes_slide.notes_text_frame.text
     financial_snapshot = _slide_text(prs.slides[2])
     assert "$46.7B" in financial_snapshot
     assert "$46.7K" not in financial_snapshot
@@ -145,10 +149,20 @@ def test_pptx_roundtrip_and_financial_units():
 
 
 def test_pptx_portuguese_labels():
-    raw, _ = build_presentation(SAMPLE, "pt")
+    raw, _, report = build_presentation(SAMPLE, "pt")
     prs = Presentation(BytesIO(raw))
     overview = _slide_text(prs.slides[1])
     quality = _slide_text(prs.slides[9])
+    assert report.verdict == "pass"
     assert "VISÃO EXECUTIVA" in overview
     assert "PRINCIPAIS CONCLUSÕES" in overview
     assert "QUALIDADE DOS DADOS E CONTROLES" in quality
+
+
+def test_typed_planner_is_deterministic_and_evidence_bounded():
+    first = plan_presentation(SAMPLE, "en")
+    second = plan_presentation(SAMPLE, "en")
+    assert first == second
+    assert [slide.slide_number for slide in first.slides] == list(range(1, 12))
+    assert first.by_section("performance").title == "Revenue rose 671.1% from FY2022 to FY2026"
+    assert first.by_section("risks").title == "The filing identifies 1 structured material risk"

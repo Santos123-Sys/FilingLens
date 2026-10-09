@@ -10,7 +10,7 @@ description: "Generate a decision-ready company analysis PowerPoint from the val
 
 The canonical artifact is a **new `.pptx` file** generated from the validated `FilingAnalysis` object. Do not mutate the user's source filing and do not treat a browser preview, PDF export, or handcrafted ZIP as proof that Microsoft PowerPoint can open the file.
 
-Default generation route: the private `filinglens-data-tools` Railway service using `python-pptx`. The browser must request the deck through FilingLens' `/api/presentation` proxy. The service saves the deck to memory and reopens it with `python-pptx` before delivery.
+Default generation route: the private `filinglens-data-tools` Railway service using a typed PPT Agent-inspired planner and `python-pptx` renderer. The browser must request the deck through FilingLens' `/api/presentation` proxy. The service saves the deck to memory and reopens it with `python-pptx` before delivery.
 
 ## 2. Evidence boundary
 
@@ -97,14 +97,17 @@ Do not dump long raw URLs into the visual body unless the sources slide requires
 The presentation engine must:
 
 1. receive a validated `FilingAnalysis` JSON payload;
-2. construct the deck with `python-pptx`;
-3. use a standard 16:9 slide size;
-4. avoid handcrafted OOXML except for a narrowly justified unsupported feature;
-5. save to an in-memory stream;
-6. reopen the saved bytes with `python-pptx`;
-7. verify the package starts with ZIP signature `PK` and slide count matches the generated deck;
-8. return MIME type `application/vnd.openxmlformats-officedocument.presentationml.presentation`;
-9. return a safe `.pptx` filename via `Content-Disposition`.
+2. create a typed, sequential slide plan with unique sections, purpose, source note and speaker notes;
+3. derive action titles only from validated summaries or explicit calculations over comparable series;
+4. construct the deck with `python-pptx`;
+5. use a standard 16:9 slide size;
+6. avoid handcrafted OOXML except for a narrowly justified unsupported feature;
+7. save to an in-memory stream;
+8. reopen the saved bytes with `python-pptx`;
+9. verify the package starts with ZIP signature `PK`, slide count and planned titles;
+10. verify that data-quality and source disclosures remain present;
+11. return MIME type `application/vnd.openxmlformats-officedocument.presentationml.presentation`;
+12. return a safe `.pptx` filename via `Content-Disposition` and expose the engine and QA result in response headers.
 
 ## 9. QA gate
 
