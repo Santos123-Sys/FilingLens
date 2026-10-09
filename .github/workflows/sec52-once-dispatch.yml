@@ -1,0 +1,46 @@
+name: SEC 52 one-time official source acceptance launcher
+# Temporary, tightly scoped, deterministic dispatcher. Delete immediately
+# after launch. Does NOT download SEC data itself or broaden importer access.
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/sec52-once-dispatch.yml
+
+permissions:
+  contents: read
+  actions: write
+  issues: write
+
+jobs:
+  dispatch:
+    if: github.repository == 'Santos123-Sys/FilingLens' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Dispatch manually authorized SEC workflow once for Apple
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          gh workflow run sec-official-acquisition.yml --repo "$GH_REPO" --ref main --field cik=0000320193
+          echo "Official SEC workflow_dispatch submitted to GitHub."
+      - name: Record run locator on SEC issue 52
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          RUN_ID=""
+          for attempt in 1 2 3 4 5 6; do
+            RUN_ID="$(gh run list --repo "$GH_REPO" --workflow sec-official-acquisition.yml --event workflow_dispatch --branch main --limit 1 --json databaseId --jq '.[0].databaseId // empty')"
+            if [[ -n "$RUN_ID" ]]; then break; fi
+            sleep 5
+          done
+          if [[ -z "$RUN_ID" ]]; then
+            gh issue comment 52 --repo "$GH_REPO" --body "The one-time acceptance dispatcher requested the official SEC acquisition workflow, but the dispatched run ID was not returned in the initial GitHub run listing. Inspect Actions for the new workflow_dispatch run. Do not close #52 without actual official source and production numerical proof."
+            exit 1
+          fi
+          gh issue comment 52 --repo "$GH_REPO" --body "One-time SEC source acceptance workflow dispatched: https://github.com/$GH_REPO/actions/runs/$RUN_ID . Check its official SEC HTTP response, authentic JSON receipt, exact accession and Railway import proof before closing issue #52."
+          echo "Dispatched official SEC acceptance run: $RUN_ID"
