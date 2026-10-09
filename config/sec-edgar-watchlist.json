@@ -1,0 +1,17 @@
+{
+  "schema": "filinglens.sec_edgar_watchlist.v1",
+  "lookbackDays": 10,
+  "limitPerForm": 2,
+  "issuers": [
+    {
+      "ticker": "AAPL",
+      "cik": "0000320193",
+      "forms": ["10-K", "10-Q", "8-K"]
+    },
+    {
+      "ticker": "MSFT",
+      "cik": "0000789019",
+      "forms": ["10-K", "10-Q", "8-K"]
+    }
+  ]
+}

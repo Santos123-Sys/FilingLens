@@ -26,6 +26,11 @@ describe("SEC GitHub OIDC intake",()=>{
    {event_name:"pull_request"},{aud:"incorrect"},{exp:Math.floor(now/1000)-2},
    {workflow_ref:"other.yml"}, {repository_id:"12"},
   ])expect(()=>assertAuthorizedClaims({...claim(),...change},now)).toThrow();
+  expect(()=>assertAuthorizedClaims({...claim(),event_name:"schedule",
+   workflow_ref:`${REPO}/.github/workflows/sec-scheduled-acquisition.yml@refs/heads/main`},now)).not.toThrow();
+  expect(()=>assertAuthorizedClaims({...claim(),event_name:"schedule"},now)).toThrow();
+  expect(()=>assertAuthorizedClaims({...claim(),event_name:"pull_request",
+   workflow_ref:`${REPO}/.github/workflows/sec-scheduled-acquisition.yml@refs/heads/main`},now)).toThrow();
  });
  it("verifies RS256 against fixed official GitHub JWKS",async()=>{
   const pair=generateKeyPairSync("rsa",{modulusLength:2048});
