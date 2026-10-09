@@ -22,6 +22,6 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm ci
-      # Bounded repeat with failure-stage diagnostics; do not use access circumvention.
+      # Real issuer document is larger than 3 MB; acceptance now uses bounded 12 MB cap.
       - name: Verify real issuer-published FY2025 figures and negative controls
         run: npx --yes tsx ops/verify-issuer-public-statement.ts

@@ -5,7 +5,7 @@ import type {IssuerDisclosureDocument} from "../contracts/issuer-statement-proof
 const requireNode=createRequire(import.meta.url);
 type PdfParser=(bytes:Buffer)=>Promise<{text:string;numpages:number}>;
 type Profile=NonNullable<NonNullable<MarketResult["market"]["competitiveAnalysis"]>["peerProfiles"]>[number];
-const MAX_PDF=3_000_000;
+const MAX_PDF=12_000_000;
 let cached:{value:IssuerDisclosureDocument;expiresAt:number}|null=null;
 let unavailableUntil=0;
 
