@@ -1,5 +1,5 @@
 import {describe,it,expect} from "vitest";
-import {verifyBulkMember,OFFICIAL_COMPANYFACTS_ARCHIVE} from "./sec-bulk-import";
+import {verifyBulkMember,parseBulkCiks,OFFICIAL_COMPANYFACTS_ARCHIVE} from "./sec-bulk-import";
 const raw={cik:320193,entityName:"APPLE INC.",facts:{"us-gaap":{
  RevenueFromContractWithCustomerExcludingAssessedTax:{units:{USD:[{
   accn:"0000320193-25-000079",form:"10-K",fp:"FY",
@@ -22,5 +22,19 @@ describe("compliant SEC official bulk archive member parser",()=>{
   expect(()=>verifyBulkMember("foo",Buffer.from(JSON.stringify(raw)))).toThrow();
   expect(()=>verifyBulkMember("0000320193",Buffer.alloc(12_000_001))).toThrow();
   expect(()=>verifyBulkMember("0000320193",Buffer.from("invalid".repeat(30)))).toThrow();
+ });
+});
+
+describe("bounded multi-issuer SEC cohort import",()=>{
+ it("accepts a single CIK and several explicit unique CIKs",()=>{
+  expect(parseBulkCiks("0000320193")).toEqual(["0000320193"]);
+  expect(parseBulkCiks(undefined,"0000320193,0000789019")).toEqual(["0000320193","0000789019"]);
+ });
+ it("fails closed on ambiguous input, duplicates, invalid identity and excessive batch",()=>{
+  expect(()=>parseBulkCiks()).toThrow();
+  expect(()=>parseBulkCiks("0000320193","0000789019")).toThrow();
+  expect(()=>parseBulkCiks(undefined,"0000320193,0000320193")).toThrow();
+  expect(()=>parseBulkCiks(undefined,"0000320193,foo")).toThrow();
+  expect(()=>parseBulkCiks(undefined,Array.from({length:13},(_,i)=>String(i+1).padStart(10,"0")).join(","))).toThrow();
  });
 });
