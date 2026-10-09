@@ -114,7 +114,7 @@ export function compareFilingAnalyses(priorInput: unknown, currentInput: unknown
  if (!identity(prior,current))
   return empty("identity_mismatch",prior,current,["Regulator issuer ID or strict ticker/exchange/name identity does not match."]);
  if (!date(prior.company.filedAt) || !date(current.company.filedAt) ||
-     prior.company.filedAt >= current.company.filedAt)
+     (prior.company.filedAt ?? "") >= (current.company.filedAt ?? ""))
   return empty("incomparable",prior,current,["Valid, strictly increasing filing dates are required."]);
  const p = prior.financials, c = current.financials;
  const comparable = p.unit.trim() && p.unit === c.unit &&
