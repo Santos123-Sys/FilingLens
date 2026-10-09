@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from io import BytesIO
+from math import isfinite
 from typing import Any
 
 from pptx import Presentation
@@ -10,6 +11,8 @@ from pptx.enum.chart import XL_CHART_TYPE, XL_LEGEND_POSITION
 from pptx.enum.shapes import MSO_SHAPE
 from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
 from pptx.util import Inches, Pt
+
+from .presentation_agent import PresentationQualityReport, evaluate_presentation, plan_presentation
 
 BG = RGBColor(8, 16, 29)
 PANEL = RGBColor(17, 28, 48)
@@ -102,6 +105,15 @@ def _series_latest(values: Any) -> float | None:
         if isinstance(value, (int, float)):
             return float(value)
     return None
+
+
+def _history_series(history: dict[str, Any], key: str, current: Any, history_years: list[Any], current_years: list[Any]) -> list[Any]:
+    values = history.get(key)
+    if isinstance(values, list) and values:
+        return values
+    if history_years == current_years and isinstance(current, list):
+        return current
+    return []
 
 
 def _unit_multiplier(unit: str | None) -> float:
@@ -219,9 +231,19 @@ def _add_chart(slide, x, y, w, h, title, categories, series, no_series, chart_ty
         return
     normalized = []
     for name, values in series:
-        if not isinstance(values, list) or len(values) != len(categories):
+        if not values:
             continue
-        normalized.append((name, [float(v) if isinstance(v, (int, float)) else None for v in values]))
+        if not isinstance(values, list) or len(values) != len(categories):
+            raise ValueError("chart_series_length_mismatch")
+        parsed = []
+        for value in values:
+            if value is None:
+                parsed.append(None)
+            elif isinstance(value, (int, float)) and isfinite(float(value)):
+                parsed.append(float(value))
+            else:
+                raise ValueError("chart_series_contains_non_finite_value")
+        normalized.append((name, parsed))
     if not normalized:
         _textbox(slide, x + .3, y + 1.0, w - .6, .4, no_series, 10, MUTED, False, PP_ALIGN.CENTER)
         return
@@ -260,9 +282,10 @@ def _status_label(value: str, lang: str) -> str:
     }.get(value, value.replace("_", " ").upper())
 
 
-def build_presentation(analysis: dict[str, Any], lang: str = "en") -> tuple[bytes, str]:
+def build_presentation(analysis: dict[str, Any], lang: str = "en") -> tuple[bytes, str, PresentationQualityReport]:
     lang = "pt" if lang == "pt" else "en"
     t = TEXT[lang]
+    plan = plan_presentation(analysis, lang)
     prs = Presentation()
     prs.slide_width = Inches(13.333333)
     prs.slide_height = Inches(7.5)
@@ -292,7 +315,7 @@ def build_presentation(analysis: dict[str, Any], lang: str = "en") -> tuple[byte
 
     s = _blank(prs)
     _textbox(s, .75, .55, 4.6, .3, t["brand"], 9, CYAN, True)
-    _textbox(s, .75, 1.35, 11.4, .8, name, 34, WHITE, True)
+    _textbox(s, .75, 1.35, 11.4, .8, plan.by_section("cover").title, 34, WHITE, True)
     _textbox(s, .75, 2.20, 11.0, .45, f"{ticker + ' · ' if ticker else ''}{form} · {period}", 15, MUTED)
     _rect(s, .75, 3.25, 11.85, 2.35, PANEL, BORDER)
     _textbox(s, 1.05, 3.55, 11.15, .3, t["cover_message"], 17, WHITE, True)
@@ -300,7 +323,7 @@ def build_presentation(analysis: dict[str, Any], lang: str = "en") -> tuple[byte
     _textbox(s, .75, 6.65, 11.8, .2, t["disclaimer"], 8, MUTED)
 
     s = _blank(prs)
-    _title(s, t["overview_kicker"], t["overview_title"], 2)
+    _title(s, t["overview_kicker"], plan.by_section("overview").title, 2)
     _rect(s, .65, 1.35, 7.75, 5.2, PANEL, BORDER)
     _textbox(s, .9, 1.62, 7.2, .3, t["takeaways"], 9, CYAN, True)
     _bullet_list(s, summary or [t["no_summary"]], .95, 2.08, 7.05, 6, size=12)
@@ -325,18 +348,18 @@ def build_presentation(analysis: dict[str, Any], lang: str = "en") -> tuple[byte
     cash = financials.get("cash") or []
     debt = financials.get("totalDebt") or []
     history_years = annual_history.get("years") or years
-    history_revenue = annual_history.get("revenue") or revenue
-    history_net_income = annual_history.get("netIncome") or net_income
-    history_ocf = annual_history.get("operatingCashFlow") or ocf
-    history_capex = annual_history.get("capex") or financials.get("capex") or []
-    history_cash = annual_history.get("cash") or cash
-    history_debt = annual_history.get("totalDebt") or debt
-    history_assets = annual_history.get("totalAssets") or financials.get("totalAssets") or []
-    history_equity = annual_history.get("totalEquity") or financials.get("totalEquity") or []
+    history_revenue = _history_series(annual_history, "revenue", revenue, history_years, years)
+    history_net_income = _history_series(annual_history, "netIncome", net_income, history_years, years)
+    history_ocf = _history_series(annual_history, "operatingCashFlow", ocf, history_years, years)
+    history_capex = _history_series(annual_history, "capex", financials.get("capex") or [], history_years, years)
+    history_cash = _history_series(annual_history, "cash", cash, history_years, years)
+    history_debt = _history_series(annual_history, "totalDebt", debt, history_years, years)
+    history_assets = _history_series(annual_history, "totalAssets", financials.get("totalAssets") or [], history_years, years)
+    history_equity = _history_series(annual_history, "totalEquity", financials.get("totalEquity") or [], history_years, years)
     history_unit = _clean(annual_history.get("unit"), unit)
 
     s = _blank(prs)
-    _title(s, t["financial_kicker"], t["financial_title"], 3)
+    _title(s, t["financial_kicker"], plan.by_section("financial").title, 3)
     cards = [
         (t["revenue"], _money(_series_latest(revenue), jurisdiction, unit), t["latest_reported"], CYAN),
         (t["net_income"], _money(_series_latest(net_income), jurisdiction, unit), t["latest_reported"], GREEN),
@@ -352,7 +375,7 @@ def build_presentation(analysis: dict[str, Any], lang: str = "en") -> tuple[byte
     _footer(s, f"{source_footer} · {unit}" if unit else source_footer)
 
     s = _blank(prs)
-    _title(s, t["performance_kicker"], t["performance_title"], 4)
+    _title(s, t["performance_kicker"], plan.by_section("performance").title, 4)
     chart_unit = f" ({history_unit})" if history_unit else ""
     _add_chart(s, .65, 1.35, 6.0, 5.45, f"{t['revenue']}{chart_unit}", history_years, [(t["revenue"], history_revenue)], t["no_series"], XL_CHART_TYPE.COLUMN_CLUSTERED)
     _add_chart(s, 6.85, 1.35, 5.8, 5.45, f"{t['net_income']}{chart_unit}", history_years, [(t["net_income"], history_net_income)], t["no_series"], XL_CHART_TYPE.LINE_MARKERS)
@@ -361,7 +384,7 @@ def build_presentation(analysis: dict[str, Any], lang: str = "en") -> tuple[byte
     _footer(s, history_footer)
 
     s = _blank(prs)
-    _title(s, t["cashflow_kicker"], t["cashflow_title"], 5)
+    _title(s, t["cashflow_kicker"], plan.by_section("cashflow").title, 5)
     _add_chart(s, .65, 1.35, 7.25, 5.45, f"{t['cashflow_profile']}{chart_unit}", history_years, [(t["ocf"], history_ocf), (t["capex"], history_capex)], t["no_series"], XL_CHART_TYPE.COLUMN_CLUSTERED)
     _rect(s, 8.15, 1.35, 4.5, 5.45, PANEL, BORDER)
     _metric_card(s, 8.42, 1.72, 3.95, t["cash"], _money(_series_latest(history_cash), jurisdiction, history_unit), t["latest_balance"], GREEN)
@@ -372,7 +395,7 @@ def build_presentation(analysis: dict[str, Any], lang: str = "en") -> tuple[byte
     _footer(s, history_footer)
 
     s = _blank(prs)
-    _title(s, t["market_kicker"], t["market_title"], 6)
+    _title(s, t["market_kicker"], plan.by_section("market").title, 6)
     _rect(s, .65, 1.35, 4.0, 5.45, PANEL, BORDER)
     _textbox(s, .9, 1.62, 3.5, .25, t["industry"], 9, CYAN, True)
     _textbox(s, .9, 2.00, 3.45, .7, market.get("industry") or t["no_industry"], 15, WHITE, True)
@@ -389,7 +412,7 @@ def build_presentation(analysis: dict[str, Any], lang: str = "en") -> tuple[byte
     _footer(s, source_footer)
 
     s = _blank(prs)
-    _title(s, t["competitive_kicker"], t["competitive_title"], 7)
+    _title(s, t["competitive_kicker"], plan.by_section("competition").title, 7)
     peer_profiles = competitive.get("peerProfiles") or []
     findings = competitive.get("findings") or []
     market_structure = competitive.get("marketStructure") or {}
@@ -430,7 +453,7 @@ def build_presentation(analysis: dict[str, Any], lang: str = "en") -> tuple[byte
     _footer(s, t["hierarchy_3"])
 
     s = _blank(prs)
-    _title(s, t["risk_kicker"], t["risk_title"], 8)
+    _title(s, t["risk_kicker"], plan.by_section("risks").title, 8)
     risk_items = []
     for item in risks[:6]:
         if isinstance(item, dict):
@@ -440,7 +463,7 @@ def build_presentation(analysis: dict[str, Any], lang: str = "en") -> tuple[byte
     _footer(s, source_footer)
 
     s = _blank(prs)
-    _title(s, t["events_kicker"], t["events_title"], 9)
+    _title(s, t["events_kicker"], plan.by_section("events").title, 9)
     _rect(s, .65, 1.35, 12.0, 5.45, PANEL_2, BORDER)
     if events:
         for i, item in enumerate(events[:7]):
@@ -455,7 +478,7 @@ def build_presentation(analysis: dict[str, Any], lang: str = "en") -> tuple[byte
     _footer(s, source_footer)
 
     s = _blank(prs)
-    _title(s, t["quality_kicker"], t["quality_title"], 10)
+    _title(s, t["quality_kicker"], plan.by_section("quality").title, 10)
     module_names = ["metadata", "profiler", "financials", "market", "risks", "historian", "synthesizer"]
     for i, module in enumerate(module_names):
         diagnostic = diagnostics.get(module) or {}
@@ -474,7 +497,7 @@ def build_presentation(analysis: dict[str, Any], lang: str = "en") -> tuple[byte
     _footer(s, source_footer)
 
     s = _blank(prs)
-    _title(s, t["sources_kicker"], t["sources_title"], 11)
+    _title(s, t["sources_kicker"], plan.by_section("sources").title, 11)
     _rect(s, .65, 1.35, 5.85, 5.45, PANEL, BORDER)
     _textbox(s, .95, 1.68, 5.2, .25, t["source_hierarchy"], 9, CYAN, True)
     hierarchy = [t["hierarchy_1"], t["hierarchy_2"], t["hierarchy_3"], t["hierarchy_4"]]
@@ -486,10 +509,13 @@ def build_presentation(analysis: dict[str, Any], lang: str = "en") -> tuple[byte
     _footer(s, t["method_footer"])
 
     out = BytesIO()
+    for slide, planned in zip(prs.slides, plan.slides, strict=True):
+        slide.notes_slide.notes_text_frame.text = planned.speaker_notes
     prs.save(out)
     raw = out.getvalue()
     reopened = Presentation(BytesIO(raw))
-    if len(reopened.slides) != len(prs.slides) or len(raw) < 5000 or raw[:2] != b"PK":
-        raise RuntimeError("pptx_roundtrip_validation_failed")
+    report = evaluate_presentation(reopened, plan, raw)
+    if report.verdict != "pass":
+        raise RuntimeError(f"pptx_quality_validation_failed:{','.join(report.issues)}")
     safe = "".join(ch if ch.isalnum() or ch in "-_" else "-" for ch in name).strip("-") or "company"
-    return raw, f"{safe}-FilingLens-Analysis.pptx"
+    return raw, f"{safe}-FilingLens-Analysis.pptx", report

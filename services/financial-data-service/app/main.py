@@ -121,7 +121,7 @@ async def timeline(payload: dict):
 @app.post("/v1/presentation")
 async def presentation(req: PresentationRequest):
     try:
-        raw, filename = build_presentation(req.analysis, req.lang)
+        raw, filename, quality = build_presentation(req.analysis, req.lang)
     except Exception as exc:
         raise HTTPException(status_code=500, detail=f"presentation_generation_failed:{type(exc).__name__}") from exc
     return Response(
@@ -129,6 +129,7 @@ async def presentation(req: PresentationRequest):
         media_type="application/vnd.openxmlformats-officedocument.presentationml.presentation",
         headers={
             "Content-Disposition": f'attachment; filename="{filename}"',
-            "X-FilingLens-Presentation-Engine": "python-pptx",
+            "X-FilingLens-Presentation-Engine": "ppt-agent-planner/python-pptx",
+            "X-FilingLens-Presentation-QA": f"{quality.verdict}; score={quality.score}",
         },
     )

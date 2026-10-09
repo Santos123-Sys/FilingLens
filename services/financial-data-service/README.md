@@ -6,7 +6,8 @@ Private Railway service for deterministic financial-data retrieval, normalizatio
 - SEC EDGAR `submissions` + `companyfacts` enrichment for US issuers.
 - CVM Dados Abertos DFP/ITR retrieval for Brazilian issuers.
 - Normalized, provenance-carrying metric snapshots for FilingLens agents.
-- Server-side `.pptx` generation with `python-pptx` and round-trip package validation.
+- Server-side `.pptx` generation with a typed PPT Agent-inspired planner, `python-pptx` rendering,
+  speaker notes, action titles and an enforceable post-build quality report.
 - Private execution boundary for the existing exact Python ratio, statement-analysis, and timeline skills.
 
 ## Endpoints

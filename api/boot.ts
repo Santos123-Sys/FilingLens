@@ -429,6 +429,7 @@ app.post("/api/presentation", async (c) => {
         "Content-Disposition": disposition,
         "Cache-Control": "no-store",
         "X-FilingLens-Presentation-Engine": upstream.headers.get("X-FilingLens-Presentation-Engine") ?? "python-pptx",
+        "X-FilingLens-Presentation-QA": upstream.headers.get("X-FilingLens-Presentation-QA") ?? "unreported",
       },
     });
   } catch (error) {
