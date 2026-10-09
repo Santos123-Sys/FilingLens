@@ -3,14 +3,14 @@ import type {FilingAnalysis} from "@contracts/analysis";
 import {compareFilingAnalyses,type FilingDelta} from "@contracts/filing-change-intelligence";
 
 const MAX_JSON_BYTES = 2 * 1024 * 1024;
-export default function FilingChangeWorkspace({analysis,lang}:{
- analysis:FilingAnalysis;lang:"en"|"pt";
+export default function FilingChangeWorkspace({analysis,lang,onReport}:{
+ analysis:FilingAnalysis;lang:"en"|"pt";onReport?:(report:FilingDelta|null)=>void;
 }) {
  const [report,setReport]=useState<FilingDelta|null>(null);
  const [error,setError]=useState("");
  const pt=lang==="pt";
  const upload=async(file:File|undefined)=>{
-  setReport(null);setError("");
+  setReport(null);onReport?.(null);setError("");
   if(!file)return;
   if(file.size>MAX_JSON_BYTES||file.size<2){
    setError(pt?"JSON anterior inválido ou maior que 2 MB.":"Invalid previous JSON or file exceeds 2 MB.");return;
@@ -18,7 +18,7 @@ export default function FilingChangeWorkspace({analysis,lang}:{
   try{
    const input=JSON.parse(await file.text()) as unknown;
    const result=compareFilingAnalyses(input,analysis);
-   setReport(result);
+   setReport(result);onReport?.(result);
   }catch{
    setError(pt?"Não foi possível ler o JSON anterior.":"Could not parse the previous JSON.");
   }
