@@ -1,5 +1,6 @@
 import {describe,it,expect} from "vitest";
-import type {FilingAnalysis,FilingDelta} from "./analysis";
+import type {FilingAnalysis} from "./analysis";
+import type {FilingDelta} from "./filing-change-intelligence";
 import {buildDecisionDossier,cleanAnalystReview,emptyAnalystReview} from "./decision-dossier";
 const filing={kind:"excerpt",section:"Item 8",quote:"Revenue: 100"};
 const citation={kind:"citation",section:"Competitor",url:"https://sec.gov/Archives/edgar/data/320193/report.htm"};
