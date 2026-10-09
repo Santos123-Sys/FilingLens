@@ -1,7 +1,7 @@
 import {describe,it,expect} from "vitest";
 import {evaluateSecAcceptance} from "./sec-acceptance";
 
-const sourceUrl="https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/annual.htm";
+const sourceUrl="https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/aapl-20250927.htm";
 const input={
  cik:"0000320193",peerName:"Apple Inc.",filingUrl:sourceUrl,metric:"Revenue",
  fiscalYear:2025,periodEnd:"2025-09-27",basis:"US GAAP" as const,
