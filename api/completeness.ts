@@ -25,7 +25,7 @@ function nonEmptyString(value: unknown): boolean {
 export function assessCompleteness(
   agent: AgentName,
   result: unknown,
-  context?: { jurisdiction?: Jurisdiction; filingType?: string },
+  context?: { jurisdiction?: Jurisdiction; filingType?: string; hasFinancialTables?: boolean },
 ): ModuleDiagnostic {
   const root = record(result);
 
@@ -95,7 +95,7 @@ export function assessCompleteness(
         || filingType.includes("formulario")
         || /(^|\s)8-k($|\s)/i.test(filingType)
         || filingType.includes("fato relevante");
-      if (narrativeOnly) {
+      if (narrativeOnly && years.length === 0 && revenue.length === 0 && netIncome.length === 0 && !context?.hasFinancialTables) {
         return {
           status: "not_applicable",
           reason: "financial_tables_not_applicable_to_form",

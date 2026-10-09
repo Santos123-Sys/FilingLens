@@ -14,6 +14,6 @@ export default defineConfig({
   },
   test: {
     environment: "node",
-    include: ["api/**/*.test.ts", "api/**/*.spec.ts", "src/lib/pipeline-retry.test.ts"],
+    include: ["api/**/*.test.ts", "api/**/*.spec.ts", "src/lib/**/*.test.ts", "contracts/**/*.test.ts"],
   },
 });

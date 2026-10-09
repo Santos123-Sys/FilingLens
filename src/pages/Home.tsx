@@ -691,7 +691,7 @@ export default function Home() {
               </div>
             )}
             <Dashboard data={analysis} lang={lang} />
-            <ValuationWorkspace analysis={analysis} lang={lang} onChange={handleValuationChange} />
+            <ValuationWorkspace key={`${analysis.company.name}|${analysis.company.periodEnd}|${analysis.company.filedAt ?? ""}|${JSON.stringify(analysis.financials)}`} analysis={analysis} lang={lang} onChange={handleValuationChange} />
             <FilingChangeWorkspace analysis={analysis} lang={lang} onReport={setFilingDelta} />
             <InvestmentDecisionWorkspace analysis={analysis} delta={filingDelta} lang={lang} />
             <InvestmentMemoWorkspace analysis={analysis} delta={filingDelta} lang={lang} value={analystReview} onChange={setAnalystReview} />

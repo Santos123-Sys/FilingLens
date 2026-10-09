@@ -4,8 +4,8 @@ import type {TradingPeerSnapshot} from "../contracts/trading-comps-eligibility";
 import { calculateDcf, prepareDcf } from "./valuation/dcf";
 export { ValuationGateError, ValuationInputError } from "./valuation/common";
 
-export async function prepareValuation(analysis:FilingAnalysis, method:ValuationMethod, tradingSnapshots?:TradingPeerSnapshot[]) {
-  return method === "dcf" ? prepareDcf(analysis) : prepareComps(analysis,tradingSnapshots);
+export async function prepareValuation(analysis:FilingAnalysis, method:ValuationMethod, tradingSnapshots?:TradingPeerSnapshot[], options?: { metric?: "EV/EBITDA" | "EV/Revenue" | "P/E"; fiscalToleranceDays?: number; issuerPeriodEnd?: string }) {
+  return method === "dcf" ? prepareDcf(analysis) : prepareComps(analysis,tradingSnapshots,options);
 }
 export function calculateValuation(analysis:FilingAnalysis, method:ValuationMethod, assumptions:ValuationAssumption[]) {
   return method === "dcf" ? calculateDcf(analysis,assumptions) : calculateComps(analysis,assumptions);

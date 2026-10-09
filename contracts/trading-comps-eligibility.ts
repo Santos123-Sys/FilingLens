@@ -1,3 +1,4 @@
+import { enterpriseValue } from "../vendor/financetoolkit/valuation";
 export type TradingPeerSnapshot={
  name:string;
  currency:"USD"|"BRL"|"EUR"|"GBP"|"CHF";
@@ -5,6 +6,10 @@ export type TradingPeerSnapshot={
  consolidated:boolean;
  quotation_date:string;
  financial_period_end:string;
+ financial_period_start?:string;
+ financial_period_kind?:"FY";
+ minority_interest_millions?:number|null;
+ preferred_equity_millions?:number|null;
  debt_as_of:string;
  market_cap_millions:number|null;
  net_debt_millions:number|null;
@@ -28,15 +33,21 @@ const equal=(a:string,b:string)=>a.trim().toLowerCase()===b.trim().toLowerCase()
  * are ineligible. No inferred FX or comparison across accounting regimes.
  */
 export function evaluateTradingPeer(snapshot:TradingPeerSnapshot,metric:ValuationMultiple,
- context:{peer:string;issuerPeriodEnd:string;currency:string;basis:string;today:string;sourceUrls:Set<string>}
+ context:{peer:string;issuerPeriodEnd:string;currency:string;basis:string;today:string;sourceUrls:Set<string>;fiscalToleranceDays?:number}
 ):TradingPeerResult|null {
  if(!equal(snapshot.name,context.peer)||!snapshot.consolidated||
    snapshot.currency!==context.currency||snapshot.basis!==context.basis ||
    !date(snapshot.quotation_date)||!date(snapshot.financial_period_end)||
-   !date(context.today)||snapshot.financial_period_end!==context.issuerPeriodEnd ||
+   !date(context.today)||!date(context.issuerPeriodEnd)||
+   !date(snapshot.financial_period_start??"")||snapshot.financial_period_kind!=="FY"||
    !http(snapshot.quotation_source_url)||!http(snapshot.financial_source_url)||
    !context.sourceUrls.has(snapshot.quotation_source_url)||
    !context.sourceUrls.has(snapshot.financial_source_url))return null;
+ const duration=(Date.parse(snapshot.financial_period_end)-Date.parse(snapshot.financial_period_start!))/86400000;
+ const tolerance=context.fiscalToleranceDays??0;
+ const fiscalDistance=Math.abs(Date.parse(snapshot.financial_period_end)-Date.parse(context.issuerPeriodEnd))/86400000;
+ const reportingAge=(Date.parse(snapshot.quotation_date)-Date.parse(snapshot.financial_period_end))/86400000;
+ if(duration<300||duration>380||tolerance<0||tolerance>90||fiscalDistance>tolerance||reportingAge<0||reportingAge>550)return null;
  const elapsed=(Date.parse(context.today)-Date.parse(snapshot.quotation_date))/86400000;
  if(elapsed<0||elapsed>7)return null;
  if(!num(snapshot.market_cap_millions)||snapshot.market_cap_millions<=0)return null;
@@ -47,7 +58,9 @@ export function evaluateTradingPeer(snapshot:TradingPeerSnapshot,metric:Valuatio
  }else{
    if(!date(snapshot.debt_as_of)||snapshot.debt_as_of!==snapshot.financial_period_end||
      !num(snapshot.net_debt_millions))return null;
-   const enterprise=snapshot.market_cap_millions+snapshot.net_debt_millions;
+   if(!num(snapshot.minority_interest_millions??null)||!num(snapshot.preferred_equity_millions??null)||
+      snapshot.minority_interest_millions!<0||snapshot.preferred_equity_millions!<0)return null;
+   const enterprise=enterpriseValue(snapshot.market_cap_millions,snapshot.net_debt_millions,snapshot.minority_interest_millions!,snapshot.preferred_equity_millions!);
    const denominator=metric==="EV/EBITDA"?snapshot.ebitda_millions:snapshot.revenue_millions;
    if(!num(denominator)||denominator<=0||enterprise<=0)return null;
    value=enterprise/denominator;

@@ -19,13 +19,15 @@ describe("valuation assumption gate",()=>{
       label:name+" — EV/EBITDA",source:{section:"Quoted enterprise components",kind:"citation",url:quoteUrl},
       snapshotOrigin:"analyst_attested",
       tradingSnapshot:{name,currency:"USD",basis:"us_gaap",consolidated:true,
+        financial_period_start:"2025-01-01",financial_period_kind:"FY",
+        minority_interest_millions:0,preferred_equity_millions:0,
         quotation_date:quoted,financial_period_end:"2025-12-31",debt_as_of:"2025-12-31",
         market_cap_millions:multiple*100-100,net_debt_millions:100,
         ebitda_millions:100,revenue_millions:400,net_income_millions:40,
         quotation_source_url:quoteUrl,financial_source_url:filingUrl}};
   };
-  const rows=[base("comps.multiple_metric","EV/EBITDA"),base("comps.selected_multiple",8),
-    base("comps.target_metric",36),base("comps.net_debt",60),
+  const rows=[base("comps.multiple_metric","EV/EBITDA"),base("comps.selected_multiple",8), base("comps.target_period_end","2025-12-31"), base("comps.fiscal_tolerance_days",0),
+    base("comps.target_metric",36),base("comps.net_debt",60),base("comps.equity_adjustment",0),
     base("comps.shares_outstanding",10),
     peer("Alpha Inc.",7,1),peer("Beta Inc.",8,2),peer("Gamma Inc.",9,3)];
   const result=calculateValuation(analysis,"comps",rows);
@@ -35,13 +37,14 @@ describe("valuation assumption gate",()=>{
   expect(result.quartiles.q3.value).toBe(8.5);
   expect(result.figures.implied_per_share.value).toBe(22.8);
   const unsupported=rows.map(x=>({...x}));
-  delete unsupported[5].tradingSnapshot;
+  delete unsupported.find(x=>x.id==="comps.peer.1")!.tradingSnapshot;
   expect(()=>calculateValuation(analysis,"comps",unsupported)).toThrow(ValuationGateError);
   const manipulated=rows.map(x=>({...x}));
-  manipulated[5].final_value=14;manipulated[5].status="edited";
+  const edited=manipulated.find(x=>x.id==="comps.peer.1")!;
+  edited.final_value=14;edited.status="edited";
   expect(()=>calculateValuation(analysis,"comps",manipulated)).toThrow("comps_peer_multiple_component_mismatch");
   const unsynced=rows.map(x=>({...x,tradingSnapshot:x.tradingSnapshot?{...x.tradingSnapshot}:undefined}));
-  unsynced[5].tradingSnapshot!.quotation_date="2026-01-01";
+  unsynced.find(x=>x.id==="comps.peer.1")!.tradingSnapshot!.quotation_date="2026-01-01";
   expect(()=>calculateValuation(analysis,"comps",unsynced)).toThrow(ValuationGateError);
  });
  it("marks reconciliation unavailable until both methods exist",()=>{expect(reconcileValuations(undefined,undefined).status).toBe("unavailable")});

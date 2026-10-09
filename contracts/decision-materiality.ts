@@ -71,14 +71,14 @@ export function buildDecisionMateriality(data:FilingAnalysis,delta?:FilingDelta|
   diagnostics.push("Sensitivity is a local central-difference estimate in per-share units per 1 percentage point; not a complete scenario rerun, investment recommendation or a forecast.");
  if(delta?.status==="ready"){
   for(const [i,change] of delta.changes.slice(0,12).entries()){
-   const source=change.evidence.current;
+   const source=change.evidence?.current;
    queue.push({id:`filing-${i}`,kind:"filing_discrepancy",
     priority:change.status==="missing_source"?"review_source":"investigate",
     title:`${change.metric} — ${change.period}`,
     detail:`Previously extracted ${change.previous}; currently extracted ${change.current}. Same-period discrepancy; verify original filings before any restatement claim.`,
     source:evidence(source)?source:null});
   }
-  if(delta.exclusions.length)diagnostics.push(...delta.exclusions.slice(0,4));
+  if(delta.exclusions?.length)diagnostics.push(...delta.exclusions.slice(0,4));
  }
  for(const row of data.valuation?.assumptions.dcf??[]){
   if(row.status==="rejected")continue;

@@ -4,6 +4,8 @@ import type {TradingPeerSnapshot} from "./trading-comps-eligibility";
 const quote="https://market.example.com/a",source="https://issuer.example.com/report";
 const base=():TradingPeerSnapshot=>({
  name:"Peer A",currency:"USD",basis:"us_gaap",consolidated:true,
+        financial_period_start:"2025-01-01",financial_period_kind:"FY",
+        minority_interest_millions:0,preferred_equity_millions:0,
  quotation_date:"2026-10-08",financial_period_end:"2025-12-31",debt_as_of:"2025-12-31",
  market_cap_millions:1000,net_debt_millions:200,ebitda_millions:100,
  revenue_millions:400,net_income_millions:50,

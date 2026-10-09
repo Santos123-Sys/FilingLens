@@ -22,6 +22,7 @@ import { buildAgentInput, buildMetadataInput, buildRiskRecoveryInput, runAgent, 
 import { assessCompleteness, assessMetadataCompleteness } from "./completeness";
 import { applyFinancialValidation } from "./financial-validation";
 import { validateHistorianOutput } from "./historian-validation";
+import { recoverMarketTables } from "./market-table-recovery";
 import { validateMarketOutput } from "./market-validation";
 import { extractDatedFilingEvents } from "./timeline-skill-extraction";
 import { researchCompetitiveLandscape } from "./market-web-research";
@@ -261,13 +262,13 @@ export const agentManager = {
       subtools.push("exact-financial-ratio-toolkit-python", "exact-financial-statement-analyzer-python", "filinglens-reconciliation-validator");
     }
     if (agent === "market") {
-      const marketResult = validateMarketOutput(value as MarketResult, excerpt);
+      const marketResult = validateMarketOutput(recoverMarketTables(value as MarketResult, filingText), filingText);
       marketResult.market.externalResearchStatus = "pending";
       result = marketResult;
       subtools.push("filing-source-provenance-validator", "market-research-brief-period-comparison", "market-research-brief-analysis-framework");
     }
 
-    const diagnostic = assessCompleteness(agent, result, context);
+    const diagnostic = assessCompleteness(agent, result, { ...context, hasFinancialTables: /consolidated\s+(?:statements|balance)|annual\s+financial\s+results|demonstra(?:ç|c)(?:ão|ao)\s+(?:do|dos)/i.test(filingText) });
     if (agent === "profiler") {
       const profile = result as CompanyResult;
       diagnostic.enrichmentStatus = hasProfilerCrossCheck(profile) ? "full" : "skipped";

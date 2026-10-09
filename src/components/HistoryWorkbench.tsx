@@ -25,7 +25,7 @@ function periodSeries(years: string[], values: number[] | null | undefined, year
  const result=values[matches[0]];
  return typeof result==="number" && Number.isFinite(result) ? result : null;
 }
-export type HistoryComparison = { year:string;metric:Metric;historical:number|null;filing:number|null;discrepancy:boolean;missing:boolean };
+export type HistoryComparison = { year:string;metric:Metric;historical:number|null;filing:number|null;discrepancy:boolean;missing:boolean;independent:boolean };
 export function compareAnnualHistory(data: FilingAnalysis): HistoryComparison[] {
  const f=data.financials, annual=f.annualHistory;
  if (!annual?.years?.length) return [];
@@ -45,7 +45,8 @@ export function compareAnnualHistory(data: FilingAnalysis): HistoryComparison[] 
     const filing=sameUnit ? periodSeries(f.years, f[metric] as number[]|null|undefined,year) : null;
     const discrepancy=historical!==null && filing!==null &&
       Math.abs(historical-filing)>0.000001*Math.max(1,Math.abs(historical),Math.abs(filing));
-    return {year,metric,historical,filing,discrepancy,missing:historical===null};
+    const independent = annual.provenance === "regulatory_api" || annual.provenance === "issuer_disclosure";
+    return {year,metric,historical,filing,discrepancy,missing:historical===null,independent};
   });
  });
 }
@@ -108,6 +109,7 @@ export default function HistoryWorkbench({data,lang}:Props) {
    <span className="rounded-lg border border-slate-600 px-2 py-1 text-slate-300">{missing.length} {lang==="pt"?"não divulgados":"unavailable"}</span>
    <span className="rounded-lg border border-amber-600/50 px-2 py-1 text-amber-200">{conflicts.length+dataIssues.length} {lang==="pt"?"alertas":"flags"}</span>
   </div></div>
+  {annual.status === "partial" && <p className="mt-3 text-xs text-amber-200">{lang === "pt" ? "Cobertura parcial. Cinco anos completos não foram demonstrados; células vazias permanecem sem valor." : "Partial coverage. Five complete annual years have not been established; missing cells remain empty."}</p>}
   {archiveStatus==="ready" && <div className="mt-3 rounded-lg border border-slate-700 bg-slate-950/50 px-3 py-2 text-[11px] text-slate-300">
    {archives.length
     ?(lang==="pt"?"Instantâneos regulatórios arquivados":"Archived regulatory snapshots")+": "+archives.length+
@@ -130,7 +132,7 @@ export default function HistoryWorkbench({data,lang}:Props) {
     <td className="py-3 pr-2">{row.year}</td><td className="px-2 py-3 tabular-nums">{fval(row.historical,lang)}</td>
     <td className="px-2 py-3 tabular-nums">{fval(row.filing,lang)}</td>
     <td className={"py-3 pl-2 "+(row.discrepancy?"text-amber-200":"text-slate-400")}>
-     {row.discrepancy?(lang==="pt"?"Revisar":"Review") : row.missing?(lang==="pt"?"Ausente":"Missing"):row.filing===null?(lang==="pt"?"Sem comparação":"Not comparable"):(lang==="pt"?"Alinhado":"Aligned")}
+     {row.discrepancy?(lang==="pt"?"Revisar":"Review") : row.missing?(lang==="pt"?"Ausente":"Missing"):row.filing===null?(lang==="pt"?"Sem comparação":"Not comparable"):!row.independent?(lang==="pt"?"Mesmo documento; sem conferência externa":"Same filing; no external cross-check"):(lang==="pt"?"Alinhado entre fontes":"Aligned across sources")}
     </td>
    </tr>)}
   </tbody></table></div>

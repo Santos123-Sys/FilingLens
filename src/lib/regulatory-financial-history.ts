@@ -24,7 +24,7 @@ function toMillions(value: number | null, unit?: string | null): number | null {
   if (normalized.includes("million") || normalized.includes("milhão") || normalized.includes("milhao")) return value;
   if (normalized.includes("thousand") || normalized.includes("milhar")) return value / 1_000;
   if (normalized === "usd" || normalized === "brl" || normalized === "us$" || normalized === "r$") return value / 1_000_000;
-  return value / 1_000_000;
+  return null; // Unknown scales must never be treated as whole currency units.
 }
 
 function yearOf(metric: RegulatoryDataMetric): number | null {
@@ -36,7 +36,7 @@ function yearOf(metric: RegulatoryDataMetric): number | null {
 function newestByKeyAndYear(metrics: RegulatoryDataMetric[]) {
   const map = new Map<string, RegulatoryDataMetric>();
   for (const metric of metrics) {
-    if (metric.statementType !== "annual") continue;
+    if (metric.statementType !== "annual" || !["verified", "single_source"].includes(metric.status) || !metric.source?.url) continue;
     const year = yearOf(metric);
     if (!year || !HISTORY_KEYS.includes(metric.key as HistoryKey)) continue;
     map.set(`${metric.key}:${year}`, metric);
@@ -47,10 +47,10 @@ function newestByKeyAndYear(metrics: RegulatoryDataMetric[]) {
 export function buildRegulatoryAnnualHistory(
   snapshot: RegulatoryDataSnapshot | undefined,
 ): NonNullable<FinancialsResult["financials"]["annualHistory"]> | undefined {
-  if (!snapshot || snapshot.status === "unavailable" || snapshot.status === "identifier_missing") return undefined;
-  const annual = snapshot.metrics.filter(metric => metric.statementType === "annual");
+  if (!snapshot || snapshot.status === "unavailable" || snapshot.status === "identifier_missing") return snapshot?.issuerHistory;
+  const annual = snapshot.metrics.filter(metric => metric.statementType === "annual" && ["verified", "single_source"].includes(metric.status) && metric.source?.url);
   const years = [...new Set(annual.map(yearOf).filter((year): year is number => Boolean(year)))].sort((a, b) => a - b).slice(-5);
-  if (!years.length) return undefined;
+  if (!years.length) return snapshot.issuerHistory;
 
   const byKeyYear = newestByKeyAndYear(annual);
   const series = (key: HistoryKey) => years.map(year => {
@@ -83,7 +83,8 @@ export function buildRegulatoryAnnualHistory(
     years: years.map(year => `FY${year}`),
     unit: snapshot.jurisdiction === "br" ? "BRL millions" : "USD millions",
     provider: snapshot.provider,
-    status: years.length >= 5 ? "complete" : "partial",
+    provenance: "regulatory_api",
+    status: years.length >= 5 && HISTORY_KEYS.every(key => series(key).every(value => value !== null)) ? "complete" : "partial",
     revenue: series("revenue"),
     grossProfit: series("grossProfit"),
     ebit: series("ebit"),
@@ -103,7 +104,8 @@ export function attachRegulatoryAnnualHistory(
   input: FinancialsResult,
   snapshot: RegulatoryDataSnapshot | undefined,
 ): FinancialsResult {
-  const annualHistory = buildRegulatoryAnnualHistory(snapshot);
+  const regulatory = buildRegulatoryAnnualHistory(snapshot);
+  const annualHistory = snapshot?.issuerHistory?.status === "complete" && regulatory?.status !== "complete" ? snapshot.issuerHistory : regulatory;
   if (!annualHistory) return input;
   return {
     financials: {

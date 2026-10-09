@@ -2,6 +2,7 @@ import { executionRuntimeStatus, withExecutionScope, safeErrorName } from "./ai/
 import { Hono } from "hono";
 import { bodyLimit } from "hono/body-limit";
 
+import { enrichIssuerHistory } from "./issuer-history";
 import { extractFilingText, BadFiling } from "./analyze";
 import { agentManager } from "./agent-manager";
 import { buildPrebuiltDashboardData } from "./dashboard-manager";
@@ -233,12 +234,11 @@ app.post("/api/metadata", async (c) => {
 app.post("/api/regulatory-data", async (c) => {
   const body = await c.req.json().catch(() => ({})) as Record<string, unknown>;
   const jurisdiction: Market = body.jurisdiction === "br" ? "br" : "us";
-  if (!dataToolsConfigured()) {
-    return c.json(unavailableRegulatoryData(jurisdiction, "Private regulatory-data service is not configured; filing analysis continued."));
-  }
   const text = typeof body.text === "string" ? body.text : "";
   const cik = typeof body.cik === "string" && body.cik.trim() ? body.cik : deterministicCik(text);
   const cnpj = typeof body.cnpj === "string" && body.cnpj.trim() ? body.cnpj : deterministicCnpj(text);
+  const issuerContext = { text, cik, reportingPeriod: typeof body.reportingPeriod === "string" ? body.reportingPeriod : undefined, filedAt: typeof body.filedAt === "string" ? body.filedAt : undefined };
+  if (!dataToolsConfigured()) return c.json(await enrichIssuerHistory(unavailableRegulatoryData(jurisdiction, "Regulatory service is unavailable; checking supported issuer disclosures."), issuerContext));
   try {
     const result = await dataToolsJson<RegulatoryDataSnapshot>("/v1/regulatory/enrich", {
       jurisdiction,
@@ -258,10 +258,10 @@ app.post("/api/regulatory-data", async (c) => {
         console.warn("[regulatory-history] snapshot archive unavailable",safeErrorName(error));
       }
     }
-    return c.json(result);
+    return c.json(await enrichIssuerHistory(result, issuerContext));
   } catch (error) {
     console.warn("[regulatory-data] enrichment unavailable; preserving filing-only analysis", safeErrorName(error));
-    return c.json(unavailableRegulatoryData(jurisdiction, "Authoritative structured-data lookup was unavailable; filing evidence was preserved."));
+    return c.json(await enrichIssuerHistory(unavailableRegulatoryData(jurisdiction, "Authoritative structured-data lookup was unavailable; filing evidence was preserved."), issuerContext));
   }
 });
 
@@ -452,7 +452,9 @@ app.post("/api/valuation/propose", async (c) => {
     if(tradingSnapshots && !tradingSnapshots.success)return c.json({error:"invalid_trading_components"},422);
     if(tradingSnapshots && body.analystAttested!==true)
       return c.json({error:"trading_sources_require_analyst_attestation"},422);
-    return c.json({ proposal: await prepareValuation(analysis, method,tradingSnapshots?.data) });
+    if (body.metric !== undefined && !["EV/EBITDA", "EV/Revenue", "P/E"].includes(body.metric)) return c.json({ error: "unsupported_comps_metric" }, 422);
+    if (body.fiscalToleranceDays !== undefined && (typeof body.fiscalToleranceDays !== "number" || !Number.isInteger(body.fiscalToleranceDays))) return c.json({ error: "invalid_fiscal_tolerance" }, 422);
+    return c.json({ proposal: await prepareValuation(analysis, method,tradingSnapshots?.data, { metric: body.metric, fiscalToleranceDays: body.fiscalToleranceDays, issuerPeriodEnd: typeof body.issuerPeriodEnd === "string" ? body.issuerPeriodEnd : undefined }) });
   } catch (err) {
     if (err instanceof ValuationInputError) return c.json({ error: err.message }, 422);
     const { body, status } = errStatus(err);

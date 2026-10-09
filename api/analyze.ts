@@ -61,6 +61,7 @@ const SEC_RISK_HEADINGS = [
   /risk\s+factors?\s+(?:set\s+forth|described|disclosed)/i,
 ];
 const SEC_SEGMENT_HEADINGS = [
+  /(?:quarterly\s+)?business\s+unit\s+financial\s+results/i,
   /segment\s+information/i,
   /reportable\s+segments?/i,
   /segment(?:ed)?\s+(?:net\s+)?sales/i,
@@ -68,6 +69,7 @@ const SEC_SEGMENT_HEADINGS = [
   /operating\s+segments?/i,
 ];
 const SEC_MARKET_HEADINGS = [
+  /(?:quarterly\s+)?business\s+unit\s+financial\s+results/i,
   /segment\s+information/i,
   /reportable\s+segments?/i,
   /revenue\s+by\s+(?:specialized\s+market|market\s+platform|segment|geograph)/i,

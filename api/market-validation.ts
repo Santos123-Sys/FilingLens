@@ -115,6 +115,7 @@ export function validateMarketOutput(input: MarketResult, filingExcerpt?: string
       peerEvidence: verifiedPeers.filter(peer => peersByName.has(peer.name.trim().toLowerCase())),
       geographies,
       segments,
+      ...(market.dataCoverage ? { dataCoverage: { ...market.dataCoverage, segments: segments.length ? "captured" as const : market.dataCoverage.segments === "captured" ? "extraction_gap" as const : market.dataCoverage.segments, geographies: geographies.length ? "captured" as const : market.dataCoverage.geographies === "captured" ? "extraction_gap" as const : market.dataCoverage.geographies } } : {}),
       insights: insights.slice(-12),
       validationFlags: flags,
     },
