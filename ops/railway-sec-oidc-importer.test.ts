@@ -42,6 +42,22 @@ describe("SEC GitHub OIDC intake",()=>{
   await expect(verifyGitHubOidc(tampered,
    (async()=>{const r=new Response(JSON.stringify({keys:[{...publicJwk,kid:"test-key",alg:"RS256",use:"sig"}]}),{headers:{"Content-Type":"application/json"}});Object.defineProperty(r,"url",{value:"https://token.actions.githubusercontent.com/.well-known/jwks"});return r;}) as typeof fetch,now)).rejects.toThrow();
  });
+ it("refuses unauthenticated SEC contact access and never echoes the configured address",async()=>{
+  const before=process.env.SEC_CONTACT_EMAIL;
+  process.env.SEC_CONTACT_EMAIL="operator@example.org";
+  try{
+   for(const authorization of [undefined,"Bearer malformed"]){
+    const headers=authorization?{Authorization:authorization}:undefined;
+    const response=await worker.fetch(new Request("https://intake.example/v1/sec/contact",{headers}));
+    expect(response.status).toBe(401);
+    const body=await response.text();
+    expect(body).not.toContain("operator@example.org");
+   }
+  }finally{
+   if(before===undefined)delete process.env.SEC_CONTACT_EMAIL;
+   else process.env.SEC_CONTACT_EMAIL=before;
+  }
+ });
  it("rejects unauthenticated HTTP requests even when JSON is provided",async()=>{
   const r=await worker.fetch(new Request("https://intake.example/v1/sec/import",{method:"POST",
    headers:{"Content-Type":"application/json"},body:"{}"}));

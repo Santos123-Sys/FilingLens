@@ -12,7 +12,7 @@ Railway egress to `https://data.sec.gov/api/xbrl/companyfacts/CIK0000320193.json
 There are **two** compliant source-acquisition environments to choose from:
 
 1. A workstation which has *legitimate SEC access*. Run `ops/acquire-sec-companyfacts.ts` directly there.
-2. The `Official SEC CompanyFacts acquisition (operator)` GitHub Actions **manual** workflow, using the real `SEC_CONTACT_EMAIL` GitHub Actions repository secret, configured by the owner in GitHub Settings. GitHub-hosted runner egress **may also be blocked**; success is only established by an actual HTTP 200 from the exact `data.sec.gov` URL and validated full JSON payload. Do not use the workflow as a surrogate for bypassing a blocked/denied provider network.
+2. The `Official SEC CompanyFacts acquisition (operator)` GitHub Actions **manual** workflow, retrieving the configured operator contact from the Railway OIDC importer via an authenticated one-run read. The GitHub repository does not need a contact-email secret. GitHub-hosted runner egress **may also be blocked**; success is only established by an actual HTTP 200 from the exact `data.sec.gov` URL and validated full JSON payload. Do not use the workflow as a surrogate for bypassing a blocked/denied provider network.
 
 The acquisition makes **one bounded request**, disallows redirects, requires the exact official URL and JSON content type, verifies the issuer CIK/SEC taxonomy, preserves the untouched response bytes and creates a SHA-256 receipt with actual UTC retrieval day. 403/429 are terminal. The repository never stores live CompanyFacts as a committed fixture, and the existing user-supplied Apple transformed extracts remain fixture-only.
 
@@ -35,11 +35,11 @@ This receipt records **operator-observed provenance**, not an SEC cryptographic 
 
 ### B. Official GitHub Actions acquisition
 
-1. In repository **Settings → Secrets and variables → Actions**, add repository **secret** `SEC_CONTACT_EMAIL` containing a real operator-controlled email address. This is not an API key. No fake contact or default email is supplied.
+1. Set Railway production `SEC_CONTACT_EMAIL` on the dedicated `filinglens-sec-oidc-importer` service to a real operator-controlled email. The configured Railway service already holds this variable. **Do not create an equivalent GitHub Actions secret:** the manually dispatched workflow obtains it over HTTPS from `/v1/sec/contact` using a short-lived, signed GitHub OIDC token restricted to the exact repository, workflow, branch, event and audience.
 2. Open **Actions → Official SEC CompanyFacts acquisition (operator) → Run workflow**, select `main`, and enter exact 10-digit CIK `0000320193` for Apple. This is a **manual** workflow and intentionally never runs on unsolicited PRs.
 3. If the GitHub runner receives SEC HTTP 403, stop; follow the SEC webmaster route rather than trying a different proxy, identity or IP to evade the denial.
 4. On success the workflow validates the original response. For Apple FY2025 it also runs an **exact-accession numerical check** against FY2025 revenue USD 416,161 million using the actual SEC CompanyFacts payload and three fail-closed negative controls.
-5. Retrieve the short-lived artifact `official-sec-companyfacts-0000320193-<run_id>` (three-day retention). Download to the authorized operator machine; preserve both original JSON and matching receipt unchanged. The workflow does **not** upload real data into the public Git repository or disclose your contact email in script output.
+5. Retrieve the short-lived artifact `official-sec-companyfacts-0000320193-<run_id>` (three-day retention). Download to the authorized operator machine; preserve both original JSON and matching receipt unchanged. The workflow does **not** upload real data into the public Git repository. The contact is only placed in the GitHub job environment after the workflow masks its value, not in its repository settings or source files.
 
 ### C. Offline verification before production import
 
