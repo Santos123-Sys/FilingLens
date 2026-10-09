@@ -13,6 +13,7 @@ import ValuationWorkspace from "@/components/ValuationWorkspace";
 import FilingChangeWorkspace from "@/components/FilingChangeWorkspace";
 import InvestmentDecisionWorkspace from "@/components/InvestmentDecisionWorkspace";
 import InvestmentMemoWorkspace from "@/components/InvestmentMemoWorkspace";
+import AnalysisAssuranceWorkspace from "@/components/AnalysisAssuranceWorkspace";
 import {emptyAnalystReview,type AnalystReview} from "@contracts/decision-dossier";
 import type {FilingDelta} from "@contracts/filing-change-intelligence";
 import AnalysisProgress, {
@@ -694,6 +695,7 @@ export default function Home() {
             <FilingChangeWorkspace analysis={analysis} lang={lang} onReport={setFilingDelta} />
             <InvestmentDecisionWorkspace analysis={analysis} delta={filingDelta} lang={lang} />
             <InvestmentMemoWorkspace analysis={analysis} delta={filingDelta} lang={lang} value={analystReview} onChange={setAnalystReview} />
+            <AnalysisAssuranceWorkspace analysis={analysis} delta={filingDelta} lang={lang} review={analystReview} />
           </div>
         )}
 

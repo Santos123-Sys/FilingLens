@@ -17,6 +17,18 @@ FilingLens converts US SEC and Brazilian CVM filing PDFs into a structured analy
 
 Financial values are extracted from the uploaded document and should be checked against the source filing before consequential use. The product is informational, not investment advice. The dashboard is a point-in-time analysis, not a live regulatory-data feed.
 
+## Analyst decision and audit workflow (Phases 3–6)
+
+After analyzing a filing, you can compare a prior FilingLens JSON analysis (Phase 3), examine source-gated DCF materiality and the research queue (Phase 4), write an analyst-authored thesis/counter-case with a source register (Phase 5), and export a portable analysis-assurance audit bundle (Phase 6). These are conservative **review tools**, not authenticated SEC restatement findings, live market-price recommendations or regulator-certified source data. The Phase 6 review-readiness label evaluates internal consistency only.
+
+Audit bundle verification (Node.js required):
+
+```bash
+npx --yes tsx ops/verify-phase6-audit.ts ./filinglens-audit-us-issuer.json
+```
+
+The SHA-256 checksum protects against accidental modification, **not** adversarial editing or source spoofing. See [Phase 5](docs/phase5-analyst-decision-dossier.md), [Phase 6](docs/phase6-release-assurance.md) and [open SEC source acceptance blocker #52](https://github.com/Santos123-Sys/FilingLens/issues/52).
+
 ## Development
 
 Requires Node.js 22+.
