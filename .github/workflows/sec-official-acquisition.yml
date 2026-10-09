@@ -1,0 +1,66 @@
+name: Official SEC CompanyFacts acquisition (operator)
+
+# Must be explicitly initiated by a repository maintainer. Does not run in
+# pull requests. No proxy fallback or automatic retry on SEC HTTP 403/429.
+on:
+  workflow_dispatch:
+    inputs:
+      cik:
+        description: "Exact 10-digit SEC CIK, e.g. 0000320193 for Apple"
+        type: string
+        required: true
+        default: "0000320193"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: official-sec-companyfacts-${{ github.event.inputs.cik }}
+  cancel-in-progress: false
+
+jobs:
+  acquire:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Validate operator configuration
+        env:
+          SEC_CONTACT_EMAIL: ${{ secrets.SEC_CONTACT_EMAIL }}
+          CIK: ${{ inputs.cik }}
+        shell: bash
+        run: |
+          test -n "$SEC_CONTACT_EMAIL" || { echo "::error::Configure SEC_CONTACT_EMAIL repository secret with an authentic operator contact email"; exit 1; }
+          [[ "$CIK" =~ ^[0-9]{10}$ ]] || { echo "::error::Supply a ten-digit CIK"; exit 1; }
+      - name: Install pinned dependencies
+        run: npm ci
+      - name: Fetch unmodified official JSON with receipt
+        env:
+          SEC_CONTACT_EMAIL: ${{ secrets.SEC_CONTACT_EMAIL }}
+          CIK: ${{ inputs.cik }}
+        run: |
+          mkdir -p /tmp/sec-official
+          npx --yes tsx ops/acquire-sec-companyfacts.ts \
+            --cik "$CIK" --output "/tmp/sec-official/CIK${CIK}.json"
+      - name: Check Apple FY2025 exact official amount and negative controls
+        if: ${{ inputs.cik == '0000320193' }}
+        run: |
+          npx --yes tsx ops/verify-sec-json-acceptance.ts \
+            --file /tmp/sec-official/CIK0000320193.json \
+            --receipt /tmp/sec-official/CIK0000320193.json.sec-receipt.json \
+            --cik 0000320193 --peer "Apple Inc." \
+            --filing-url "https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/aapl-20250927.htm" \
+            --metric Revenue --fy 2025 --period-end 2025-09-27 \
+            --basis "US GAAP" --currency USD --amount-millions 416161
+      - name: Upload original SEC bytes and SHA-256 receipt
+        uses: actions/upload-artifact@v4
+        with:
+          name: official-sec-companyfacts-${{ inputs.cik }}-${{ github.run_id }}
+          path: /tmp/sec-official/
+          if-no-files-found: error
+          retention-days: 3
+          compression-level: 0

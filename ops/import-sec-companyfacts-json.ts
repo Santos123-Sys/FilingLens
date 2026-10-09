@@ -20,6 +20,7 @@ import {readFile, stat} from "node:fs/promises";
 import mysql from "mysql2/promise";
 import {prepareSecOperatorJson} from "../contracts/sec-operator-json";
 import {inspectSecTransformedFixture} from "../contracts/sec-transformed-fixture";
+import {validateSecReceipt} from "../contracts/sec-official-acquisition";
 
 async function boundedFile(path: string, min: number, max: number): Promise<Buffer> {
  const size = (await stat(path)).size;
@@ -28,7 +29,7 @@ async function boundedFile(path: string, min: number, max: number): Promise<Buff
 }
 async function main() {
  const args = process.argv.slice(2);
- const permitted = new Set(["file", "cik", "retrieved-day", "format", "key-financials"]);
+ const permitted = new Set(["file", "cik", "retrieved-day", "format", "key-financials", "receipt"]);
  const values: Record<string, string> = {};
  let fixtureOnly = false;
  for (let i = 0; i < args.length;) {
@@ -71,6 +72,12 @@ async function main() {
  const bytes = await boundedFile(values.file, 100, 12_000_000);
  // Official parser rejects the transformed files because they lack
  // {cik, entityName, facts} with original accession-linked XBRL observations.
+ if (values.receipt) {
+  const receiptBytes = await boundedFile(values.receipt, 100, 25_000);
+  const receipt = validateSecReceipt(values.cik, bytes, JSON.parse(receiptBytes.toString("utf8")));
+  if (receipt.retrievedDay !== values["retrieved-day"])
+   throw new Error("Official SEC retrieval date and receipt disagree");
+ }
  const prepared = prepareSecOperatorJson(values.cik, bytes, values["retrieved-day"]);
  const db = await mysql.createConnection(process.env.DATABASE_URL);
  try {
