@@ -33,7 +33,7 @@ After importing an authorized official archive, run the read-only acceptance com
 ```bash
 DATABASE_URL="<restricted MySQL URL>" npx tsx ops/verify-sec-acceptance.ts \
   --cik 0000320193 --peer "Apple Inc." \
-  --filing-url "https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/annual.htm" \
+  --filing-url "https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/aapl-20250927.htm" \
   --metric Revenue --fy 2025 --period-end 2025-09-27 \
   --basis "US GAAP" --currency USD --amount-millions 416161
 ```
