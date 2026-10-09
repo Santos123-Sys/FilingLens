@@ -80,7 +80,21 @@ const valid = (x: unknown): x is FilingAnalysis => {
   typeof a.company?.periodEnd === "string" &&
   !!a.metadata && typeof a.financials?.unit === "string" &&
   Array.isArray(a.financials?.years) && Array.isArray(a.risks) &&
-  a.financials.years.length <= 5 && a.risks.length <= 15;
+  a.financials.years.length <= 5 && a.risks.length <= 15 &&
+  a.financials.years.every(y => typeof y === "string") &&
+  a.risks.every(r => !!r && typeof r.title === "string") &&
+  (!a.metadata.cik || typeof a.metadata.cik === "string") &&
+  (!a.metadata.cnpj || typeof a.metadata.cnpj === "string") &&
+  (!a.company.filedAt || typeof a.company.filedAt === "string") &&
+  (!a.financials.evidence || (Array.isArray(a.financials.evidence) &&
+   a.financials.evidence.every(e => !!e && typeof e.metric === "string" &&
+    (e.period === null || typeof e.period === "string") &&
+    !!e.source && typeof e.source.section === "string"))) &&
+  METRICS.every(metric => {
+   const values = a.financials?.[metric];
+   return values === null || values === undefined ||
+    (Array.isArray(values) && values.every(v => typeof v === "number" && Number.isFinite(v)));
+  });
 };
 const empty = (status: FilingDelta["status"], prior: FilingAnalysis, current: FilingAnalysis,
  exclusions: string[]): FilingDelta => ({
