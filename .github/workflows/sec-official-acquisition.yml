@@ -13,6 +13,7 @@ on:
 
 permissions:
   contents: read
+  id-token: write
 
 concurrency:
   group: official-sec-companyfacts-${{ github.event.inputs.cik }}
@@ -64,3 +65,12 @@ jobs:
           if-no-files-found: error
           retention-days: 3
           compression-level: 0
+      - name: Deliver official JSON to isolated Railway importer with GitHub OIDC
+        if: ${{ vars.SEC_IMPORT_URL != '' }}
+        env:
+          SEC_CIK: ${{ inputs.cik }}
+          SEC_IMPORT_URL: ${{ vars.SEC_IMPORT_URL }}
+        run: npx --yes tsx ops/sec-upload-github-oidc.ts
+      - name: Production import pending (no SEC_IMPORT_URL configured)
+        if: ${{ vars.SEC_IMPORT_URL == '' }}
+        run: echo "::notice::Official bytes are in the short-lived artifact, but production SEC acceptance remains blocked until a privileged import and DB readback succeed."
