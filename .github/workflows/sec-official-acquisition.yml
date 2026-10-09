@@ -3,6 +3,11 @@ name: Official SEC CompanyFacts acquisition (operator)
 # Must be explicitly initiated by a repository maintainer. Does not run in
 # pull requests. No proxy fallback or automatic retry on SEC HTTP 403/429.
 on:
+  # Single, source-compliant acceptance attempt on main when this workflow
+  # itself is updated. The operator workflow remains manually dispatchable.
+  push:
+    branches: [main]
+    paths: [.github/workflows/sec-official-acquisition.yml]
   workflow_dispatch:
     inputs:
       cik:
@@ -16,7 +21,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: official-sec-companyfacts-${{ github.event.inputs.cik }}
+  group: official-sec-companyfacts-${{ inputs.cik || '0000320193' }}
   cancel-in-progress: false
 
 jobs:
@@ -31,7 +36,7 @@ jobs:
           cache: npm
       - name: Validate issuer identity
         env:
-          CIK: ${{ inputs.cik }}
+          CIK: ${{ inputs.cik || '0000320193' }}
         shell: bash
         run: |
           [[ "$CIK" =~ ^[0-9]{10}$ ]] || { echo "::error::Supply a ten-digit CIK"; exit 1; }
@@ -41,13 +46,13 @@ jobs:
         run: npx --yes tsx ops/sec-contact-from-railway.ts
       - name: Fetch unmodified official JSON with receipt
         env:
-          CIK: ${{ inputs.cik }}
+          CIK: ${{ inputs.cik || '0000320193' }}
         run: |
           mkdir -p /tmp/sec-official
           npx --yes tsx ops/acquire-sec-companyfacts.ts \
             --cik "$CIK" --output "/tmp/sec-official/CIK${CIK}.json"
       - name: Check Apple FY2025 exact official amount and negative controls
-        if: ${{ inputs.cik == '0000320193' }}
+        if: ${{ (inputs.cik || '0000320193') == '0000320193' }}
         run: |
           npx --yes tsx ops/verify-sec-json-acceptance.ts \
             --file /tmp/sec-official/CIK0000320193.json \
@@ -59,13 +64,13 @@ jobs:
       - name: Upload original SEC bytes and SHA-256 receipt
         uses: actions/upload-artifact@v4
         with:
-          name: official-sec-companyfacts-${{ inputs.cik }}-${{ github.run_id }}
+          name: official-sec-companyfacts-${{ inputs.cik || '0000320193' }}-${{ github.run_id }}
           path: /tmp/sec-official/
           if-no-files-found: error
           retention-days: 3
           compression-level: 0
       - name: Deliver official JSON to isolated Railway importer with GitHub OIDC
         env:
-          SEC_CIK: ${{ inputs.cik }}
+          SEC_CIK: ${{ inputs.cik || '0000320193' }}
           SEC_IMPORT_URL: https://filinglens-sec-oidc-importer-production.up.railway.app/v1/sec/import
         run: npx --yes tsx ops/sec-upload-github-oidc.ts
