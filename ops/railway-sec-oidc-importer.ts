@@ -38,8 +38,10 @@ export function assertAuthorizedClaims(c:Claims,now=Date.now()){
  if(c.iss!==ISSUER||c.aud!==SEC_IMPORT_AUDIENCE||c.repository!==REPO||
   String(c.repository_id)!==REPO_ID||c.ref!==REF||
   c.event_name!=="workflow_dispatch"||c.workflow_ref!==WORKFLOW||
-  !Number.isInteger(c.exp)||!Number.isInteger(c.iat)||!Number.isInteger(c.nbf)||
-  !Number.isInteger(Number(c.run_id))||
+  typeof c.exp!=="number"||!Number.isInteger(c.exp)||
+  typeof c.iat!=="number"||!Number.isInteger(c.iat)||
+  typeof c.nbf!=="number"||!Number.isInteger(c.nbf)||
+  !/^\\d{6,}$/.test(String(c.run_id??""))||
   Number(c.iat)>epoch+60||Number(c.nbf)>epoch+60||
   Number(c.exp)<=epoch||Number(c.exp)>epoch+1800||
   Number(c.iat)<epoch-1800)
@@ -96,7 +98,7 @@ export function validateOfficialUpload(envelope:Envelope,now=Date.now()){
  if(!isRecord(obj)||!Number.isSafeInteger(obj.cik)||
   String(obj.cik).padStart(10,"0")!==cik||
   typeof obj.entityName!=="string"||!obj.entityName.trim()||
-  !isRecord(obj.facts)||!["us-gaap","ifrs-full"].some(k=>isRecord(obj.facts?.[k])))
+  !isRecord(obj.facts)||!["us-gaap","ifrs-full"].some(k=>isRecord((obj.facts as Record<string,unknown>)[k])))
   throw new Error("companyfacts_identity_or_taxonomy_invalid");
  const canonical=JSON.stringify(obj),canonicalHash=canonicalSha(canonical);
  const receivedAt=receipt.retrievedAt,receivedDay=receipt.retrievedDay;
