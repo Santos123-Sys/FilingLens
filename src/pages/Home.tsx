@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import Dashboard from "@/components/Dashboard";
 import ValuationWorkspace from "@/components/ValuationWorkspace";
+import FilingChangeWorkspace from "@/components/FilingChangeWorkspace";
 import AnalysisProgress, {
   type ExecutionStageKey,
   type ExecutionState,
@@ -678,6 +679,7 @@ export default function Home() {
             )}
             <Dashboard data={analysis} lang={lang} />
             <ValuationWorkspace analysis={analysis} lang={lang} onChange={handleValuationChange} />
+            <FilingChangeWorkspace analysis={analysis} lang={lang} />
           </div>
         )}
 
