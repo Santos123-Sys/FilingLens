@@ -38,32 +38,36 @@ function pctChange(now: number, before: number): number | null {
 }
 
 /** Filing-first market binding; external peers are added only by the verified search lane. */
-export function validateMarketOutput(input: MarketResult): MarketResult {
+export function validateMarketOutput(input: MarketResult, filingExcerpt?: string): MarketResult {
+  const normalizeQuote = (text: string) => text.replace(/\s+/g, " ").trim();
+  const sourceText = filingExcerpt === undefined ? undefined : normalizeQuote(filingExcerpt);
+  const quoteExists = (quote?: string | null) => Boolean(quote?.trim())
+    && (sourceText === undefined || sourceText.includes(normalizeQuote(quote ?? "")));
   const market = input.market;
   const flags = [...(market.validationFlags ?? [])];
   const peerEvidence = market.peerEvidence ?? [];
   const verifiedPeers = peerEvidence.filter(peer =>
     peer.sourceType === "filing"
     && Boolean(peer.source.section.trim())
-    && Boolean(peer.source.quote?.trim()),
+    && quoteExists(peer.source.quote),
   );
   const peersByName = new Set(verifiedPeers.map(peer => peer.name.trim().toLowerCase()));
   const competitors = market.competitors.filter(name => peersByName.has(name.trim().toLowerCase()));
   const droppedPeers = market.competitors.length - competitors.length;
   if (droppedPeers) flags.push({
     code: "UNVERIFIED_PEERS_DROPPED",
-    note: `${droppedPeers} peer name(s) were omitted because the filing excerpt had no exact source quote.`,
+    note: `${droppedPeers} peer name(s) were omitted because the quote was missing or did not resolve in the supplied filing excerpt.`,
   });
 
   const validatedSeries = <T extends { sourceType?: "filing" | "external"; source?: { section: string; quote?: string | null } | null }>(
     series: T[],
     kind: string,
   ) => {
-    const valid = series.filter(item => item.sourceType === "filing" && Boolean(item.source?.section.trim()) && Boolean(item.source?.quote?.trim()));
+    const valid = series.filter(item => item.sourceType === "filing" && Boolean(item.source?.section.trim()) && quoteExists(item.source?.quote));
     const removed = series.length - valid.length;
     if (removed) flags.push({
       code: `UNVERIFIED_${kind.toUpperCase()}_DROPPED`,
-      note: `${removed} ${kind} item(s) were omitted because no verifiable filing excerpt was attached.`,
+      note: `${removed} ${kind} item(s) were omitted because the source quote was missing or did not resolve in the supplied filing excerpt.`,
     });
     return valid.map(item => ({ ...item, sourceType: "filing" as const }));
   };

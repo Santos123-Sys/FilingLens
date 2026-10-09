@@ -60,3 +60,38 @@ describe("section-aware filing retrieval", () => {
     expect(input).toContain("Data Center revenue 90");
   });
 });
+
+describe("bounded source coverage regressions", () => {
+  it("keeps the late body statement after repeated contents aliases", () => {
+    const contents = Array.from({ length: 8 }, () => `Item 8. Financial Statements\n${"contents ".repeat(1300)}`).join("\n");
+    const text = `${contents}\n${"filler ".repeat(6000)}\nItem 8. Financial Statements\nRevenue FY2025 USD millions 416161\nAccounting footnote: consolidated.\n${"appendix ".repeat(18000)}`;
+    const excerpt = buildAgentInput("financials", createAnalysisCorpus(text));
+    expect(excerpt).toContain("Revenue FY2025 USD millions 416161");
+    expect(excerpt).toContain("Accounting footnote: consolidated.");
+  });
+
+  it("does not deduplicate different evidence families sharing a long prefix", () => {
+    const text = `${"common cover ".repeat(40)}\nItem 1. Business\n${"overview ".repeat(1200)}\nItem 8. Financial Statements\nRevenue 987\n${"appendix ".repeat(19000)}`;
+    expect(buildAgentInput("financials", text)).toContain("Revenue 987");
+  });
+
+  it("keeps every document and tail evidence inside the six-document hard cap", () => {
+    const bundle = Array.from({ length: 6 }, (_, i) => `[FILINGLENS_DOCUMENT ${i + 1}/6: filing-${i}.pdf]\nFORM 10-K\n${"cover ".repeat(12000)}\nItem 1A. Risk Factors\n${"risk ".repeat(2000)}\nTAIL_EVIDENCE_${i}\n[/FILINGLENS_DOCUMENT ${i + 1}]`).join("\n");
+    const excerpt = buildAgentInput("risks", bundle);
+    expect(excerpt.length).toBeLessThanOrEqual(100000);
+    for (let i = 0; i < 6; i++) {
+      expect(excerpt).toContain(`Filing bundle document ${i + 1}`);
+      // Tail family is allocated independently and never clipped by label overhead.
+      expect(excerpt).toContain(`TAIL_EVIDENCE_${i}`);
+    }
+  });
+
+  it("does not duplicate a short source and preserves a stable normalized-text ID", () => {
+    const text = "Item 8. Financial Statements\nRevenue 100\nFootnote: USD millions.";
+    const first = buildAgentInput("financials", text);
+    expect(first.match(/Revenue 100/g)).toHaveLength(1);
+    expect(buildAgentInput("financials", text)).toBe(first);
+    expect(first).toMatch(/normalized-text-sha256:[a-f0-9]{64}/);
+    expect(buildAgentInput("financials", text + " changed")).not.toBe(first);
+  });
+});

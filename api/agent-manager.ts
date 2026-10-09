@@ -261,7 +261,7 @@ export const agentManager = {
       subtools.push("exact-financial-ratio-toolkit-python", "exact-financial-statement-analyzer-python", "filinglens-reconciliation-validator");
     }
     if (agent === "market") {
-      const marketResult = validateMarketOutput(value as MarketResult);
+      const marketResult = validateMarketOutput(value as MarketResult, excerpt);
       marketResult.market.externalResearchStatus = "pending";
       result = marketResult;
       subtools.push("filing-source-provenance-validator", "market-research-brief-period-comparison", "market-research-brief-analysis-framework");

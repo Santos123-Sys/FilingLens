@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { generateObject, type LanguageModel } from "ai";
 import type { z } from "zod";
 import pdfParse from "./pdf";
@@ -9,6 +10,7 @@ import type { Jurisdiction, Market } from "../contracts/analysis";
 
 const MAX_TEXT_CHARS = 320_000;
 const MIN_SECTION_SPACING = 8_000;
+type ExcerptPart = string | string[];
 
 const BR_FINANCIAL_HEADINGS = [
   /demonstra(?:ç|c)(?:ão|ao)\s+(?:do|de)\s+resultado(?:\s+do\s+exerc[ií]cio)?/i,
@@ -150,14 +152,17 @@ function surroundingMatches(
   preferLast = false,
   minSpacing = MIN_SECTION_SPACING,
   minWindowChars = 4_000,
-): string {
+): string[] {
   const starts = spacedSectionStarts(matchStarts(text, patterns), minSpacing);
-  if (!starts.length) return "";
-  const selected = preferLast ? starts.slice(-maxMatches) : starts.slice(0, maxMatches);
+  if (!starts.length) return [];
+  // Keep coverage across the document when aliases/contents listings exceed the cap.
+  // In particular, a late body section must not be starved by early TOC aliases.
+  const selected = preferLast ? starts.slice(-maxMatches)
+    : starts.length <= maxMatches ? starts
+      : Array.from({ length: maxMatches }, (_, index) => starts[Math.round(index * (starts.length - 1) / Math.max(1, maxMatches - 1))]);
   const perMatch = Math.max(minWindowChars, Math.floor(totalBudget / selected.length));
   return selected
-    .map(start => text.slice(Math.max(0, start - 1_200), Math.min(text.length, start + perMatch - 1_200)))
-    .join("\n\n");
+    .map(start => text.slice(Math.max(0, start - 1_200), Math.min(text.length, start + perMatch - 1_200)));
 }
 
 /**
@@ -165,11 +170,11 @@ function surroundingMatches(
  * join-then-slice semantics can silently drop the final evidence family, which is
  * exactly how a 10-Q balance sheet was lost after being successfully retrieved.
  */
-function boundedJoin(parts: string[], budget: number): string {
-  const unique: string[] = [];
+function boundedJoin(parts: ExcerptPart[], budget: number): string {
+  const unique: ExcerptPart[] = [];
   const seen = new Set<string>();
-  for (const part of parts.filter(Boolean)) {
-    const key = part.slice(0, 240);
+  for (const part of parts.filter(part => part.length > 0)) {
+    const key = JSON.stringify(part);
     if (seen.has(key)) continue;
     seen.add(key);
     unique.push(part);
@@ -182,7 +187,8 @@ function boundedJoin(parts: string[], budget: number): string {
   const output: string[] = [];
   for (const part of unique) {
     const quota = Math.max(0, Math.floor(remaining / remainingParts));
-    const slice = part.slice(0, quota);
+    // Preserve each selected window when its evidence family receives a quota.
+    const slice = typeof part === "string" ? part.slice(0, quota) : boundedJoin(part, quota);
     output.push(slice);
     remaining -= slice.length;
     remainingParts -= 1;
@@ -220,12 +226,21 @@ function splitDocuments(text: string): string[] {
 }
 
 function proportionalJoin(documents: string[], totalChars: number, build: (document: string, budget: number) => string): string {
-  const perDocument = Math.max(8_000, Math.floor(totalChars / Math.max(1, documents.length)));
-  return documents
-    .map((document, index) => `## Filing bundle document ${index + 1}\n${build(document, perDocument)}`)
-    .filter(Boolean)
-    .join("\n\n")
-    .slice(0, totalChars);
+  const separator = "\n\n";
+  const headers = documents.map((document, index) => {
+    const id = createHash("sha256").update(document).digest("hex");
+    return `## Filing bundle document ${index + 1} [normalized-text-sha256:${id}]\n`;
+  });
+  // Reserve label/separator overhead before distributing body budgets. Never
+  // truncate a completed bundle and silently remove the final document's tail.
+  let remaining = Math.max(0, totalChars - headers.reduce((sum, header) => sum + header.length, 0)
+    - separator.length * Math.max(0, documents.length - 1));
+  return documents.map((document, index) => {
+    const quota = Math.floor(remaining / (documents.length - index));
+    const body = build(document, quota).slice(0, quota);
+    remaining -= body.length;
+    return headers[index] + body;
+  }).join(separator).slice(0, totalChars);
 }
 
 export function buildMetadataInput(text: string): string {
@@ -234,8 +249,10 @@ export function buildMetadataInput(text: string): string {
 }
 
 function buildSingleAgentInput(agent: AgentName, text: string, budget: number): string {
+  // A bounded document already fits; avoid duplicating overlapping sections.
+  if (text.length <= budget) return text;
   const first = text.slice(0, Math.min(12_000, Math.max(6_000, Math.floor(budget * 0.18))));
-  const cap = (parts: string[]) => boundedJoin(parts, budget);
+  const cap = (parts: ExcerptPart[]) => boundedJoin(parts, budget);
   switch (agent) {
     case "financials":
       return cap([
