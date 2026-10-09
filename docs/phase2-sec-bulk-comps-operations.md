@@ -26,6 +26,20 @@ The operator must supply the actual date of retrieval, not the example date. All
 6. If direct data.sec.gov retrieval is unavailable, the server accepts a stored import **only when** the archive source is the official URL, payload SHA-256 matches, issuer CIK agrees, and the retrieval date is within 14 days. The original accession, fiscal date, reporting basis and amount must **still** match the candidate peer number before it is eligible for calculation.
 7. The UI explicitly distinguishes `operator_attested_sec_bulk` from live `sec_api`. This is **operator-attested official-file provenance**, not an independent live SEC HTTP verification. If no archive was loaded, the numerical proof remains unavailable, not guessed.
 
+## Read-only real SEC numerical acceptance after import
+
+After importing an authorized official archive, run the read-only acceptance command on a host with Node, tsx and a restricted MySQL `DATABASE_URL`. Supply the peer's actual filed SEC URL, as-filed annual amount and precise fiscal period; the values here illustrate the command's inputs and must be checked against the relevant filing before execution:
+
+```bash
+DATABASE_URL="<restricted MySQL URL>" npx tsx ops/verify-sec-acceptance.ts \
+  --cik 0000320193 --peer "Apple Inc." \
+  --filing-url "https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/annual.htm" \
+  --metric Revenue --fy 2025 --period-end 2025-09-27 \
+  --basis "US GAAP" --currency USD --amount-millions 416161
+```
+
+The command uses the application's own 14-day freshness and SHA-256-validated MySQL fallback reader and exact SEC accession/CIK/year-long taxonomy amount matcher. It exits nonzero if the sample fails validation or if the official cache is missing/stale. It also verifies that mutated amount, CIK and filing accession are rejected. JSON output records the source mode, retrieval day and payload hash. **This command is not a substitute for obtaining and importing real official SEC records.** Tests of the helper use explicitly synthetic fixtures; only a successful run over a real, authenticated operator import qualifies as numerical production acceptance.
+
 ## Trading-comps evidence
 
 The proposal endpoint accepts optional `tradingSnapshots` containing 3–12 raw company-specific dated quotation/debt/income-statement components **only when** `analystAttested:true` was explicitly provided. Each snapshot contains:
