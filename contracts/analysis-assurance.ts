@@ -26,8 +26,6 @@ export type AuditPayload={
 };
 export type AuditBundle=AuditPayload & {sha256:string};
 const num=(v:unknown):v is number=>typeof v==="number"&&Number.isFinite(v);
-const iso=(s:string)=>/^20\d{2}-\d{2}-\d{2}$/.test(s)&&!Number.isNaN(Date.parse(s))
- && new Date(s).toISOString().slice(0,10)===s;
 const checksumDate=(s:string)=>!Number.isNaN(Date.parse(s))&&new Date(s).toISOString()===s;
 /**
  * Phase 6: a repeatable *analysis quality* gate, not source authentication.
