@@ -47,4 +47,35 @@ describe("SEC GitHub OIDC intake",()=>{
    headers:{"Content-Type":"application/json"},body:"{}"}));
   expect(r.status).toBe(401);
  });
+ it("validates untouched SEC JSON, retrieval hash, issuer and accession before upload",()=>{
+  const original=JSON.stringify(facts());
+  const b=Buffer.from(original);
+  const sha=createHash("sha256").update(b).digest("hex");
+  const receipt={
+   schema:"filinglens.sec_official_acquisition.v1",cik:CIK,url:URL,
+   retrievedDay:"2026-10-09",retrievedAt:"2026-10-09T12:00:00.000Z",
+   origin:"direct_official_sec_http",bytes:b.length,issuer:"Apple Inc.",
+   sourceFileSha256:sha,normalizedPayloadSha256:sha,
+  };
+  const envelope={cik:CIK,officialJsonBase64:b.toString("base64"),receipt};
+  const valid=validateOfficialUpload(envelope,now);
+  expect(valid.payloadHash).toBe(sha);
+  expect(apple2025Proof(valid.facts,CIK)).toMatchObject({
+   status:"verified",filingAccession:"0000320193-25-000079",
+   wrongAmountRejected:true,wrongAccessionRejected:true,wrongCikRejected:true,
+  });
+  expect(()=>validateOfficialUpload({...envelope,receipt:{...receipt,
+   sourceFileSha256:"0".repeat(64)}},now)).toThrow(/receipt/);
+  const other=facts();other.entityName="Spoof";
+  expect(()=>validateOfficialUpload({...envelope,
+   officialJsonBase64:Buffer.from(JSON.stringify(other)).toString("base64")},now)).toThrow(/receipt/);
+ });
+ it("refuses Apple annual values from wrong accession or amount",()=>{
+  const modified=facts();
+  modified.facts["us-gaap"].RevenueFromContractWithCustomerExcludingAssessedTax.units.USD[0].val=100;
+  expect(()=>apple2025Proof(modified,"0000320193")).toThrow(/numeric/);
+  modified.facts["us-gaap"].RevenueFromContractWithCustomerExcludingAssessedTax.units.USD[0].val=416_161_000_000;
+  modified.facts["us-gaap"].RevenueFromContractWithCustomerExcludingAssessedTax.units.USD[0].accn="0000320193-25-000078";
+  expect(()=>apple2025Proof(modified,"0000320193")).toThrow(/numeric/);
+ });
 });
