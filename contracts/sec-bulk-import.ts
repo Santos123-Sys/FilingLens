@@ -12,3 +12,12 @@ export function verifyBulkMember(cik:string,contents:Buffer){
  const payloadJson=JSON.stringify(payload);
  return {payloadJson,payloadSha256:createHash("sha256").update(payloadJson).digest("hex")};
 }
+
+/** Bound one operator import to a small, explicitly enumerated peer cohort. */
+export function parseBulkCiks(single?:string,batch?:string):string[]{
+ if(Boolean(single)===Boolean(batch))throw new Error("specify exactly one of --cik or --ciks");
+ const raw=single?[single!]:batch!.split(",");
+ if(raw.length<1||raw.length>12||raw.some(x=>!/^\d{10}$/.test(x))||
+  new Set(raw).size!==raw.length)throw new Error("SEC import requires 1-12 distinct ten-digit CIKs");
+ return raw;
+}
