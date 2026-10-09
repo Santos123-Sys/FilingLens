@@ -11,6 +11,8 @@ import {
 import Dashboard from "@/components/Dashboard";
 import ValuationWorkspace from "@/components/ValuationWorkspace";
 import FilingChangeWorkspace from "@/components/FilingChangeWorkspace";
+import InvestmentDecisionWorkspace from "@/components/InvestmentDecisionWorkspace";
+import type {FilingDelta} from "@contracts/filing-change-intelligence";
 import AnalysisProgress, {
   type ExecutionStageKey,
   type ExecutionState,
@@ -177,6 +179,7 @@ export default function Home() {
   const [extracting, setExtracting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [analysis, setAnalysis] = useState<FilingAnalysis | null>(null);
+  const [filingDelta, setFilingDelta] = useState<FilingDelta | null>(null);
   const [failed, setFailed] = useState<string[]>([]);
   const [classification, setClassification] = useState<FilingClassification | null>(null);
   const [pendingText, setPendingText] = useState<string | null>(null);
@@ -314,6 +317,7 @@ export default function Home() {
     setError(null);
     setPhase("idle");
     setAnalysis(null);
+    setFilingDelta(null);
     setClassification(null);
     setPendingText(null);
     setExecution(initialExecution());
@@ -492,6 +496,7 @@ export default function Home() {
     setExtracting(true);
     setError(null);
     setAnalysis(null);
+    setFilingDelta(null);
     setFailed([]);
     setExecution(initialExecution());
     try {
@@ -551,6 +556,7 @@ export default function Home() {
     setFiles([]);
     if (inputRef.current) inputRef.current.value = "";
     setAnalysis(null);
+    setFilingDelta(null);
     setFailed([]);
     setPhase("idle");
     setExtracting(false);
@@ -679,7 +685,8 @@ export default function Home() {
             )}
             <Dashboard data={analysis} lang={lang} />
             <ValuationWorkspace analysis={analysis} lang={lang} onChange={handleValuationChange} />
-            <FilingChangeWorkspace analysis={analysis} lang={lang} />
+            <FilingChangeWorkspace analysis={analysis} lang={lang} onReport={setFilingDelta} />
+            <InvestmentDecisionWorkspace analysis={analysis} delta={filingDelta} lang={lang} />
           </div>
         )}
 
