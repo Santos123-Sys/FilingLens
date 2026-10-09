@@ -31,7 +31,7 @@ export async function pushOfficialToRailway(file:string,receiptFile:string,cik:s
  const receipt=JSON.parse(await readFile(receiptFile,"utf8")) as unknown;
  validateSecReceipt(cik,body,receipt);
  const oidcUrl=new URL(env("ACTIONS_ID_TOKEN_REQUEST_URL"));
- if(oidcUrl.protocol!=="https:"||oidcUrl.hostname!=="pipelines.actions.githubusercontent.com")
+ if(oidcUrl.protocol!=="https:"||!oidcUrl.hostname.endsWith(".actions.githubusercontent.com"))
   throw new Error("invalid_GitHub_actions_OIDC_token_endpoint");
  oidcUrl.searchParams.set("audience",SEC_IMPORT_AUDIENCE);
  const response=await request(oidcUrl.toString(),{
