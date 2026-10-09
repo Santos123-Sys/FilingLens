@@ -1,5 +1,5 @@
 /**
- * Offline operator task: import one CIK from SEC's full official companyfacts.zip.
+ * Offline operator task: import one or more CIKs from SEC's full official companyfacts.zip.
  * Fetch the ZIP through permitted SEC access, then run this CLI with a privileged
  * DATABASE_URL. Does NOT request or circumvent blocked SEC data APIs.
  *
@@ -22,7 +22,7 @@ async function main(){
  const value=(key:string)=>{const i=args.indexOf("--"+key);return i<0?undefined:args[i+1]};
  const archive=value("archive"),day=value("retrieved-day");
  const ciks=parseBulkCiks(value("cik"),value("ciks"));
- if(!cik||!/^\d{10}$/.test(cik)||!archive||!day||!/^20\d{2}-\d{2}-\d{2}$/.test(day))
+ if(!archive||!day||!/^20\d{2}-\d{2}-\d{2}$/.test(day))
   throw new Error("Required: --archive <official companyfacts.zip> (--cik CIK | --ciks CIK,CIK) --retrieved-day YYYY-MM-DD");
  const url=process.env.DATABASE_URL;
  if(!url)throw new Error("Privileged DATABASE_URL required (not the restricted app DB user)");
