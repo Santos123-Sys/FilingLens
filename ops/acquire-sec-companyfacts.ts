@@ -36,7 +36,7 @@ async function main(){
   throw new Error("CIK, output and operator-provided SEC_CONTACT_EMAIL environment variable are required");
  console.log(JSON.stringify(await acquireToDisk(parsed.cik,parsed.output,process.env.SEC_CONTACT_EMAIL)));
 }
-main().catch(e=>{
+if(process.argv[1]?.endsWith("acquire-sec-companyfacts.ts"))main().catch(e=>{
  console.error("OFFICIAL_SEC_DOWNLOAD_UNAVAILABLE",e instanceof Error?e.message:"unknown");
  process.exitCode=1;
 });

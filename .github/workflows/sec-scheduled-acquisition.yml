@@ -1,0 +1,61 @@
+name: Scheduled SEC EDGAR acquisition
+
+on:
+  schedule:
+    # Weekdays, outside the US market close and common top-of-hour cron spikes.
+    - cron: "17 04 * * 1-5"
+  workflow_dispatch:
+    inputs:
+      lookback_days:
+        description: "Override the watchlist lookback window (1-31 days)"
+        type: number
+        required: false
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: scheduled-sec-edgar-acquisition
+  cancel-in-progress: false
+
+jobs:
+  acquire:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: ops/requirements-sec-acquisition.txt
+      - name: Install pinned dependencies
+        run: |
+          npm ci
+          python -m pip install --requirement ops/requirements-sec-acquisition.txt
+      - name: Load SEC contact securely from Railway (signed GitHub OIDC)
+        run: npx --yes tsx ops/sec-contact-from-railway.ts
+      - name: Download recent primary filings into ticker/form/accession folders
+        env:
+          LOOKBACK_DAYS: ${{ inputs.lookback_days }}
+        run: |
+          args=(--watchlist config/sec-edgar-watchlist.json --output /tmp/sec-official)
+          if [[ -n "$LOOKBACK_DAYS" ]]; then args+=(--lookback-days "$LOOKBACK_DAYS"); fi
+          python ops/download-sec-edgar-filings.py "${args[@]}"
+      - name: Acquire CompanyFacts and deliver to Railway
+        env:
+          SEC_IMPORT_URL: https://filinglens-sec-oidc-importer-production.up.railway.app/v1/sec/import
+        run: npx --yes tsx ops/run-scheduled-sec-companyfacts.ts
+      - name: Upload short-lived public-source archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: sec-edgar-watchlist-${{ github.run_id }}
+          path: /tmp/sec-official/sec-edgar-filings/
+          if-no-files-found: error
+          retention-days: 3
+          compression-level: 6

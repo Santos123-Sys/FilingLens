@@ -1,6 +1,6 @@
 /**
  * Dedicated Railway Function entry: accepts only GitHub-issued OIDC tokens
- * from the maintainer-dispatched official SEC acquisition workflow on main.
+ * from the exact manual or scheduled SEC acquisition workflow on main.
  *
  * This is an isolated, privileged operational intake, never a public filing
  * upload or an SEC-network bypass. MySQL credentials must be supplied only
@@ -15,7 +15,8 @@ export const SEC_IMPORT_AUDIENCE="filinglens-sec-json-import-v1";
 const REPO="Santos123-Sys/FilingLens";
 const REPO_ID="1405671411";
 const REF="refs/heads/main";
-const WORKFLOW=`${REPO}/.github/workflows/sec-official-acquisition.yml@${REF}`;
+const MANUAL_WORKFLOW=`${REPO}/.github/workflows/sec-official-acquisition.yml@${REF}`;
+const SCHEDULED_WORKFLOW=`${REPO}/.github/workflows/sec-scheduled-acquisition.yml@${REF}`;
 const ISSUER="https://token.actions.githubusercontent.com";
 const JWKS_URL=`${ISSUER}/.well-known/jwks`;
 const MAX_JSON=12_000_000;
@@ -25,9 +26,6 @@ const canonicalSha=(s:Buffer|string)=>createHash("sha256").update(s).digest("hex
 type Claims={iss?:unknown;aud?:unknown;repository?:unknown;repository_id?:unknown;
  ref?:unknown;event_name?:unknown;workflow_ref?:unknown;exp?:unknown;
  iat?:unknown;nbf?:unknown;run_id?:unknown;};
-type Receipt={schema?:unknown;cik?:unknown;url?:unknown;retrievedAt?:unknown;
- retrievedDay?:unknown;origin?:unknown;bytes?:unknown;sourceFileSha256?:unknown;
- normalizedPayloadSha256?:unknown;issuer?:unknown;};
 type Envelope={cik?:unknown;receipt?:unknown;officialJsonBase64?:unknown;};
 const isRecord=(x:unknown):x is Record<string,unknown>=>!!x&&typeof x==="object"&&!Array.isArray(x);
 const parseJson=(raw:string):unknown=>JSON.parse(raw) as unknown;
@@ -35,9 +33,11 @@ const officialUrl=(cik:string)=>`https://data.sec.gov/api/xbrl/companyfacts/CIK$
 
 export function assertAuthorizedClaims(c:Claims,now=Date.now()){
  const epoch=Math.floor(now/1000);
+ const trustedWorkflowEvent=(c.workflow_ref===MANUAL_WORKFLOW&&c.event_name==="workflow_dispatch")||
+  (c.workflow_ref===SCHEDULED_WORKFLOW&&(c.event_name==="schedule"||c.event_name==="workflow_dispatch"));
  if(c.iss!==ISSUER||c.aud!==SEC_IMPORT_AUDIENCE||c.repository!==REPO||
   String(c.repository_id)!==REPO_ID||c.ref!==REF||
-  c.event_name!=="workflow_dispatch"||c.workflow_ref!==WORKFLOW||
+  !trustedWorkflowEvent||
   typeof c.exp!=="number"||!Number.isInteger(c.exp)||
   typeof c.iat!=="number"||!Number.isInteger(c.iat)||
   typeof c.nbf!=="number"||!Number.isInteger(c.nbf)||
