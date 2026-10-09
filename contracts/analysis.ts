@@ -147,7 +147,7 @@ export const marketSchema = z.object({
           primaryVerification: z.object({
             status: z.enum(["verified", "amount_mismatch", "identity_mismatch", "not_in_sec", "unavailable", "source_mismatch"]),
             provider: z.literal("sec_companyfacts"),
-            sourceMode: z.enum(["sec_api","operator_attested_sec_bulk"]).optional(),
+            sourceMode: z.enum(["sec_api","operator_attested_sec_bulk","operator_attested_sec_json"]).optional(),
             accountingBasis: z.enum(["us_gaap","ifrs"]).optional(),
             cik: z.string().optional(),
             filingAccession: z.string().optional(),
