@@ -9,7 +9,11 @@ const official={
 };
 const bytes=JSON.stringify(official);
 const url="https://data.sec.gov/api/xbrl/companyfacts/CIK0000320193.json";
-const reply=(body=bytes,headers={"Content-Type":"application/json"})=>new Response(body,{status:200,headers});
+const reply=(body=bytes,headers={"Content-Type":"application/json"})=>{
+ const res=new Response(body,{status:200,headers});
+ Object.defineProperty(res,"url",{value:url});
+ return res;
+};
 describe("SEC acquisition compliance and provenance",()=>{
  it("makes one exact-host GET and retains original raw bytes with source receipt",async()=>{
   const mock=vi.fn(async()=>reply()) as unknown as typeof fetch;
