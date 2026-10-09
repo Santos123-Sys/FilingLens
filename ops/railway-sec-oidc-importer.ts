@@ -120,28 +120,35 @@ export function apple2025Proof(facts:Record<string,unknown>,cik:string){
  const gaap=isRecord(facts.facts)?facts.facts["us-gaap"]:undefined;
  if(!isRecord(gaap))throw new Error("apple_sec_usgaap_missing");
  const tags=["RevenueFromContractWithCustomerExcludingAssessedTax","Revenues","SalesRevenueNet"];
- const candidates:number[]=[];
- for(const tag of tags){
-  const concept=gaap[tag];
-  const units=isRecord(concept) ?concept.units:undefined;
-  const arr=isRecord(units)?units.USD:undefined;
-  if(!Array.isArray(arr))continue;
-  for(const item of arr){
-   if(!isRecord(item)||item.accn!=="0000320193-25-000079"||
-    item.form!=="10-K"||item.fp!=="FY"||
-    item.start!=="2024-09-29"||item.end!=="2025-09-27")continue;
-   if(typeof item.val!=="number"||!Number.isFinite(item.val))
-    throw new Error("apple_sec_revenue_amount_invalid");
-   candidates.push(item.val);
+ const matches=(candidateCik:string,accession:string,amount:number)=>{
+  if(candidateCik!==cik)return false;
+  const candidates:number[]=[];
+  for(const tag of tags){
+   const concept=gaap[tag];
+   const units=isRecord(concept)?concept.units:undefined;
+   const arr=isRecord(units)?units.USD:undefined;
+   if(!Array.isArray(arr))continue;
+   for(const item of arr){
+    if(!isRecord(item)||item.accn!==accession||
+     item.form!=="10-K"||item.fp!=="FY"||
+     item.start!=="2024-09-29"||item.end!=="2025-09-27")continue;
+    if(typeof item.val!=="number"||!Number.isFinite(item.val))
+     throw new Error("apple_sec_revenue_amount_invalid");
+    candidates.push(item.val);
+   }
   }
- }
- if(!candidates.length||candidates.some(v=>v!==416_161_000_000))
+  return candidates.length>0&&candidates.every(v=>v===amount);
+ };
+ const expected="0000320193-25-000079",amount=416_161_000_000;
+ const negativeControls={
+  wrongAmountRejected:!matches(cik,expected,amount+1_000_000_000),
+  wrongAccessionRejected:!matches(cik,"0000320193-25-000078",amount),
+  wrongCikRejected:!matches("0000789019",expected,amount),
+ };
+ if(!matches(cik,expected,amount)||Object.values(negativeControls).some(v=>!v))
   throw new Error("apple_sec_fy2025_numeric_acceptance_failed");
- // No wrong issuer, accession or mutated amount is allowed into this selection.
- return {status:"verified" as const,filingAccession:"0000320193-25-000079",
-  periodEnd:"2025-09-27",revenueUsd:416_161_000_000,
-  wrongAmountRejected:!candidates.includes(500_000_000_000),
-  wrongAccessionRejected:true,wrongCikRejected:true};
+ return {status:"verified" as const,filingAccession:expected,
+  periodEnd:"2025-09-27",revenueUsd:amount,...negativeControls};
 }
 async function readLimited(req:Request){
  if(req.headers.get("content-type")?.split(";")[0]?.trim()!=="application/json")
