@@ -17,9 +17,9 @@ This does **not** change the SEC 403 response in Railway or claim an SEC exempti
 ## Activation
 1. Merge code after typecheck, tests and build.
 2. On Railway create a **dedicated Function** called `filinglens-sec-oidc-importer` from the exact contents of `ops/railway-sec-oidc-importer.ts`. This is a separate service, not an auth route in the main application.
-3. Configure `DATABASE_URL` via Railway service variables or a private reference to a least-privilege MySQL user for `sec_companyfacts_snapshots`. The Function should fail closed without it.
+3. Configure `DATABASE_URL` via Railway service variables or a private reference to a least-privilege MySQL user for `sec_companyfacts_snapshots`. The deployed Function references the existing FilingLens database connection rather than putting any credential in GitHub. `/health` now checks actual MySQL connectivity and the SEC cache table; readiness is not equivalent to a successful data import.
 4. Generate a TLS Railway service domain. For public ingestion it must be HTTPS and end `.up.railway.app`. The Function validates GitHub's OIDC identity independently; never publish a bare unauthenticated MySQL endpoint.
-5. In GitHub repository **Settings → Secrets and variables → Actions**, set secret `SEC_CONTACT_EMAIL` to an actual operator-owned contact, and set repository **variable** `SEC_IMPORT_URL` to `https://<railway-domain>/v1/sec/import`.
+5. The production Railway Function is provisioned at `https://filinglens-sec-oidc-importer-production.up.railway.app/v1/sec/import`; the manual GitHub workflow has this URL pinned. In GitHub repository **Settings → Secrets and variables → Actions**, set secret `SEC_CONTACT_EMAIL` to an actual operator-owned contact. No GitHub-side database credential or import token is needed; OIDC supplies a short-lived signed JWT.
 6. Manually trigger **Actions → Official SEC CompanyFacts acquisition (operator) → Run workflow** with `0000320193`. The workflow downloads the unmodified SEC file only if permitted, validates the accession and raw receipt, stores a three-day artifact, then obtains a GitHub OIDC JWT and uploads to Railway.
 7. The upload step requires `imported: true`, `readbackVerified: true`, matched canonical SHA and for Apple `referenceProof.status: verified`. HTTP 403 or a mismatched source fails the run; no fake production cache rows are written.
 
