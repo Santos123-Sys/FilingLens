@@ -26,6 +26,30 @@ The operator must supply the actual date of retrieval, not the example date. All
 6. If direct data.sec.gov retrieval is unavailable, the server accepts a stored import **only when** the archive source is the official URL, payload SHA-256 matches, issuer CIK agrees, and the retrieval date is within 14 days. The original accession, fiscal date, reporting basis and amount must **still** match the candidate peer number before it is eligible for calculation.
 7. The UI explicitly distinguishes `operator_attested_sec_bulk` from live `sec_api`. This is **operator-attested official-file provenance**, not an independent live SEC HTTP verification. If no archive was loaded, the numerical proof remains unavailable, not guessed.
 
+## Smaller authorized operator fallback: single-company SEC JSON
+
+**Recommended when the full nightly SEC ZIP is too large or operationally inconvenient.** The SEC officially exposes per-CIK CompanyFacts JSON at `https://data.sec.gov/api/xbrl/companyfacts/CIK##########.json`. Obtain the **actual unmodified** JSON from that exact SEC API using an authorized operator workstation that can legitimately access the endpoint. The operator must comply with SEC access guidance and provide a real identifying User-Agent. FilingLens neither fetches it from Railway nor tunnels around a 403; if access is denied, stop and contact `webmaster@sec.gov` with the public IP and denial details. Do not supply data from scraped mirrors or AI-generated examples.
+
+As an example **only after successfully obtaining Apple's official file through permitted access**:
+
+```bash
+# Run on an authorized workstation; replace with an operator-controlled contact address:
+curl --fail --location --retry 0 \
+  --user-agent "FilingLens Operator real-contact@your-organization.example" \
+  --output /secure/CIK0000320193.json \
+  "https://data.sec.gov/api/xbrl/companyfacts/CIK0000320193.json"
+
+# Run from the FilingLens repository with an authorized DB writer connection:
+DATABASE_URL="<privileged MySQL URL>" npx tsx ops/import-sec-companyfacts-json.ts \
+  --file /secure/CIK0000320193.json --cik 0000320193 --retrieved-day 2026-10-09
+```
+
+The `--retrieved-day` must be the **actual** date the source file was downloaded. The import validates the exact CIK, issuer name, supported SEC taxonomy, file size (100 B–12 MB), and 14-day retrieval window; preserves both the original JSON-file SHA-256 and normalized payload SHA-256; and commits only the normalized JSON to the existing `sec_companyfacts_snapshots` table. For this file-only path the existing database field `archive_sha256` stores the **original JSON-file checksum**, not a ZIP archive checksum. There is no new database table or external runtime fetch.
+
+At research time the existing bounded crosscheck uses exactly the same CIK, accession, fiscal period, GAAP/IFRS, currency and amount gates as for the original ZIP. It labels accepted matches `operator_attested_sec_json` rather than `sec_api` or `operator_attested_sec_bulk`. The JSON origin is attested by the operator; a checksum proves stored-data consistency but **does not independently establish SEC authenticity**. The UI discloses this limitation.
+
+Run `ops/verify-sec-acceptance.ts` (see below) after the import, using facts from an actual 10-K/20-F and never synthetic amounts. A success in CI or this import alone does not establish a completed real-data valuation comparison.
+
 ## Read-only real SEC numerical acceptance after import
 
 After importing an authorized official archive, run the read-only acceptance command on a host with Node, tsx and a restricted MySQL `DATABASE_URL`. Supply the peer's actual filed SEC URL, as-filed annual amount and precise fiscal period; the values here illustrate the command's inputs and must be checked against the relevant filing before execution:
