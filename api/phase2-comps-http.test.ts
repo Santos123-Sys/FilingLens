@@ -12,6 +12,8 @@ const analysis={
 const snapshots=()=>[7,8,9].map((multiple,i)=>({
  name:["Alpha Inc.","Beta Inc.","Gamma Inc."][i],currency:"USD",basis:"us_gaap",
  consolidated:true,quotation_date:today(),financial_period_end:"2025-12-31",
+ financial_period_start:"2025-01-01",financial_period_kind:"FY",
+ minority_interest_millions:0,preferred_equity_millions:0,
  debt_as_of:"2025-12-31",market_cap_millions:multiple*100-100,
  net_debt_millions:100,ebitda_millions:100,revenue_millions:400,
  net_income_millions:40,
@@ -38,7 +40,8 @@ describe("Phase 2 source-attested trading comps HTTP gate",()=>{
   const blocked=await post("/api/valuation/calculate",{analysis,method:"comps",assumptions:rows});
   expect(blocked.status).toBe(409);
   expect(blocked.data.pending).toHaveLength(rows.length);
-  const approved=rows.map((row:any)=>({...row,status:row.proposed_value===null?"rejected":"accepted"}));
+  const approved=rows.map((row:any)=>({...row,status:row.proposed_value===null?"rejected":"accepted",
+   ...(row.id==="comps.equity_adjustment"?{status:"accepted",final_value:0}:{})}));
   const done=await post("/api/valuation/calculate",{analysis,method:"comps",assumptions:approved});
   expect(done.status).toBe(200);
   expect(done.data.result.status).toBe("complete");
@@ -56,6 +59,9 @@ describe("Phase 2 source-attested trading comps HTTP gate",()=>{
   const response=await post("/api/valuation/propose",{analysis,method:"comps",
    tradingSnapshots:stale,analystAttested:true});
   expect(response.status).toBe(200);
-  expect(response.data.proposal.assumptions.filter((r:any)=>r.tradingSnapshot)).toHaveLength(0);
+  expect(response.data.proposal.assumptions.filter((r:any)=>r.tradingSnapshot)).toHaveLength(2);
+  const rows=response.data.proposal.assumptions.map((r:{proposed_value:unknown;status:string})=>({...r,status:r.proposed_value===null?"rejected":"accepted"}));
+  const blocked=await post("/api/valuation/calculate",{analysis,method:"comps",assumptions:rows});
+  expect(blocked.status).not.toBe(200);
  });
 });

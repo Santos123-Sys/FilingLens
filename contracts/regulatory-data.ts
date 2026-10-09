@@ -1,4 +1,4 @@
-import type { Jurisdiction } from "./analysis";
+import type { FinancialsResult, Jurisdiction } from "./analysis";
 
 export type RegulatoryDataMetric = {
   key: string;
@@ -31,6 +31,7 @@ export type RegulatoryDataSnapshot = {
   sources: RegulatoryDataSource[];
   warnings: string[];
   raw: Record<string, unknown>;
+  issuerHistory?: NonNullable<FinancialsResult["financials"]["annualHistory"]>;
   coverageYears?: string[];
   historyRequested?: number;
   resolvedIdentifier?: string | null;

@@ -132,6 +132,7 @@ function stageStatus(diagnostic: ModuleDiagnostic | undefined): PipelineStatus {
 
 function regulatoryStage(snapshot: RegulatoryDataSnapshot | undefined, lang: PipelineLanguage): Partial<PipelineStageState> {
   if (!snapshot) return { status: "partial", detail: lang === "pt" ? "Validação regulatória estruturada indisponível; análise do documento preservada." : "Structured regulatory cross-check unavailable; filing analysis preserved." };
+  if (snapshot.issuerHistory) return { status: "partial", detail: lang === "pt" ? `Histórico do emissor: ${snapshot.issuerHistory.years.length} anos (${snapshot.issuerHistory.status}); a fonte SEC continua indisponível.` : `Issuer history: ${snapshot.issuerHistory.years.length} annual slots (${snapshot.issuerHistory.status}); SEC status remains ${snapshot.status}.` };
   if (snapshot.status === "complete") return { status: "complete", detail: lang === "pt" ? `Dados estruturados validados via ${snapshot.provider}.` : `Structured regulatory data loaded from ${snapshot.provider}.` };
   if (snapshot.status === "identifier_missing") return { status: "skipped", detail: lang === "pt" ? "Identificador regulatório não encontrado; análise do documento continua." : "Regulatory identifier was not found; filing analysis continues." };
   return { status: "partial", detail: snapshot.warnings?.[0] ?? (lang === "pt" ? "Fonte regulatória parcial ou indisponível." : "Regulatory source was partial or unavailable.") };
@@ -174,6 +175,7 @@ export async function executeAnalysisPipeline(input: {
         jurisdiction: market,
         filingType: metadata.filingType || classification.filingType,
         reportingPeriod: metadata.reportingPeriod,
+        filedAt: metadata.filedAt,
         cik: metadata.cik,
         cnpj: metadata.cnpj,
         historyYears: 5,
@@ -227,6 +229,7 @@ export async function executeAnalysisPipeline(input: {
           jurisdiction: market,
           filingType: metadata.filingType || classification.filingType,
           reportingPeriod: metadata.reportingPeriod,
+        filedAt: metadata.filedAt,
           cik: metadata.cik,
           cnpj: metadata.cnpj,
           companyName: profileResult.company.name,
@@ -310,7 +313,7 @@ export async function executeAnalysisPipeline(input: {
   // A Formulário de Referência may not contain full financial statements, but
   // official CVM DFP history can make the Financials module fully usable.
   const annualYears = enrichedFinancials.annualHistory?.years ?? [];
-  if (annualYears.length >= 5) {
+  if (annualYears.length >= 5 && enrichedFinancials.annualHistory?.status === "complete") {
     diagnostics.financials = {
       status: "complete",
       confidence: 0.93,
@@ -322,8 +325,8 @@ export async function executeAnalysisPipeline(input: {
     onStage("financials", {
       status: "complete",
       detail: lang === "pt"
-        ? "Cinco anos de histórico financeiro oficial foram recuperados da CVM/SEC."
-        : "Five years of official financial history were recovered from CVM/SEC.",
+        ? `Cinco períodos anuais recuperados de ${enrichedFinancials.annualHistory?.provider}.`
+        : `Five annual financial periods recovered from ${enrichedFinancials.annualHistory?.provider}.`,
     });
   } else if (annualYears.length >= 2 && diagnostics.financials?.status === "not_applicable") {
     diagnostics.financials = {

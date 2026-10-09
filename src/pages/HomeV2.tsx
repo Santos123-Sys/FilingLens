@@ -334,7 +334,7 @@ export default function HomeV2() {
             {historyStatus==="failed" && <span className="text-rose-300">{lang==="pt"?"Não foi possível salvar; análise preservada.":"Save failed; analysis is preserved."}</span>}
           </div>
           <DashboardV2 data={analysis} lang={lang} />
-          <div className="mt-5"><ValuationWorkspace analysis={analysis} lang={lang} onChange={handleValuationChange} /></div>
+          <div className="mt-5"><ValuationWorkspace key={`${analysis.company.name}|${analysis.company.periodEnd}|${analysis.company.filedAt ?? ""}|${JSON.stringify(analysis.financials)}`} analysis={analysis} lang={lang} onChange={handleValuationChange} /></div>
         </div>}
 
         <PrivateHistoryPanel lang={lang} refreshKey={historyRefresh} />

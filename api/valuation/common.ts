@@ -1,4 +1,5 @@
 import type { FilingAnalysis, ValuationAssumption, ValuationAssumptionValue, ValuationMethod } from "../../contracts/analysis";
+import { annualBasis } from "./basis";
 import { valuationAssumptionSchema } from "../../contracts/analysis";
 
 export class ValuationInputError extends Error {
@@ -19,6 +20,7 @@ export function makeAssumption(method: ValuationMethod, id: string, category: st
 
 export function validatedRows(method: ValuationMethod, assumptions: ValuationAssumption[]) {
   const parsed = assumptions.map(row => valuationAssumptionSchema.parse(row));
+  if (new Set(parsed.map(row => row.id)).size !== parsed.length) throw new ValuationInputError("duplicate_assumption_ids");
   const wrong = parsed.filter(row => row.method !== method);
   if (wrong.length) throw new ValuationInputError("assumption_method_mismatch");
   const pending = parsed.filter(row => row.status === "proposed").map(row => row.id);
@@ -27,13 +29,13 @@ export function validatedRows(method: ValuationMethod, assumptions: ValuationAss
 }
 
 export function resolved(row: ValuationAssumption): ValuationAssumptionValue {
-  return row.status === "edited" ? row.final_value ?? row.proposed_value : row.proposed_value;
+  return row.final_value !== undefined ? row.final_value : row.proposed_value;
 }
 export function num(rows: Map<string, ValuationAssumption>, id: string): number {
   const row = rows.get(id);
   if (!row || row.status === "rejected") throw new ValuationInputError(`missing_${id}`);
   const value = resolved(row);
-  const n = typeof value === "number" ? value : typeof value === "string" ? Number(value) : NaN;
+  const n = typeof value === "number" ? value : typeof value === "string" && value.trim() ? Number(value) : NaN;
   if (!Number.isFinite(n)) throw new ValuationInputError(`invalid_${id}`);
   return n;
 }
@@ -45,43 +47,44 @@ export function text(rows: Map<string, ValuationAssumption>, id: string): string
   return value;
 }
 
+export function range(value: number, name: string, min: number, max: number) {
+  if (!Number.isFinite(value) || value < min || value > max) throw new ValuationInputError(`out_of_range_${name}`);
+  return value;
+}
+const annual = (a: FilingAnalysis, key: string) => annualBasis(a)?.value(key) ?? null;
 export function netDebt(a: FilingAnalysis) {
-  const debt = latest(a.financials.totalDebt), cash = latest(a.financials.cash);
+  const debt = annual(a, "totalDebt"), cash = annual(a, "cash");
   return debt === null || cash === null ? null : debt - cash;
 }
 export function shares(a: FilingAnalysis) {
-  const ni = latest(a.financials.netIncome), eps = latest(a.financials.eps);
+  const ni = annual(a, "netIncome"), eps = annual(a, "eps");
   if (ni === null || eps === null || Math.abs(eps) < 1e-9) return null;
   const out = ni / eps;
   return out > 0 && Number.isFinite(out) ? out : null;
 }
-export function revenueGrowth(a: FilingAnalysis) {
-  const c = latest(a.financials.revenue), p = prior(a.financials.revenue);
-  return c === null || p === null || Math.abs(p) < 1e-9 ? null : round(clamp((c / p - 1) * 100, -50, 50));
-}
+export function revenueGrowth(a: FilingAnalysis) { return annualBasis(a)?.growth ?? null; }
 export function ebitMargin(a: FilingAnalysis) {
-  const rev = latest(a.financials.revenue), ebit = latest(a.financials.ebit);
-  if (rev !== null && ebit !== null && Math.abs(rev) > 1e-9) return round(ebit / rev * 100);
-  const m = latest(a.financials.operatingMargin);
-  return m === null ? null : round(Math.abs(m) <= 1.5 ? m * 100 : m);
+  const revenue = annual(a, "revenue"), ebit = annual(a, "ebit");
+  return revenue !== null && revenue > 0 && ebit !== null ? round(ebit / revenue * 100) : null;
 }
 export function taxRate(a: FilingAnalysis) {
-  const tax = latest(a.financials.incomeTaxExpense), pretax = latest(a.financials.incomeBeforeTax);
-  return tax === null || pretax === null || Math.abs(pretax) < 1e-9 ? null : round(clamp(Math.abs(tax / pretax) * 100, 0, 60));
+  const tax = annual(a, "incomeTaxExpense"), pretax = annual(a, "incomeBeforeTax");
+  return tax !== null && pretax !== null && pretax > 0 && tax >= 0 ? round(tax / pretax * 100) : null;
 }
 export function capexPct(a: FilingAnalysis) {
-  const rev = latest(a.financials.revenue), capex = latest(a.financials.capex);
-  return rev === null || capex === null || Math.abs(rev) < 1e-9 ? null : round(clamp(Math.abs(capex / rev) * 100, 0, 60));
+  const rev = annual(a, "revenue"), capex = annual(a, "capex");
+  return rev !== null && rev > 0 && capex !== null ? round(Math.abs(capex) / rev * 100) : null;
 }
 export function daPct(a: FilingAnalysis) {
-  const rev = latest(a.financials.revenue), ebitda = latest(a.financials.ebitda) ?? latest(a.financials.adjustedEbitda), ebit = latest(a.financials.ebit);
-  return rev === null || ebitda === null || ebit === null || Math.abs(rev) < 1e-9 ? null : round(clamp((ebitda - ebit) / rev * 100, 0, 40));
+  const rev = annual(a, "revenue"), ebitda = annual(a, "ebitda"), ebit = annual(a, "ebit");
+  // Adjusted EBITDA is not a safe D&A proxy. Keep that missing rather than blend GAAP and adjustments.
+  return rev !== null && rev > 0 && ebitda !== null && ebit !== null && ebitda >= ebit ? round((ebitda - ebit) / rev * 100) : null;
 }
 export function nwcPct(a: FilingAnalysis) {
-  const rev = latest(a.financials.revenue), ar = latest(a.financials.accountsReceivable), inv = latest(a.financials.inventory), ap = latest(a.financials.accountsPayable);
-  return rev === null || ar === null || inv === null || ap === null || Math.abs(rev) < 1e-9 ? null : round(clamp((ar + inv - ap) / rev * 100, -50, 100));
+  const rev = annual(a, "revenue"), ar = annual(a, "accountsReceivable"), inv = annual(a, "inventory"), ap = annual(a, "accountsPayable");
+  return rev !== null && rev > 0 && ar !== null && inv !== null && ap !== null ? round((ar + inv - ap) / rev * 100) : null;
 }
 export function costDebt(a: FilingAnalysis) {
-  const debt = latest(a.financials.totalDebt), interest = latest(a.financials.interestExpense);
-  return debt === null || interest === null || Math.abs(debt) < 1e-9 ? null : round(clamp(Math.abs(interest / debt) * 100, 0, 40));
+  const debt = annual(a, "totalDebt"), interest = annual(a, "interestExpense");
+  return debt !== null && debt > 0 && interest !== null && interest >= 0 ? round(interest / debt * 100) : debt === 0 ? 0 : null;
 }

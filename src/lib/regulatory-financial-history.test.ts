@@ -39,7 +39,8 @@ describe("regulatory annual history", () => {
     expect(history?.years).toEqual(["FY2021", "FY2022", "FY2023", "FY2024", "FY2025"]);
     expect(history?.revenue).toEqual([100, 110, 120, 130, 140]);
     expect(history?.unit).toBe("USD millions");
-    expect(history?.status).toBe("complete");
+    expect(history?.status).toBe("partial"); // Five revenue years do not establish full statement coverage.
+    expect(history?.netIncome).toEqual([null, null, null, null, null]);
     expect(history?.sources[0]?.publisher).toBe("SEC EDGAR");
   });
 });

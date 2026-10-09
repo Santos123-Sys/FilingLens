@@ -160,7 +160,8 @@ export function inspectSecTransformedFixture(transformedInput: unknown, keyFinan
    const filed = date(r.filed, "key_metric_filed_invalid");
    const value = numeric(r.val, "key_metric_value_invalid");
    const key = rowKey(concept, unit, fy, end, filed);
-   if (!sampleValues.has(key) || sampleValues.get(key) !== value || reconciled.has(key))
+   if (!sampleValues.has(key)) return fail("unmatched_sample_observations");
+   if (sampleValues.get(key) !== value || reconciled.has(key))
     return fail("key_sample_numeric_mismatch");
    reconciled.add(key);
    if (fy < Number(end.slice(0, 4)) || fy > Number(end.slice(0, 4)) + 2 ||

@@ -41,12 +41,12 @@ const PHASES: Phase[] = [
     id: "intake",
     en: "Read & classify",
     pt: "Ler e classificar",
-    enDetail: "Identify regulator, issuer and retrieve authoritative five-year history",
-    ptDetail: "Identifica regulador e emissor e recupera cinco anos de histórico oficial",
+    enDetail: "Identify issuer and retrieve available annual source history",
+    ptDetail: "Identifica emissor e recupera histórico anual disponível",
     icon: FileSearch,
     stages: [
       { key: "metadata", en: "Regulatory metadata", pt: "Metadados regulatórios" },
-      { key: "regulatoryData", en: "SEC/CVM five-year history", pt: "Histórico SEC/CVM de cinco anos" },
+      { key: "regulatoryData", en: "Annual source history", pt: "Histórico anual com fontes" },
     ],
   },
   {
