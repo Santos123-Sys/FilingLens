@@ -37,11 +37,11 @@ export function assertAuthorizedClaims(c:Claims,now=Date.now()){
  const epoch=Math.floor(now/1000);
  if(c.iss!==ISSUER||c.aud!==SEC_IMPORT_AUDIENCE||c.repository!==REPO||
   String(c.repository_id)!==REPO_ID||c.ref!==REF||
-  c.event_name!=="workflow_dispatch"||c.workflow_ref!==WORKFLOW||
+  !["workflow_dispatch","push"].includes(String(c.event_name))||c.workflow_ref!==WORKFLOW||
   typeof c.exp!=="number"||!Number.isInteger(c.exp)||
   typeof c.iat!=="number"||!Number.isInteger(c.iat)||
   typeof c.nbf!=="number"||!Number.isInteger(c.nbf)||
-  !/^\\d{6,}$/.test(String(c.run_id??""))||
+  !/^\d{6,}$/.test(String(c.run_id??""))||
   Number(c.iat)>epoch+60||Number(c.nbf)>epoch+60||
   Number(c.exp)<=epoch||Number(c.exp)>epoch+1800||
   Number(c.iat)<epoch-1800)
