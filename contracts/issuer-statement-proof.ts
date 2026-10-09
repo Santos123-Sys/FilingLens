@@ -42,20 +42,24 @@ export function issuerApple2025Point(peerName:string,point:Point){
   Boolean(metricOf(point.label));
 }
 function annualRowAmount(text:string,label:string):number|null{
- // Restrict extraction to the first set of operations and its four columns:
- // Q4 current, Q4 comparative, FY current, FY comparative (all USD millions).
+ // pdftotext and pdf-parse differ: adjacent PDF columns can become
+ // "102,46694,930416,161391,035" with *no* whitespace.
+ // Extract groups of comma-formatted monetary amounts from the row only.
  const head=text.slice(0,Math.min(text.length,24_000));
- const starts=[...head.matchAll(new RegExp("(?:^|\\n)\\s*"+label+
-  "(?:\\s*\\(1\\))?\\s*[:\\$]?\\s*","gi"))];
- const amounts=new Set<number>();
- for(const m of starts){
-  const segment=head.slice((m.index??0)+m[0].length).split(/\r?\n/)[0].trim();
-  const numbers=[...segment.matchAll(/\(?-?\d{1,3}(?:,\d{3})+(?:\.\d+)?\)?|\(?-?\d+(?:\.\d+)?\)?/g)];
-  if(numbers.length!==4)continue;
-  const value=numeric(numbers[2][0].replace(/[()]/g,""));
-  if(Number.isFinite(value))amounts.add(value);
+ const values=new Set<number>();
+ const pattern=new RegExp(label.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"),"gi");
+ let match:RegExpExecArray|null;
+ while((match=pattern.exec(head))!==null){
+  const after=head.slice(match.index+match[0].length,match.index+match[0].length+260);
+  // Remove a footnote (1) and/or currency symbol following the label.
+  const content=after.replace(/^\\s*(?:\\(\\s*1\\s*\\))?\\s*\\$?\\s*/,"");
+  const firstLine=content.split(/\\r?\\n(?=\\s*[A-Za-z])/)[0].slice(0,180);
+  const cells=[...firstLine.matchAll(/\\(?-?\\d{1,3}(?:,\\d{3})+(?:\\.\\d+)?\\)?/g)];
+  if(cells.length!==4)continue;
+  const candidate=numeric(cells[2][0].replace(/[()]/g,""));
+  if(Number.isFinite(candidate))values.add(candidate);
  }
- return amounts.size===1?[...amounts][0]:null;
+ return values.size===1?[...values][0]:null;
 }
 export function verifyIssuerApple2025Point(peerName:string,point:Point,
  doc:IssuerDisclosureDocument|null):IssuerStatementProof{
