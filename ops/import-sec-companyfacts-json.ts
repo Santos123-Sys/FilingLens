@@ -48,7 +48,7 @@ async function main() {
  }
  if (values.format === "transformed") {
   if (!fixtureOnly || !values.file || !values["key-financials"] ||
-      !/^\d{10}$/.test(values.cik ?? "") || values["retrieved-day"])
+      !/^\d{10}$/.test(values.cik ?? "") || values["retrieved-day"] || values.receipt)
    throw new Error("transformed input requires --fixture-only, --file, --key-financials and --cik; retrieval day is forbidden");
   const [transformed, financials] = await Promise.all([
    boundedFile(values.file, 100, 1_000_000),
