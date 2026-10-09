@@ -17,10 +17,11 @@ export async function fetchAppleIssuerDisclosure(
  try{
   const url=APPLE_2025_DISCLOSURE.url;
   const response=await requester(url,{method:"GET",redirect:"error",
-   headers:{"Accept":"application/pdf"},signal:AbortSignal.timeout(12_000)});
-  if(!response.ok||response.url!==url||
-   !response.headers.get("content-type")?.toLowerCase().includes("pdf"))
-   throw new Error("issuer_pdf_request_unavailable");
+   headers:{"Accept":"application/pdf"},signal:AbortSignal.timeout(25_000)});
+  if(!response.ok)throw new Error("issuer_pdf_http_"+response.status);
+  if(response.url!==url)throw new Error("issuer_pdf_origin_mismatch");
+  if(!response.headers.get("content-type")?.toLowerCase().includes("pdf"))
+   throw new Error("issuer_pdf_content_type_mismatch");
   if(Number(response.headers.get("content-length")??0)>MAX_PDF||!response.body)
    throw new Error("issuer_pdf_length_invalid");
   const reader=response.body.getReader();
@@ -42,7 +43,10 @@ export async function fetchAppleIssuerDisclosure(
    retrievedAt:new Date().toISOString()};
   cached={value,expiresAt:Date.now()+86400000};
   return value;
- }catch{
+ }catch(error){
+  const tag=error instanceof Error?error.name+":"+error.message.slice(0,160):"unknown";
+  // Only fixed public URL and status/error class are logged. No private data.
+  console.warn("[issuer-pdf-proof] failed closed:",tag);
   unavailableUntil=Date.now()+3600000;
   return null;
  }
