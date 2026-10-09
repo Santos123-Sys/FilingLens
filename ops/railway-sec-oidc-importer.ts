@@ -171,8 +171,15 @@ const json=(data:unknown,status=200)=>new Response(JSON.stringify(data),{status,
   "X-Content-Type-Options":"nosniff"}});
 async function fetchHandler(req:Request){
  const url=new URL(req.url);
- if(req.method==="GET"&&url.pathname==="/health")
-  return json({status:"ready",configured:Boolean(process.env.DATABASE_URL)});
+ if(req.method==="GET"&&url.pathname==="/health"){
+  if(!process.env.DATABASE_URL)return json({status:"unconfigured"},503);
+  try{
+   const db=await mysql.createConnection({uri:process.env.DATABASE_URL,connectTimeout:5000});
+   try{await db.query("SELECT cik FROM sec_companyfacts_snapshots LIMIT 1");}
+   finally{await db.end();}
+   return json({status:"ready",database:"reachable"});
+  }catch{return json({status:"database_unavailable"},503);}
+ }
  if(req.method!=="POST"||url.pathname!=="/v1/sec/import")
   return json({error:"not_found"},404);
  const auth=req.headers.get("authorization")??"";
