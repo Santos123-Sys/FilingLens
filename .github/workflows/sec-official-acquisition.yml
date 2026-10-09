@@ -29,19 +29,18 @@ jobs:
         with:
           node-version: '24'
           cache: npm
-      - name: Validate operator configuration
+      - name: Validate issuer identity
         env:
-          SEC_CONTACT_EMAIL: ${{ secrets.SEC_CONTACT_EMAIL }}
           CIK: ${{ inputs.cik }}
         shell: bash
         run: |
-          test -n "$SEC_CONTACT_EMAIL" || { echo "::error::Configure SEC_CONTACT_EMAIL repository secret with an authentic operator contact email"; exit 1; }
           [[ "$CIK" =~ ^[0-9]{10}$ ]] || { echo "::error::Supply a ten-digit CIK"; exit 1; }
       - name: Install pinned dependencies
         run: npm ci
+      - name: Load SEC contact securely from Railway (signed GitHub OIDC)
+        run: npx --yes tsx ops/sec-contact-from-railway.ts
       - name: Fetch unmodified official JSON with receipt
         env:
-          SEC_CONTACT_EMAIL: ${{ secrets.SEC_CONTACT_EMAIL }}
           CIK: ${{ inputs.cik }}
         run: |
           mkdir -p /tmp/sec-official

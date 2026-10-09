@@ -180,6 +180,19 @@ async function fetchHandler(req:Request){
    return json({status:"ready",database:"reachable"});
   }catch{return json({status:"database_unavailable"},503);}
  }
+ // Contact address is stored privately in Railway, not in GitHub repository
+ // source or Actions configuration. Only the signed maintainer-dispatched
+ // workflow on main can request it.
+ if(req.method==="GET"&&url.pathname==="/v1/sec/contact"){
+  const authorization=req.headers.get("authorization")??"";
+  if(!authorization.startsWith("Bearer "))return json({error:"unauthorized"},401);
+  try{await verifyGitHubOidc(authorization.slice(7));}
+  catch{return json({error:"unauthorized"},401);}
+  const contact=process.env.SEC_CONTACT_EMAIL;
+  if(!contact||!/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(contact)||contact.length>160)
+   return json({error:"contact_unconfigured"},503);
+  return json({email:contact});
+ }
  if(req.method!=="POST"||url.pathname!=="/v1/sec/import")
   return json({error:"not_found"},404);
  const auth=req.headers.get("authorization")??"";
