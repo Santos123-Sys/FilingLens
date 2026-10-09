@@ -1,0 +1,100 @@
+{
+  "baselineCommit": "d2671a69939076bc353176fd7b2e62338c3f89cd",
+  "measurement": "exact-string excerpt coverage and selector CPU latency, not ranked retrieval or model answer accuracy",
+  "samplesPerCase": 100,
+  "publicSource": "api/fixtures/apple-fy2025-issuer-statement.json",
+  "before": [
+    {
+      "id": "public-apple-issuer-statement",
+      "expected": 5,
+      "found": 5,
+      "excerptChars": 17389,
+      "samples": 100,
+      "p50Ms": 0.03451100000000906,
+      "p95Ms": 0.12243100000000595
+    },
+    {
+      "id": "sec-toc-body",
+      "expected": 2,
+      "found": 0,
+      "excerptChars": 20030,
+      "samples": 100,
+      "p50Ms": 0.5955900000000156,
+      "p95Ms": 0.8572470000000294
+    },
+    {
+      "id": "cvm-toc-body",
+      "expected": 1,
+      "found": 0,
+      "excerptChars": 12028,
+      "samples": 100,
+      "p50Ms": 1.8987349999999878,
+      "p95Ms": 2.33629099999996
+    },
+    {
+      "id": "sec-separated",
+      "expected": 2,
+      "found": 2,
+      "excerptChars": 86530,
+      "samples": 100,
+      "p50Ms": 1.082858999999985,
+      "p95Ms": 1.5548469999999952
+    },
+    {
+      "id": "missing-evidence",
+      "expected": 0,
+      "found": 0,
+      "excerptChars": 12028,
+      "samples": 100,
+      "p50Ms": 0.4239559999999756,
+      "p95Ms": 0.7492170000000442
+    }
+  ],
+  "after": [
+    {
+      "id": "public-apple-issuer-statement",
+      "expected": 5,
+      "found": 5,
+      "excerptChars": 9477,
+      "samples": 100,
+      "p50Ms": 0.020549999999957436,
+      "p95Ms": 0.05233699999996588
+    },
+    {
+      "id": "sec-toc-body",
+      "expected": 2,
+      "found": 2,
+      "excerptChars": 86561,
+      "samples": 100,
+      "p50Ms": 1.2198319999999967,
+      "p95Ms": 1.9332050000000436
+    },
+    {
+      "id": "cvm-toc-body",
+      "expected": 1,
+      "found": 1,
+      "excerptChars": 105000,
+      "samples": 100,
+      "p50Ms": 3.2022699999999986,
+      "p95Ms": 4.3572450000000345
+    },
+    {
+      "id": "sec-separated",
+      "expected": 2,
+      "found": 2,
+      "excerptChars": 86561,
+      "samples": 100,
+      "p50Ms": 1.5467240000000402,
+      "p95Ms": 2.5404919999998583
+    },
+    {
+      "id": "missing-evidence",
+      "expected": 0,
+      "found": 0,
+      "excerptChars": 28118,
+      "samples": 100,
+      "p50Ms": 0.02539799999999559,
+      "p95Ms": 0.05368999999996049
+    }
+  ]
+}
