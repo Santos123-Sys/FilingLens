@@ -96,4 +96,22 @@ describe("peer financial benchmark",()=>{
   expect(buildPeerFinancialBenchmarks(d).comparisons).toHaveLength(0);
  });
 
+ it("allows issuer-published primary figures while labeling them NOT SEC verified",()=>{
+  const d=fixture([point("Revenue","USD 416161 millions","FY2025","consolidated US GAAP; period end 2025-09-27")]);
+  const row=d.market.competitiveAnalysis!.peerProfiles[0].dataPoints![0];
+  row.primaryVerification={status:"unavailable",provider:"sec_companyfacts"};
+  row.issuerVerification={status:"verified",provider:"issuer_published_statement",
+   sourceMode:"issuer_published_unaudited_pdf",issuer:"Peer A",periodEnd:"2025-09-27",
+   currency:"USD",pdfSha256:"a".repeat(64),page:1,
+   proofUrl:"https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf"};
+  const report=buildPeerFinancialBenchmarks(d);
+  expect(report.facts).toHaveLength(1);
+  expect(report.facts[0]).toMatchObject({sourceTier:"issuer_published_statement",
+   millions:416161,source:{publisher:"Peer A"}});
+  row.primaryVerification={status:"amount_mismatch",provider:"sec_companyfacts"};
+  expect(buildPeerFinancialBenchmarks(d).facts).toHaveLength(0);
+  row.primaryVerification={status:"unavailable",provider:"sec_companyfacts"};
+  row.issuerVerification.proofUrl="https://evil.test/fake";
+  expect(buildPeerFinancialBenchmarks(d).facts).toHaveLength(0);
+ });
 });
