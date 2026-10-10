@@ -7,10 +7,12 @@ import type {SecCompanyFacts} from "../contracts/sec-peer-proof";
  * The SEC origin is attested by the operator, not independently fetched by the
  * Railway service. No untrusted URL is ever fetched by this code. */
 export const SEC_BULK_URL="https://www.sec.gov/Archives/edgar/daily-index/xbrl/companyfacts.zip";
-const maxAge=14;
+const defaultMaxAge=14;
 type CachedFacts={facts:SecCompanyFacts;retrievedDay:string;sha256:string;source:"operator_attested_sec_bulk"|"operator_attested_sec_json"};
-export async function cachedSecCompanyFacts(cik:string,dbUrl=process.env.DATABASE_URL):Promise<CachedFacts|null>{
+export async function cachedSecCompanyFacts(cik:string,dbUrl=process.env.DATABASE_URL,options:{maxAgeDays?:number}={}):Promise<CachedFacts|null>{
  if(!/^\d{10}$/.test(cik)||!dbUrl)return null;
+ const maxAge=options.maxAgeDays??defaultMaxAge;
+ if(!Number.isInteger(maxAge)||maxAge<1||maxAge>730)return null;
  const pool=mysql.createPool({uri:dbUrl,connectionLimit:1,connectTimeout:3000});
  try{
   const [rows]=await pool.query(

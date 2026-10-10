@@ -5,9 +5,11 @@ import app, { registerRegulatoryArchiver } from "./boot";
 import { persistPublicRegulatorySnapshot, readPublicRegulatorySnapshots } from "./regulatory-snapshot-store";
 import { registerHistoryApi } from "./history-api";
 import { registerPrivateHistory } from "./private-history";
+import { registerPublicFinanceApi } from "./public-finance-api";
 
 registerHistoryApi(app);
 registerPrivateHistory(app);
+registerPublicFinanceApi(app);
 registerRegulatoryArchiver(persistPublicRegulatorySnapshot);
 app.get("/api/regulatory-history/:jurisdiction/:registryId",async c=>{
   const jurisdiction=c.req.param("jurisdiction");
