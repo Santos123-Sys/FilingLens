@@ -49,6 +49,10 @@ npm run build
 
 The application includes a Hono API for PDF extraction, deterministic jurisdiction classification, the metadata pre-stage and the six analysis agents. Each expensive model/tool operation is limited to one HTTP request; transient retries are started by the browser as new requests. Citation-backed peer research runs through the separate optional `/api/market-research` stage. See `.env.example` for required server configuration before running the full filing-analysis flow.
 
+## Shared portfolio intelligence
+
+The Railway service publishes an authenticated, read-only `filinglens-public-finance-v1` contract for Global Portfolio Intelligence and Portfolio Risk & Return. It contains canonical SEC/CVM issuer identity, annual public-regulator facts, deterministic revenue-growth screening, SHA-256 integrity, and source provenance. Private uploads and valuation commands are never exposed. See [the shared-intelligence integration guide](docs/shared-intelligence-integration.md).
+
 ## Dashboard data contract
 
 The shared schemas live in `contracts/analysis.ts`; model instructions live in `api/engines.ts`. The UI lives in `src/components/Dashboard.tsx`. Keep financial arrays aligned to `financials.years` in oldest-to-newest order, use `null` / empty arrays for unavailable data rather than zeroes, and only include a filing accession / CVM document reference when the source explicitly provides it. See `prompts/filing-to-dashboard-prompt.md` for the full extraction and interpretation rules.

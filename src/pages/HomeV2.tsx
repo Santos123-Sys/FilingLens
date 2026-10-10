@@ -1,11 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ArrowRight,
+  BarChart3,
+  Bell,
+  Binoculars,
   Database,
   FileJson,
   FileSearch,
   Globe2,
   Layers3,
+  Network,
+  PieChart,
   Plus,
   Presentation,
   Printer,
@@ -43,7 +48,20 @@ const COPY = {
     h1: "Turn regulatory filings into a decision-ready company view.",
     lead: "Upload one or more related SEC or CVM PDFs. FilingLens retrieves filing evidence, cross-checks authoritative structured regulatory data, runs bounded specialist analysis, and publishes one validated contract to the dashboard and exports.",
     architecture: "How the system works",
-    architectureCopy: "A dependency-aware evidence pipeline — not an opaque agent swarm.",
+    architectureCopy: "One evidence contract connects discovery, filing analysis, portfolio construction, and monitoring.",
+    globalPortfolio: "Global Portfolio Intelligence",
+    globalPortfolioDesc: "Market scanning · idea discovery · company screening",
+    selectedIdeas: "Selected ideas",
+    filingLensDesc: "SEC/CVM evidence · financial facts · KPIs · valuation research",
+    fundamentalOutput: "Fundamentals & KPIs",
+    riskPortfolio: "Risk, Portfolio & Return",
+    riskPortfolioDesc: "Portfolio construction · risk · attribution · monitoring",
+    sharedLayer: "Shared intelligence layer",
+    sharedLayerDesc: "Canonical issuer identity, public facts, source provenance, screening KPIs, and a bounded read-only surface",
+    portfolioFeedback: "The versioned contract leaves a bounded path for portfolio feedback, themes, and evidence gaps.",
+    contract: "Contract v1",
+    connected: "Connected",
+    configRequired: "Configuration required",
     phase1: "Read & classify",
     phase1d: "PDF extraction, issuer resolution + SEC/CVM five-year structured history",
     phase2: "Extract evidence",
@@ -86,7 +104,20 @@ const COPY = {
     h1: "Transforme documentos regulatórios em uma visão empresarial pronta para decisão.",
     lead: "Envie um ou mais PDFs relacionados da SEC ou CVM. O FilingLens recupera evidências, cruza dados regulatórios estruturados e oficiais, executa análise especializada limitada e publica um único contrato validado no dashboard e nas exportações.",
     architecture: "Como o sistema funciona",
-    architectureCopy: "Pipeline de evidências orientado por dependências — não um enxame opaco de agentes.",
+    architectureCopy: "Um contrato de evidências conecta descoberta, análise de filings, construção de portfólio e monitoramento.",
+    globalPortfolio: "Global Portfolio Intelligence",
+    globalPortfolioDesc: "Varredura de mercado · descoberta de ideias · seleção de companhias",
+    selectedIdeas: "Ideias selecionadas",
+    filingLensDesc: "Evidências SEC/CVM · dados financeiros · KPIs · pesquisa de valuation",
+    fundamentalOutput: "Fundamentos e KPIs",
+    riskPortfolio: "Risco, Portfólio e Retorno",
+    riskPortfolioDesc: "Construção de portfólio · risco · atribuição · monitoramento",
+    sharedLayer: "Camada de inteligência compartilhada",
+    sharedLayerDesc: "Identidade canônica, fatos públicos, proveniência, KPIs de triagem e uma superfície limitada de leitura",
+    portfolioFeedback: "O contrato versionado mantém um caminho limitado para feedback, temas e lacunas de evidência.",
+    contract: "Contrato v1",
+    connected: "Conectado",
+    configRequired: "Configuração necessária",
     phase1: "Ler e classificar",
     phase1d: "Extração do PDF, resolução do emissor + histórico estruturado SEC/CVM de cinco anos",
     phase2: "Extrair evidências",
@@ -142,24 +173,35 @@ const ERROR_COPY: Record<string, [string, string]> = {
 
 function bytesMb(bytes: number) { return bytes / 1024 / 1024; }
 
-function Architecture({ lang }: { lang: Lang }) {
+function Architecture({ lang, integrationConfigured }: { lang: Lang; integrationConfigured: boolean | null }) {
   const c = COPY[lang];
   const steps = [
-    [FileSearch, c.phase1, c.phase1d],
-    [Database, c.phase2, c.phase2d],
-    [Globe2, c.phase3, c.phase3d],
-    [Layers3, c.phase4, c.phase4d],
+    [Binoculars, lang === "pt" ? "Descobrir" : "Discover", c.phase1d],
+    [FileSearch, lang === "pt" ? "Analisar" : "Analyze", c.phase2d],
+    [PieChart, lang === "pt" ? "Alocar" : "Allocate", c.phase3d],
+    [BarChart3, lang === "pt" ? "Monitorar" : "Monitor", c.phase4d],
   ] as const;
+  const connectionLabel = integrationConfigured === true ? c.connected : integrationConfigured === false ? c.configRequired : c.contract;
   return (
     <section className="mt-7 rounded-2xl border border-slate-800 bg-slate-900/45 p-5 sm:p-6">
-      <div className="flex flex-wrap items-end justify-between gap-3"><div><p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-cyan-300">{c.architecture}</p><p className="mt-1 text-xs text-slate-500">{c.architectureCopy}</p></div><span className="rounded-full border border-slate-700 bg-slate-950/50 px-3 py-1 text-[9px] font-semibold uppercase tracking-wide text-slate-500">dependency-aware · bounded</span></div>
-      <div className="mt-5 grid gap-3 lg:grid-cols-4">{steps.map(([Icon, title, detail], index) => <div key={title} className="relative rounded-xl border border-slate-800 bg-[#0b1423]/85 p-4">{index < steps.length - 1 && <ArrowRight className="absolute -right-[17px] top-1/2 z-10 hidden h-4 w-4 -translate-y-1/2 text-slate-700 lg:block" />}<div className="flex items-center gap-3"><div className="grid h-9 w-9 place-items-center rounded-lg border border-cyan-500/20 bg-cyan-400/[0.07]"><Icon className="h-4 w-4 text-cyan-300" /></div><div><p className="text-[9px] font-semibold tracking-[0.14em] text-slate-600">0{index + 1}</p><p className="text-xs font-semibold text-slate-100">{title}</p></div></div><p className="mt-3 text-[10px] leading-relaxed text-slate-500">{detail}</p></div>)}</div>
+      <div className="flex flex-wrap items-end justify-between gap-3"><div><p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-cyan-300">{c.architecture}</p><p className="mt-1 text-xs text-slate-500">{c.architectureCopy}</p></div><span className={`rounded-full border px-3 py-1 text-[9px] font-semibold uppercase tracking-wide ${integrationConfigured === true ? "border-emerald-500/30 bg-emerald-400/10 text-emerald-300" : "border-slate-700 bg-slate-950/50 text-slate-500"}`}>{connectionLabel}</span></div>
+      <div className="mt-5 grid items-stretch gap-3 lg:grid-cols-[1fr_auto_1fr_auto_1fr]">
+        <div className="rounded-xl border border-blue-500/30 bg-blue-500/[0.06] p-4"><div className="flex items-center gap-3"><div className="grid h-10 w-10 place-items-center rounded-lg border border-blue-400/25 bg-blue-400/10"><Globe2 className="h-5 w-5 text-blue-300" /></div><p className="text-sm font-semibold text-white">{c.globalPortfolio}</p></div><p className="mt-3 text-[10px] leading-relaxed text-slate-400">{c.globalPortfolioDesc}</p></div>
+        <div className="hidden min-w-24 flex-col items-center justify-center text-center lg:flex"><p className="text-[9px] font-semibold uppercase tracking-wide text-blue-300">{c.selectedIdeas}</p><ArrowRight className="mt-2 h-5 w-5 text-blue-400" /></div>
+        <div className="rounded-xl border border-cyan-500/40 bg-cyan-400/[0.08] p-4 shadow-[0_0_35px_rgba(34,211,238,0.05)]"><div className="flex items-center gap-3"><div className="grid h-10 w-10 place-items-center rounded-lg border border-cyan-400/30 bg-cyan-400/10"><FileSearch className="h-5 w-5 text-cyan-300" /></div><p className="text-sm font-semibold text-white">FilingLens</p></div><p className="mt-3 text-[10px] leading-relaxed text-slate-300">{c.filingLensDesc}</p></div>
+        <div className="hidden min-w-24 flex-col items-center justify-center text-center lg:flex"><p className="text-[9px] font-semibold uppercase tracking-wide text-emerald-300">{c.fundamentalOutput}</p><ArrowRight className="mt-2 h-5 w-5 text-emerald-400" /></div>
+        <div className="rounded-xl border border-emerald-500/30 bg-emerald-400/[0.06] p-4"><div className="flex items-center gap-3"><div className="grid h-10 w-10 place-items-center rounded-lg border border-emerald-400/25 bg-emerald-400/10"><BarChart3 className="h-5 w-5 text-emerald-300" /></div><p className="text-sm font-semibold text-white">{c.riskPortfolio}</p></div><p className="mt-3 text-[10px] leading-relaxed text-slate-400">{c.riskPortfolioDesc}</p></div>
+      </div>
+      <div className="mt-3 rounded-xl border border-slate-700 bg-[#0b1423]/90 p-4"><div className="flex flex-wrap items-center gap-3"><div className="flex min-w-56 items-center gap-3"><Database className="h-5 w-5 text-cyan-300" /><div><p className="text-xs font-semibold text-white">{c.sharedLayer}</p><p className="mt-1 text-[9px] text-slate-500">{c.sharedLayerDesc}</p></div></div><div className="ml-auto flex flex-wrap gap-2">{[[Network, "Identity"], [Database, "Facts"], [Layers3, "KPIs"], [ShieldCheck, "Provenance"], [Bell, "Read-only"]].map(([Icon, label]) => <span key={label as string} className="inline-flex items-center gap-1.5 rounded-lg border border-slate-800 bg-slate-950/70 px-2.5 py-2 text-[9px] text-slate-400"><Icon className="h-3 w-3 text-cyan-400" />{label as string}</span>)}</div></div></div>
+      <p className="mt-3 text-center text-[9px] font-semibold uppercase tracking-[0.14em] text-emerald-400/80">{c.portfolioFeedback}</p>
+      <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{steps.map(([Icon, title, detail], index) => <div key={title} className="relative rounded-xl border border-slate-800 bg-[#0b1423]/85 p-4"><div className="flex items-center gap-3"><div className="grid h-9 w-9 place-items-center rounded-lg border border-cyan-500/20 bg-cyan-400/[0.07]"><Icon className="h-4 w-4 text-cyan-300" /></div><div><p className="text-[9px] font-semibold tracking-[0.14em] text-slate-600">0{index + 1}</p><p className="text-xs font-semibold text-slate-100">{title}</p></div></div><p className="mt-3 text-[10px] leading-relaxed text-slate-500">{detail}</p></div>)}</div>
     </section>
   );
 }
 
 export default function HomeV2() {
   const [configured, setConfigured] = useState<boolean | null>(null);
+  const [integrationConfigured, setIntegrationConfigured] = useState<boolean | null>(null);
   const [lang, setLang] = useState<Lang>("en");
   const [market, setMarket] = useState<Market>("us");
   const [files, setFiles] = useState<File[]>([]);
@@ -181,6 +223,7 @@ export default function HomeV2() {
 
   useEffect(() => {
     fetch("/api/status").then(r => r.json()).then(body => setConfigured(Boolean(body.configured))).catch(() => setConfigured(false));
+    fetch("/api/integration/v1/capabilities").then(r => r.ok ? r.json() : Promise.reject()).then(body => setIntegrationConfigured(body.configured === true)).catch(() => setIntegrationConfigured(false));
   }, []);
 
   const errorMessage = useCallback((code: string) => ERROR_COPY[code]?.[lang === "pt" ? 1 : 0] ?? code.replaceAll("_", " "), [lang]);
@@ -301,7 +344,7 @@ export default function HomeV2() {
 
         {phase !== "done" && <>
           <section className="mt-12 max-w-4xl"><span className="inline-flex items-center gap-2 rounded-full border border-blue-500/25 bg-blue-500/10 px-3 py-1 text-[9px] font-semibold uppercase tracking-[0.16em] text-blue-200"><Sparkles className="h-3 w-3" />{c.badge}</span><h1 className="mt-5 text-4xl font-semibold leading-[1.08] tracking-tight text-white sm:text-5xl">{c.h1}</h1><p className="mt-4 max-w-3xl text-sm leading-7 text-slate-400">{c.lead}</p></section>
-          <Architecture lang={lang} />
+          <Architecture lang={lang} integrationConfigured={integrationConfigured} />
           {configured === false && <div className="mt-5 rounded-xl border border-amber-500/35 bg-amber-500/[0.07] p-4 text-xs text-amber-100">{c.configuredError}</div>}
 
           <section className="mt-6 rounded-2xl border border-slate-800 bg-slate-900/45 p-5 sm:p-6">
