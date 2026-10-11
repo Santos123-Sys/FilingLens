@@ -36,7 +36,8 @@ function bearer(header:string|undefined):boolean {
  const a=Buffer.from('Bearer '+secret),b=Buffer.from(header??'');
  return secret.length>=32&&a.length===b.length&&timingSafeEqual(a,b);
 }
-export function registerValuationPublisher(app:Hono) {
+// The connection factory is injectable for cross-application verification; production uses MySQL.
+export function registerValuationPublisher(app:Hono,connect:typeof database=database) {
  app.post('/api/integration/v1/handoff/context',async c=>{
   try{const body=z.object({ticket:z.string().max(2000)}).strict().parse(await c.req.json());
    return c.json({context:verifyHandoff(body.ticket,process.env.INTEGRATION_SIGNING_SECRET??'')},{headers:{'Cache-Control':'no-store'}});
@@ -51,7 +52,7 @@ export function registerValuationPublisher(app:Hono) {
    const raw=await c.req.text();if(Buffer.byteLength(raw)>750_000)return c.json({error:'payload_too_large'},413);
    const input=PublishRequest.parse(JSON.parse(raw));
    const {ctx,version,audit,requestHash}=reviewedVersion(input,process.env.INTEGRATION_SIGNING_SECRET);
-   const db=await database();
+   const db=await connect();
    try{
     await db.beginTransaction();
     const [existing]=await db.query('SELECT payload_json,request_hash,workspace_id FROM shared_valuation_versions WHERE id=? FOR UPDATE',[version.valuationVersionId]);
@@ -73,7 +74,7 @@ export function registerValuationPublisher(app:Hono) {
   const workspace=c.req.header('X-Workspace-Id'),id=c.req.param('id');
   if(!z.string().uuid().safeParse(workspace).success||!/^flv1_[a-f0-9]{64}$/.test(id))return c.json({error:'invalid_scope'},400);
   if(!process.env.DATABASE_URL)return c.json({error:'publisher_disabled'},503);
-  try{const db=await database();try{const [rows]=await db.query('SELECT payload_json FROM shared_valuation_versions WHERE id=? AND workspace_id=? LIMIT 1',[id,workspace]);
+  try{const db=await connect();try{const [rows]=await db.query('SELECT payload_json FROM shared_valuation_versions WHERE id=? AND workspace_id=? LIMIT 1',[id,workspace]);
    const row=(rows as Array<{payload_json:string}>)[0];return row?c.json(JSON.parse(row.payload_json)):c.json({error:'valuation_not_found'},404);
   }finally{await db.end();}}catch{return c.json({error:'valuation_store_unavailable'},503);}
  });

@@ -13,7 +13,9 @@ def test_cvm_scope_headers_versions_and_safe_archive():
         z.writestr('report.csv','CNPJ_CIA;VERSAO;MOEDA;VALOR\n12.345.678/0001-90;1;BRL;10\n12.345.678/0001-90;2;BRL;11\n99.999.999/0001-99;1;BRL;999\n')
     doc=cvm_company_rows(raw.getvalue(),'12345678000190',2025,'ITR','https://dados.cvm.gov.br/fixture.zip')
     text=base64.b64decode(doc['base64']).decode()
-    assert 'VERSAO;MOEDA;VALOR' in text and ';2;BRL;11' in text and '999' not in text
+    assert 'VERSAO;MOEDA;VALOR' in text and ';2;BRL;11' in text
+    # Archive hashes can contain "999"; inspect the excluded issuer's CSV row.
+    assert '99.999.999/0001-99;1;BRL;999' not in text
 
 def test_cvm_large_itr_company_derivative_fits_document_budget():
     raw=io.BytesIO()
