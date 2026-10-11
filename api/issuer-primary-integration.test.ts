@@ -26,7 +26,7 @@ describe("issuer-published integration", () => {
   it("returns distinct provenance and a validated digest", async () => {
     const response = await app().request(path, { headers: { Authorization: `Bearer ${token}` } });
     expect(response.status).toBe(200);
-    const { contentHash, ...body } = await response.json();
+    const { contentHash, ...body } = await response.json() as Record<string, unknown>;
     expect(contentHash).toBe(createHash("sha256").update(JSON.stringify(body)).digest("hex"));
     expect(body.provenance).toBe("issuer_published_unaudited_pdf");
     expect(body.secCompanyFactsVerified).toBe(false);
