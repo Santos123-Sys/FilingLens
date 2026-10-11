@@ -12,7 +12,7 @@ when no authorized public-regulator archive exists.
 
 `GET /api/integration/v1/issuers/us/0000320193/issuer-statement`
 
-Requires `Authorization: Bearer <FILINGLENS_READ_API_TOKEN>`, with no response
+Requires `Authorization: Bearer <FILINGLENS_ISSUER_PRIMARY_API_TOKEN>`, with no response
 cache. Operator opt-in: `FILINGLENS_ISSUER_PRIMARY_ENABLED=true`.
 
 The `filinglens-issuer-primary-v1` response reports four FY2025 values
