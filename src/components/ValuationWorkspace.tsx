@@ -343,7 +343,7 @@ export default function ValuationWorkspace({
 
       {currentResult && (
         <div className="mt-6 border-t border-slate-800 pt-5">
-          <PublishValuation analysis={analysis} method={active} assumptions={state.assumptions}/>
+          <PublishValuation key={active} analysis={analysis} method={active} assumptions={state.assumptions}/>
           <div className="flex items-center justify-between gap-3"><div><div className="text-[10px] font-bold uppercase tracking-[0.15em] text-emerald-300">{lang === "pt" ? "Premissas revisadas" : "Reviewed assumptions"}</div><h3 className="mt-1 text-sm font-bold text-white">{active === "dcf" ? "DCF" : `Trading Comps · ${compsResult?.multiple_metric}`}</h3></div><span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-[9px] font-semibold uppercase text-emerald-300">{lang === "pt" ? "Calculado" : "Calculated"}</span></div>
           <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{figureCards.map(([label, item]) => <div key={label} className="rounded-xl border border-slate-800 bg-slate-950/45 p-4"><div className="text-[10px] uppercase tracking-[0.12em] text-slate-600">{label}</div><div className="mt-1 text-lg font-bold text-white">{figure(item.value, item.unit, locale)}</div><div className="mt-2 line-clamp-2 text-[8px] text-slate-700">{item.assumption_ids.join(" · ")}</div></div>)}</div>
 

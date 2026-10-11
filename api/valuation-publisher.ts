@@ -50,7 +50,9 @@ export function registerValuationPublisher(app:Hono) {
  });
  app.post('/api/integration/v1/valuations',async c=>{
   if(!process.env.DATABASE_URL||!process.env.INTEGRATION_SIGNING_SECRET)return c.json({error:'publisher_disabled'},503);
-  if(c.req.header('Origin')!==new URL(c.req.url).origin)return c.json({error:'same_origin_required'},403);
+  const publicOrigin=process.env.FILINGLENS_PUBLIC_URL??
+   (process.env.RAILWAY_PUBLIC_DOMAIN?'https://'+process.env.RAILWAY_PUBLIC_DOMAIN:new URL(c.req.url).origin);
+  if(c.req.header('Origin')!==new URL(publicOrigin).origin)return c.json({error:'same_origin_required'},403);
   try{
    const raw=await c.req.text();if(Buffer.byteLength(raw)>750_000)return c.json({error:'payload_too_large'},413);
    const input=PublishRequest.parse(JSON.parse(raw));
