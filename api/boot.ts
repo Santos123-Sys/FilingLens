@@ -39,7 +39,8 @@ export function registerRegulatoryArchiver(callback:RegulatoryArchiveFn) {regula
 
 const app = new Hono();
 
-app.use(bodyLimit({ maxSize: 65 * 1024 * 1024 }));
+app.use((c,next)=>bodyLimit({maxSize:c.req.path==="/api/integration/v1/valuations"?750_000:
+  c.req.path==="/api/integration/v1/handoff/context"?2500:65*1024*1024})(c,next));
 
 const MODEL_ROUTES = new Set(["/api/metadata", "/api/agent", "/api/market-research", "/api/valuation/propose"]);
 app.use("/api/*", async (c, next) => {
@@ -250,7 +251,7 @@ app.post("/api/regulatory-data", async (c) => {
       ticker: typeof body.ticker === "string" ? body.ticker : undefined,
       historyYears: typeof body.historyYears === "number" ? Math.max(1, Math.min(5, Math.floor(body.historyYears))) : 5,
     });
-    const registryFromFiling = jurisdiction === "us" ? deterministicCik(text) : deterministicCnpj(text);
+    const registryFromFiling = jurisdiction === "us" ? cik : cnpj;
     if (registryFromFiling && regulatoryArchive) {
       try {
         await regulatoryArchive(result,registryFromFiling);

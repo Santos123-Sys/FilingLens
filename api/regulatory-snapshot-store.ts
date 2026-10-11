@@ -28,7 +28,8 @@ export function normalizedPublicMetric(metric:RegulatoryDataMetric,jurisdiction:
 }
 export function preparePublicSnapshot(snapshot:RegulatoryDataSnapshot,registryId:string) {
  if(!["complete","partial"].includes(snapshot.status) || !["sec_edgar","cvm_open_data"].includes(snapshot.provider))return null;
- const normalized=registryId.replace(/\D/g,"");
+ const digits=registryId.replace(/\D/g,"");
+ const normalized=snapshot.jurisdiction==="us"?digits.padStart(10,"0"):digits;
  if(snapshot.jurisdiction==="us"?!/^\d{6,10}$/.test(normalized):!/^[0-9]{14}$/.test(normalized))return null;
  if(snapshot.resolvedIdentifier && snapshot.resolvedIdentifier.replace(/\D/g,"").replace(/^0+/,"") !== normalized.replace(/^0+/,""))return null;
  const metrics=snapshot.metrics.map(m=>normalizedPublicMetric(m,snapshot.jurisdiction)).filter(m=>m!==null)
