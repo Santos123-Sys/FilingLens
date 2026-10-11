@@ -17,7 +17,7 @@ const storedMetric = z.object({
   year: z.number().int().min(2000).max(2200),
   value: z.number().finite(),
   unit: z.string().min(1).max(100).nullable(),
-  period: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable(),
+  period: z.string().max(64).nullable(),
   status: z.enum(["verified", "single_source"]),
   source: z.object({
     provider: z.string().min(1).max(100),
@@ -75,7 +75,7 @@ async function refreshPublicFinance(jurisdiction:"us"|"br",registryId:string):Pr
  refreshes.set(key,task);return task;
 }
 
-async function loadPublicFinanceSnapshot(jurisdiction: "us" | "br", registryId: string, refresh=true): Promise<PublicFinanceSnapshot | null> {
+export async function loadPublicFinanceSnapshot(jurisdiction: "us" | "br", registryId: string, refresh=true): Promise<PublicFinanceSnapshot | null> {
   if (jurisdiction === "us") {
     const cached = await cachedSecCompanyFacts(registryId, process.env.DATABASE_URL, { maxAgeDays: 730 });
     if (cached) return buildSecPublicFinanceSnapshot({ cik: registryId, facts: cached.facts, retrievedDay: cached.retrievedDay });
@@ -95,7 +95,7 @@ async function loadPublicFinanceSnapshot(jurisdiction: "us" | "br", registryId: 
         unit: metric.unit,
         currency: currencyFromUnit(metric.unit),
         fiscalYear: metric.year,
-        periodEnd: metric.period,
+        periodEnd: metric.period && /^\d{4}-\d{2}-\d{2}$/.test(metric.period)?metric.period:null,
         periodLabel: metric.period ?? `FY ${metric.year}`,
         status: metric.status,
         sources: [{
