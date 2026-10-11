@@ -3,7 +3,9 @@ import type { Hono } from "hono";
 import { z } from "zod";
 import { buildPublicFinanceSnapshot, buildSecPublicFinanceSnapshot, type PublicFinanceSnapshot } from "../contracts/public-finance";
 import { cachedSecCompanyFacts } from "./sec-bulk-cache";
-import { readPublicRegulatorySnapshots } from "./regulatory-snapshot-store";
+import { readPublicRegulatorySnapshots, persistPublicRegulatorySnapshot } from "./regulatory-snapshot-store";
+import { dataToolsConfigured, dataToolsJson } from "./data-tools-client";
+import type { RegulatoryDataSnapshot } from "../contracts/regulatory-data";
 
 const registry = z.object({
   jurisdiction: z.enum(["us", "br"]),
@@ -53,8 +55,27 @@ function currencyFromUnit(unit: string | null): string | null {
   const match = /\b([A-Z]{3})\b/.exec(unit);
   return match?.[1] ?? null;
 }
+const refreshes=new Map<string,Promise<boolean>>();
+const failedRefreshes=new Map<string,number>();
+async function refreshPublicFinance(jurisdiction:"us"|"br",registryId:string):Promise<boolean>{
+ const key=jurisdiction+":"+registryId,pending=refreshes.get(key);
+ if(pending)return pending;
+ if(refreshes.size>=4 || Date.now()-(failedRefreshes.get(key)??0)<60_000)return false;
+ const task=(async()=>{
+  try{
+   const live=await dataToolsJson<RegulatoryDataSnapshot>("/v1/regulatory/enrich",{
+    jurisdiction,...(jurisdiction==="us"?{cik:registryId}:{cnpj:registryId}),historyYears:5,
+   },60_000);
+   const saved=await persistPublicRegulatorySnapshot(live,registryId);
+   if(!saved)failedRefreshes.set(key,Date.now());
+   return saved;
+  }catch{failedRefreshes.set(key,Date.now());return false;}
+  finally{refreshes.delete(key);if(failedRefreshes.size>500)failedRefreshes.clear();}
+ })();
+ refreshes.set(key,task);return task;
+}
 
-async function loadPublicFinanceSnapshot(jurisdiction: "us" | "br", registryId: string): Promise<PublicFinanceSnapshot | null> {
+async function loadPublicFinanceSnapshot(jurisdiction: "us" | "br", registryId: string, refresh=true): Promise<PublicFinanceSnapshot | null> {
   if (jurisdiction === "us") {
     const cached = await cachedSecCompanyFacts(registryId, process.env.DATABASE_URL, { maxAgeDays: 730 });
     if (cached) return buildSecPublicFinanceSnapshot({ cik: registryId, facts: cached.facts, retrievedDay: cached.retrievedDay });
@@ -86,6 +107,10 @@ async function loadPublicFinanceSnapshot(jurisdiction: "us" | "br", registryId: 
       })),
     });
   }
+  if(refresh && dataToolsConfigured()) {
+    if(await refreshPublicFinance(jurisdiction,registryId))
+      return loadPublicFinanceSnapshot(jurisdiction,registryId,false);
+  }
   return null;
 }
 
@@ -111,6 +136,8 @@ export function registerPublicFinanceApi(app: Hono, dependencies: PublicFinanceA
       consumers: ["global_portfolio_intelligence", "portfolio_risk_return"],
       sharedIntelligence: ["company_identity", "financial_facts", "screening_kpis", "source_provenance"],
       configured: Boolean(enabled() && token() && token()!.length >= 32),
+      valuationPublisher:{schemaVersion:"valuation.v1",workspaceScoped:true,humanReviewRequired:true,
+        configured:Boolean(process.env.DATABASE_URL&&process.env.INTEGRATION_SIGNING_SECRET&&process.env.FILINGLENS_VALUATION_READ_API_TOKEN)},
     });
   });
 

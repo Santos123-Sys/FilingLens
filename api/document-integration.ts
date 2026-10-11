@@ -72,7 +72,7 @@ export function registerDocumentIntegration(app:Hono) {
       if(base.protocol!=='https:'||base.pathname!=='/'||base.username||base.password||base.search||base.hash)throw new Error();
       const res=await fetch(new URL('/api/corpus/handoff',base),{method:'POST',redirect:'error',headers:{'content-type':'application/json',authorization:`Bearer ${process.env.FILINGLENS_CORPUS_TOKEN}`},body:JSON.stringify(body),signal:AbortSignal.timeout(15_000)});
       if(!res.ok){await res.body?.cancel();return c.json({error:'handoff_expired_or_unavailable'},404);}
-      const data=z.object({text:z.string().min(100).max(500_000),jurisdiction:z.enum(['us','br']),company:z.string(),documents:z.array(z.unknown()).max(120)}).parse(await res.json());
+      const data=z.object({text:z.string().min(100).max(500_000),jurisdiction:z.enum(['us','br']),company:z.string(),documents:z.array(z.unknown()).max(120),integrationTicket:z.string().max(2000).optional()}).parse(await res.json());
       return c.json({...data,classification:{...classifyFiling(data.text,data.jurisdiction),needsConfirmation:true}},{headers:{'Cache-Control':'no-store'}});
     }catch{return c.json({error:'handoff_unavailable'},503);}
   });

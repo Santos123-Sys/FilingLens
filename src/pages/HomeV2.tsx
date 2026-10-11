@@ -223,6 +223,15 @@ export default function HomeV2() {
   const c = COPY[lang];
 
   useEffect(() => {
+    const context = new URLSearchParams(window.location.hash.slice(1)).get('integration');
+    if(context) {
+      sessionStorage.removeItem('gpi-workspace-handoff');
+      window.history.replaceState(null,'',window.location.pathname);
+      fetch('/api/integration/v1/handoff/context',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({ticket:context})})
+        .then(async r=>{if(!r.ok)throw Error();return r.json();})
+        .then(body=>{sessionStorage.setItem('gpi-workspace-handoff',context);setMarket(body.context.issuerId.startsWith('br:')?'br':'us');})
+        .catch(()=>setError('The GPI workspace handoff expired. Open a fresh handoff in GPI.'));
+    }
     fetch("/api/status").then(r => r.json()).then(body => setConfigured(Boolean(body.configured))).catch(() => setConfigured(false));
     fetch("/api/integration/v1/capabilities").then(r => r.ok ? r.json() : Promise.reject()).then(body => setIntegrationConfigured(body.configured === true)).catch(() => setIntegrationConfigured(false));
   }, []);
@@ -235,7 +244,7 @@ export default function HomeV2() {
     setPhase('extracting');
     fetch('/api/gpi-handoff', { method:'POST', headers:{'content-type':'application/json'}, body:JSON.stringify({ticket}) })
       .then(async response => { if(!response.ok) throw new Error('GPI handoff expired or unavailable'); return response.json(); })
-      .then(body => { setPendingText(body.text); setClassification(body.classification); setMarket(body.jurisdiction); setPhase('confirm'); })
+      .then(body => { if(body.integrationTicket)sessionStorage.setItem('gpi-workspace-handoff',body.integrationTicket);else sessionStorage.removeItem('gpi-workspace-handoff');setPendingText(body.text); setClassification(body.classification); setMarket(body.jurisdiction); setPhase('confirm'); })
       .catch(() => { setError('GPI handoff expired or unavailable. Create a new handoff in the GPI document library.'); setPhase('error'); });
   }, []);
 
