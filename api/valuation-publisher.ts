@@ -28,14 +28,8 @@ export function reviewedVersion(input:z.infer<typeof PublishRequest>,secret:stri
  sourceSnapshotIds:['reviewed-analysis:'+sourceHash],assumptionsHash,approvalStatus:'approved'};
  return {ctx,version,audit:{company:input.analysis.company,financials:input.analysis.financials,assumptions:input.assumptions,result},requestHash:digest(JSON.stringify({sourceHash,assumptionsHash,method:input.method}))};
 }
-let schema:Promise<void>|undefined;
 async function database(){
- const db=await mysql.createConnection(process.env.DATABASE_URL!);
- try{await (schema??=db.query(`CREATE TABLE IF NOT EXISTS shared_valuation_versions (
- id VARCHAR(120) PRIMARY KEY, workspace_id CHAR(36) NOT NULL, request_hash CHAR(64) NOT NULL,
- payload_json MEDIUMTEXT NOT NULL, audit_json MEDIUMTEXT NOT NULL,
- created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, INDEX valuation_workspace(workspace_id,created_at)
- )`).then(()=>undefined).catch(e=>{schema=undefined;throw e;}));return db;}catch(e){await db.end();throw e;}
+ return mysql.createConnection(process.env.DATABASE_URL!);
 }
 function bearer(header:string|undefined):boolean {
  const secret=process.env.FILINGLENS_VALUATION_READ_API_TOKEN??'';

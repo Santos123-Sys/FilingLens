@@ -82,11 +82,20 @@ async function migrate() {
   PRIMARY KEY(cik),
   KEY ix_sec_import_age(retrieved_day)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4`
+ ,`CREATE TABLE IF NOT EXISTS shared_valuation_versions (
+ id VARCHAR(120) NOT NULL PRIMARY KEY,
+ workspace_id CHAR(36) NOT NULL,
+ request_hash CHAR(64) NOT NULL,
+ payload_json MEDIUMTEXT NOT NULL,
+ audit_json MEDIUMTEXT NOT NULL,
+ created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ INDEX valuation_workspace(workspace_id,created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4`
    ];
    for(const sql of statements) await db.query(sql);
-   const [tables] = await db.query("SELECT table_name FROM information_schema.tables WHERE table_schema=DATABASE() AND table_name IN ('companies','filings','financial_observations','regulatory_snapshots','private_analysis_history','sec_companyfacts_snapshots') ORDER BY table_name");
+   const [tables] = await db.query("SELECT table_name FROM information_schema.tables WHERE table_schema=DATABASE() AND table_name IN ('companies','filings','financial_observations','regulatory_snapshots','private_analysis_history','sec_companyfacts_snapshots','shared_valuation_versions') ORDER BY table_name");
    const [keys] = await db.query("SELECT table_name, referenced_table_name FROM information_schema.key_column_usage WHERE table_schema=DATABASE() AND referenced_table_name IS NOT NULL AND table_name IN ('filings','financial_observations','regulatory_snapshots')");
-   if ((tables as any[]).length!==6 || (keys as any[]).length!==3) throw new Error("Schema verification failed");
+   if ((tables as any[]).length!==7 || (keys as any[]).length!==3) throw new Error("Schema verification failed");
    const password=Bun.env.APP_DB_PASSWORD;
    if(!password || password.length<32) throw new Error("APP_DB_PASSWORD is required");
    await db.query("CREATE USER IF NOT EXISTS 'filinglens_app'@'%' IDENTIFIED BY "+mysql.escape(password));
@@ -106,7 +115,7 @@ async function migrate() {
    const [backupGrants]=await db.query("SHOW GRANTS FOR 'filinglens_backup'@'%'");
    console.log("PHASE1_BACKUP_READER_VERIFIED",Array.isArray(backupGrants)&&backupGrants.length>0);
    status="ready";
-   detail="6 tables and 3 foreign keys verified";
+   detail="7 tables and 3 foreign keys verified";
    console.log("PHASE1_SCHEMA_VERIFIED",JSON.stringify({tables:(tables as any[]).map(t=>t.TABLE_NAME??t.table_name),foreignKeys:(keys as any[]).length}));
  } finally {await db.end();}
 }
