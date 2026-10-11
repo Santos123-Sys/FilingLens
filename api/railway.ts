@@ -6,10 +6,12 @@ import { persistPublicRegulatorySnapshot, readPublicRegulatorySnapshots } from "
 import { registerHistoryApi } from "./history-api";
 import { registerPrivateHistory } from "./private-history";
 import { registerPublicFinanceApi } from "./public-finance-api";
+import { registerIssuerPrimaryIntegration } from "./issuer-primary-integration";
 
 registerHistoryApi(app);
 registerPrivateHistory(app);
 registerPublicFinanceApi(app);
+registerIssuerPrimaryIntegration(app);
 registerRegulatoryArchiver(persistPublicRegulatorySnapshot);
 app.get("/api/regulatory-history/:jurisdiction/:registryId",async c=>{
   const jurisdiction=c.req.param("jurisdiction");
