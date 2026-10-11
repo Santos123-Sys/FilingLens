@@ -219,11 +219,24 @@ export default function HomeV2() {
   const [historyRefresh, setHistoryRefresh] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const controllerRef = useRef<AbortController | null>(null);
+  const gpiHandoffStarted = useRef(false);
   const c = COPY[lang];
 
   useEffect(() => {
     fetch("/api/status").then(r => r.json()).then(body => setConfigured(Boolean(body.configured))).catch(() => setConfigured(false));
     fetch("/api/integration/v1/capabilities").then(r => r.ok ? r.json() : Promise.reject()).then(body => setIntegrationConfigured(body.configured === true)).catch(() => setIntegrationConfigured(false));
+  }, []);
+
+  useEffect(() => {
+    const ticket = new URLSearchParams(window.location.hash.slice(1)).get('gpi');
+    if (!ticket || gpiHandoffStarted.current) return;
+    gpiHandoffStarted.current = true;
+    window.history.replaceState(null, '', window.location.pathname);
+    setPhase('extracting');
+    fetch('/api/gpi-handoff', { method:'POST', headers:{'content-type':'application/json'}, body:JSON.stringify({ticket}) })
+      .then(async response => { if(!response.ok) throw new Error('GPI handoff expired or unavailable'); return response.json(); })
+      .then(body => { setPendingText(body.text); setClassification(body.classification); setMarket(body.jurisdiction); setPhase('confirm'); })
+      .catch(() => { setError('GPI handoff expired or unavailable. Create a new handoff in the GPI document library.'); setPhase('error'); });
   }, []);
 
   const errorMessage = useCallback((code: string) => ERROR_COPY[code]?.[lang === "pt" ? 1 : 0] ?? code.replaceAll("_", " "), [lang]);

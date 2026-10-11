@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import httpx
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Header
 from fastapi.responses import Response
 
 from .models import RegulatoryRequest, RegulatorySnapshot, MarketShareRequest, MarketShareSnapshot, PresentationRequest
@@ -9,9 +9,31 @@ from .providers.sec_edgar import enrich_sec, resolve_sec_identifier
 from .providers.cvm import enrich_cvm, resolve_cvm_identifier
 from .providers.anp import enrich_anp_market_share
 from .presentation import build_presentation
+from .documents import AcquisitionRequest, acquire
+from .research_deck import ResearchDeck, build_research_deck
+import os
+import secrets
+import asyncio
 from .skills import run_ratios, run_statements, validate_timeline, status as skill_status
 
 app = FastAPI(title="FilingLens Data Tools", version="1.3.0")
+
+def corpus_auth(authorization):
+    token=os.getenv('FILINGLENS_CORPUS_TOKEN','')
+    if len(token)<32 or not secrets.compare_digest(authorization or '', 'Bearer '+token):
+        raise HTTPException(status_code=401,detail='unauthorized')
+
+@app.post('/v1/documents/acquire')
+async def acquire_documents(req: AcquisitionRequest, authorization: str | None = Header(default=None)):
+    corpus_auth(authorization)
+    try: return await asyncio.wait_for(acquire(req),timeout=70)
+    except asyncio.TimeoutError: return {'documents':[],'gaps':['Acquisition budget exhausted; retry a narrower year range.']}
+
+@app.post('/v1/documents/presentation')
+async def research_presentation(req: ResearchDeck, authorization: str | None = Header(default=None)):
+    corpus_auth(authorization)
+    raw=await asyncio.to_thread(build_research_deck,req)
+    return Response(raw,media_type='application/vnd.openxmlformats-officedocument.presentationml.presentation')
 
 
 def _provider_warning(exc: Exception) -> str:
