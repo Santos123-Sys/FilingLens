@@ -79,7 +79,7 @@ export function registerIssuerPrimaryIntegration(
     load?: () => Promise<IssuerDisclosureDocument | null>;
   } = {},
 ) {
-  const token = options.token ?? (() => process.env.FILINGLENS_READ_API_TOKEN);
+  const token = options.token ?? (() => process.env.FILINGLENS_ISSUER_PRIMARY_API_TOKEN);
   const enabled = options.enabled ?? (() => process.env.FILINGLENS_ISSUER_PRIMARY_ENABLED === "true");
   const load = options.load ?? fetchAppleIssuerDisclosure;
   app.get("/api/integration/v1/issuers/us/:cik/issuer-statement", async c => {
