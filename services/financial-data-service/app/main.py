@@ -11,6 +11,9 @@ from .providers.anp import enrich_anp_market_share
 from .presentation import build_presentation
 from .documents import AcquisitionRequest, acquire
 from .research_deck import ResearchDeck, build_research_deck
+from .ocr import OCRRequest, extract_ocr
+from pypdf.errors import PdfReadError
+import binascii
 import os
 import secrets
 import asyncio
@@ -28,6 +31,14 @@ async def acquire_documents(req: AcquisitionRequest, authorization: str | None =
     corpus_auth(authorization)
     try: return await asyncio.wait_for(acquire(req),timeout=70)
     except asyncio.TimeoutError: return {'documents':[],'gaps':['Acquisition budget exhausted; retry a narrower year range.']}
+
+@app.post('/v1/documents/ocr')
+async def ocr_document(req: OCRRequest, authorization: str | None = Header(default=None)):
+    corpus_auth(authorization)
+    try:
+        return await asyncio.wait_for(asyncio.to_thread(extract_ocr, req), timeout=80)
+    except (ValueError, TimeoutError, OSError, PdfReadError, binascii.Error):
+        raise HTTPException(status_code=422, detail='ocr_unavailable_or_insufficient') from None
 
 @app.post('/v1/documents/presentation')
 async def research_presentation(req: ResearchDeck, authorization: str | None = Header(default=None)):

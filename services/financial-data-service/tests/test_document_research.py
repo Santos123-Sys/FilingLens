@@ -15,6 +15,13 @@ def test_cvm_scope_headers_versions_and_safe_archive():
     text=base64.b64decode(doc['base64']).decode()
     assert 'VERSAO;MOEDA;VALOR' in text and ';2;BRL;11' in text and '999' not in text
 
+def test_cvm_large_itr_company_derivative_fits_document_budget():
+    raw=io.BytesIO()
+    with zipfile.ZipFile(raw,'w') as z:
+        z.writestr('itr.csv','CNPJ_CIA;TEXTO\n' + ('12.345.678/0001-90;' + 'financial disclosure ' * 30 + '\n') * 6000)
+    doc=cvm_company_rows(raw.getvalue(),'12345678000190',2025,'ITR','https://dados.cvm.gov.br/itr.zip')
+    assert doc is not None and len(base64.b64decode(doc['base64'])) > 2_000_000
+
 def test_ssrf_rejected_before_transport():
     for url in ['http://127.0.0.1','https://www.sec.gov.evil.test/x','https://user@data.sec.gov/x','https://www.sec.gov:443/x']:
         with pytest.raises(ValueError):asyncio.run(get_bytes(None,url))

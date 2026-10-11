@@ -29,6 +29,14 @@ export async function extractCorpusDocument(bytes:Buffer,name:string) {
   if(text.length<100||text.length>2_000_000||text.includes('\u0000'))throw new Error('unusable_text_or_ocr_required');
   return {text,parser,sha256:createHash('sha256').update(bytes).digest('hex')};
 }
+async function extractScannedPdf(bytes:Buffer) {
+  const base=dataToolsBaseUrl();if(!base)throw new Error('ocr_unavailable');
+  const res=await fetch(`${base}/v1/documents/ocr`,{method:'POST',redirect:'error',headers:{'content-type':'application/json',authorization:`Bearer ${process.env.FILINGLENS_CORPUS_TOKEN}`},body:JSON.stringify({base64:bytes.toString('base64')}),signal:AbortSignal.timeout(85_000)});
+  if(!res.ok){await res.body?.cancel();throw new Error('ocr_unavailable');}
+  const result=z.object({text:z.string().min(100).max(2_000_000),sha256:z.string().length(64),parser:z.string().max(80),pageCount:z.number().int().min(1).max(30)}).parse(await res.json());
+  if(result.sha256!==createHash('sha256').update(bytes).digest('hex'))throw new Error('ocr_hash_mismatch');
+  return result;
+}
 const Upload=z.object({base64:z.string().min(1).max(10_666_672).regex(/^[A-Za-z0-9+/]*={0,2}$/),name:z.string().min(1).max(180)}).strict();
 export function registerDocumentIntegration(app:Hono) {
   app.use('/api/integration/v1/documents/*',async(c,next)=>{
@@ -37,7 +45,14 @@ export function registerDocumentIntegration(app:Hono) {
     await next();
   });
   app.post('/api/integration/v1/documents/extract',async c=>{
-    try{const input=Upload.parse(await c.req.json());return c.json(await extractCorpusDocument(Buffer.from(input.base64,'base64'),input.name));}
+    try{
+      const input=Upload.parse(await c.req.json()),bytes=Buffer.from(input.base64,'base64');
+      try{return c.json(await extractCorpusDocument(bytes,input.name));}
+      catch(error){
+        if(bytes.subarray(0,5).toString()!=='%PDF-' || !(error instanceof Error) || error.message!=='unusable_text_or_ocr_required')throw error;
+        return c.json(await extractScannedPdf(bytes));
+      }
+    }
     catch{return c.json({error:'document_invalid_or_ocr_required'},422);}
   });
   for(const path of ['acquire','presentation'] as const)app.post(`/api/integration/v1/documents/${path}`,async c=>{

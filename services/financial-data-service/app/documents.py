@@ -60,15 +60,15 @@ def document(raw, name, year, form, url, period=None, provenance='regulator_down
             "provenance": provenance, "sha256": hashlib.sha256(raw).hexdigest()}
 
 
-def cvm_company_rows(raw, cnpj, year, form, url):
+def cvm_company_rows(raw, cnpj, year, form, url, deadline=None):
     """Retain all versions/columns, including unit and period headers. Never claim a CSV is a PDF."""
     output = []
     with zipfile.ZipFile(io.BytesIO(raw)) as archive:
         infos = archive.infolist()
-        if len(infos) > 200 or sum(i.file_size for i in infos) > 450_000_000:
+        if len(infos) > 200 or sum(i.file_size for i in infos) > 900_000_000:
             raise ValueError("archive_expansion_limit")
         for info in infos:
-            if not info.filename.endswith(".csv") or info.file_size > 160_000_000:
+            if not info.filename.endswith(".csv") or info.file_size > 300_000_000:
                 continue
             with archive.open(info) as stream:
                 reader = csv.DictReader(io.TextIOWrapper(stream, encoding="latin1"), delimiter=";")
@@ -76,12 +76,14 @@ def cvm_company_rows(raw, cnpj, year, form, url):
                 writer = csv.DictWriter(selected, fieldnames=reader.fieldnames or [], delimiter=";")
                 writer.writeheader()
                 found = 0
-                for row in reader:
+                for index, row in enumerate(reader):
+                    if deadline is not None and index % 5000 == 0 and time.monotonic() > deadline:
+                        raise ValueError('source_processing_budget')
                     identity = row.get("CNPJ_CIA") or row.get("CNPJ_Companhia") or row.get("CNPJ") or ""
                     if re.sub(r"\D", "", identity) == cnpj:
                         writer.writerow(row)
                         found += 1
-                        if selected.tell() > 2_000_000:
+                        if selected.tell() > 7_000_000:
                             raise ValueError("company_rows_limit")
                 if found:
                     output.append((info.filename.rsplit("/",1)[-1], selected.getvalue()))
@@ -137,7 +139,7 @@ async def acquire(req: AcquisitionRequest, fetch=get_bytes):
                     if len(docs)>=6 or time.monotonic()-started>55: break
                     try:
                         raw=await fetch(client,url,40_000_000)
-                        doc=await asyncio.to_thread(cvm_company_rows,raw,req.registryId,year,form,url)
+                        doc=await asyncio.to_thread(cvm_company_rows,raw,req.registryId,year,form,url,started+55)
                         if doc:
                             docs.append(doc)
                             if form == 'IPE':
@@ -153,7 +155,8 @@ async def acquire(req: AcquisitionRequest, fetch=get_bytes):
                                     except Exception as exc:gaps.append(f'IPE linked document: {type(exc).__name__}.')
                         else: gaps.append(f"{form} {year}: no matching CNPJ rows.")
                     except Exception as exc:
-                        gaps.append(f"{form} {year}: {type(exc).__name__}; source remains unresolved.")
+                        reason = str(exc) if isinstance(exc, ValueError) and str(exc) in {'source_size_limit','archive_expansion_limit','company_rows_limit','document_size_limit','source_processing_budget'} else type(exc).__name__
+                        gaps.append(f"{form} {year}: {reason}; source remains unresolved.")
         if req.jurisdiction=='us' and req.registryId=='0000320193' and req.startYear<=2025<=req.endYear and not docs:
             url='https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf'
             if url not in req.existing:
