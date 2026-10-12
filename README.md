@@ -29,6 +29,10 @@ npx --yes tsx ops/verify-phase6-audit.ts ./filinglens-audit-us-issuer.json
 
 The SHA-256 checksum protects against accidental modification, **not** adversarial editing or source spoofing. See [Phase 5](docs/phase5-analyst-decision-dossier.md), [Phase 6](docs/phase6-release-assurance.md) and [open SEC source acceptance blocker #52](https://github.com/Santos123-Sys/FilingLens/issues/52).
 
+## Value Driver Intelligence
+
+The filing dashboard includes an evidence-gated value-driver analysis tab for comparable annual statements. An independently sourced Apple FY2025/FY2026 case study is available at `/value-drivers/apple`, showing reported financials, date-labeled external analyst FY2026/FY2027 forecasts, model assumptions, FCFF valuation, sensitivities and reverse DCF. See [methodology and sources](docs/value-driver-intelligence-apple-case.md). This is a scenario research instrument, not a live consensus or investment recommendation.
+
 ## Development
 
 Requires Node.js 22+.

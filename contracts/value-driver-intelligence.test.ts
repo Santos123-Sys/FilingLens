@@ -16,12 +16,15 @@ describe("Value Driver Intelligence", () => {
     expect(APPLE_2026_CASE.quarterly.end).toBe("2026-06-27");
     expect(APPLE_2026_CASE.quarterly.revenueBn).toBe(109.417);
     expect(APPLE_2026_CASE.quarterly.disclosedTariffRefundMarginBenefitPp).toBe(2);
-    expect(APPLE_2026_CASE.consensus.asOf).toBe("2026-10-09");
+    expect(APPLE_2026_CASE.consensus.asOf).toBe("2026-10-12");
     expect(APPLE_2026_CASE.consensus.fy2026RevenueBn).toBe(477.85);
     expect(APPLE_2026_CASE.consensus.fy2027RevenueBn).toBe(528.21);
     expect(APPLE_2026_CASE.consensus.fy2026GrowthPct).toBeCloseTo((477.85/416.161-1)*100, 8);
     expect(APPLE_2026_CASE.consensus.fy2027GrowthPct).toBeCloseTo((528.21/477.85-1)*100, 8);
     expect(APPLE_2026_CASE.consensus.fy2026EpsUsd).toBe(8.83);
+    expect(APPLE_2026_CASE.consensus.analystCount).toBe(40);
+    expect(APPLE_2026_CASE.consensus.fy2026OperatingMarginPct).toBeCloseTo(156.4/477.85*100, 8);
+    expect(APPLE_2026_CASE.consensus.fy2026FreeCashFlowBn).toBe(143.68);
   });
   it("reconciles sourced debt and cash, including noncurrent marketable securities", () => {
     expect(APPLE_NET_DEBT_BN).toBeCloseTo(-62.173, 8);
