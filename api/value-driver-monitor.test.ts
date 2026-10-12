@@ -29,7 +29,12 @@ describe("idempotent hourly value driver market monitoring",()=>{
   expect(signals.find(s=>s.type==="consensus_revenue_revision")!.magnitudePct).toBeCloseTo(4);
   expect(compareMarketSnapshots(a,snapshot(301,"2026-10-12T13:00:00Z",501))).toHaveLength(0);
  });
- it("does not compare old FMP data against newly activated Yahoo observations",()=>{\n  const a=snapshot(300,"2026-10-12T12:00:00Z",500);\n  const b=snapshot(330,"2026-10-12T13:00:00Z",530);\n  expect(compareMarketSnapshots({...a,provider:"financialmodelingprep"} as unknown as LiveMarketSnapshot,b)).toEqual([]);\n });\n it("cannot fabricate a comparator on the first monitoring run",()=>{
+ it("does not compare old FMP data against newly activated Yahoo observations",()=>{
+  const a=snapshot(300,"2026-10-12T12:00:00Z",500);
+  const b=snapshot(330,"2026-10-12T13:00:00Z",530);
+  expect(compareMarketSnapshots({...a,provider:"financialmodelingprep"} as unknown as LiveMarketSnapshot,b)).toEqual([]);
+ });
+ it("cannot fabricate a comparator on the first monitoring run",()=>{
   expect(compareMarketSnapshots(null,snapshot(300,"2026-10-12T12:00:00Z",500))).toEqual([]);
  });
 });
