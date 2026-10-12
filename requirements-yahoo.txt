@@ -1,0 +1,3 @@
+# Unofficial Yahoo Finance Python bridge for strictly personal research.
+# Pinned to a verified published release; update with compatibility tests.
+yfinance==1.7.0

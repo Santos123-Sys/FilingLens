@@ -1,90 +1,93 @@
-# Value Driver Intelligence — Live Data, Probabilistic Risk and Scheduled Watch
+# Value Driver Intelligence — Yahoo Finance personal research integration
 
-## Delivered architecture
+## Overview
+The former FMP quote/analyst estimates provider has been replaced with [ranaroussi/yfinance](https://github.com/ranaroussi/yfinance) (Apache-2.0). **This is an unofficial Yahoo Finance adapter intended exclusively for private, personal research.** Yahoo is not affiliated with the library and data access is subject to Yahoo's own terms. It is not a commercially licensed, reliable or real-time production market-data feed.
 
 ```
-FMP licensed HTTPS API (quote + profile + annual analyst estimates)
-          | fixed upstream host + server-side API key
-          v
-FilingLens Railway Hono routes /api/value-drivers/*
-          | validate ticker / currency / timestamps / finite values
-          | deduplicate cached requests, 90-second TTL
-          v
-Value Driver Intelligence UI in DashboardV2 and /value-drivers/apple
-          | manual quote override, 5-minute foreground refresh
-          | explicit quote observation time vs estimate retrieval time
-          +----> FCFF + reverse DCF (existing deterministic contract)
-          +----> seeded 1,000-draw triangular Monte Carlo (analyst ranges)
-          |
-Railway Cron (hourly, separate one-shot process)
-          | FILINGLENS_MONITOR_SYMBOLS restricted allowlist, max 12
-          | FMP provider key; no private uploads transmitted
-          v
-MySQL: value_driver_market_snapshots + value_driver_watch_signals
-          | persisted hashes deduplicate polls / retry events
-          v
-Public watch history route -> in-app review signals
+Authenticated personal browser (token kept only in React memory)
+      | Authorization: Bearer <private valuation token>
+      v
+FilingLens Hono /api/value-drivers/live/:ticker
+      | require YAHOO_PERSONAL_USE_ENABLED and >=32-byte secret
+      | rate mitigation: 20-minute per-symbol cache and request deduplication
+      v
+Node execFile('python', ['scripts/yfinance_bridge.py', validatedSymbol])
+      | bounded 30-second process, no shell, 180 kB output bound
+      | Python package: yfinance 1.7.0 (pinned, isolated venv)
+      v
+Yahoo Finance best-effort public-data retrieval
+      | unadjusted last DAILY CLOSE, market cap, currency
+      | annual current/next FY revenue estimates, EPS estimates,
+      | optional EPS 30-day trend and revision counts
+      v
+Finite-value checks, timestamp/fiscal-bucket validation, provenance
+      | missing EBIT stays NULL, never derived from an unrelated source
+      v
+Valuation UI (risk Monte Carlo unaffected)
+      +
+Daily Railway cron 23:00 UTC on weekdays (up to 12 watched symbols)
+      | MySQL value_driver_market_snapshots, value_driver_watch_signals
+      v
+Authenticated personal watch history, no push/email notifications
 ```
 
-## Licenses and secrets
+## Railway setup
 
-FMP documents:
-- [Stock Quote API](https://site.financialmodelingprep.com/developer/docs/stable/quote)
-- [Company Profile API](https://site.financialmodelingprep.com/developer/docs/stable/profile)
-- [Financial Estimates API](https://site.financialmodelingprep.com/developer/docs/stable/financial-estimates)
+The Railway FilingLens web service must have:
+- `YAHOO_PERSONAL_USE_ENABLED=true`: explicit confirmation the product is operated **only for personal research**.
+- `FILINGLENS_VALUATION_READ_API_TOKEN`: an existing random secret of at least 32 characters, already used for other private valuation integrations. It **must not** be configured in a browser bundle or shared publicly.
+- `DATABASE_URL`: existing MySQL history store for optional watch history.
+- `FILINGLENS_MONITOR_SYMBOLS=AAPL` or a comma-separated allowlist, up to 12 symbols, e.g. `AAPL,MSFT,PETR4.SA`.
 
-Access to the annual analyst-estimates endpoint varies by FMP subscription. It cannot be assumed available on Basic/free plans. Market data may be delayed. Redistribution/display rights must be confirmed by the operator before turning on the public-facing feed.
+In the Value Driver Intelligence UI, enter the private valuation token into the password field. It remains in memory only, is not stored to sessionStorage/localStorage, and is never appended to URLs. Re-enter it after reloading the page. An unauthenticated GET /api/value-drivers/status returns only sanitized configuration flags, not the watchlist.
 
-For the **FilingLens web service** set:
-- `FMP_API_KEY`: server-side FMP API key (not a client-side `VITE_*` variable).
-- `FMP_PUBLIC_DISPLAY_ALLOWED=true`: confirm external provider licensing permits public dashboard display. If absent, the public feed is intentionally unavailable, and historical fixtures remain clearly dated.
-- Existing `DATABASE_URL`: required for persisted watch history.
-- `FILINGLENS_MONITOR_SYMBOLS=AAPL` (or `AAPL,MSFT,PETR4.SA`; capped at 12).
+The dedicated Railway monitor service needs:
+- `YAHOO_PERSONAL_USE_ENABLED=true`, `DATABASE_URL`, and `FILINGLENS_MONITOR_SYMBOLS=AAPL`.
+- GitHub repository `Santos123-Sys/FilingLens`, main branch.
+- `cronSchedule="0 23 * * 1-5"` (UTC, after ordinary US/B3 regular trading hours); `startCommand="node dist/value-driver-cron.js"`; `restartPolicyType="NEVER"`.
+- No private access token or FMP API key; the cron process does not expose HTTP routes.
 
-For the separate hourly **Railway cron service**, configure the same `FMP_API_KEY`, `DATABASE_URL`, and `FILINGLENS_MONITOR_SYMBOLS`, but NOT the public display flag. Set `cronSchedule="0 * * * *"`, `startCommand="node dist/value-driver-cron.js"`, `restartPolicyType="NEVER"` and use the same GitHub source on main. Cron is a single bounded execution, not an HTTP process or an unbounded `setInterval`.
+The Dockerfile installs the isolated pinned yfinance package into `/opt/yfinance-venv` and sets `PYTHON_EXECUTABLE`. CI runs Python bridge tests without outbound requests, TypeScript tests, typecheck, and bundle build.
 
-**Credentials not supplied means provider unavailable, not a simulated live state.** The existing historical Apple fixture is retained for offline reproducibility and displayed as archived data.
+## Data contract: known limitations
 
-## Endpoints
+1. **Price** is the last unadjusted DAILY closing price, not an executable intraday quote, not dividend adjusted, and not suitable for intraday P&L. The bar's YYYY-MM-DD is the trading date; the synthetic `T00:00:00Z` field is only a sortable date anchor **not the time of a trade**. Last available observation over 7 days old is marked stale.
+2. **Market capitalization** from Yahoo `fast_info.market_cap` may be refreshed on a different schedule from the close. `sharesBn` is only the implied quotient of market cap / daily close. It is not the official outstanding-shares disclosure.
+3. **Estimates** use the Yahoo `0y` / `+1y` relative fiscal buckets. Where the latest reported annual income-statement year is available, `FY2026` etc. is inferred from it, **not a verified fiscal-year-end calendar day**. If unavailable the bucket remains `0y` / `+1y`, which is excluded from persistent revenue revision signals to prevent false year-over-year comparisons.
+4. **EBIT, EBITDA estimates** are not provided via the standard yfinance estimate methods and are represented as `null`. The historical Apple sample forecasts stay visibly archived and must not be called live consensus.
+5. **Revision timing**: the timestamp on the returned consensus is the application's retrieval time, never a provider's actual analyst update time. Optional EPS trend / revision counts are Yahoo's rolling comparison buckets and have no guaranteed individual analyst provenance.
+6. **Endpoint availability**: cookie, crumb, throttling, anti-bot or schema changes can cause partial/unavailable responses. Never fabricate a fallthrough provider number. Never retry aggressively when rate-limited.
+7. **Provider switch**: FMP historical snapshots are intentionally preserved for auditability but comparison logic refuses cross-provider signals. SHA fingerprints include provider name to avoid deduplication collisions.
+8. **Jurisdiction**: Brazilian tickers are normalized with `.SA`; no guarantee Yahoo supports every B3 ticker. Verify USD versus BRL, listing, share class and calendar before using quotes in a valuation.
 
-- `GET /api/value-drivers/status`: sanitized provider/monitor configuration flags (no credentials).
-- `GET /api/value-drivers/live/AAPL?currency=USD`: quote and annual estimate records, fetched time and vendor observation time, source docs, validation status, and partial failure reasons. 503 when no licensed provider is configured.
-- `GET /api/value-drivers/watch/AAPL`: up to 12 persisted snapshots and 30 recorded public-market alerts. The ticker must be present in the configured public watchlist. Browser cookies or private filings are NOT involved.
+## Routes and example
 
-All input URLs are constructed against the fixed `financialmodelingprep.com` HTTPS host, never a URL supplied by a user. The FMP key is not exposed in returned sources. Wrong ticker/currency, nonfinite values, old/future quotes, inaccessible subscription tiers and malformed JSON are rejected. Polling failures do not overwrite the last known timestamp.
+```bash
+curl -H "Authorization: Bearer $FILINGLENS_VALUATION_READ_API_TOKEN" \
+ "https://filinglens-production-158f.up.railway.app/api/value-drivers/live/AAPL?currency=USD"
+```
 
-## Material watch triggers
+- GET `/api/value-drivers/status` (sanitized, no watchlist).
+- GET `/api/value-drivers/live/:ticker` (private).
+- GET `/api/value-drivers/watch/:ticker` (private, explicitly monitored symbols only).
 
-Two server-side monitoring triggers, compared to the latest persisted observation:
-- At least **5%** change in quote price with a **different provider observation timestamp**.
-- At least **3%** change in forecast mean revenue for the **same fiscal-year forecast period**.
+The access token is validated with a constant-time comparison; unauthenticated requests return HTTP 401, and unconfigured services return HTTP 503. Same-site/same-origin browser requests only. Input tickers cannot contain URLs, shell punctuation or separators; child_process runs without shell. No private documents or portfolios are sent to Yahoo.
 
-No alert on initial observation. No alerts on unchanged observations. Ingestion is deduplicated by content fingerprint and persisted MySQL event keys. These are *review signals*, not automatic trading decisions. **Email/push notifications are not implemented**; alerts are surfaced inside the dashboard.
+## Monitoring and validation
 
-The collector bootstraps two additional tables with `CREATE TABLE IF NOT EXISTS`. If production database permissions prevent this, apply the CREATE statements in `api/value-driver-monitor.ts` through the database migrator before running the cron. Do not grant DDL privileges to a permanently exposed public API.
+Material review signals (not investment decisions):
+- Quote: >=5% daily close change across different trading dates.
+- Forward revenue: >=3% change in the same inferred annual fiscal bucket; disabled for unknown relative fiscal dates.
+- No initial baseline comparison and no cross-provider comparisons.
+- Check `[value-driver-cron]` logs for `attempted/stored/materialSignals/unavailableSymbols`; each run is bounded and can fail without inventing data.
 
-## Scenario-conditional Monte Carlo
-
-The simulation uses a deterministic seed and 1,000 triangular draws, with manually editable half-widths for seven DCF inputs and a configurable growth–margin Gaussian-copula correlation. Each forecast draw invokes the exact same underlying `runDcf` validation and formula. Invalid perpetuities are rejected (not clamped, not valued as zero). Invalid sampling space produces an explicit unavailable state.
-
-The output includes enterprise-value and equity-value P10/P50/P90, a histogram, a conditional fraction of simulated values below the market-observed EV when the market quote is comparable, and driver sensitivity ranges. It **does not** estimate objective real-world probabilities, calibrate cross-driver joint distributions, claim a risk-neutral probability, or quantify tail/regulatory hazard frequencies.
-
-Driver risk scores are average absolute model-impact magnitudes for symmetric user-defined shock ranges: not empirical expected loss or trading alpha.
-
-## Validation
-
-```sh
+Local static checks:
+```bash
 npm ci
 npm run check
-npm run lint
 npm test
+python3 -m unittest discover -s tests -p 'test_yfinance_bridge.py' -v
 npm run build
 ```
 
-CI unit tests cover provider schema/host/currency/staleness/caching boundaries, ticker validation, empirical vs assumption labeling, deterministic Monte Carlo distribution/accounting, missing market value, watchlist normalization and monitoring dedup logic.
-
-Live production readiness requires two independent validations:
-1. **Code and Railway build success** with the route and cron artifact.
-2. **Authenticated FMP end-to-end response** after valid licensed `FMP_API_KEY` is provisioned, and actual hourly cron execution writing MySQL snapshots. This step cannot pass without provider credentials. Do not claim end-to-end external-data validation from mocked unit tests.
-
-Publicly publishing FMP data may require a commercial redistribution license; review the provider terms before setting `FMP_PUBLIC_DISPLAY_ALLOWED=true`.
+A successful build/CI does **not** prove Yahoo access from Railway. Validate the authenticated AAPL/PETR4.SA response and one genuine MySQL cron record independently, and distinguish provider/network errors from lack of analyst coverage. Avoid upgrading the sampling cadence without assessing Yahoo's terms and rate limits.

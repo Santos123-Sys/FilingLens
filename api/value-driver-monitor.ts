@@ -12,7 +12,7 @@ export function parseWatchlist(value:string|undefined):string[]{
  return [...new Set((value??"").split(",").map(x=>normalizeTicker(x)).filter((x):x is string=>!!x))].slice(0,12);
 }
 export function compareMarketSnapshots(previous:LiveMarketSnapshot|null,current:LiveMarketSnapshot):WatchSignal[]{
- if(!previous)return [];
+ if(!previous||previous.provider!==current.provider)return [];
  const signals:WatchSignal[]=[];
  const quote0=previous.quote,quote1=current.quote;
  if(quote0&&quote1&&quote0.observedAt!==quote1.observedAt&&quote0.currency===quote1.currency){
@@ -24,7 +24,9 @@ export function compareMarketSnapshots(previous:LiveMarketSnapshot|null,current:
    });
  }
  for(const row of current.consensus){
-   const old=previous.consensus.find(x=>x.periodEnd===row.periodEnd);
+   // Relative 0y/+1y labels can roll between fiscal years; never infer a revision.
+  if(row.periodBasis==="relative_yahoo_bucket")continue;
+  const old=previous.consensus.find(x=>x.periodEnd===row.periodEnd && x.periodBasis!=="relative_yahoo_bucket");
    if(!old||old.revenueAvgBn===null||row.revenueAvgBn===null||old.revenueAvgBn<=0)continue;
    const magnitudePct=(row.revenueAvgBn/old.revenueAvgBn-1)*100;
    if(Math.abs(magnitudePct)>=MONITOR_CONSENSUS_REVISION_PCT)signals.push({
@@ -69,7 +71,7 @@ export function marketFingerprint(s:LiveMarketSnapshot):string{
  // Provider fetch time is *not* a market movement. No duplicate observations on unchanged polls.
  const quote=s.quote?{symbol:s.symbol,observedAt:s.quote.observedAt,price:s.quote.price,cap:s.quote.marketCapBn}:null;
  const estimates=s.consensus.map(x=>({periodEnd:x.periodEnd,revenueAvgBn:x.revenueAvgBn,ebitAvgBn:x.ebitAvgBn,epsAvg:x.epsAvg}));
- return JSON.stringify({quote,estimates});
+ return JSON.stringify({provider:s.provider,quote,estimates});
 }
 export async function collectMonitoredMarketData(options:{
  db:SQLConnection;symbols:string[]; fetchSnapshot:(symbol:string)=>Promise<LiveMarketSnapshot>;now?:Date;
@@ -116,12 +118,12 @@ export async function runScheduledMarketWatch(env:NodeJS.ProcessEnv=process.env)
  enabled:boolean;attempted:number;stored:number;alertCount:number;errors:Array<{symbol:string;error:string}>;
 }>{
  const symbols=parseWatchlist(env.FILINGLENS_MONITOR_SYMBOLS);
- if(!env.FMP_API_KEY||!env.DATABASE_URL||!symbols.length)
+ if(env.YAHOO_PERSONAL_USE_ENABLED!=="true"||!env.DATABASE_URL||!symbols.length)
    return {enabled:false,attempted:0,stored:0,alertCount:0,errors:[]};
  const db=await mysql.createConnection(env.DATABASE_URL);
  try{
    const result=await collectMonitoredMarketData({db,symbols,
-     fetchSnapshot:symbol=>fetchValueDriverMarketSnapshot(symbol,{apiKey:env.FMP_API_KEY!})});
+     fetchSnapshot:symbol=>fetchValueDriverMarketSnapshot(symbol)});
    return {enabled:true,...result};
  }finally{await db.end();}
 }

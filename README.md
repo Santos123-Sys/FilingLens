@@ -35,7 +35,7 @@ The filing dashboard includes an evidence-gated value-driver analysis tab for co
 
 ## Live Value Driver Intelligence
 
-The active DashboardV2 includes **Value drivers** with a source-separated live market/analyst-consensus panel, server-side FMP adapter, analyst-defined probabilistic Monte Carlo, and a scheduled, persisted MySQL public-market watch. A separate Railway cron service collects watchlist observations hourly; the browser updates every five minutes while visible. Without a licensed FMP key and explicit public-display authorization, live quotes and consensus remain unavailable instead of being fabricated. See [live market setup and monitoring runbook](docs/value-driver-live-monitoring.md).
+The active DashboardV2 includes **Value drivers** with a source-separated Yahoo Finance personal-research panel powered by the unofficial Apache-2.0 [yfinance](https://github.com/ranaroussi/yfinance) Python package, analyst-defined probabilistic Monte Carlo, and a scheduled MySQL watch. The private bearer token is entered in the dashboard and held only in memory. The Railway cron service samples a bounded watchlist daily; the browser refreshes every 30 minutes when visible and uses a 20-minute server cache. Yahoo provides best-effort unadjusted **daily closing prices** and revenue/EPS analyst estimates; forward EBIT consensus is unavailable. Without explicit personal-use enablement and a private valuation token, API endpoints fail closed. Yahoo is unofficial, can throttle/stop working, and its data is subject to Yahoo's terms. See [live market setup and monitoring runbook](docs/value-driver-live-monitoring.md).
 
 ## Development
 
