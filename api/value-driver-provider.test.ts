@@ -6,7 +6,7 @@ const quote={symbol:"AAPL",price:336.64,marketCap:4912000000000,timestamp};
 const profile={symbol:"AAPL",currency:"USD"};
 const estimates=[{symbol:"AAPL",date:"2026-09-26",revenueAvg:477850000000,revenueLow:450000000000,revenueHigh:510000000000,ebitAvg:156400000000,epsAvg:8.83,numAnalystsRevenue:40,numAnalystsEps:36}];
 function mockFetch(data:Record<string,unknown>, status=200):typeof fetch {
- return (async (input:RequestInfo|URL) => {
+ return (async (input:string|URL) => {
    const url=new URL(String(input));
    const path=url.pathname.split("/").at(-1);
    const response=path==="quote"?data.quote:path==="profile"?data.profile:data.estimates;
