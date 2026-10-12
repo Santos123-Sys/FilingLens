@@ -41,7 +41,7 @@ describe("private personal-use market routes",()=>{
  it("prevents unauthenticated watchlist enumeration",async()=>{
   const app=new Hono();registerValueDriverRoutes(app);
   const response=await app.request("/api/value-drivers/status");
-  const body=await response.json();
+  const body=await response.json() as Record<string,unknown>;
   expect(body.monitoredSymbols).toEqual([]);
   expect(body.privateOnly).toBe(true);
   expect((await app.request("/api/value-drivers/watch/AAAT")).status).toBe(401);
@@ -52,7 +52,7 @@ describe("private personal-use market routes",()=>{
   const headers={Authorization:"Bearer "+token,"Sec-Fetch-Site":"same-origin"};
   const ok=await app.request("/api/value-drivers/live/AAAT?currency=USD",{headers});
   expect(ok.status).toBe(200);
-  expect((await ok.json()).provider).toBe("yahoo_finance_unofficial");
+  expect(((await ok.json()) as Record<string,unknown>).provider).toBe("yahoo_finance_unofficial");
   expect(market).toHaveBeenCalledTimes(1);
   const wrong=await app.request("/api/value-drivers/live/AAAT?currency=BRL",{headers});
   expect(wrong.status).toBe(409);
