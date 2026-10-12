@@ -76,3 +76,13 @@ npm run build
 Run the new `contracts/value-driver-intelligence.test.ts` regression suite. It validates source figures, capital bridge, the deterministic DCF, reverse DCF, monotonic economics, and rejection of invalid inputs.
 
 The separate Apple case route can be used before uploading any filing. In a completed filing dashboard, the **Value drivers** tab uses the same core engine when annual revenue + EBIT and financial units are available, while the user enters dated stock quote, shares, and net debt.
+
+## New-filing change signals (event driven)
+On each newly completed filing dashboard, the feature compares **annual** series when at least two comparable periods exist. It calculates:
+
+- Reported annual revenue growth (screening threshold: absolute YoY change >= 10%).
+- EBIT margin change (absolute change >= 1.5 percentage points).
+- Operating cash flow minus cash capex growth (absolute YoY change >= 20%; NOT modeled FCFF).
+- Cash capex/revenue change (absolute change >= 1 percentage point).
+
+Every signal is explicitly a **filing observation**, never an attributed cause. Displayed research prompts explain what analysts should investigate. Missing figures do not become zeros. Quarterly or YTD series are excluded unless a distinct historical annual series is provided. These signals refresh when a new filing is analyzed; this is **not** an autonomous scheduler, webhook, price-feed watcher or notification system.
