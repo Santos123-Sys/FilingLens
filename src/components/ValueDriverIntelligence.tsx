@@ -296,6 +296,32 @@ export default function ValueDriverIntelligence({ data, lang = "en" }: Props) {
           <p className={`mt-2 ${small}`}>{pt ? "Baixa/alta: crescimento ±3 p.p., margem ±3 p.p. e WACC ∓1 p.p. Não são probabilidades." : "Bear/bull: growth ±3pp, margin ±3pp, WACC ∓1pp. Scenarios are assumptions, not probability-weighted forecasts."}</p>
         </article>
       </div>
+      <article className={CALL_OUT} aria-label="Probabilistic value driver analysis">
+        <h4 className="text-base font-semibold text-white">{pt?"Análise probabilística condicional de risco":"Scenario-conditional probabilistic risk analysis"}</h4>
+        <p className={`mt-1 ${small}`}>{pt?"Monte Carlo determinístico com mil sorteios triangulares e semente fixa. Amplitudes são hipóteses modificáveis, não estimativas estatísticas de mercado. P10/P50/P90 e frequências NÃO são probabilidades empiricamente calibradas.":"Deterministic 1,000-draw seeded triangular Monte Carlo. Analyst-defined ranges, NOT fitted historical volatility or calibrated real-world probabilities. P10/P50/P90 and event frequencies are strictly conditional on these choices."}</p>
+        <div className="mt-3 grid gap-3 sm:grid-cols-3">
+          <div className={CALL_OUT}><p className={small}>P10 {pt?"EV":"enterprise value"}</p><strong className="text-lg text-white">{risk?money(risk.p10EvBn,current.currency):"—"}</strong></div>
+          <div className={CALL_OUT}><p className={small}>P50 EV</p><strong className="text-lg text-white">{risk?money(risk.p50EvBn,current.currency):"—"}</strong></div>
+          <div className={CALL_OUT}><p className={small}>P90 EV</p><strong className="text-lg text-white">{risk?money(risk.p90EvBn,current.currency):"—"}</strong></div>
+        </div>
+        {risk && <div className="mt-2 grid gap-3 md:grid-cols-2">
+          <div className={CALL_OUT}><p className={small}>{pt?"Amostras válidas / rejeitadas":"Accepted / rejected samples"}</p><strong className="text-sm text-white">{risk.accepted} / {risk.rejected}</strong><p className={small}>{pt?"Amostras rejeitadas não são substituídas por zero":"Invalid perpetuities are rejected, never replaced with zeros"}.</p></div>
+          <div className={CALL_OUT}><p className={small}>{pt?"Fração de cenários com valor inferior ao EV observado":"Simulated fraction below observed EV"}</p><strong className="text-lg text-white">{risk.probabilityBelowObservedEV===null?"—":(risk.probabilityBelowObservedEV*100).toFixed(1)+"%"}</strong><p className={small}>{pt?"Não equivale à probabilidade de queda na cotação.":"Not an empirically estimated downside probability."}</p></div>
+        </div>}
+        {!!risk?.histogram.length && <div className="mt-3 flex h-28 items-end gap-1" aria-label="Monte Carlo enterprise-value distribution histogram">
+          {risk.histogram.map((b,i)=><div key={i} className="flex-1 rounded-t bg-cyan-700/80" title={`${b.minimumEvBn.toFixed(0)}–${b.maximumEvBn.toFixed(0)} B: ${b.count}`} style={{height:`${Math.max(2,100*b.count/Math.max(1,...risk.histogram.map(h=>h.count)))}%`}} />)}
+        </div>}
+        <div className="mt-4 grid gap-3 md:grid-cols-2">
+          {DEFAULT_RISK_RANGES.map(d=><label key={d.key} className="block"><div className="flex justify-between gap-2 text-xs"><span className="text-slate-300">{DEFAULT_DRIVER_SPECS.find(x=>x.key===d.key)?.name??d.key}</span><span className="text-white">±{(riskRanges[d.key]??d.halfWidthPp).toFixed(2)} pp</span></div><input className="w-full accent-cyan-400" type="range" min="0" max={Math.min(30,d.halfWidthPp*3)} step="0.25" value={riskRanges[d.key]??d.halfWidthPp} onChange={e=>setRiskRanges(x=>({...x,[d.key]:Number(e.target.value)}))}/></label>)}
+        </div>
+        <label className="mt-3 block"><div className="flex justify-between gap-2 text-xs text-slate-300"><span>{pt?"Correlação suposta entre crescimento e margem":"Assumed growth–margin correlation"}</span><span>{growthMarginCorrelation.toFixed(2)}</span></div><input className="w-full accent-cyan-400" type="range" min="-0.8" max="0.8" step="0.1" value={growthMarginCorrelation} onChange={e=>setGrowthMarginCorrelation(Number(e.target.value))}/></label>
+        {!!risk?.driverRiskPriority.length && <div className="mt-4 border-t border-slate-700 pt-2">
+          <h5 className="mb-2 text-xs font-semibold text-white">{pt?"Prioridade por impacto × intervalo da hipótese":"Scenario-scaled materiality: valuation sensitivity × specified ranges"}</h5>
+          <div className="grid gap-2 sm:grid-cols-2">{risk.driverRiskPriority.slice(0,6).map((d,i)=><div key={d.key} className="flex justify-between gap-3 text-xs text-slate-300"><span>{i+1}. {DEFAULT_DRIVER_SPECS.find(x=>x.key===d.key)?.name??d.key}</span><strong className="text-white">{d.scoreBn===null?"—":money(d.scoreBn,current.currency)}</strong></div>)}</div>
+          <p className={`mt-2 ${small}`}>{pt?"O ranking usa perturbações isoladas de amplitudes presumidas; não integra causalidade, pesquisa possível nem riscos de cauda.":"Ranking uses isolated model perturbations across analyst-assumed ranges; not a complete expected-loss, causality or tail-risk model."}</p>
+        </div>}
+        {!risk && <p className="mt-2 text-xs text-amber-300">{pt?"Intervalos incompatíveis com o modelo; ajuste WACC/crescimento perpétuo e distribuições.":"No valid scenario ensemble. Adjust the WACC/perpetual-growth assumptions and ranges."}</p>}
+      </article>
       <article className="rounded-xl border border-slate-700 bg-slate-800/30 p-4">
         <h4 className="text-base font-semibold text-white">{pt ? "Ranking de materialidade" : "Value-driver materiality ranking"}</h4>
         <p className={`mt-1 ${small}`}>{pt ? "Sensibilidade determinística de um fator por vez. Choques têm magnitudes e probabilidades diferentes; classificação de incerteza é manual." : "Deterministic one-at-a-time enterprise-value sensitivities. Shocks vary in scale and likelihood: the ranking is NOT a probability-weighted risk score. Rate uncertainty manually."}</p>
