@@ -1,4 +1,7 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import type { LiveMarketSnapshot } from "../../api/value-driver-provider";
+import { simulateValueDriverRisk, DEFAULT_RISK_RANGES } from "../../contracts/value-driver-risk";
+import type { WatchSignal } from "../../api/value-driver-monitor";
 import type { FilingAnalysis } from "../../contracts/analysis";
 import { annualValueDriverSignals } from "../../contracts/value-driver-signals";
 import {
@@ -57,6 +60,13 @@ const label = "block text-xs font-semibold text-slate-300";
 const field = "w-full rounded-md border border-slate-600 bg-slate-950 px-2 py-1.5 text-sm text-white focus:border-cyan-400 focus:outline-none";
 const uncertaintyKeys: Uncertainty[] = ["unrated", "low", "medium", "high"];
 
+function observedEvForRisk(live:LiveMarketSnapshot|null,quote:Quote,netDebtBn:number|null,currency:string):number|null{
+  // Do not treat a manual string or a stale, wrong-currency vendor quote as a probability target.
+  if(netDebtBn===null||!live?.quote||live.quote.stale||live.quote.currency!==currency)return null;
+  if(String(live.quote.price)!==quote.price)return null;
+  return live.quote.marketCapBn+netDebtBn;
+}
+
 export default function ValueDriverIntelligence({ data, lang = "en" }: Props) {
   const pt = lang === "pt";
   const anchor = useMemo(() => data ? fromFiling(data) : null, [data]);
@@ -73,6 +83,58 @@ export default function ValueDriverIntelligence({ data, lang = "en" }: Props) {
   const [uncertainty, setUncertainty] = useState<Record<string, Uncertainty>>({});
   const [bridge, setBridge] = useState(anchor?.netDebtBn === null ? "" : String(anchor?.netDebtBn ?? APPLE_ANALYST_ASSUMPTIONS.netDebtBn));
   const [showProjection, setShowProjection] = useState(false);
+  const [liveSnapshot,setLiveSnapshot] = useState<LiveMarketSnapshot|null>(null);
+  const [liveState,setLiveState] = useState<"loading"|"ready"|"partial"|"unavailable">("loading");
+  const [providerIssue,setProviderIssue] = useState<string|null>(null);
+  const [watchSignals,setWatchSignals] = useState<WatchSignal[]>([]);
+  const [monitorNote,setMonitorNote] = useState<string|null>(null);
+  const [riskRanges,setRiskRanges] = useState<Record<string,number>>({});
+  const [growthMarginCorrelation,setGrowthMarginCorrelation] = useState(0);
+  const manualQuoteOverride = useRef(false);
+  const marketSymbol = (data?.company.ticker ?? (demo ? apple.identity.ticker : "")).toUpperCase();
+  const providerSymbol = marketSymbol && data?.jurisdiction === "br" && !marketSymbol.endsWith(".SA") ? marketSymbol + ".SA" : marketSymbol;
+  const expectedCurrency = data?.jurisdiction === "br" ? "BRL" : "USD";
+  useEffect(()=>{
+    if(!providerSymbol || !/^[A-Z][A-Z0-9.-]{0,15}$/.test(providerSymbol)){
+      setLiveState("unavailable");setProviderIssue("missing_company_ticker");return;
+    }
+    let active=true;
+    const refresh=async()=>{
+      try{
+        const response=await fetch(`/api/value-drivers/live/${encodeURIComponent(providerSymbol)}?currency=${expectedCurrency}`,{cache:"no-store"});
+        const payload=await response.json() as LiveMarketSnapshot & {error?:string};
+        if(!active)return;
+        if(!response.ok){
+          setLiveState("unavailable");setProviderIssue(payload.error??"market_provider_unavailable");return;
+        }
+        setLiveSnapshot(payload);setLiveState(payload.status);setProviderIssue(null);
+        if(payload.quote&&!payload.quote.stale&&payload.quote.currency===expectedCurrency&&!manualQuoteOverride.current){
+          setQuote({
+            price:String(payload.quote.price),
+            sharesBn:String(payload.quote.sharesBn),
+            date:payload.quote.observedAt.slice(0,10),
+            url:payload.quote.source,
+          });
+        }
+        const monitored=await fetch(`/api/value-drivers/watch/${encodeURIComponent(providerSymbol)}`,{cache:"no-store"});
+        if(!active)return;
+        if(monitored.ok){
+          const history=await monitored.json() as {signals?:WatchSignal[]};
+          if(active){setWatchSignals(history.signals??[]);setMonitorNote(null);}
+        }else if(active){
+          const error=await monitored.json() as {error?:string};
+          setMonitorNote(error.error??"monitor_unavailable");
+        }
+      }catch{
+        if(active){setLiveState("unavailable");setProviderIssue("live_market_network_error");}
+      }
+    };
+    void refresh();
+    // Five-minute foreground refresh, independently of the hourly server-side cron.
+    const ticker=window.setInterval(()=>{if(document.visibilityState==="visible")void refresh();},300000);
+    return ()=>{active=false;window.clearInterval(ticker);};
+  },[providerSymbol,expectedCurrency]);
+
   const current = data ? anchor : { name: apple.identity.name, year: apple.annual.period, source: apple.annual.url, revenueBn: apple.annual.revenueBn, marginPct: apple.annual.operatingMarginPct, netDebtBn: APPLE_ANALYST_ASSUMPTIONS.netDebtBn, currency: "USD", warning: apple.capitalBridge.limitation, financialInstitution: false };
   const bridgeNumber = bridge.trim() === "" ? null : Number(bridge);
   const price = quote.price.trim() && Number(quote.price) > 0 ? Number(quote.price) : null;
@@ -83,6 +145,17 @@ export default function ValueDriverIntelligence({ data, lang = "en" }: Props) {
   const valuation = useMemo(() => { try { return { result: runDcf(p), error: null }; } catch (e) { return { result: null, error: (e as Error).message }; } }, [p.revenueBn, p.growthPct, p.operatingMarginPct, p.cashTaxPct, p.reinvestmentPct, p.waccPct, p.terminalGrowthPct, p.terminalRoicPct, p.netDebtBn, p.sharesBn, p.horizonYears]);
   const specs: DriverSpec[] = DEFAULT_DRIVER_SPECS.map(s => ({ ...s, uncertainty: uncertainty[s.key] ?? "unrated" }));
   const ranking = valuation.result ? analyzeDrivers(p, specs) : [];
+  const ranges=DEFAULT_RISK_RANGES.map(d=>({...d,halfWidthPp:riskRanges[d.key]??d.halfWidthPp}));
+  const risk=useMemo(()=>{
+    if(!valuation.result)return null;
+    try{return simulateValueDriverRisk(p,{
+      distributions:ranges,draws:1000,seed:18267,
+      observedEnterpriseValueBn:observedEvForRisk(liveSnapshot,quote,bridgeNumber,expectedCurrency),
+      growthMarginCorrelation,
+    });}catch{return null;}
+  // Explicit dependency on analytic inputs, not every polling status or render.
+  },[params,bridgeNumber,shares,riskRanges,growthMarginCorrelation,liveSnapshot,quote,valuation.result]);
+
   const observedEv = quoteValid ? price! * shares! + bridgeNumber! : null;
   const reverse = valuation.result ? reverseDcfGrowth(p, observedEv) : null;
   const scenarios = valuation.result ? [
