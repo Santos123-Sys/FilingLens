@@ -50,16 +50,22 @@ def row(frame, key):
 
 def make_forecasts(ticker):
     warnings = []
-    try:
-        revenue = ticker.get_revenue_estimate()
-        eps = ticker.get_earnings_estimate()
-        trends = ticker.get_eps_trend()
-        revisions = ticker.get_eps_revisions()
-    except Exception:
-        return [], ["analyst_estimates_unavailable"], "consensus_unavailable"
+    # The endpoints can fail independently. Never throw away revenue/EPS simply
+    # because Yahoo's optional revisions endpoint is unavailable.
+    def optionally(method, label):
+        try:
+            return method()
+        except Exception:
+            warnings.append(label + "_unavailable")
+            return None
+
+    revenue = optionally(ticker.get_revenue_estimate, "revenue_estimates")
+    eps = optionally(ticker.get_earnings_estimate, "eps_estimates")
+    trends = optionally(ticker.get_eps_trend, "eps_trends")
+    revisions = optionally(ticker.get_eps_revisions, "eps_revisions")
 
     if revenue is None and eps is None:
-        return [], ["analyst_estimates_unavailable"], "no_covered_estimates"
+        return [], warnings + ["analyst_estimates_unavailable"], "consensus_unavailable"
 
     # Yahoo returns relative fiscal buckets (0y / +1y), not dated consensus
     # revisions. We need a known fiscal base to avoid inventing fiscal dates.
