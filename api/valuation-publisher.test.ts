@@ -43,7 +43,7 @@ describe('automatic reviewed valuation notification',()=>{
  it('sends only the scoped reference, protected by a signed body; no financial audit payload',async()=>{
   vi.stubEnv('GPI_API_URL','https://gpi.example.test/');
   const seen:Array<{url:string,body:string,signature:string}>=[];
-  const fake=(async(url:URL|RequestInfo,init?:RequestInit)=>{
+  const fake=(async(url:URL|string,init?:RequestInit)=>{
    const body=String(init?.body??''),headers=init?.headers as Record<string,string>;
    seen.push({url:String(url),body,signature:headers['x-filinglens-signature']});
    return new Response(JSON.stringify({status:'synchronized'}),{status:200});
