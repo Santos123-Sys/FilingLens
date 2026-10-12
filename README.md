@@ -33,6 +33,10 @@ The SHA-256 checksum protects against accidental modification, **not** adversari
 
 The filing dashboard includes an evidence-gated value-driver analysis tab for comparable annual statements. An independently sourced Apple FY2025/FY2026 case study is available at `/value-drivers/apple`, showing reported financials, date-labeled external analyst FY2026/FY2027 forecasts, model assumptions, FCFF valuation, sensitivities and reverse DCF. See [methodology and sources](docs/value-driver-intelligence-apple-case.md). This is a scenario research instrument, not a live consensus or investment recommendation.
 
+## Live Value Driver Intelligence
+
+The active DashboardV2 includes **Value drivers** with a source-separated live market/analyst-consensus panel, server-side FMP adapter, analyst-defined probabilistic Monte Carlo, and a scheduled, persisted MySQL public-market watch. A separate Railway cron service collects watchlist observations hourly; the browser updates every five minutes while visible. Without a licensed FMP key and explicit public-display authorization, live quotes and consensus remain unavailable instead of being fabricated. See [live market setup and monitoring runbook](docs/value-driver-live-monitoring.md).
+
 ## Development
 
 Requires Node.js 22+.
