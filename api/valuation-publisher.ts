@@ -9,13 +9,17 @@ const digest=(v:string)=>createHash('sha256').update(v).digest('hex');
 export const PublishRequest=z.object({
  ticket:z.string().max(2000),method:z.enum(['dcf','comps']),confirmed:z.literal(true),
  scenario:z.literal('base'),analysis:z.object({jurisdiction:z.enum(['us','br']),
- company:companySchema.shape.company,financials:financialsSchema.shape.financials}).passthrough(),
+ company:companySchema.shape.company,metadata:z.object({cik:z.string().nullable().optional(),cnpj:z.string().nullable().optional()}).passthrough(),financials:financialsSchema.shape.financials}).passthrough(),
  assumptions:z.array(valuationAssumptionSchema).min(1).max(150),
 }).strict();
 type Version={schemaVersion:'valuation.v1';valuationVersionId:string;issuerId:string;method:'dcf'|'comps';scenario:string;currency:'USD'|'BRL';impliedValuePerShare:string;valuationAsOf:string;approvedAt:string;approvedBy:string;sourceSnapshotIds:string[];assumptionsHash:string;approvalStatus:'approved'};
 export function reviewedVersion(input:z.infer<typeof PublishRequest>,secret:string,now=new Date()) {
  const ctx=verifyHandoff(input.ticket,secret,Math.floor(now.getTime()/1000));
- if(input.analysis.jurisdiction!==ctx.issuerId.split(':')[0] || input.analysis.company.ticker?.toUpperCase()!==ctx.ticker)
+ const [jurisdiction,registryId]=ctx.issuerId.split(':');
+ const sourceRegistry=jurisdiction==='us'?input.analysis.metadata.cik:input.analysis.metadata.cnpj;
+ const normalized=jurisdiction==='us'?String(sourceRegistry??'').padStart(10,'0'):String(sourceRegistry??'').replace(/\\D/g,'');
+ if(input.analysis.jurisdiction!==jurisdiction || input.analysis.company.ticker?.toUpperCase()!==ctx.ticker ||
+   normalized!==registryId || /^0+$/.test(normalized))
   throw Error('issuer_mismatch');
  const result=calculateValuation(input.analysis as unknown as FilingAnalysis,input.method,input.assumptions);
  const figure=result.figures.implied_per_share,currency=figure.unit.split('/')[0];
