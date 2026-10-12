@@ -41,7 +41,7 @@ class FakeTicker:
                              "downLast30days": [2, 3]}, index=["0y", "+1y"])
 
     def get_income_stmt(self, **kwargs):
-        return pd.DataFrame({"2025-09-27": [416_161_000_000]})
+        return pd.DataFrame({pd.Timestamp("2025-09-27"): [416_161_000_000]})
 
 class YahooBridgeTests(unittest.TestCase):
     def test_rejects_invalid_symbol_before_ever_fetching(self):
