@@ -1,168 +1,157 @@
 /**
- * External market facts for value-driver analysis, independent of filing extraction.
- * FMP credentials stay server-side. The returned source URL never carries the API key.
- * This adapter does not fabricate a consensus when the provider lacks coverage/access.
+ * Personal-use Yahoo Finance adapter. Upstream library:
+ * https://github.com/ranaroussi/yfinance (Apache-2.0)
+ *
+ * NEVER serve this feed publicly. Routes require a private bearer token.
+ * Yahoo quotes are best-effort DAILY CLOSES, not executable real-time quotes.
+ * Yahoo relative 0y/+1y forecasts are NOT vendor-dated analyst revisions.
  */
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
+
 export interface LiveQuote {
-  symbol: string; currency: string; price: number; marketCapBn: number; sharesBn: number;
-  sharesBasis: "derived_market_cap_divided_by_price";
-  observedAt: string; retrievedAt: string; source: string;
-  delayed: boolean; stale: boolean; ageMinutes: number;
+  symbol:string;currency:string;price:number;marketCapBn:number;sharesBn:number;
+  sharesBasis:"derived_market_cap_divided_by_price";
+  observedAt:string;retrievedAt:string;source:string;
+  delayed:boolean;stale:boolean;ageMinutes:number;
+  tradingDate?:string;priceBasis?:"unadjusted_daily_close";
 }
 export interface ConsensusYear {
-  periodEnd: string;
-  revenueAvgBn: number | null; revenueLowBn: number | null; revenueHighBn: number | null;
-  ebitAvgBn: number | null; ebitLowBn: number | null; ebitHighBn: number | null;
-  epsAvg: number | null; epsLow: number | null; epsHigh: number | null;
-  analystCountRevenue: number | null; analystCountEps: number | null;
+  periodEnd:string;
+  periodBasis?:"fiscal_year_inferred_from_last_reported_year"|"relative_yahoo_bucket";
+  yahooBucket?:"0y"|"+1y";
+  revenueAvgBn:number|null;revenueLowBn:number|null;revenueHighBn:number|null;
+  ebitAvgBn:number|null;ebitLowBn:number|null;ebitHighBn:number|null;
+  epsAvg:number|null;epsLow:number|null;epsHigh:number|null;
+  analystCountRevenue:number|null;analystCountEps:number|null;
+  epsTrend30dAgo?:number|null;epsRevisionsUp30d?:number|null;epsRevisionsDown30d?:number|null;
 }
 export interface LiveMarketSnapshot {
-  symbol: string; provider: "financialmodelingprep"; retrievedAt: string;
-  quote: LiveQuote | null; consensus: ConsensusYear[];
-  consensusSource: string | null;
-  consensusAsOf: string | null; // retrieval timestamp, NOT a provider-issued forecast update date
-  quoteError: string | null; consensusError: string | null;
-  status: "ready" | "partial" | "unavailable";
-  guardrails: string[];
+  symbol:string;provider:"yahoo_finance_unofficial";retrievedAt:string;
+  quote:LiveQuote|null;consensus:ConsensusYear[];
+  consensusSource:string|null;consensusAsOf:string|null;
+  quoteError:string|null;consensusError:string|null;
+  status:"ready"|"partial"|"unavailable";guardrails:string[];
 }
-export function normalizeTicker(value: string): string | null {
+export function normalizeTicker(value:string):string|null {
   const s=value.toUpperCase().trim();
-  return /^[A-Z][A-Z0-9]{0,9}(?:[.-][A-Z0-9]{1,5})?$/.test(s) ? s : null;
+  return /^[A-Z][A-Z0-9]{0,9}(?:[.-][A-Z0-9]{1,5})?$/.test(s)?s:null;
 }
 export class MarketProviderError extends Error {
   readonly code:"not_configured"|"limited_access"|"rate_limited"|"unavailable"|"invalid_response";
-  constructor(code:"not_configured"|"limited_access"|"rate_limited"|"unavailable"|"invalid_response",message?:string){
+  constructor(code:MarketProviderError["code"],message?:string){
     super(message??code);this.name="MarketProviderError";this.code=code;
   }
 }
-const SOURCE="https://site.financialmodelingprep.com/developer/docs";
-const endpoint=(path:string,symbol:string,extra:Record<string,string>={})=>{
- const u=new URL("https://financialmodelingprep.com/stable/"+path);
- u.searchParams.set("symbol",symbol);
- for(const [key,value] of Object.entries(extra))u.searchParams.set(key,value);
- return u;
+type RawRecord=Record<string,unknown>;
+const finite=(v:unknown):number|null=>typeof v==="number"&&Number.isFinite(v)?v:null;
+const positive=(v:unknown):number|null=>{const n=finite(v);return n!==null&&n>0?n:null;};
+const count=(v:unknown):number|null=>{
+ const n=finite(v);return n!==null&&Number.isInteger(n)&&n>=0&&n<=5000?n:null;
 };
-type JsonFetcher=(input:string|URL,init?:RequestInit)=>Promise<Response>;
-const numberOrNull=(v:unknown):number|null=>typeof v==="number"&&Number.isFinite(v)?v:null;
-const positive=(v:unknown):number|null=>{const n=numberOrNull(v);return n!==null&&n>0?n:null;};
-const billions=(v:unknown):number|null=>{const n=numberOrNull(v);return n!==null&&n>=0?n/1e9:null;};
-const cleanCount=(v:unknown):number|null=>{const n=numberOrNull(v);return n!==null&&Number.isInteger(n)&&n>=1&&n<=5000?n:null;};
-const iso=(date:Date)=>date.toISOString();
-async function fetchFmp(path:string,symbol:string,apiKey:string,fetcher:JsonFetcher,extra:Record<string,string>={}):Promise<Record<string,unknown>> {
- const u=endpoint(path,symbol,extra);
- u.searchParams.set("apikey",apiKey);
- let response:Response;
- try{ response=await fetcher(u.toString(),{headers:{"Accept":"application/json"},
-   redirect:"error",cache:"no-store",signal:AbortSignal.timeout(6500)});}
- catch{throw new MarketProviderError("unavailable");}
- if(response.status===401||response.status===402||response.status===403)throw new MarketProviderError("limited_access");
- if(response.status===429)throw new MarketProviderError("rate_limited");
- if(!response.ok)throw new MarketProviderError("unavailable");
- const raw=await response.text().catch(()=>{throw new MarketProviderError("invalid_response");});
- if(raw.length>200000)throw new MarketProviderError("invalid_response");
- let decoded:unknown;
- try{decoded=JSON.parse(raw);}catch{throw new MarketProviderError("invalid_response");}
- if(!Array.isArray(decoded)||!decoded.length||typeof decoded[0]!=="object"||decoded[0]===null)
-   throw new MarketProviderError("invalid_response");
- return decoded[0] as Record<string,unknown>;
-}
-async function fetchFmpArray(path:string,symbol:string,apiKey:string,fetcher:JsonFetcher,extra:Record<string,string>):Promise<Record<string,unknown>[]> {
- const u=endpoint(path,symbol,extra);
- u.searchParams.set("apikey",apiKey);
- let response:Response;
- try{response=await fetcher(u.toString(),{headers:{"Accept":"application/json"},redirect:"error",cache:"no-store",signal:AbortSignal.timeout(6500)});}
- catch{throw new MarketProviderError("unavailable");}
- if([401,402,403].includes(response.status))throw new MarketProviderError("limited_access");
- if(response.status===429)throw new MarketProviderError("rate_limited");
- if(!response.ok)throw new MarketProviderError("unavailable");
- const raw=await response.text().catch(()=>{throw new MarketProviderError("invalid_response");});
- if(raw.length>250000)throw new MarketProviderError("invalid_response");
- let rows:unknown;
- try{rows=JSON.parse(raw);}catch{throw new MarketProviderError("invalid_response");}
- if(!Array.isArray(rows))throw new MarketProviderError("invalid_response");
- return rows.filter((r):r is Record<string,unknown>=>typeof r==="object"&&r!==null).slice(0,10);
-}
-export function normalizeQuote(quote:Record<string,unknown>,profile:Record<string,unknown>,symbol:string,now:Date):LiveQuote {
- if(quote.symbol!==symbol||profile.symbol!==symbol)throw new MarketProviderError("invalid_response");
- const price=positive(quote.price),cap=positive(quote.marketCap),timestamp=numberOrNull(quote.timestamp);
- const currency=typeof profile.currency==="string"?profile.currency.trim().toUpperCase():"";
- if(!price||!cap||!timestamp||!/^[A-Z]{3}$/.test(currency))throw new MarketProviderError("invalid_response");
- // Timestamp is Unix seconds. Reject future quotes and old data (>35 days).
- const time=new Date(timestamp*1000),ageMinutes=(now.getTime()-time.getTime())/60000;
- if(!Number.isFinite(time.getTime())||ageMinutes< -5 ||ageMinutes>35*24*60)throw new MarketProviderError("invalid_response");
- const shares=cap/price/1e9;
- if(shares<=0||shares>2000)throw new MarketProviderError("invalid_response");
- return {
-   symbol,currency,price,marketCapBn:cap/1e9,sharesBn:shares,
-   sharesBasis:"derived_market_cap_divided_by_price",observedAt:iso(time),
-   retrievedAt:iso(now),
-   source:SOURCE+"/stable/quote",delayed:true,
-   stale:ageMinutes>3*24*60,ageMinutes:Math.max(0,Math.round(ageMinutes)),
- };
-}
-export function normalizeConsensus(rows:Record<string,unknown>[],symbol:string,now:Date):ConsensusYear[] {
- const output:ConsensusYear[]=[];
- // Period dates identify the forecasted fiscal year, NOT when analysts last revised estimates.
- const floorYear=now.getUTCFullYear()-1;
- for(const r of rows){
-   if(r.symbol!==symbol||typeof r.date!=="string"||!/^\d{4}-\d{2}-\d{2}$/.test(r.date))continue;
-   const year=Number(r.date.slice(0,4));
-   if(year<floorYear||year>now.getUTCFullYear()+7)continue;
-   const record:ConsensusYear={
-     periodEnd:r.date,
-     revenueAvgBn:billions(r.revenueAvg),revenueLowBn:billions(r.revenueLow),revenueHighBn:billions(r.revenueHigh),
-     ebitAvgBn:billions(r.ebitAvg),ebitLowBn:billions(r.ebitLow),ebitHighBn:billions(r.ebitHigh),
-     epsAvg:numberOrNull(r.epsAvg),epsLow:numberOrNull(r.epsLow),epsHigh:numberOrNull(r.epsHigh),
-     analystCountRevenue:cleanCount(r.numAnalystsRevenue),analystCountEps:cleanCount(r.numAnalystsEps),
-   };
-   if(record.revenueAvgBn===null&&record.ebitAvgBn===null&&record.epsAvg===null)continue;
-   if(record.revenueLowBn!==null&&record.revenueHighBn!==null&&record.revenueLowBn>record.revenueHighBn)continue;
-   if(record.revenueAvgBn!==null&&record.revenueLowBn!==null&&record.revenueHighBn!==null&&
-     (record.revenueAvgBn<record.revenueLowBn||record.revenueAvgBn>record.revenueHighBn))continue;
-   output.push(record);
+const bn=(v:unknown):number|null=>{const n=finite(v);return n!==null&&n>=0?n/1e9:null;};
+const iso=(d:Date)=>d.toISOString();
+const quotePage=(symbol:string)=>"https://finance.yahoo.com/quote/"+encodeURIComponent(symbol)+"/history/";
+const consensusPage=(symbol:string)=>"https://finance.yahoo.com/quote/"+encodeURIComponent(symbol)+"/analysis/";
+const execFileAsync=promisify(execFile);
+export async function runYfinanceBridge(symbol:string):Promise<unknown>{
+ const interpreter=process.env.PYTHON_EXECUTABLE||"python3";
+ try {
+  const {stdout}=await execFileAsync(interpreter,["scripts/yfinance_bridge.py",symbol],{
+   cwd:process.cwd(),timeout:30000,maxBuffer:180000,windowsHide:true,
+   env:{...process.env,PYTHONUNBUFFERED:"1"},shell:false,
+  });
+  if(stdout.length>150000)throw new MarketProviderError("invalid_response");
+  return JSON.parse(stdout);
+ }catch(error){
+  if(error instanceof MarketProviderError)throw error;
+  throw new MarketProviderError("unavailable");
  }
- return output.sort((a,b)=>a.periodEnd.localeCompare(b.periodEnd)).slice(0,5);
+}
+export function normalizeQuote(raw:RawRecord,symbol:string,now:Date):LiveQuote{
+ const price=positive(raw.price),cap=positive(raw.marketCap),currency=raw.currency;
+ const day=raw.tradingDate,observedAt=raw.observedAt;
+ if(!price||!cap||typeof currency!=="string"||!/^[A-Z]{3}$/.test(currency)||
+    typeof day!=="string"||!/^\d{4}-\d{2}-\d{2}$/.test(day)||
+    observedAt!==day+"T00:00:00.000Z"||raw.priceBasis!=="unadjusted_daily_close")
+   throw new MarketProviderError("invalid_response");
+ const stamp=new Date(observedAt),age=(now.getTime()-stamp.getTime())/60000;
+ if(!Number.isFinite(age)||age< -24*60||age>35*24*60)
+   throw new MarketProviderError("invalid_response");
+ const shares=cap/price/1e9;
+ if(!Number.isFinite(shares)||shares<=0||shares>2000)
+   throw new MarketProviderError("invalid_response");
+ return {symbol,currency,price,marketCapBn:cap/1e9,sharesBn:shares,
+  sharesBasis:"derived_market_cap_divided_by_price",
+  observedAt:observedAt as string,tradingDate:day,priceBasis:"unadjusted_daily_close",
+  retrievedAt:iso(now),source:quotePage(symbol),delayed:true,
+  stale:age>7*24*60,ageMinutes:Math.max(0,Math.round(age))};
+}
+export function normalizeConsensus(rows:RawRecord[],now:Date):ConsensusYear[]{
+ const out:ConsensusYear[]=[];
+ for(const r of rows.slice(0,4)){
+  const period=r.periodEnd,bucket=r.yahooBucket,basis=r.periodBasis;
+  if(typeof period!=="string"||(!/^FY\d{4}$/.test(period)&&period!=="0y"&&period!=="+1y")||
+     (bucket!=="0y"&&bucket!=="+1y")||
+     (basis!=="fiscal_year_inferred_from_last_reported_year"&&basis!=="relative_yahoo_bucket"))continue;
+  if(/^FY\d{4}$/.test(period)){
+   const y=Number(period.slice(2));
+   if(y<now.getUTCFullYear()-1||y>now.getUTCFullYear()+5)continue;
+  }
+  const item:ConsensusYear={
+   periodEnd:period,periodBasis:basis,yahooBucket:bucket,
+   revenueAvgBn:bn(r.revenueAvg),revenueLowBn:bn(r.revenueLow),revenueHighBn:bn(r.revenueHigh),
+   // Yahoo does not provide annual EBIT consensus through yfinance.
+   ebitAvgBn:null,ebitLowBn:null,ebitHighBn:null,
+   epsAvg:finite(r.epsAvg),epsLow:finite(r.epsLow),epsHigh:finite(r.epsHigh),
+   analystCountRevenue:count(r.numAnalystsRevenue),analystCountEps:count(r.numAnalystsEps),
+   epsTrend30dAgo:finite(r.epsTrend30dAgo),
+   epsRevisionsUp30d:count(r.epsRevisionsUp30d),
+   epsRevisionsDown30d:count(r.epsRevisionsDown30d),
+  };
+  if(item.revenueAvgBn===null&&item.epsAvg===null)continue;
+  if(item.revenueLowBn!==null&&item.revenueHighBn!==null&&item.revenueLowBn>item.revenueHighBn)continue;
+  if(item.revenueAvgBn!==null&&item.revenueLowBn!==null&&item.revenueAvgBn<item.revenueLowBn)continue;
+  if(item.revenueAvgBn!==null&&item.revenueHighBn!==null&&item.revenueAvgBn>item.revenueHighBn)continue;
+  if(item.epsLow!==null&&item.epsHigh!==null&&item.epsLow>item.epsHigh)continue;
+  out.push(item);
+ }
+ return out;
 }
 export async function fetchValueDriverMarketSnapshot(symbolInput:string,options?:{
-  apiKey?:string;fetcher?:JsonFetcher;now?:Date;
+  runner?:(symbol:string)=>Promise<unknown>;now?:Date;
 }):Promise<LiveMarketSnapshot>{
  const symbol=normalizeTicker(symbolInput);
  if(!symbol)throw new MarketProviderError("invalid_response","invalid_symbol");
- const key=options?.apiKey??process.env.FMP_API_KEY??"";
- if(!key)throw new MarketProviderError("not_configured");
- const now=options?.now??new Date(),fetcher=options?.fetcher??fetch;
- const [quoteResult,profileResult,consensusResult]=await Promise.allSettled([
-   fetchFmp("quote",symbol,key,fetcher),
-   fetchFmp("profile",symbol,key,fetcher),
-   fetchFmpArray("analyst-estimates",symbol,key,fetcher,{period:"annual",page:"0",limit:"6"}),
- ]);
- let quote:LiveQuote|null=null,consensus:ConsensusYear[]=[];
- let quoteError:string|null=null,consensusError:string|null=null;
- if(quoteResult.status==="fulfilled"&&profileResult.status==="fulfilled"){
-   try{quote=normalizeQuote(quoteResult.value,profileResult.value,symbol,now);}
-   catch(e){quoteError=e instanceof MarketProviderError?e.code:"invalid_response";}
- }else{
-   const err=quoteResult.status==="rejected"?quoteResult.reason:profileResult.status==="rejected"?profileResult.reason:null;
-   quoteError=err instanceof MarketProviderError?err.code:"unavailable";
+ const now=options?.now??new Date();
+ let raw:unknown;
+ try{raw=await (options?.runner??runYfinanceBridge)(symbol);}
+ catch{throw new MarketProviderError("unavailable");}
+ if(!raw||typeof raw!=="object"||Array.isArray(raw))throw new MarketProviderError("invalid_response");
+ const data=raw as RawRecord;
+ if(data.symbol!==symbol)throw new MarketProviderError("invalid_response");
+ const guarded=["Yahoo Finance via unofficial yfinance (Apache-2.0); personal research only, subject to Yahoo terms.",
+  "Price is the last available UNADJUSTED daily close, never an executable real-time quote.",
+  "Daily bar observedAt is midnight UTC on the TRADING DATE, not the timestamp of an individual trade.",
+  "Market cap and daily close may have been updated at different times; derived shares are approximate.",
+  "Yahoo 0y/+1y labels are relative fiscal-year buckets; inferred FY is not a verified period-end date.",
+  "Consensus retrievedAt is NOT a provider-issued revision date; EBIT consensus is unavailable.",
+  "Never mix share classes, listing currencies, adjusted closes or dividend-adjusted returns."];
+ let quote:LiveQuote|null=null;
+ let quoteError=typeof data.quoteError==="string"?data.quoteError:null;
+ if(data.quote&&typeof data.quote==="object"&&!Array.isArray(data.quote)){
+  try{quote=normalizeQuote(data.quote as RawRecord,symbol,now);}
+  catch{quoteError="invalid_quote_response";}
  }
- if(consensusResult.status==="fulfilled"){
-   consensus=normalizeConsensus(consensusResult.value,symbol,now);
-   if(!consensus.length)consensusError="no_covered_estimates";
- }else{
-   const e=consensusResult.reason;consensusError=e instanceof MarketProviderError?e.code:"unavailable";
- }
- return {
-   symbol,provider:"financialmodelingprep",retrievedAt:iso(now),quote,consensus,
-   consensusSource:consensus.length?SOURCE+"/stable/financial-estimates":null,
-   consensusAsOf:consensus.length?iso(now):null,
-   quoteError,consensusError,
-   status:quote&&consensus.length?"ready":quote||consensus.length?"partial":"unavailable",
-   guardrails:[
-     "FMP access and data redistribution rights depend on the subscribed plan.",
-     "Quote timestamp may be delayed; retrievedAt is NOT the market observation time.",
-     "Forecast periodEnd is the fiscal forecast period, not the consensus revision date.",
-     "Shares outstanding are inferred from price and market cap, not independently sourced share counts.",
-     "Currency is sourced from the issuer profile; do not combine different share classes or currencies.",
-   ],
- };
+ let consensus:ConsensusYear[]=[];
+ let consensusError=typeof data.consensusError==="string"?data.consensusError:null;
+ if(Array.isArray(data.consensus)){
+  consensus=normalizeConsensus(data.consensus.filter((x):x is RawRecord=>!!x&&typeof x==="object"&&!Array.isArray(x)),now);
+  if(!consensus.length)consensusError=consensusError??"no_covered_estimates";
+ }else consensusError=consensusError??"invalid_consensus_response";
+ return {symbol,provider:"yahoo_finance_unofficial",retrievedAt:iso(now),quote,consensus,
+  consensusSource:consensus.length?consensusPage(symbol):null,
+  consensusAsOf:consensus.length?iso(now):null,
+  quoteError,consensusError,status:quote&&consensus.length?"ready":quote||consensus.length?"partial":"unavailable",
+  guardrails:guarded};
 }
