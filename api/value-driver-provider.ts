@@ -30,8 +30,9 @@ export function normalizeTicker(value: string): string | null {
   return /^[A-Z][A-Z0-9]{0,9}(?:[.-][A-Z0-9]{1,5})?$/.test(s) ? s : null;
 }
 export class MarketProviderError extends Error {
-  constructor(public readonly code:"not_configured"|"limited_access"|"rate_limited"|"unavailable"|"invalid_response",message?:string){
-    super(message??code);this.name="MarketProviderError";
+  readonly code:"not_configured"|"limited_access"|"rate_limited"|"unavailable"|"invalid_response";
+  constructor(code:"not_configured"|"limited_access"|"rate_limited"|"unavailable"|"invalid_response",message?:string){
+    super(message??code);this.name="MarketProviderError";this.code=code;
   }
 }
 const SOURCE="https://site.financialmodelingprep.com/developer/docs";
