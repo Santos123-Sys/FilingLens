@@ -9,6 +9,7 @@ import type {
 } from "@contracts/analysis";
 import { formatFilingNumber, formatKpiValue } from "@/lib/number-format";
 import { alignSegmentSeries } from "@/lib/segment-series";
+import ValueDriverIntelligence from "./ValueDriverIntelligence";
 
 import { computeFinancialMetrics } from "@contracts/financial-metrics";
 import { FINANCIAL_INDICATORS } from "@contracts/financial-indicators";
@@ -864,7 +865,7 @@ export default function Dashboard({ data, lang }: Props) {
     URL.revokeObjectURL(url);
   };
 
-  const tabs = [t.overview, t.market, t.risks, t.financials, t.events];
+  const tabs = [t.overview, t.market, t.risks, t.financials, t.events, lang === "pt" ? "Direcionadores de valor" : "Value drivers"];
   const sourceLine = [
     data.company.filingType,
     data.jurisdiction === "br" ? data.metadata.cnpj : data.metadata.cik,
@@ -1764,6 +1765,8 @@ export default function Dashboard({ data, lang }: Props) {
                 {availableMetrics.length === 0 && <EmptyState>{moduleMessage("financials", t.noFinancials)}</EmptyState>}
               </div>
             )}
+
+            {tab === 5 && <ValueDriverIntelligence key={`${data.company.name}-${data.company.periodEnd}`} data={data} lang={lang} />}
 
             {tab === 4 && (
               <div>
