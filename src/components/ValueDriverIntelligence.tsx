@@ -1,0 +1,179 @@
+import { useMemo, useState } from "react";
+import type { FilingAnalysis } from "../../contracts/analysis";
+import {
+  analyzeDrivers, reverseDcfGrowth, runDcf, scenario,
+  type ValuationInputs, type DriverKey, type DriverSpec, DEFAULT_DRIVER_SPECS,
+  type Uncertainty,
+} from "../../contracts/value-driver-intelligence";
+import { APPLE_2026_CASE, APPLE_ANALYST_ASSUMPTIONS, APPLE_MARKET_EV_BN } from "../data/apple-value-driver-case";
+
+type Props = { lang?: "en" | "pt"; data?: FilingAnalysis };
+type Anchor = { name: string; year: string; source: string | null; revenueBn: number; marginPct: number; netDebtBn: number | null; currency: string; warning: string | null; financialInstitution: boolean };
+type Quote = { price: string; sharesBn: string; date: string; url: string };
+const money = (v: number, currency: string) => `${currency} ${v.toLocaleString("en-US", { maximumFractionDigits: 2 })}B`;
+const pct = (v: number) => `${v >= 0 ? "+" : ""}${v.toFixed(1)}%`;
+const displayNum = (v: number) => Number.isFinite(v) ? v.toFixed(2) : "—";
+const apple = APPLE_2026_CASE;
+const DEFAULT_QUOTE: Quote = { price: "", sharesBn: "", date: "", url: "" };
+const NUMBER_PATTERN = /\b(million|millions|milh[oõ]es|usd mm|brl mm|r\$ milh[oõ]es)\b/i;
+
+function fromFiling(data: FilingAnalysis): Anchor | null {
+  const f = data.financials;
+  const hist = f.annualHistory;
+  const annualForm = /10-k|20-f|\bdfp\b|annual/i.test(data.company.filingType);
+  const series = hist ?? (annualForm ? f : null);
+  if (!series || !NUMBER_PATTERN.test(series.unit || f.unit)) return null;
+  const i = series.years.length - 1;
+  const revenue = series.revenue[i], ebit = series.ebit?.[i];
+  if (typeof revenue !== "number" || !Number.isFinite(revenue) || revenue <= 0 ||
+      typeof ebit !== "number" || !Number.isFinite(ebit)) return null;
+  const annualHistory = !!hist;
+  const debt = annualHistory ? hist.totalDebt[i] : f.totalDebt?.[i];
+  const cash = annualHistory ? hist.cash[i] : f.cash?.[i];
+  const netDebt = typeof debt === "number" && typeof cash === "number" ? (debt - cash) / 1000 : null;
+  const source = annualHistory ? (hist.sources.find(s => s.url)?.url ?? null) :
+    (f.evidence?.find(e => /revenue|ebit|operatingIncome/i.test(e.metric) && e.source.url)?.source.url ?? null);
+  const warn = netDebt !== null ? "Net debt uses disclosed interest-bearing debt less cash only; excess securities and other bridge items may be omitted." :
+    "Missing verified debt/cash bridge: enterprise-value sensitivities only until completed.";
+  return {
+    name: data.company.name, year: series.years[i], source, revenueBn: revenue / 1000,
+    marginPct: ebit / revenue * 100, netDebtBn: netDebt, currency: data.jurisdiction === "br" ? "BRL" : "USD",
+    warning: warn, financialInstitution: /\b(bank|banco|banking|insurance|seguradora|insurer|reit)\b/i.test(data.market.industry),
+  };
+}
+const sliderFields: { key: DriverKey; en: string; pt: string; min: number; max: number; step: number }[] = [
+  { key: "growthPct", en: "Initial annual revenue growth", pt: "Crescimento inicial de receita", min: -5, max: 30, step: 0.5 },
+  { key: "operatingMarginPct", en: "Sustainable operating margin", pt: "Margem operacional sustentável", min: 5, max: 55, step: 0.5 },
+  { key: "cashTaxPct", en: "Modeled cash tax rate", pt: "Alíquota efetiva de caixa", min: 5, max: 40, step: 0.5 },
+  { key: "reinvestmentPct", en: "Forecast reinvestment / NOPAT", pt: "Reinvestimento projetado / NOPAT", min: 0, max: 60, step: 1 },
+  { key: "waccPct", en: "Weighted cost of capital", pt: "Custo médio de capital (WACC)", min: 4, max: 16, step: 0.25 },
+  { key: "terminalGrowthPct", en: "Perpetual growth", pt: "Crescimento perpétuo", min: 0, max: 5, step: 0.25 },
+  { key: "terminalRoicPct", en: "Terminal return on new capital", pt: "Retorno terminal sobre novo capital", min: 8, max: 40, step: 1 },
+];
+const CALL_OUT = "rounded-lg border border-slate-700 bg-slate-900/60 p-3";
+const small = "text-xs leading-relaxed text-slate-400";
+const label = "block text-xs font-semibold text-slate-300";
+const field = "w-full rounded-md border border-slate-600 bg-slate-950 px-2 py-1.5 text-sm text-white focus:border-cyan-400 focus:outline-none";
+const uncertaintyKeys: Uncertainty[] = ["unrated", "low", "medium", "high"];
+
+export default function ValueDriverIntelligence({ data, lang = "en" }: Props) {
+  const pt = lang === "pt";
+  const anchor = useMemo(() => data ? fromFiling(data) : null, [data]);
+  const demo = !data;
+  const inputsInitial: ValuationInputs = anchor ? {
+    ...APPLE_ANALYST_ASSUMPTIONS, revenueBn: anchor.revenueBn,
+    operatingMarginPct: anchor.marginPct, netDebtBn: anchor.netDebtBn ?? 0, sharesBn: 1,
+  } : APPLE_ANALYST_ASSUMPTIONS;
+  const [params, setParams] = useState<ValuationInputs>(inputsInitial);
+  const [quote, setQuote] = useState<Quote>(demo
+    ? { price: String(apple.market.closeUsd), sharesBn: String(apple.market.sharesBn), date: apple.market.asOf, url: apple.market.url }
+    : DEFAULT_QUOTE);
+  const [uncertainty, setUncertainty] = useState<Record<string, Uncertainty>>({});
+  const [bridge, setBridge] = useState(anchor?.netDebtBn === null ? "" : String(anchor?.netDebtBn ?? APPLE_ANALYST_ASSUMPTIONS.netDebtBn));
+  const [showProjection, setShowProjection] = useState(false);
+  const current = data ? anchor : { name: apple.identity.name, year: apple.annual.period, source: apple.annual.url, revenueBn: apple.annual.revenueBn, marginPct: apple.annual.operatingMarginPct, netDebtBn: APPLE_ANALYST_ASSUMPTIONS.netDebtBn, currency: "USD", warning: apple.capitalBridge.limitation, financialInstitution: false };
+  const bridgeNumber = bridge.trim() === "" ? null : Number(bridge);
+  const price = quote.price.trim() && Number(quote.price) > 0 ? Number(quote.price) : null;
+  const shares = quote.sharesBn.trim() && Number(quote.sharesBn) > 0 ? Number(quote.sharesBn) : null;
+  const quoteValid = price !== null && shares !== null && !!/^\d{4}-\d{2}-\d{2}$/.exec(quote.date) &&
+    /^https:\/\//i.test(quote.url) && bridgeNumber !== null && Number.isFinite(bridgeNumber);
+  const p = { ...params, netDebtBn: bridgeNumber ?? 0, sharesBn: shares ?? 1 };
+  const valuation = useMemo(() => { try { return { result: runDcf(p), error: null }; } catch (e) { return { result: null, error: (e as Error).message }; } }, [p.revenueBn, p.growthPct, p.operatingMarginPct, p.cashTaxPct, p.reinvestmentPct, p.waccPct, p.terminalGrowthPct, p.terminalRoicPct, p.netDebtBn, p.sharesBn, p.horizonYears]);
+  const specs: DriverSpec[] = DEFAULT_DRIVER_SPECS.map(s => ({ ...s, uncertainty: uncertainty[s.key] ?? "unrated" }));
+  const ranking = valuation.result ? analyzeDrivers(p, specs) : [];
+  const observedEv = quoteValid ? price! * shares! + bridgeNumber! : null;
+  const reverse = valuation.result ? reverseDcfGrowth(p, observedEv) : null;
+  const scenarios = valuation.result ? [
+    { name: pt ? "Baixa" : "Bear", changes: { growthPct: p.growthPct - 3, operatingMarginPct: p.operatingMarginPct - 3, waccPct: p.waccPct + 1 } },
+    { name: pt ? "Base" : "Base", changes: {} },
+    { name: pt ? "Alta" : "Bull", changes: { growthPct: p.growthPct + 3, operatingMarginPct: p.operatingMarginPct + 3, waccPct: p.waccPct - 1 } },
+  ].map(x => { try { return { ...x, result: scenario(p, x.changes).enterpriseValueBn }; } catch { return { ...x, result: null }; } }) : [];
+  const setParam = (key: DriverKey, value: number) => setParams(x => ({ ...x, [key]: value }));
+  if (!current) return <section className={CALL_OUT} role="status">
+    <h3 className="font-semibold text-cyan-200">{pt ? "Dados anuais insuficientes" : "Insufficient annual data"}</h3>
+    <p className={small}>{pt ? "Requer receita e EBIT anuais identificados, com unidade em milhões. Não convertemos trimestres em anos implicitamente." : "Requires sourced annual revenue and operating income in millions. Quarterly/YTD data is not silently annualized."}</p>
+    <a className="mt-2 inline-block text-sm text-cyan-300 underline" href="/value-drivers/apple">{pt ? "Ver estudo Apple" : "View the Apple case study"}</a>
+  </section>;
+  if (current.financialInstitution) return <section className={CALL_OUT} role="status">
+    <h3 className="font-semibold text-amber-200">{pt ? "Modelo industrial inadequado" : "Industrial FCFF model inapplicable"}</h3>
+    <p className={small}>{pt ? "Bancos, seguradoras e REITs precisam de modelos próprios de patrimônio/capital regulatório." : "Banks, insurers and REITs require sector-specific equity and regulatory capital valuation models."}</p>
+  </section>;
+
+  return <section className="space-y-5" aria-label="Value Driver Intelligence">
+    <div className="rounded-xl border border-cyan-600/30 bg-cyan-950/20 p-4">
+      <div className="mb-2 flex flex-wrap items-center gap-2"><h3 className="text-lg font-bold text-white">{pt ? "Inteligência de Direcionadores de Valor" : "Value Driver Intelligence"}</h3><span className="rounded-full border border-cyan-500/30 px-2 py-1 text-[10px] font-bold text-cyan-200">{demo ? "APPLE SEC CASE • FROZEN SNAPSHOT" : "FILING-SOURCED / ANALYST INPUTS"}</span></div>
+      <p className={small}>{pt ? "Demonstrações históricas são fatos; taxas, cenários e DCF são hipóteses editáveis, não guidance nem consenso de analistas." : "Historical filing facts are separate from analyst-selectable forecasts. DCF, scenarios and reverse DCF are NOT consensus estimates, company guidance or a stock-price prediction."}</p>
+      <div className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-4">
+        <div className={CALL_OUT}><div className={small}>{pt ? "Companhia" : "Company"}</div><strong className="text-white">{current.name}</strong></div>
+        <div className={CALL_OUT}><div className={small}>{pt ? "Base anual" : "Annual base"}</div><strong className="text-white">{current.year}</strong></div>
+        <div className={CALL_OUT}><div className={small}>{pt ? "Receita reportada" : "Reported revenue"}</div><strong className="text-white">{money(current.revenueBn, current.currency)}</strong></div>
+        <div className={CALL_OUT}><div className={small}>{pt ? "Margem EBIT histórica" : "Historical EBIT margin"}</div><strong className="text-white">{current.marginPct.toFixed(1)}%</strong></div>
+      </div>
+      {current.source && <p className="mt-2 text-xs text-slate-400"><a href={current.source} rel="noopener noreferrer" target="_blank" className="text-cyan-300 underline">{pt ? "Fonte das demonstrações" : "Historical filing source"}</a></p>}
+      {current.warning && <p className="mt-2 text-xs text-amber-200">{current.warning}</p>}
+    </div>
+    {demo && <div className="rounded-lg border border-amber-500/30 bg-amber-900/10 p-3 text-sm text-amber-100">
+      <strong>{pt ? "Sinal de normalização:" : "Normalization watch:"}</strong>{" "}
+      {pt ? "Margem bruta trimestral de 50,1% em FY2026 Q3 incluiu ~2 p.p. de reembolsos tarifários; não os capitalize automaticamente como recorrentes." : "FY2026 Q3 gross margin was 50.1%, including approximately 2 percentage points from tariff refunds. Do not mechanically extrapolate that temporary benefit."}{" "}
+      <a href={apple.quarterly.url} target="_blank" rel="noopener noreferrer" className="underline text-cyan-300">SEC 10-Q</a>
+    </div>}
+    <div className="grid gap-4 xl:grid-cols-2">
+      <div className="space-y-4 rounded-xl border border-slate-700 bg-slate-800/30 p-4">
+        <div className="flex items-center justify-between gap-3"><h4 className="font-semibold text-white">{pt ? "Hipóteses do modelo" : "Analyst forecast assumptions"}</h4><button type="button" className="text-xs text-cyan-300 underline" onClick={() => { setParams(inputsInitial); setBridge(anchor?.netDebtBn === null ? "" : String(anchor?.netDebtBn ?? APPLE_ANALYST_ASSUMPTIONS.netDebtBn)); }}>{pt ? "Restaurar" : "Reset"}</button></div>
+        {sliderFields.map(f => <label key={f.key} className="block">
+          <div className="mb-1 flex justify-between gap-2 text-xs"><span className="text-slate-300">{pt ? f.pt : f.en}</span><strong className="text-white">{params[f.key].toFixed(f.step < 1 ? 2 : 0)}%</strong></div>
+          <input type="range" className="w-full accent-cyan-400" min={f.min} max={f.max} step={f.step} value={params[f.key]} onChange={e => setParam(f.key, Number(e.target.value))}/>
+        </label>)}
+        <p className={small}>{pt ? "Crescimento inicial na primeira metade de 10 anos; convergência ao crescimento terminal nos anos restantes. Fluxo ao acionista = valor empresarial − dívida líquida." : "Growth holds during the first half of the 10-year forecast and fades thereafter. Terminal reinvestment is tied to terminal growth / terminal ROIC; explicit-year reinvestment is a separate scenario assumption."}</p>
+        {valuation.error && <p role="alert" className="rounded-md border border-rose-500/40 p-2 text-sm text-rose-200">{valuation.error}</p>}
+      </div>
+      <div className="space-y-4 rounded-xl border border-slate-700 bg-slate-800/30 p-4">
+        <h4 className="font-semibold text-white">{pt ? "Preço de mercado e estrutura de capital" : "Market observation and equity bridge"}</h4>
+        <div className="grid grid-cols-2 gap-3">
+          <label className={label}>{pt ? "Fechamento (moeda/ação)" : "Share close (currency/share)"}<input className={field} type="number" min="0.01" step="0.01" value={quote.price} onChange={e=>setQuote(x=>({...x,price:e.target.value}))}/></label>
+          <label className={label}>{pt ? "Ações (bilhões)" : "Shares (billions)"}<input className={field} type="number" min="0.001" step="0.001" value={quote.sharesBn} onChange={e=>setQuote(x=>({...x,sharesBn:e.target.value}))}/></label>
+          <label className={label}>{pt ? "Data do preço" : "Market close date"}<input className={field} type="date" value={quote.date} onChange={e=>setQuote(x=>({...x,date:e.target.value}))}/></label>
+          <label className={label}>{pt ? "Dívida líquida (bilhões)" : "Net debt (billions)"}<input className={field} type="number" step="0.001" placeholder="Required; negative = net cash" value={bridge} onChange={e=>setBridge(e.target.value)}/></label>
+        </div>
+        <label className={label}>{pt ? "URL da cotação (obrigatória)" : "Public quote source URL (required)"}<input className={field} type="url" value={quote.url} placeholder="https://..." onChange={e=>setQuote(x=>({...x,url:e.target.value}))}/></label>
+        <p className={small}>{pt ? "Cotação fornecida manualmente; nenhum feed ao vivo. Dívida líquida negativa significa caixa líquido. Somente quote datada com fonte libera reverse DCF." : "Manual, dated market snapshot; no live-price feed. Negative net debt indicates net cash. Reverse DCF is disabled until price, shares, dated source and debt bridge are provided."}</p>
+        {demo && <p className={small}>{pt ? "Dados Apple" : "Apple real-data inputs"}: <a target="_blank" rel="noopener noreferrer" className="text-cyan-300 underline" href={apple.market.url}>2026-10-09 quote</a> · <a target="_blank" rel="noopener noreferrer" className="text-cyan-300 underline" href={apple.capitalBridge.url}>2026-06-27 SEC balance sheet</a>. {pt ? "Dados com datas diferentes." : "Different observation dates."}</p>}
+        {valuation.result && <div className="grid grid-cols-2 gap-3">
+          <div className={CALL_OUT}><p className={small}>{pt ? "Valor empresarial modelado" : "Modeled enterprise value"}</p><strong className="text-lg text-white">{money(valuation.result.enterpriseValueBn, current.currency)}</strong></div>
+          <div className={CALL_OUT}><p className={small}>{pt ? "Peso do valor terminal" : "PV of terminal value"}</p><strong className="text-lg text-white">{valuation.result.terminalSharePct.toFixed(1)}%</strong></div>
+          <div className={CALL_OUT}><p className={small}>{pt ? "Preço justo hipotético" : "Modeled value / share"}</p><strong className="text-lg text-white">{shares && bridgeNumber !== null ? `${current.currency} ${displayNum(valuation.result.impliedSharePrice)}` : "—"}</strong></div>
+          <div className={CALL_OUT}><p className={small}>{pt ? "EV observado, derivado" : "Observed implied EV"}</p><strong className="text-lg text-white">{observedEv !== null ? money(observedEv, current.currency) : "—"}</strong></div>
+        </div>}
+      </div>
+    </div>
+    {valuation.result && <>
+      <div className="grid gap-4 md:grid-cols-2">
+        <article className={CALL_OUT}><h4 className="mb-2 text-sm font-semibold text-white">{pt ? "Reverse DCF: expectativa implícita" : "Reverse DCF: market-implied growth"}</h4>
+          <p className="text-2xl font-bold text-cyan-200">{reverse?.impliedGrowthPct === null || reverse?.impliedGrowthPct === undefined ? "—" : `${reverse.impliedGrowthPct.toFixed(2)}%`}</p>
+          <p className={small}>{reverse?.explanation ?? "Unavailable"}</p>
+          {observedEv !== null && <p className="mt-2 text-xs text-slate-400">{pt ? "Variação versus base" : "Difference vs analyst assumption"}: {reverse?.impliedGrowthPct == null ? "—" : `${(reverse.impliedGrowthPct - params.growthPct).toFixed(2)} pp`}</p>}
+        </article>
+        <article className={CALL_OUT}><h4 className="mb-2 text-sm font-semibold text-white">{pt ? "Cenários conjuntos" : "Joint-parameter scenarios"}</h4>
+          <div className="space-y-2">{scenarios.map(s => <div key={s.name} className="flex justify-between gap-3 border-b border-slate-700 pb-1 text-sm"><span className="text-slate-300">{s.name}</span><strong className="text-white">{s.result === null ? "Not valid" : money(s.result, current.currency)}</strong></div>)}</div>
+          <p className={`mt-2 ${small}`}>{pt ? "Baixa/alta: crescimento ±3 p.p., margem ±3 p.p. e WACC ∓1 p.p. Não são probabilidades." : "Bear/bull: growth ±3pp, margin ±3pp, WACC ∓1pp. Scenarios are assumptions, not probability-weighted forecasts."}</p>
+        </article>
+      </div>
+      <article className="rounded-xl border border-slate-700 bg-slate-800/30 p-4">
+        <h4 className="text-base font-semibold text-white">{pt ? "Ranking de materialidade" : "Value-driver materiality ranking"}</h4>
+        <p className={`mt-1 ${small}`}>{pt ? "Sensibilidade determinística de um fator por vez. Choques têm magnitudes e probabilidades diferentes; classificação de incerteza é manual." : "Deterministic one-at-a-time enterprise-value sensitivities. Shocks vary in scale and likelihood: the ranking is NOT a probability-weighted risk score. Rate uncertainty manually."}</p>
+        <div className="mt-3 overflow-x-auto"><table className="w-full min-w-[700px] text-left text-xs">
+          <thead className="border-b border-slate-600 text-slate-400"><tr><th className="py-2 pr-3">#</th><th className="pr-3">{pt ? "Direcionador" : "Driver"}</th><th className="pr-3">{pt ? "Choque" : "Shock"}</th><th className="pr-3">{pt ? "EV: choque −" : "EV: −shock"}</th><th className="pr-3">{pt ? "EV: choque +" : "EV: +shock"}</th><th className="pr-3">{pt ? "Incerteza" : "Uncertainty"}</th></tr></thead>
+          <tbody>{ranking.map((r, i) => <tr key={r.key} className="border-b border-slate-700/60 text-slate-200"><td className="py-2 pr-3">{i+1}</td><td className="pr-3 font-semibold" title={r.rationale}>{r.name}</td><td className="pr-3">±{r.shock}pp</td><td className="pr-3">{r.minusImpactPct === null ? "—" : pct(r.minusImpactPct)}</td><td className="pr-3">{r.plusImpactPct === null ? "—" : pct(r.plusImpactPct)}</td><td className="pr-3"><label><span className="sr-only">{r.name} uncertainty</span><select className="rounded border border-slate-600 bg-slate-900 p-1 text-slate-200" value={uncertainty[r.key] ?? "unrated"} onChange={e=>setUncertainty(x=>({...x,[r.key]:e.target.value as Uncertainty}))}>{uncertaintyKeys.map(u=><option key={u} value={u}>{u}</option>)}</select></label></td></tr>)}</tbody>
+        </table></div>
+        <div className="mt-3 space-y-2">
+          {ranking.slice(0,3).map(r=><div key={r.key} className="flex items-center gap-2 text-xs"><span className="w-32 truncate text-slate-300" title={r.name}>{r.name}</span><div className="h-2 flex-1 overflow-hidden rounded bg-slate-700"><div className="h-full rounded bg-cyan-500" style={{ width: `${100 * r.maxAbsImpactPct / Math.max(0.001,ranking[0]?.maxAbsImpactPct || 1)}%` }}/></div><span className="w-16 text-right text-slate-300">{r.maxAbsImpactPct.toFixed(1)}%</span></div>)}
+        </div>
+        <p className={`mt-3 ${small}`}>{pt ? "Priorize alta sensibilidade + alta incerteza quando houver evidência adicional pesquisável; riscos regulatórios ou de cauda seguem em monitoramento separado." : "Research priority is strongest when sensitivity AND genuine uncertainty are high and incremental research can resolve it. Tail risks remain separate; this tool does not silently score researchability."}</p>
+      </article>
+      <div className={CALL_OUT}>
+        <button type="button" className="text-sm font-semibold text-cyan-300 underline" aria-expanded={showProjection} onClick={()=>setShowProjection(x=>!x)}>{showProjection ? (pt ? "Ocultar projeções" : "Hide projection detail") : (pt ? "Ver projeção anual auditável" : "Show auditable forecast schedule")}</button>
+        {showProjection && <div className="mt-3 overflow-x-auto"><table className="w-full min-w-[570px] text-right text-xs text-slate-300"><thead><tr><th>Year</th><th>Growth</th><th>Revenue ({current.currency} B)</th><th>NOPAT</th><th>Reinvested</th><th>FCFF</th><th>PV FCFF</th></tr></thead><tbody>{valuation.result.years.map(y=><tr key={y.year} className="border-t border-slate-700"><td>{y.year}</td><td>{y.growthPct.toFixed(1)}%</td><td>{y.revenueBn.toFixed(1)}</td><td>{y.nopatBn.toFixed(1)}</td><td>{y.reinvestmentBn.toFixed(1)}</td><td>{y.fcffBn.toFixed(1)}</td><td>{y.presentValueBn.toFixed(1)}</td></tr>)}</tbody></table></div>}
+      </div>
+    </>}
+  </section>;
+}
