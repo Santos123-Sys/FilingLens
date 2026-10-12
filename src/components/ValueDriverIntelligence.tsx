@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import type { FilingAnalysis } from "../../contracts/analysis";
+import { annualValueDriverSignals } from "../../contracts/value-driver-signals";
 import {
   analyzeDrivers, reverseDcfGrowth, runDcf, scenario,
   type ValuationInputs, type DriverKey, type DriverSpec, DEFAULT_DRIVER_SPECS,
@@ -60,6 +61,7 @@ export default function ValueDriverIntelligence({ data, lang = "en" }: Props) {
   const pt = lang === "pt";
   const anchor = useMemo(() => data ? fromFiling(data) : null, [data]);
   const demo = !data;
+  const signals = useMemo(() => data ? annualValueDriverSignals(data) : [], [data]);
   const inputsInitial: ValuationInputs = anchor ? {
     ...APPLE_ANALYST_ASSUMPTIONS, revenueBn: anchor.revenueBn,
     operatingMarginPct: anchor.marginPct, netDebtBn: anchor.netDebtBn ?? 0, sharesBn: 1,
@@ -117,6 +119,25 @@ export default function ValueDriverIntelligence({ data, lang = "en" }: Props) {
       {pt ? "Margem bruta trimestral de 50,1% em FY2026 Q3 incluiu ~2 p.p. de reembolsos tarifários; não os capitalize automaticamente como recorrentes." : "FY2026 Q3 gross margin was 50.1%, including approximately 2 percentage points from tariff refunds. Do not mechanically extrapolate that temporary benefit."}{" "}
       <a href={apple.quarterly.url} target="_blank" rel="noopener noreferrer" className="underline text-cyan-300">SEC 10-Q</a>
     </div>}
+    {demo && <article className={CALL_OUT}>
+      <h4 className="mb-2 text-sm font-semibold text-white">{pt ? "Mapa causal — fatos trimestrais" : "Operating-driver evidence map — reported Q3 facts"}</h4>
+      <div className="grid gap-2 sm:grid-cols-3">
+        <div className={CALL_OUT}><strong className="text-white">iPhone {((apple.quarterly.iphoneSalesBn/44.582-1)*100).toFixed(1)}% YoY</strong><p className={small}>{pt ? "Vendas de iPhone sustentam receita. Pesquisar volumes, preços e ciclo de troca." : "Revenue exposure: test upgrade volumes, prices and replacement cycle."}</p></div>
+        <div className={CALL_OUT}><strong className="text-white">Services {((apple.quarterly.servicesSalesBn/27.423-1)*100).toFixed(1)}% YoY</strong><p className={small}>{pt ? "Investigar persistência do crescimento, App Store e margens." : "Test recurring growth durability, App Store regulation, and mix-driven margins."}</p></div>
+        <div className={CALL_OUT}><strong className="text-white">50.1% → ~48.1%</strong><p className={small}>{pt ? "Margem bruta trimestral reportada menos o efeito indicado de restituições tarifárias; aproximação, não guidance." : "Reported Q3 gross margin minus disclosed approximate tariff-refund benefit; not a management forecast."}</p></div>
+      </div>
+      <p className={`mt-2 ${small}`}><a href={apple.quarterly.url} className="text-cyan-300 underline" rel="noopener noreferrer" target="_blank">SEC FY2026 Q3 10-Q</a> · {pt ? "Drivers operacionais são hipóteses a investigar, não causalidade demonstrada." : "The research questions are causal hypotheses, not conclusions established by these figures."}</p>
+    </article>}
+    {signals.length > 0 && <article className={CALL_OUT}>
+      <h4 className="mb-1 text-sm font-semibold text-white">{pt ? "Mudanças detectadas nos relatórios anuais" : "New-filing driver change signals"}</h4>
+      <p className={small}>{pt ? "Comparações entre exercícios fornecidos, calculadas localmente; revisão ao analisar novo documento, sem monitoramento automático." : "Local comparisons of sourced annual periods; recalculated when a new filing is analyzed. No background polling or live alerts."}</p>
+      <div className="mt-3 grid gap-2 sm:grid-cols-2">{signals.map(signal => <div key={signal.metric} className="rounded-md border border-slate-700 p-3 text-sm">
+        <div className="flex items-center justify-between gap-2"><strong className="text-white">{signal.title}</strong><span className={signal.material ? "text-amber-300" : "text-slate-400"}>{signal.material ? (pt ? "Investigar" : "Review") : (pt ? "Acompanhar" : "Track")}</span></div>
+        <p className="mt-1 text-slate-200">{pct(signal.delta)} {signal.unit === "percentage_points" ? "pp (change)" : "YoY"} · {signal.previousPeriod} → {signal.currentPeriod}</p>
+        <p className={small}>{signal.interpretation}</p>
+        {signal.evidenceUrl && <a href={signal.evidenceUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-cyan-300 underline">{pt ? "Fonte" : "Filing source"}</a>}
+      </div>)}</div>
+    </article>}
     <div className="grid gap-4 xl:grid-cols-2">
       <div className="space-y-4 rounded-xl border border-slate-700 bg-slate-800/30 p-4">
         <div className="flex items-center justify-between gap-3"><h4 className="font-semibold text-white">{pt ? "Hipóteses do modelo" : "Analyst forecast assumptions"}</h4><button type="button" className="text-xs text-cyan-300 underline" onClick={() => { setParams(inputsInitial); setBridge(anchor?.netDebtBn === null ? "" : String(anchor?.netDebtBn ?? APPLE_ANALYST_ASSUMPTIONS.netDebtBn)); }}>{pt ? "Restaurar" : "Reset"}</button></div>
