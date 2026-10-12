@@ -187,6 +187,35 @@ export default function ValueDriverIntelligence({ data, lang = "en" }: Props) {
       {current.source && <p className="mt-2 text-xs text-slate-400"><a href={current.source} rel="noopener noreferrer" target="_blank" className="text-cyan-300 underline">{pt ? "Fonte das demonstrações" : "Historical filing source"}</a></p>}
       {current.warning && <p className="mt-2 text-xs text-amber-200">{current.warning}</p>}
     </div>
+    <article className={CALL_OUT} aria-label="External market data and monitoring">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h4 className="text-sm font-semibold text-white">{pt ? "Mercado e consenso — provedor ao vivo" : "Quotes and consensus — live provider"}</h4>
+        <span className={liveState==="ready"?"text-xs text-emerald-300":"text-xs text-amber-300"}>{liveState} · {providerSymbol||"—"}</span>
+      </div>
+      <p className={small}>{pt ? "Consulta a cada cinco minutos, com horário de negociação e data de extração explícitos." : "Polls every five minutes while visible. Quote observation time and data retrieval time are different."}</p>
+      {providerIssue && <p role="status" className="mt-2 text-xs text-amber-300">{pt?"Fonte de dados atuais indisponível":"Live feed unavailable"}: {providerIssue}. {pt?"Os dados históricos não são cotação atual.":"Historical fixtures are not live quotes."}</p>}
+      {liveSnapshot?.quote && <div className="mt-3 grid gap-2 sm:grid-cols-3">
+        <div className={CALL_OUT}><p className={small}>{pt?"Preço observado":"Observed quote"}</p><p className="text-lg font-semibold text-white">{liveSnapshot.quote.currency} {liveSnapshot.quote.price.toFixed(2)}</p><p className={small}>{liveSnapshot.quote.observedAt} UTC</p></div>
+        <div className={CALL_OUT}><p className={small}>{pt?"Capitalização fornecida":"Provider market cap"}</p><p className="text-lg font-semibold text-white">{money(liveSnapshot.quote.marketCapBn,liveSnapshot.quote.currency)}</p><p className={small}>{pt?"Ações implícitas, não reportadas":"Derived shares, not reported"}: {liveSnapshot.quote.sharesBn.toFixed(3)}B</p></div>
+        <div className={CALL_OUT}><p className={small}>{liveSnapshot.quote.stale?(pt?"Preço desatualizado":"Stale quote"):(pt?"Horário validado":"Timestamp validated")}</p><p className={small}>{liveSnapshot.quote.ageMinutes} min · {pt?"Dados podem ter atraso contratual":"Provider delay depends on data plan"}</p>
+          <button type="button" disabled={liveSnapshot.quote.stale||liveSnapshot.quote.currency!==expectedCurrency} className="mt-2 rounded bg-cyan-800 px-2 py-1 text-xs text-white disabled:opacity-40" onClick={()=>{
+            const q=liveSnapshot.quote!;manualQuoteOverride.current=false;
+            setQuote({price:String(q.price),sharesBn:String(q.sharesBn),date:q.observedAt.slice(0,10),url:q.source});
+          }}>{pt?"Usar preço observado":"Use observed quote"}</button>
+        </div>
+      </div>}
+      {!!liveSnapshot?.consensus.length && <div className="mt-3 overflow-x-auto">
+        <h5 className="text-xs font-semibold text-slate-100">{pt?"Consenso anual do provedor":"Provider annual analyst consensus"}</h5>
+        <p className={small}>{pt?"Obtido em":"Retrieved"} {liveSnapshot.consensusAsOf}; {pt?"não é a data de revisão das estimativas.":"not the analyst forecast revision date."}</p>
+        <table className="mt-2 w-full min-w-[500px] text-right text-xs text-slate-300"><thead><tr className="border-b border-slate-600"><th className="py-2 text-left">{pt?"Ano fiscal":"Fiscal end"}</th><th>{pt?"Receita (bi)":"Revenue (B)"}</th><th>EBIT (B)</th><th>EPS</th><th>{pt?"Analistas":"Analysts"} Rev/EPS</th></tr></thead><tbody>{liveSnapshot.consensus.map(y=><tr key={y.periodEnd} className="border-b border-slate-800"><td className="py-2 text-left">{y.periodEnd}</td><td>{y.revenueAvgBn?.toFixed(2)??"—"}</td><td>{y.ebitAvgBn?.toFixed(2)??"—"}</td><td>{y.epsAvg?.toFixed(2)??"—"}</td><td>{y.analystCountRevenue??"—"} / {y.analystCountEps??"—"}</td></tr>)}</tbody></table>
+      </div>}
+      {liveSnapshot?.consensusError && <p className="mt-2 text-xs text-amber-300">{pt?"Consenso indisponível":"Consensus unavailable"}: {liveSnapshot.consensusError}. {pt?"Nenhuma estimativa inventada.":"No inferred estimates."}</p>}
+      <div className="mt-3 border-t border-slate-700 pt-2">
+        <h5 className="text-xs font-semibold text-slate-200">{pt?"Sinais do monitoramento horário":"Hourly watch signals"}</h5>
+        {watchSignals.length?<div className="mt-2 grid gap-2 md:grid-cols-2">{watchSignals.slice(0,8).map((signal,i)=><div key={i} className={CALL_OUT}><p className="text-xs font-semibold text-amber-200">{signal.type.replaceAll("_"," ")}: {signal.magnitudePct>=0?"+":""}{signal.magnitudePct.toFixed(2)}%</p><p className={small}>{signal.observedAt} · {signal.fiscalPeriodEnd??signal.symbol} · {pt?"Revisar":"Review required"}</p></div>)}</div>:<p className={small}>{monitorNote??(pt?"Sem alertas materiais registrados.":"No recorded material alerts.")}</p>}
+        <p className={`mt-2 ${small}`}>{pt?"Monitoramento periódico exige dados licenciados e cron Railway ativo. Sem e-mails ou notificações push.":"Persistent hourly sampling requires licensed provider access and active Railway cron. In-app signals only; no push or email."}</p>
+      </div>
+    </article>
     {demo && <div className="rounded-lg border border-amber-500/30 bg-amber-900/10 p-3 text-sm text-amber-100">
       <strong>{pt ? "Sinal de normalização:" : "Normalization watch:"}</strong>{" "}
       {pt ? "Margem bruta trimestral de 50,1% em FY2026 Q3 incluiu ~2 p.p. de reembolsos tarifários; não os capitalize automaticamente como recorrentes." : "FY2026 Q3 gross margin was 50.1%, including approximately 2 percentage points from tariff refunds. Do not mechanically extrapolate that temporary benefit."}{" "}
@@ -213,7 +242,7 @@ export default function ValueDriverIntelligence({ data, lang = "en" }: Props) {
     </article>}
     {demo && <article className={CALL_OUT}>
       <div className="mb-2 flex items-center justify-between gap-3">
-        <h4 className="text-sm font-semibold text-white">{pt ? "Consenso de analistas publicado" : "Published external analyst consensus"}</h4>
+        <h4 className="text-sm font-semibold text-white">{pt ? "Consenso de analistas publicado" : "Archived Oct 2026 analyst-consensus baseline (not live)"}</h4>
         <span className="text-xs text-slate-400">{apple.consensus.asOf}</span>
       </div>
       <p className={small}>{pt ? "Previsões externas de curto prazo, não dados históricos auditados nem taxa implícita do DCF reverso." : "Actual external near-term analyst estimates, NOT audited historical facts or the reverse DCF's longer-horizon model-implied growth."}</p>
@@ -239,12 +268,12 @@ export default function ValueDriverIntelligence({ data, lang = "en" }: Props) {
       <div className="space-y-4 rounded-xl border border-slate-700 bg-slate-800/30 p-4">
         <h4 className="font-semibold text-white">{pt ? "Preço de mercado e estrutura de capital" : "Market observation and equity bridge"}</h4>
         <div className="grid grid-cols-2 gap-3">
-          <label className={label}>{pt ? "Fechamento (moeda/ação)" : "Share close (currency/share)"}<input className={field} type="number" min="0.01" step="0.01" value={quote.price} onChange={e=>setQuote(x=>({...x,price:e.target.value}))}/></label>
-          <label className={label}>{pt ? "Ações (bilhões)" : "Shares (billions)"}<input className={field} type="number" min="0.001" step="0.001" value={quote.sharesBn} onChange={e=>setQuote(x=>({...x,sharesBn:e.target.value}))}/></label>
-          <label className={label}>{pt ? "Data do preço" : "Market close date"}<input className={field} type="date" value={quote.date} onChange={e=>setQuote(x=>({...x,date:e.target.value}))}/></label>
+          <label className={label}>{pt ? "Fechamento (moeda/ação)" : "Share close (currency/share)"}<input className={field} type="number" min="0.01" step="0.01" value={quote.price} onChange={e=>{manualQuoteOverride.current=true;setQuote(x=>({...x,price:e.target.value}));}}/></label>
+          <label className={label}>{pt ? "Ações (bilhões)" : "Shares (billions)"}<input className={field} type="number" min="0.001" step="0.001" value={quote.sharesBn} onChange={e=>{manualQuoteOverride.current=true;setQuote(x=>({...x,sharesBn:e.target.value}));}}/></label>
+          <label className={label}>{pt ? "Data do preço" : "Market close date"}<input className={field} type="date" value={quote.date} onChange={e=>{manualQuoteOverride.current=true;setQuote(x=>({...x,date:e.target.value}));}}/></label>
           <label className={label}>{pt ? "Dívida líquida (bilhões)" : "Net debt (billions)"}<input className={field} type="number" step="0.001" placeholder="Required; negative = net cash" value={bridge} onChange={e=>setBridge(e.target.value)}/></label>
         </div>
-        <label className={label}>{pt ? "URL da cotação (obrigatória)" : "Public quote source URL (required)"}<input className={field} type="url" value={quote.url} placeholder="https://..." onChange={e=>setQuote(x=>({...x,url:e.target.value}))}/></label>
+        <label className={label}>{pt ? "URL da cotação (obrigatória)" : "Public quote source URL (required)"}<input className={field} type="url" value={quote.url} placeholder="https://..." onChange={e=>{manualQuoteOverride.current=true;setQuote(x=>({...x,url:e.target.value}));}}/></label>
         <p className={small}>{pt ? "Cotação fornecida manualmente; nenhum feed ao vivo. Dívida líquida negativa significa caixa líquido. Somente quote datada com fonte libera reverse DCF." : "Manual, dated market snapshot; no live-price feed. Negative net debt indicates net cash. Reverse DCF is disabled until price, shares, dated source and debt bridge are provided."}</p>
         {demo && <p className={small}>{pt ? "Dados Apple" : "Apple real-data inputs"}: <a target="_blank" rel="noopener noreferrer" className="text-cyan-300 underline" href={apple.market.url}>2026-10-09 quote</a> · <a target="_blank" rel="noopener noreferrer" className="text-cyan-300 underline" href={apple.capitalBridge.url}>2026-06-27 SEC balance sheet</a>. {pt ? "Dados com datas diferentes." : "Different observation dates."}</p>}
         {valuation.result && <div className="grid grid-cols-2 gap-3">
