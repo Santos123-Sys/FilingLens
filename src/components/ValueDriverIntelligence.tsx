@@ -1,4 +1,7 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import type { LiveMarketSnapshot } from "../../api/value-driver-provider";
+import { simulateValueDriverRisk, DEFAULT_RISK_RANGES } from "../../contracts/value-driver-risk";
+import type { WatchSignal } from "../../api/value-driver-monitor";
 import type { FilingAnalysis } from "../../contracts/analysis";
 import { annualValueDriverSignals } from "../../contracts/value-driver-signals";
 import {
@@ -57,6 +60,13 @@ const label = "block text-xs font-semibold text-slate-300";
 const field = "w-full rounded-md border border-slate-600 bg-slate-950 px-2 py-1.5 text-sm text-white focus:border-cyan-400 focus:outline-none";
 const uncertaintyKeys: Uncertainty[] = ["unrated", "low", "medium", "high"];
 
+function observedEvForRisk(live:LiveMarketSnapshot|null,quote:Quote,netDebtBn:number|null,currency:string):number|null{
+  // Do not treat a manual string or a stale, wrong-currency vendor quote as a probability target.
+  if(netDebtBn===null||!live?.quote||live.quote.stale||live.quote.currency!==currency)return null;
+  if(String(live.quote.price)!==quote.price)return null;
+  return live.quote.marketCapBn+netDebtBn;
+}
+
 export default function ValueDriverIntelligence({ data, lang = "en" }: Props) {
   const pt = lang === "pt";
   const anchor = useMemo(() => data ? fromFiling(data) : null, [data]);
@@ -73,6 +83,58 @@ export default function ValueDriverIntelligence({ data, lang = "en" }: Props) {
   const [uncertainty, setUncertainty] = useState<Record<string, Uncertainty>>({});
   const [bridge, setBridge] = useState(anchor?.netDebtBn === null ? "" : String(anchor?.netDebtBn ?? APPLE_ANALYST_ASSUMPTIONS.netDebtBn));
   const [showProjection, setShowProjection] = useState(false);
+  const [liveSnapshot,setLiveSnapshot] = useState<LiveMarketSnapshot|null>(null);
+  const [liveState,setLiveState] = useState<"loading"|"ready"|"partial"|"unavailable">("loading");
+  const [providerIssue,setProviderIssue] = useState<string|null>(null);
+  const [watchSignals,setWatchSignals] = useState<WatchSignal[]>([]);
+  const [monitorNote,setMonitorNote] = useState<string|null>(null);
+  const [riskRanges,setRiskRanges] = useState<Record<string,number>>({});
+  const [growthMarginCorrelation,setGrowthMarginCorrelation] = useState(0);
+  const manualQuoteOverride = useRef(false);
+  const marketSymbol = (data?.company.ticker ?? (demo ? apple.identity.ticker : "")).toUpperCase();
+  const providerSymbol = marketSymbol && data?.jurisdiction === "br" && !marketSymbol.endsWith(".SA") ? marketSymbol + ".SA" : marketSymbol;
+  const expectedCurrency = data?.jurisdiction === "br" ? "BRL" : "USD";
+  useEffect(()=>{
+    if(!providerSymbol || !/^[A-Z][A-Z0-9.-]{0,15}$/.test(providerSymbol)){
+      setLiveState("unavailable");setProviderIssue("missing_company_ticker");return;
+    }
+    let active=true;
+    const refresh=async()=>{
+      try{
+        const response=await fetch(`/api/value-drivers/live/${encodeURIComponent(providerSymbol)}?currency=${expectedCurrency}`,{cache:"no-store"});
+        const payload=await response.json() as LiveMarketSnapshot & {error?:string};
+        if(!active)return;
+        if(!response.ok){
+          setLiveState("unavailable");setProviderIssue(payload.error??"market_provider_unavailable");return;
+        }
+        setLiveSnapshot(payload);setLiveState(payload.status);setProviderIssue(null);
+        if(payload.quote&&!payload.quote.stale&&payload.quote.currency===expectedCurrency&&!manualQuoteOverride.current){
+          setQuote({
+            price:String(payload.quote.price),
+            sharesBn:String(payload.quote.sharesBn),
+            date:payload.quote.observedAt.slice(0,10),
+            url:payload.quote.source,
+          });
+        }
+        const monitored=await fetch(`/api/value-drivers/watch/${encodeURIComponent(providerSymbol)}`,{cache:"no-store"});
+        if(!active)return;
+        if(monitored.ok){
+          const history=await monitored.json() as {signals?:WatchSignal[]};
+          if(active){setWatchSignals(history.signals??[]);setMonitorNote(null);}
+        }else if(active){
+          const error=await monitored.json() as {error?:string};
+          setMonitorNote(error.error??"monitor_unavailable");
+        }
+      }catch{
+        if(active){setLiveState("unavailable");setProviderIssue("live_market_network_error");}
+      }
+    };
+    void refresh();
+    // Five-minute foreground refresh, independently of the hourly server-side cron.
+    const ticker=window.setInterval(()=>{if(document.visibilityState==="visible")void refresh();},300000);
+    return ()=>{active=false;window.clearInterval(ticker);};
+  },[providerSymbol,expectedCurrency]);
+
   const current = data ? anchor : { name: apple.identity.name, year: apple.annual.period, source: apple.annual.url, revenueBn: apple.annual.revenueBn, marginPct: apple.annual.operatingMarginPct, netDebtBn: APPLE_ANALYST_ASSUMPTIONS.netDebtBn, currency: "USD", warning: apple.capitalBridge.limitation, financialInstitution: false };
   const bridgeNumber = bridge.trim() === "" ? null : Number(bridge);
   const price = quote.price.trim() && Number(quote.price) > 0 ? Number(quote.price) : null;
@@ -83,6 +145,17 @@ export default function ValueDriverIntelligence({ data, lang = "en" }: Props) {
   const valuation = useMemo(() => { try { return { result: runDcf(p), error: null }; } catch (e) { return { result: null, error: (e as Error).message }; } }, [p.revenueBn, p.growthPct, p.operatingMarginPct, p.cashTaxPct, p.reinvestmentPct, p.waccPct, p.terminalGrowthPct, p.terminalRoicPct, p.netDebtBn, p.sharesBn, p.horizonYears]);
   const specs: DriverSpec[] = DEFAULT_DRIVER_SPECS.map(s => ({ ...s, uncertainty: uncertainty[s.key] ?? "unrated" }));
   const ranking = valuation.result ? analyzeDrivers(p, specs) : [];
+  const ranges=DEFAULT_RISK_RANGES.map(d=>({...d,halfWidthPp:riskRanges[d.key]??d.halfWidthPp}));
+  const risk=useMemo(()=>{
+    if(!valuation.result)return null;
+    try{return simulateValueDriverRisk(p,{
+      distributions:ranges,draws:1000,seed:18267,
+      observedEnterpriseValueBn:observedEvForRisk(liveSnapshot,quote,bridgeNumber,expectedCurrency),
+      growthMarginCorrelation,
+    });}catch{return null;}
+  // Explicit dependency on analytic inputs, not every polling status or render.
+  },[params,bridgeNumber,shares,riskRanges,growthMarginCorrelation,liveSnapshot,quote,valuation.result]);
+
   const observedEv = quoteValid ? price! * shares! + bridgeNumber! : null;
   const reverse = valuation.result ? reverseDcfGrowth(p, observedEv) : null;
   const scenarios = valuation.result ? [
@@ -114,6 +187,35 @@ export default function ValueDriverIntelligence({ data, lang = "en" }: Props) {
       {current.source && <p className="mt-2 text-xs text-slate-400"><a href={current.source} rel="noopener noreferrer" target="_blank" className="text-cyan-300 underline">{pt ? "Fonte das demonstrações" : "Historical filing source"}</a></p>}
       {current.warning && <p className="mt-2 text-xs text-amber-200">{current.warning}</p>}
     </div>
+    <article className={CALL_OUT} aria-label="External market data and monitoring">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h4 className="text-sm font-semibold text-white">{pt ? "Mercado e consenso — provedor ao vivo" : "Quotes and consensus — live provider"}</h4>
+        <span className={liveState==="ready"?"text-xs text-emerald-300":"text-xs text-amber-300"}>{liveState} · {providerSymbol||"—"}</span>
+      </div>
+      <p className={small}>{pt ? "Consulta a cada cinco minutos, com horário de negociação e data de extração explícitos." : "Polls every five minutes while visible. Quote observation time and data retrieval time are different."}</p>
+      {providerIssue && <p role="status" className="mt-2 text-xs text-amber-300">{pt?"Fonte de dados atuais indisponível":"Live feed unavailable"}: {providerIssue}. {pt?"Os dados históricos não são cotação atual.":"Historical fixtures are not live quotes."}</p>}
+      {liveSnapshot?.quote && <div className="mt-3 grid gap-2 sm:grid-cols-3">
+        <div className={CALL_OUT}><p className={small}>{pt?"Preço observado":"Observed quote"}</p><p className="text-lg font-semibold text-white">{liveSnapshot.quote.currency} {liveSnapshot.quote.price.toFixed(2)}</p><p className={small}>{liveSnapshot.quote.observedAt} UTC</p></div>
+        <div className={CALL_OUT}><p className={small}>{pt?"Capitalização fornecida":"Provider market cap"}</p><p className="text-lg font-semibold text-white">{money(liveSnapshot.quote.marketCapBn,liveSnapshot.quote.currency)}</p><p className={small}>{pt?"Ações implícitas, não reportadas":"Derived shares, not reported"}: {liveSnapshot.quote.sharesBn.toFixed(3)}B</p></div>
+        <div className={CALL_OUT}><p className={small}>{liveSnapshot.quote.stale?(pt?"Preço desatualizado":"Stale quote"):(pt?"Horário validado":"Timestamp validated")}</p><p className={small}>{liveSnapshot.quote.ageMinutes} min · {pt?"Dados podem ter atraso contratual":"Provider delay depends on data plan"}</p>
+          <button type="button" disabled={liveSnapshot.quote.stale||liveSnapshot.quote.currency!==expectedCurrency} className="mt-2 rounded bg-cyan-800 px-2 py-1 text-xs text-white disabled:opacity-40" onClick={()=>{
+            const q=liveSnapshot.quote!;manualQuoteOverride.current=false;
+            setQuote({price:String(q.price),sharesBn:String(q.sharesBn),date:q.observedAt.slice(0,10),url:q.source});
+          }}>{pt?"Usar preço observado":"Use observed quote"}</button>
+        </div>
+      </div>}
+      {!!liveSnapshot?.consensus.length && <div className="mt-3 overflow-x-auto">
+        <h5 className="text-xs font-semibold text-slate-100">{pt?"Consenso anual do provedor":"Provider annual analyst consensus"}</h5>
+        <p className={small}>{pt?"Obtido em":"Retrieved"} {liveSnapshot.consensusAsOf}; {pt?"não é a data de revisão das estimativas.":"not the analyst forecast revision date."}</p>
+        <table className="mt-2 w-full min-w-[500px] text-right text-xs text-slate-300"><thead><tr className="border-b border-slate-600"><th className="py-2 text-left">{pt?"Ano fiscal":"Fiscal end"}</th><th>{pt?"Receita (bi)":"Revenue (B)"}</th><th>EBIT (B)</th><th>EPS</th><th>{pt?"Analistas":"Analysts"} Rev/EPS</th></tr></thead><tbody>{liveSnapshot.consensus.map(y=><tr key={y.periodEnd} className="border-b border-slate-800"><td className="py-2 text-left">{y.periodEnd}</td><td>{y.revenueAvgBn?.toFixed(2)??"—"}</td><td>{y.ebitAvgBn?.toFixed(2)??"—"}</td><td>{y.epsAvg?.toFixed(2)??"—"}</td><td>{y.analystCountRevenue??"—"} / {y.analystCountEps??"—"}</td></tr>)}</tbody></table>
+      </div>}
+      {liveSnapshot?.consensusError && <p className="mt-2 text-xs text-amber-300">{pt?"Consenso indisponível":"Consensus unavailable"}: {liveSnapshot.consensusError}. {pt?"Nenhuma estimativa inventada.":"No inferred estimates."}</p>}
+      <div className="mt-3 border-t border-slate-700 pt-2">
+        <h5 className="text-xs font-semibold text-slate-200">{pt?"Sinais do monitoramento horário":"Hourly watch signals"}</h5>
+        {watchSignals.length?<div className="mt-2 grid gap-2 md:grid-cols-2">{watchSignals.slice(0,8).map((signal,i)=><div key={i} className={CALL_OUT}><p className="text-xs font-semibold text-amber-200">{signal.type.replaceAll("_"," ")}: {signal.magnitudePct>=0?"+":""}{signal.magnitudePct.toFixed(2)}%</p><p className={small}>{signal.observedAt} · {signal.fiscalPeriodEnd??signal.symbol} · {pt?"Revisar":"Review required"}</p></div>)}</div>:<p className={small}>{monitorNote??(pt?"Sem alertas materiais registrados.":"No recorded material alerts.")}</p>}
+        <p className={`mt-2 ${small}`}>{pt?"Monitoramento periódico exige dados licenciados e cron Railway ativo. Sem e-mails ou notificações push.":"Persistent hourly sampling requires licensed provider access and active Railway cron. In-app signals only; no push or email."}</p>
+      </div>
+    </article>
     {demo && <div className="rounded-lg border border-amber-500/30 bg-amber-900/10 p-3 text-sm text-amber-100">
       <strong>{pt ? "Sinal de normalização:" : "Normalization watch:"}</strong>{" "}
       {pt ? "Margem bruta trimestral de 50,1% em FY2026 Q3 incluiu ~2 p.p. de reembolsos tarifários; não os capitalize automaticamente como recorrentes." : "FY2026 Q3 gross margin was 50.1%, including approximately 2 percentage points from tariff refunds. Do not mechanically extrapolate that temporary benefit."}{" "}
@@ -140,7 +242,7 @@ export default function ValueDriverIntelligence({ data, lang = "en" }: Props) {
     </article>}
     {demo && <article className={CALL_OUT}>
       <div className="mb-2 flex items-center justify-between gap-3">
-        <h4 className="text-sm font-semibold text-white">{pt ? "Consenso de analistas publicado" : "Published external analyst consensus"}</h4>
+        <h4 className="text-sm font-semibold text-white">{pt ? "Consenso de analistas publicado" : "Archived Oct 2026 analyst-consensus baseline (not live)"}</h4>
         <span className="text-xs text-slate-400">{apple.consensus.asOf}</span>
       </div>
       <p className={small}>{pt ? "Previsões externas de curto prazo, não dados históricos auditados nem taxa implícita do DCF reverso." : "Actual external near-term analyst estimates, NOT audited historical facts or the reverse DCF's longer-horizon model-implied growth."}</p>
@@ -166,12 +268,12 @@ export default function ValueDriverIntelligence({ data, lang = "en" }: Props) {
       <div className="space-y-4 rounded-xl border border-slate-700 bg-slate-800/30 p-4">
         <h4 className="font-semibold text-white">{pt ? "Preço de mercado e estrutura de capital" : "Market observation and equity bridge"}</h4>
         <div className="grid grid-cols-2 gap-3">
-          <label className={label}>{pt ? "Fechamento (moeda/ação)" : "Share close (currency/share)"}<input className={field} type="number" min="0.01" step="0.01" value={quote.price} onChange={e=>setQuote(x=>({...x,price:e.target.value}))}/></label>
-          <label className={label}>{pt ? "Ações (bilhões)" : "Shares (billions)"}<input className={field} type="number" min="0.001" step="0.001" value={quote.sharesBn} onChange={e=>setQuote(x=>({...x,sharesBn:e.target.value}))}/></label>
-          <label className={label}>{pt ? "Data do preço" : "Market close date"}<input className={field} type="date" value={quote.date} onChange={e=>setQuote(x=>({...x,date:e.target.value}))}/></label>
+          <label className={label}>{pt ? "Fechamento (moeda/ação)" : "Share close (currency/share)"}<input className={field} type="number" min="0.01" step="0.01" value={quote.price} onChange={e=>{manualQuoteOverride.current=true;setQuote(x=>({...x,price:e.target.value}));}}/></label>
+          <label className={label}>{pt ? "Ações (bilhões)" : "Shares (billions)"}<input className={field} type="number" min="0.001" step="0.001" value={quote.sharesBn} onChange={e=>{manualQuoteOverride.current=true;setQuote(x=>({...x,sharesBn:e.target.value}));}}/></label>
+          <label className={label}>{pt ? "Data do preço" : "Market close date"}<input className={field} type="date" value={quote.date} onChange={e=>{manualQuoteOverride.current=true;setQuote(x=>({...x,date:e.target.value}));}}/></label>
           <label className={label}>{pt ? "Dívida líquida (bilhões)" : "Net debt (billions)"}<input className={field} type="number" step="0.001" placeholder="Required; negative = net cash" value={bridge} onChange={e=>setBridge(e.target.value)}/></label>
         </div>
-        <label className={label}>{pt ? "URL da cotação (obrigatória)" : "Public quote source URL (required)"}<input className={field} type="url" value={quote.url} placeholder="https://..." onChange={e=>setQuote(x=>({...x,url:e.target.value}))}/></label>
+        <label className={label}>{pt ? "URL da cotação (obrigatória)" : "Public quote source URL (required)"}<input className={field} type="url" value={quote.url} placeholder="https://..." onChange={e=>{manualQuoteOverride.current=true;setQuote(x=>({...x,url:e.target.value}));}}/></label>
         <p className={small}>{pt ? "Cotação fornecida manualmente; nenhum feed ao vivo. Dívida líquida negativa significa caixa líquido. Somente quote datada com fonte libera reverse DCF." : "Manual, dated market snapshot; no live-price feed. Negative net debt indicates net cash. Reverse DCF is disabled until price, shares, dated source and debt bridge are provided."}</p>
         {demo && <p className={small}>{pt ? "Dados Apple" : "Apple real-data inputs"}: <a target="_blank" rel="noopener noreferrer" className="text-cyan-300 underline" href={apple.market.url}>2026-10-09 quote</a> · <a target="_blank" rel="noopener noreferrer" className="text-cyan-300 underline" href={apple.capitalBridge.url}>2026-06-27 SEC balance sheet</a>. {pt ? "Dados com datas diferentes." : "Different observation dates."}</p>}
         {valuation.result && <div className="grid grid-cols-2 gap-3">
@@ -194,6 +296,32 @@ export default function ValueDriverIntelligence({ data, lang = "en" }: Props) {
           <p className={`mt-2 ${small}`}>{pt ? "Baixa/alta: crescimento ±3 p.p., margem ±3 p.p. e WACC ∓1 p.p. Não são probabilidades." : "Bear/bull: growth ±3pp, margin ±3pp, WACC ∓1pp. Scenarios are assumptions, not probability-weighted forecasts."}</p>
         </article>
       </div>
+      <article className={CALL_OUT} aria-label="Probabilistic value driver analysis">
+        <h4 className="text-base font-semibold text-white">{pt?"Análise probabilística condicional de risco":"Scenario-conditional probabilistic risk analysis"}</h4>
+        <p className={`mt-1 ${small}`}>{pt?"Monte Carlo determinístico com mil sorteios triangulares e semente fixa. Amplitudes são hipóteses modificáveis, não estimativas estatísticas de mercado. P10/P50/P90 e frequências NÃO são probabilidades empiricamente calibradas.":"Deterministic 1,000-draw seeded triangular Monte Carlo. Analyst-defined ranges, NOT fitted historical volatility or calibrated real-world probabilities. P10/P50/P90 and event frequencies are strictly conditional on these choices."}</p>
+        <div className="mt-3 grid gap-3 sm:grid-cols-3">
+          <div className={CALL_OUT}><p className={small}>P10 {pt?"EV":"enterprise value"}</p><strong className="text-lg text-white">{risk?money(risk.p10EvBn,current.currency):"—"}</strong></div>
+          <div className={CALL_OUT}><p className={small}>P50 EV</p><strong className="text-lg text-white">{risk?money(risk.p50EvBn,current.currency):"—"}</strong></div>
+          <div className={CALL_OUT}><p className={small}>P90 EV</p><strong className="text-lg text-white">{risk?money(risk.p90EvBn,current.currency):"—"}</strong></div>
+        </div>
+        {risk && <div className="mt-2 grid gap-3 md:grid-cols-2">
+          <div className={CALL_OUT}><p className={small}>{pt?"Amostras válidas / rejeitadas":"Accepted / rejected samples"}</p><strong className="text-sm text-white">{risk.accepted} / {risk.rejected}</strong><p className={small}>{pt?"Amostras rejeitadas não são substituídas por zero":"Invalid perpetuities are rejected, never replaced with zeros"}.</p></div>
+          <div className={CALL_OUT}><p className={small}>{pt?"Fração de cenários com valor inferior ao EV observado":"Simulated fraction below observed EV"}</p><strong className="text-lg text-white">{risk.probabilityBelowObservedEV===null?"—":(risk.probabilityBelowObservedEV*100).toFixed(1)+"%"}</strong><p className={small}>{pt?"Não equivale à probabilidade de queda na cotação.":"Not an empirically estimated downside probability."}</p></div>
+        </div>}
+        {!!risk?.histogram.length && <div className="mt-3 flex h-28 items-end gap-1" aria-label="Monte Carlo enterprise-value distribution histogram">
+          {risk.histogram.map((b,i)=><div key={i} className="flex-1 rounded-t bg-cyan-700/80" title={`${b.minimumEvBn.toFixed(0)}–${b.maximumEvBn.toFixed(0)} B: ${b.count}`} style={{height:`${Math.max(2,100*b.count/Math.max(1,...risk.histogram.map(h=>h.count)))}%`}} />)}
+        </div>}
+        <div className="mt-4 grid gap-3 md:grid-cols-2">
+          {DEFAULT_RISK_RANGES.map(d=><label key={d.key} className="block"><div className="flex justify-between gap-2 text-xs"><span className="text-slate-300">{DEFAULT_DRIVER_SPECS.find(x=>x.key===d.key)?.name??d.key}</span><span className="text-white">±{(riskRanges[d.key]??d.halfWidthPp).toFixed(2)} pp</span></div><input className="w-full accent-cyan-400" type="range" min="0" max={Math.min(30,d.halfWidthPp*3)} step="0.25" value={riskRanges[d.key]??d.halfWidthPp} onChange={e=>setRiskRanges(x=>({...x,[d.key]:Number(e.target.value)}))}/></label>)}
+        </div>
+        <label className="mt-3 block"><div className="flex justify-between gap-2 text-xs text-slate-300"><span>{pt?"Correlação suposta entre crescimento e margem":"Assumed growth–margin correlation"}</span><span>{growthMarginCorrelation.toFixed(2)}</span></div><input className="w-full accent-cyan-400" type="range" min="-0.8" max="0.8" step="0.1" value={growthMarginCorrelation} onChange={e=>setGrowthMarginCorrelation(Number(e.target.value))}/></label>
+        {!!risk?.driverRiskPriority.length && <div className="mt-4 border-t border-slate-700 pt-2">
+          <h5 className="mb-2 text-xs font-semibold text-white">{pt?"Prioridade por impacto × intervalo da hipótese":"Scenario-scaled materiality: valuation sensitivity × specified ranges"}</h5>
+          <div className="grid gap-2 sm:grid-cols-2">{risk.driverRiskPriority.slice(0,6).map((d,i)=><div key={d.key} className="flex justify-between gap-3 text-xs text-slate-300"><span>{i+1}. {DEFAULT_DRIVER_SPECS.find(x=>x.key===d.key)?.name??d.key}</span><strong className="text-white">{d.scoreBn===null?"—":money(d.scoreBn,current.currency)}</strong></div>)}</div>
+          <p className={`mt-2 ${small}`}>{pt?"O ranking usa perturbações isoladas de amplitudes presumidas; não integra causalidade, pesquisa possível nem riscos de cauda.":"Ranking uses isolated model perturbations across analyst-assumed ranges; not a complete expected-loss, causality or tail-risk model."}</p>
+        </div>}
+        {!risk && <p className="mt-2 text-xs text-amber-300">{pt?"Intervalos incompatíveis com o modelo; ajuste WACC/crescimento perpétuo e distribuições.":"No valid scenario ensemble. Adjust the WACC/perpetual-growth assumptions and ranges."}</p>}
+      </article>
       <article className="rounded-xl border border-slate-700 bg-slate-800/30 p-4">
         <h4 className="text-base font-semibold text-white">{pt ? "Ranking de materialidade" : "Value-driver materiality ranking"}</h4>
         <p className={`mt-1 ${small}`}>{pt ? "Sensibilidade determinística de um fator por vez. Choques têm magnitudes e probabilidades diferentes; classificação de incerteza é manual." : "Deterministic one-at-a-time enterprise-value sensitivities. Shocks vary in scale and likelihood: the ranking is NOT a probability-weighted risk score. Rate uncertainty manually."}</p>

@@ -9,6 +9,7 @@ import { registerPublicFinanceApi } from "./public-finance-api";
 import { registerIssuerPrimaryIntegration } from "./issuer-primary-integration";
 import { registerDocumentIntegration } from "./document-integration";
 import { registerValuationPublisher } from "./valuation-publisher";
+import { registerValueDriverRoutes } from "./value-driver-routes";
 
 registerHistoryApi(app);
 registerPrivateHistory(app);
@@ -16,6 +17,7 @@ registerPublicFinanceApi(app);
 registerIssuerPrimaryIntegration(app);
 registerDocumentIntegration(app);
 registerValuationPublisher(app);
+registerValueDriverRoutes(app);
 registerRegulatoryArchiver(persistPublicRegulatorySnapshot);
 app.get("/api/regulatory-history/:jurisdiction/:registryId",async c=>{
   const jurisdiction=c.req.param("jurisdiction");
