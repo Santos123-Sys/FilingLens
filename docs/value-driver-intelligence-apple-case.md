@@ -86,3 +86,10 @@ On each newly completed filing dashboard, the feature compares **annual** series
 - Cash capex/revenue change (absolute change >= 1 percentage point).
 
 Every signal is explicitly a **filing observation**, never an attributed cause. Displayed research prompts explain what analysts should investigate. Missing figures do not become zeros. Quarterly or YTD series are excluded unless a distinct historical annual series is provided. These signals refresh when a new filing is analyzed; this is **not** an autonomous scheduler, webhook, price-feed watcher or notification system.
+
+## Actual sell-side aggregate expectations, as published 2026-10-09
+External forecast snapshots are deliberately separate from the **source of audited historical results**:
+- [Stock Analysis, using S&P Global Market Intelligence / TipRanks](https://stockanalysis.com/stocks/aapl/forecast/): FY2026 revenue forecast **$477.85B** (+14.82% vs historical FY2025), FY2027 **$528.21B** (+10.54% vs FY2026), FY2026 forecast EPS **$8.83**. Its update date was Oct 9, 2026.
+- [Yahoo Finance independent consensus display](https://finance.yahoo.com/quote/AAPL/analysis/): approximately 40 analyst estimates for FY2026/FY2027 revenue. Different vendor constituents and timestamps can produce different observations.
+- Market-implied DCF growth **18.50%** is calculated from the dated share quote/bridge and 10-year model, not an analyst poll. It refers to the *initial part of the multi-year model* and is **not directly comparable** to an annual FY2026/FY2027 estimate.
+- The scenario's 10% growth baseline remains **explicitly analyst-selected**, not relabelled as empirical consensus; the panel provides genuine external forecasts for disciplined comparison. Future implementation can ingest a licensed, date-aligned multi-year forecast curve. A two-year revenue consensus does not identify WACC, long-run reinvestment, terminal ROIC or terminal growth.
