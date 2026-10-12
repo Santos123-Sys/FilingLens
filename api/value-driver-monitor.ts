@@ -24,7 +24,9 @@ export function compareMarketSnapshots(previous:LiveMarketSnapshot|null,current:
    });
  }
  for(const row of current.consensus){
-   // Relative 0y/+1y labels can roll between fiscal years; never infer a revision.\n  if(row.periodBasis==="relative_yahoo_bucket")continue;\n  const old=previous.consensus.find(x=>x.periodEnd===row.periodEnd && x.periodBasis!=="relative_yahoo_bucket");
+   // Relative 0y/+1y labels can roll between fiscal years; never infer a revision.
+  if(row.periodBasis==="relative_yahoo_bucket")continue;
+  const old=previous.consensus.find(x=>x.periodEnd===row.periodEnd && x.periodBasis!=="relative_yahoo_bucket");
    if(!old||old.revenueAvgBn===null||row.revenueAvgBn===null||old.revenueAvgBn<=0)continue;
    const magnitudePct=(row.revenueAvgBn/old.revenueAvgBn-1)*100;
    if(Math.abs(magnitudePct)>=MONITOR_CONSENSUS_REVISION_PCT)signals.push({
