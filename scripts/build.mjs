@@ -30,6 +30,19 @@ await build({
   banner: { js: "import { createRequire } from 'node:module'; const require = createRequire(import.meta.url);" },
 });
 
+// Hourly market/consensus collector deployed as a separate Railway cron service.
+await build({
+  entryPoints: ['api/value-driver-cron.ts'],
+  bundle: true,
+  minify: true,
+  platform: 'node',
+  format: 'esm',
+  target: 'es2022',
+  outfile: 'dist/value-driver-cron.js',
+  external: ['node:*'],
+  banner: { js: "import { createRequire } from 'node:module'; const require = createRequire(import.meta.url);" },
+});
+
 rmSync('dist/client', { recursive: true, force: true });
 cpSync('dist/public', 'dist/client', { recursive: true });
 mkdirSync('dist/.openai', { recursive: true });
