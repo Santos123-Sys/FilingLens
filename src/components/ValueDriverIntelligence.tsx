@@ -86,6 +86,8 @@ export default function ValueDriverIntelligence({ data, lang = "en" }: Props) {
   const [liveSnapshot,setLiveSnapshot] = useState<LiveMarketSnapshot|null>(null);
   const [liveState,setLiveState] = useState<"loading"|"ready"|"partial"|"unavailable">("loading");
   const [providerIssue,setProviderIssue] = useState<string|null>(null);
+  // Personal research token is only held in React memory; never logged, persisted or added to URLs.
+  const [personalAccessToken,setPersonalAccessToken] = useState("");
   const [watchSignals,setWatchSignals] = useState<WatchSignal[]>([]);
   const [monitorNote,setMonitorNote] = useState<string|null>(null);
   const [riskRanges,setRiskRanges] = useState<Record<string,number>>({});
@@ -98,10 +100,14 @@ export default function ValueDriverIntelligence({ data, lang = "en" }: Props) {
     if(!providerSymbol || !/^[A-Z][A-Z0-9.-]{0,15}$/.test(providerSymbol)){
       setLiveState("unavailable");setProviderIssue("missing_company_ticker");return;
     }
+    if(!personalAccessToken || personalAccessToken.length<32){
+      setLiveState("unavailable");setProviderIssue("private_token_required");return;
+    }
     let active=true;
+    const headers={Authorization:`Bearer ${personalAccessToken}`};
     const refresh=async()=>{
       try{
-        const response=await fetch(`/api/value-drivers/live/${encodeURIComponent(providerSymbol)}?currency=${expectedCurrency}`,{cache:"no-store"});
+        const response=await fetch(`/api/value-drivers/live/${encodeURIComponent(providerSymbol)}?currency=${expectedCurrency}`,{cache:"no-store",headers});
         const payload=await response.json() as LiveMarketSnapshot & {error?:string};
         if(!active)return;
         if(!response.ok){
@@ -116,7 +122,7 @@ export default function ValueDriverIntelligence({ data, lang = "en" }: Props) {
             url:payload.quote.source,
           });
         }
-        const monitored=await fetch(`/api/value-drivers/watch/${encodeURIComponent(providerSymbol)}`,{cache:"no-store"});
+        const monitored=await fetch(`/api/value-drivers/watch/${encodeURIComponent(providerSymbol)}`,{cache:"no-store",headers});
         if(!active)return;
         if(monitored.ok){
           const history=await monitored.json() as {signals?:WatchSignal[]};
@@ -130,10 +136,10 @@ export default function ValueDriverIntelligence({ data, lang = "en" }: Props) {
       }
     };
     void refresh();
-    // Five-minute foreground refresh, independently of the hourly server-side cron.
-    const ticker=window.setInterval(()=>{if(document.visibilityState==="visible")void refresh();},300000);
+    // Reduced to 30-minute foreground refresh; Yahoo endpoints are unofficial and may throttle.
+    const ticker=window.setInterval(()=>{if(document.visibilityState==="visible")void refresh();},1800000);
     return ()=>{active=false;window.clearInterval(ticker);};
-  },[providerSymbol,expectedCurrency]);
+  },[providerSymbol,expectedCurrency,personalAccessToken]);
 
   const current = data ? anchor : { name: apple.identity.name, year: apple.annual.period, source: apple.annual.url, revenueBn: apple.annual.revenueBn, marginPct: apple.annual.operatingMarginPct, netDebtBn: APPLE_ANALYST_ASSUMPTIONS.netDebtBn, currency: "USD", warning: apple.capitalBridge.limitation, financialInstitution: false };
   const bridgeNumber = bridge.trim() === "" ? null : Number(bridge);
@@ -189,13 +195,17 @@ export default function ValueDriverIntelligence({ data, lang = "en" }: Props) {
     </div>
     <article className={CALL_OUT} aria-label="External market data and monitoring">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h4 className="text-sm font-semibold text-white">{pt ? "Mercado e consenso — provedor ao vivo" : "Quotes and consensus — live provider"}</h4>
+        <h4 className="text-sm font-semibold text-white">{pt ? "Yahoo Finance — pesquisa pessoal (fechamentos diários)" : "Yahoo Finance — personal research (daily closes)"}</h4>
         <span className={liveState==="ready"?"text-xs text-emerald-300":"text-xs text-amber-300"}>{liveState} · {providerSymbol||"—"}</span>
       </div>
       <p className={small}>{pt ? "Consulta a cada cinco minutos, com horário de negociação e data de extração explícitos." : "Polls every five minutes while visible. Quote observation time and data retrieval time are different."}</p>
+      <label className="mt-3 block text-xs text-slate-300">{pt?"Token privado de avaliação (somente em memória)":"Private valuation access token (in-memory only)"}
+        <input type="password" value={personalAccessToken} autoComplete="off" spellCheck={false} onChange={e=>setPersonalAccessToken(e.target.value)} placeholder={pt?"Cole o token privado do Railway":"Paste private Railway valuation token"} className="mt-1 w-full rounded border border-slate-600 bg-slate-950 p-2 text-sm text-slate-100" />
+      </label>
+      <p className="mt-1 text-xs text-slate-400">{pt?"Fonte Yahoo não oficial, somente uso pessoal; preço = último fechamento diário não ajustado, não cotação negociável em tempo real.":"Unofficial Yahoo source, personal use only; price = last unadjusted daily close, not an executable real-time quote."}</p>
       {providerIssue && <p role="status" className="mt-2 text-xs text-amber-300">{pt?"Fonte de dados atuais indisponível":"Live feed unavailable"}: {providerIssue}. {pt?"Os dados históricos não são cotação atual.":"Historical fixtures are not live quotes."}</p>}
       {liveSnapshot?.quote && <div className="mt-3 grid gap-2 sm:grid-cols-3">
-        <div className={CALL_OUT}><p className={small}>{pt?"Preço observado":"Observed quote"}</p><p className="text-lg font-semibold text-white">{liveSnapshot.quote.currency} {liveSnapshot.quote.price.toFixed(2)}</p><p className={small}>{liveSnapshot.quote.observedAt} UTC</p></div>
+        <div className={CALL_OUT}><p className={small}>{pt?"Preço observado":"Observed quote"}</p><p className="text-lg font-semibold text-white">{liveSnapshot.quote.currency} {liveSnapshot.quote.price.toFixed(2)}</p><p className={small}>{liveSnapshot.quote.tradingDate??liveSnapshot.quote.observedAt.slice(0,10)} ({pt?"data da barra diária":"daily bar date"})</p></div>
         <div className={CALL_OUT}><p className={small}>{pt?"Capitalização fornecida":"Provider market cap"}</p><p className="text-lg font-semibold text-white">{money(liveSnapshot.quote.marketCapBn,liveSnapshot.quote.currency)}</p><p className={small}>{pt?"Ações implícitas, não reportadas":"Derived shares, not reported"}: {liveSnapshot.quote.sharesBn.toFixed(3)}B</p></div>
         <div className={CALL_OUT}><p className={small}>{liveSnapshot.quote.stale?(pt?"Preço desatualizado":"Stale quote"):(pt?"Horário validado":"Timestamp validated")}</p><p className={small}>{liveSnapshot.quote.ageMinutes} min · {pt?"Dados podem ter atraso contratual":"Provider delay depends on data plan"}</p>
           <button type="button" disabled={liveSnapshot.quote.stale||liveSnapshot.quote.currency!==expectedCurrency} className="mt-2 rounded bg-cyan-800 px-2 py-1 text-xs text-white disabled:opacity-40" onClick={()=>{
@@ -206,14 +216,14 @@ export default function ValueDriverIntelligence({ data, lang = "en" }: Props) {
       </div>}
       {!!liveSnapshot?.consensus.length && <div className="mt-3 overflow-x-auto">
         <h5 className="text-xs font-semibold text-slate-100">{pt?"Consenso anual do provedor":"Provider annual analyst consensus"}</h5>
-        <p className={small}>{pt?"Obtido em":"Retrieved"} {liveSnapshot.consensusAsOf}; {pt?"não é a data de revisão das estimativas.":"not the analyst forecast revision date."}</p>
+        <p className={small}>{pt?"Obtido em":"Retrieved"} {liveSnapshot.consensusAsOf}; {pt?"a data fiscal é inferida e o EBIT consenso não está disponível no Yahoo.":"fiscal-year labels are inferred; Yahoo does not supply forward EBIT consensus."}</p>
         <table className="mt-2 w-full min-w-[500px] text-right text-xs text-slate-300"><thead><tr className="border-b border-slate-600"><th className="py-2 text-left">{pt?"Ano fiscal":"Fiscal end"}</th><th>{pt?"Receita (bi)":"Revenue (B)"}</th><th>EBIT (B)</th><th>EPS</th><th>{pt?"Analistas":"Analysts"} Rev/EPS</th></tr></thead><tbody>{liveSnapshot.consensus.map(y=><tr key={y.periodEnd} className="border-b border-slate-800"><td className="py-2 text-left">{y.periodEnd}</td><td>{y.revenueAvgBn?.toFixed(2)??"—"}</td><td>{y.ebitAvgBn?.toFixed(2)??"—"}</td><td>{y.epsAvg?.toFixed(2)??"—"}</td><td>{y.analystCountRevenue??"—"} / {y.analystCountEps??"—"}</td></tr>)}</tbody></table>
       </div>}
       {liveSnapshot?.consensusError && <p className="mt-2 text-xs text-amber-300">{pt?"Consenso indisponível":"Consensus unavailable"}: {liveSnapshot.consensusError}. {pt?"Nenhuma estimativa inventada.":"No inferred estimates."}</p>}
       <div className="mt-3 border-t border-slate-700 pt-2">
         <h5 className="text-xs font-semibold text-slate-200">{pt?"Sinais do monitoramento horário":"Hourly watch signals"}</h5>
         {watchSignals.length?<div className="mt-2 grid gap-2 md:grid-cols-2">{watchSignals.slice(0,8).map((signal,i)=><div key={i} className={CALL_OUT}><p className="text-xs font-semibold text-amber-200">{signal.type.replaceAll("_"," ")}: {signal.magnitudePct>=0?"+":""}{signal.magnitudePct.toFixed(2)}%</p><p className={small}>{signal.observedAt} · {signal.fiscalPeriodEnd??signal.symbol} · {pt?"Revisar":"Review required"}</p></div>)}</div>:<p className={small}>{monitorNote??(pt?"Sem alertas materiais registrados.":"No recorded material alerts.")}</p>}
-        <p className={`mt-2 ${small}`}>{pt?"Monitoramento periódico exige dados licenciados e cron Railway ativo. Sem e-mails ou notificações push.":"Persistent hourly sampling requires licensed provider access and active Railway cron. In-app signals only; no push or email."}</p>
+        <p className={`mt-2 ${small}`}>{pt?"Coleta diária privada exige cron Railway ativo e acesso pessoal aos dados Yahoo. Sem e-mails ou notificações push.":"Private daily snapshots require Railway cron and permitted personal Yahoo data access. In-app signals only; no push or email."}</p>
       </div>
     </article>
     {demo && <div className="rounded-lg border border-amber-500/30 bg-amber-900/10 p-3 text-sm text-amber-100">
