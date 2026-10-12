@@ -1,4 +1,4 @@
-import {createHash,timingSafeEqual} from 'node:crypto';
+import {createHash,createHmac,timingSafeEqual} from 'node:crypto';
 import type {Hono} from 'hono';
 import mysql from 'mysql2/promise';
 import {z} from 'zod';
@@ -9,13 +9,17 @@ const digest=(v:string)=>createHash('sha256').update(v).digest('hex');
 export const PublishRequest=z.object({
  ticket:z.string().max(2000),method:z.enum(['dcf','comps']),confirmed:z.literal(true),
  scenario:z.literal('base'),analysis:z.object({jurisdiction:z.enum(['us','br']),
- company:companySchema.shape.company,financials:financialsSchema.shape.financials}).passthrough(),
+ company:companySchema.shape.company,metadata:z.object({cik:z.string().nullable().optional(),cnpj:z.string().nullable().optional()}).passthrough(),financials:financialsSchema.shape.financials}).passthrough(),
  assumptions:z.array(valuationAssumptionSchema).min(1).max(150),
 }).strict();
 type Version={schemaVersion:'valuation.v1';valuationVersionId:string;issuerId:string;method:'dcf'|'comps';scenario:string;currency:'USD'|'BRL';impliedValuePerShare:string;valuationAsOf:string;approvedAt:string;approvedBy:string;sourceSnapshotIds:string[];assumptionsHash:string;approvalStatus:'approved'};
 export function reviewedVersion(input:z.infer<typeof PublishRequest>,secret:string,now=new Date()) {
  const ctx=verifyHandoff(input.ticket,secret,Math.floor(now.getTime()/1000));
- if(input.analysis.jurisdiction!==ctx.issuerId.split(':')[0] || input.analysis.company.ticker?.toUpperCase()!==ctx.ticker)
+ const [jurisdiction,registryId]=ctx.issuerId.split(':');
+ const sourceRegistry=jurisdiction==='us'?input.analysis.metadata.cik:input.analysis.metadata.cnpj;
+ const normalized=jurisdiction==='us'?String(sourceRegistry??'').padStart(10,'0'):String(sourceRegistry??'').replace(/[^0-9]/g,'');
+ if(input.analysis.jurisdiction!==jurisdiction || input.analysis.company.ticker?.toUpperCase()!==ctx.ticker ||
+   normalized!==registryId || /^0+$/.test(normalized))
   throw Error('issuer_mismatch');
  const result=calculateValuation(input.analysis as unknown as FilingAnalysis,input.method,input.assumptions);
  const figure=result.figures.implied_per_share,currency=figure.unit.split('/')[0];
@@ -31,6 +35,36 @@ export function reviewedVersion(input:z.infer<typeof PublishRequest>,secret:stri
 async function database(){
  return mysql.createConnection(process.env.DATABASE_URL!);
 }
+/** Notify GPI only after the reviewed valuation is durably committed.
+ * The HMAC binds the exact event bytes; private filings and audit inputs stay on FilingLens.
+ * Failed delivery is explicitly reported and may be recovered via the signed return handoff.
+ */
+export async function notifyApprovedValuation(ticket:string,valuationVersionId:string,
+ fetcher:typeof fetch=fetch):Promise<'synchronized'|'pending_retry'> {
+ const secret=process.env.INTEGRATION_SIGNING_SECRET??'';
+ if(secret.length<32)return 'pending_retry';
+ let base:URL;
+ try{
+  base=new URL(process.env.GPI_API_URL??'');
+  if(base.protocol!=='https:'||base.pathname!=='/'||base.username||base.password||base.search||base.hash)throw Error();
+ }catch{return 'pending_retry';}
+ const body=JSON.stringify({schemaVersion:'filinglens-valuation-approved.v1',ticket,
+  valuationVersionId,issuedAt:new Date().toISOString()});
+ const mac=createHmac('sha256',secret).update('filinglens.valuation.approved.v1\n').update(body).digest('hex');
+ const url=new URL('/api/integration/v1/valuation-events',base);
+ for(let attempt=0;attempt<2;attempt++){
+  try{
+   const response=await fetcher(url,{method:'POST',redirect:'error',cache:'no-store',
+    headers:{'content-type':'application/json','x-filinglens-signature':'sha256='+mac},
+    body,signal:AbortSignal.timeout(6000)});
+   await response.body?.cancel();
+   if(response.ok)return 'synchronized';
+   if(response.status<500&&response.status!==429)return 'pending_retry';
+  }catch{/* Service may be redeploying; report pending rather than pretending delivery. */}
+ }
+ return 'pending_retry';
+}
+
 function bearer(header:string|undefined):boolean {
  const secret=process.env.FILINGLENS_VALUATION_READ_API_TOKEN??'';
  const a=Buffer.from('Bearer '+secret),b=Buffer.from(header??'');
@@ -62,9 +96,11 @@ export function registerValuationPublisher(app:Hono,connect:typeof database=data
     if(!row&&Number((count as Array<{n:number}>)[0].n)>=100){await db.rollback();return c.json({error:'valuation_quota_reached'},429);}
     if(!row)await db.query('INSERT INTO shared_valuation_versions(id,workspace_id,request_hash,payload_json,audit_json) VALUES(?,?,?,?,?)',[version.valuationVersionId,ctx.workspaceId,requestHash,JSON.stringify(version),JSON.stringify(audit)]);
     await db.commit();
+    const synchronization=await notifyApprovedValuation(input.ticket,version.valuationVersionId);
     const base=new URL(process.env.GPI_API_URL!);if(base.protocol!=='https:'||base.username||base.password)throw Error();
     base.hash=new URLSearchParams({valuation:version.valuationVersionId,candidate:ctx.candidateKey}).toString();
-    return c.json({valuation:row?JSON.parse(row.payload_json):version,returnUrl:base.href,reused:Boolean(row)},{headers:{'Cache-Control':'no-store'}});
+    return c.json({valuation:row?JSON.parse(row.payload_json):version,returnUrl:base.href,
+      reused:Boolean(row),synchronization},{headers:{'Cache-Control':'no-store'}});
    }catch(e){await db.rollback();throw e;}finally{await db.end();}
   }catch(e){return c.json({error:e instanceof Error&&['issuer_mismatch','expired_handoff','invalid_handoff','unpublishable_valuation'].includes(e.message)?e.message:'valuation_publication_failed'},422);}
  });
