@@ -17,7 +17,7 @@ export function reviewedVersion(input:z.infer<typeof PublishRequest>,secret:stri
  const ctx=verifyHandoff(input.ticket,secret,Math.floor(now.getTime()/1000));
  const [jurisdiction,registryId]=ctx.issuerId.split(':');
  const sourceRegistry=jurisdiction==='us'?input.analysis.metadata.cik:input.analysis.metadata.cnpj;
- const normalized=jurisdiction==='us'?String(sourceRegistry??'').padStart(10,'0'):String(sourceRegistry??'').replace(/\\D/g,'');
+ const normalized=jurisdiction==='us'?String(sourceRegistry??'').padStart(10,'0'):String(sourceRegistry??'').replace(/[^0-9]/g,'');
  if(input.analysis.jurisdiction!==jurisdiction || input.analysis.company.ticker?.toUpperCase()!==ctx.ticker ||
    normalized!==registryId || /^0+$/.test(normalized))
   throw Error('issuer_mismatch');
