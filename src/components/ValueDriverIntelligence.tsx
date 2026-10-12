@@ -5,7 +5,7 @@ import {
   type ValuationInputs, type DriverKey, type DriverSpec, DEFAULT_DRIVER_SPECS,
   type Uncertainty,
 } from "../../contracts/value-driver-intelligence";
-import { APPLE_2026_CASE, APPLE_ANALYST_ASSUMPTIONS, APPLE_MARKET_EV_BN } from "../data/apple-value-driver-case";
+import { APPLE_2026_CASE, APPLE_ANALYST_ASSUMPTIONS } from "../data/apple-value-driver-case";
 
 type Props = { lang?: "en" | "pt"; data?: FilingAnalysis };
 type Anchor = { name: string; year: string; source: string | null; revenueBn: number; marginPct: number; netDebtBn: number | null; currency: string; warning: string | null; financialInstitution: boolean };
