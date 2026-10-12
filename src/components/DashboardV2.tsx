@@ -16,6 +16,7 @@ import {
   Landmark,
   ShieldAlert,
   Sparkles,
+  TrendingUp,
 } from "lucide-react";
 import type {
   AnalysisStageName,
@@ -29,10 +30,11 @@ import SegmentEconomicsPanel from "./SegmentEconomicsPanel";
 import CompetitorEvidencePanel from "./CompetitorEvidencePanel";
 import MoatDiligencePanel from "./MoatDiligencePanel";
 import PeerBenchmarkPanel from "./PeerBenchmarkPanel";
+import ValueDriverIntelligence from "./ValueDriverIntelligence";
 import { filingLensTheme, qualityClasses, type QualityTone } from "@/lib/design-system";
 
 type Lang = "en" | "pt";
-type Tab = "overview" | "financials" | "market" | "risks" | "events" | "quality";
+type Tab = "overview" | "financials" | "market" | "risks" | "events" | "quality" | "value-drivers";
 
 const MODULES: Array<{ key: AnalysisStageName; en: string; pt: string }> = [
   { key: "metadata", en: "Metadata", pt: "Metadados" },
@@ -350,6 +352,7 @@ export default function DashboardV2({ data, lang }: { data: FilingAnalysis; lang
   const tabs: Array<{ key: Tab; label: string; icon: typeof Activity }> = [
     { key: "overview", label: c.overview, icon: Activity },
     { key: "financials", label: c.financials, icon: BarChart3 },
+    { key: "value-drivers", label: lang === "pt" ? "Direcionadores de valor" : "Value drivers", icon: TrendingUp },
     { key: "market", label: c.market, icon: Globe2 },
     { key: "risks", label: c.risks, icon: ShieldAlert },
     { key: "events", label: c.events, icon: CalendarDays },
@@ -425,6 +428,8 @@ export default function DashboardV2({ data, lang }: { data: FilingAnalysis; lang
             {(f.forwardGuidance?.length ?? 0) > 0 && <div className={`${filingLensTheme.surface} rounded-2xl p-5`}><p className={filingLensTheme.label}>{lang === "pt" ? "Guidance divulgado" : "Disclosed guidance"}</p><div className="mt-3 grid gap-2 md:grid-cols-2">{f.forwardGuidance!.slice(0, 8).map((item, index) => <div key={index} className={`${filingLensTheme.inset} rounded-lg p-3`}><p className="text-xs font-semibold text-slate-200">{item.metric} · {item.period}</p><p className="mt-1 text-xs text-cyan-300">{item.range}</p><p className="mt-2 text-[9px] text-slate-600">{sourceText(item.source, lang)}</p></div>)}</div></div>}
           </div>
         )}
+
+        {tab === "value-drivers" && <ValueDriverIntelligence key={`${data.company.name}-${data.company.periodEnd}`} data={data} lang={lang} />}
 
         {tab === "market" && (
           <div className="space-y-4">
