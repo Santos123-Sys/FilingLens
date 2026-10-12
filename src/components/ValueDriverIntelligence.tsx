@@ -133,7 +133,7 @@ export default function ValueDriverIntelligence({ data, lang = "en" }: Props) {
       <p className={small}>{pt ? "Comparações entre exercícios fornecidos, calculadas localmente; revisão ao analisar novo documento, sem monitoramento automático." : "Local comparisons of sourced annual periods; recalculated when a new filing is analyzed. No background polling or live alerts."}</p>
       <div className="mt-3 grid gap-2 sm:grid-cols-2">{signals.map(signal => <div key={signal.metric} className="rounded-md border border-slate-700 p-3 text-sm">
         <div className="flex items-center justify-between gap-2"><strong className="text-white">{signal.title}</strong><span className={signal.material ? "text-amber-300" : "text-slate-400"}>{signal.material ? (pt ? "Investigar" : "Review") : (pt ? "Acompanhar" : "Track")}</span></div>
-        <p className="mt-1 text-slate-200">{pct(signal.delta)} {signal.unit === "percentage_points" ? "pp (change)" : "YoY"} · {signal.previousPeriod} → {signal.currentPeriod}</p>
+        <p className="mt-1 text-slate-200">{signal.unit === "percentage_points" ? `${signal.delta >= 0 ? "+" : ""}${signal.delta.toFixed(2)} pp` : `${pct(signal.delta)} YoY`} · {signal.previousPeriod} → {signal.currentPeriod}</p>
         <p className={small}>{signal.interpretation}</p>
         {signal.evidenceUrl && <a href={signal.evidenceUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-cyan-300 underline">{pt ? "Fonte" : "Filing source"}</a>}
       </div>)}</div>
