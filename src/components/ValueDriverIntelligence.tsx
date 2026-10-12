@@ -138,6 +138,20 @@ export default function ValueDriverIntelligence({ data, lang = "en" }: Props) {
         {signal.evidenceUrl && <a href={signal.evidenceUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-cyan-300 underline">{pt ? "Fonte" : "Filing source"}</a>}
       </div>)}</div>
     </article>}
+    {demo && <article className={CALL_OUT}>
+      <div className="mb-2 flex items-center justify-between gap-3">
+        <h4 className="text-sm font-semibold text-white">{pt ? "Consenso de analistas publicado" : "Published external analyst consensus"}</h4>
+        <span className="text-xs text-slate-400">{apple.consensus.asOf}</span>
+      </div>
+      <p className={small}>{pt ? "Previsões externas de curto prazo, não dados históricos auditados nem taxa implícita do DCF reverso." : "Actual external near-term analyst estimates, NOT audited historical facts or the reverse DCF's longer-horizon model-implied growth."}</p>
+      <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+        <div className={CALL_OUT}><p className={small}>FY2026 {pt ? "receita esperada" : "revenue estimate"}</p><strong className="text-white">{money(apple.consensus.fy2026RevenueBn, "USD")}</strong><p className={small}>+{apple.consensus.fy2026GrowthPct.toFixed(2)}% YoY</p></div>
+        <div className={CALL_OUT}><p className={small}>FY2027 {pt ? "receita esperada" : "revenue estimate"}</p><strong className="text-white">{money(apple.consensus.fy2027RevenueBn, "USD")}</strong><p className={small}>+{apple.consensus.fy2027GrowthPct.toFixed(2)}% YoY</p></div>
+        <div className={CALL_OUT}><p className={small}>FY2026 EPS {pt ? "esperado" : "estimate"}</p><strong className="text-white">USD {apple.consensus.fy2026EpsUsd.toFixed(2)}</strong></div>
+        <div className={CALL_OUT}><p className={small}>{pt ? "Proveniência" : "Provenance"}</p><strong className="text-slate-200 text-xs">{apple.consensus.source}</strong></div>
+      </div>
+      <p className={`mt-2 ${small}`}><a className="text-cyan-300 underline" href={apple.consensus.url} target="_blank" rel="noopener noreferrer">{pt ? "Fonte dos analistas" : "Analyst estimate source"}</a> · <a className="text-cyan-300 underline" href={apple.consensus.corroborationUrl} target="_blank" rel="noopener noreferrer">{pt ? "Conferência independente" : "Corroborating estimates"}</a>. {pt ? "A taxa implícita do DCF reverso mantém hipóteses constantes ao longo de vários anos, logo não é diretamente comparável à previsão anual." : "Reverse DCF fixes the other assumptions across a multi-year horizon, so its implied growth rate cannot be directly equated to one annual consensus forecast."}</p>
+    </article>}
     <div className="grid gap-4 xl:grid-cols-2">
       <div className="space-y-4 rounded-xl border border-slate-700 bg-slate-800/30 p-4">
         <div className="flex items-center justify-between gap-3"><h4 className="font-semibold text-white">{pt ? "Hipóteses do modelo" : "Analyst forecast assumptions"}</h4><button type="button" className="text-xs text-cyan-300 underline" onClick={() => { setParams(inputsInitial); setBridge(anchor?.netDebtBn === null ? "" : String(anchor?.netDebtBn ?? APPLE_ANALYST_ASSUMPTIONS.netDebtBn)); }}>{pt ? "Restaurar" : "Reset"}</button></div>
