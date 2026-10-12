@@ -44,6 +44,19 @@ export const APPLE_2026_CASE = {
     yearToDateCashCapexBn: 6.799,
     url: "https://www.sec.gov/Archives/edgar/data/320193/000032019326000020/aapl-20260627.htm",
   },
+  consensus: {
+    asOf: "2026-10-09",
+    // A dated external forecast observation, not reported Apple financials.
+    fy2026RevenueBn: 477.85,
+    fy2027RevenueBn: 528.21,
+    fy2026GrowthPct: (477.85 / 416.161 - 1) * 100,
+    fy2027GrowthPct: (528.21 / 477.85 - 1) * 100,
+    fy2026EpsUsd: 8.83,
+    source: "S&P Global Market Intelligence / TipRanks, republished by Stock Analysis",
+    url: "https://stockanalysis.com/stocks/aapl/forecast/",
+    corroborationUrl: "https://finance.yahoo.com/quote/AAPL/analysis/",
+    note: "External near-term analyst estimates are not SEC historical results, Apple guidance, or the model-implied reverse-DCF multi-year growth rate.",
+  },
   capitalBridge: {
     asOf: "2026-06-27",
     commercialPaperBn: 1.997,
