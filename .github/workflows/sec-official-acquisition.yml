@@ -25,6 +25,8 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
+      - name: Check SEC access clearance before contacting SEC
+        run: node ops/check-sec-access.mjs
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
@@ -57,6 +59,7 @@ jobs:
             --metric Revenue --fy 2025 --period-end 2025-09-27 \
             --basis "US GAAP" --currency USD --amount-millions 416161
       - name: Upload original SEC bytes and SHA-256 receipt
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
           name: official-sec-companyfacts-${{ inputs.cik }}-${{ github.run_id }}

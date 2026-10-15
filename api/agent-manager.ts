@@ -21,6 +21,7 @@ import {
 import { buildAgentInput, buildMetadataInput, buildRiskRecoveryInput, runAgent, runMetadataAgent } from "./analyze";
 import { assessCompleteness, assessMetadataCompleteness } from "./completeness";
 import { applyFinancialValidation } from "./financial-validation";
+import { bindFinancialEvidence } from "./financial-evidence";
 import { validateHistorianOutput } from "./historian-validation";
 import { recoverMarketTables } from "./market-table-recovery";
 import { validateMarketOutput } from "./market-validation";
@@ -258,7 +259,7 @@ export const agentManager = {
 
     let result = value;
     if (agent === "financials") {
-      result = await applyFinancialValidation(value as FinancialsResult);
+      result = await applyFinancialValidation(bindFinancialEvidence(value as FinancialsResult, excerpt));
       subtools.push("exact-financial-ratio-toolkit-python", "exact-financial-statement-analyzer-python", "filinglens-reconciliation-validator");
     }
     if (agent === "market") {
@@ -294,6 +295,14 @@ export const agentManager = {
       const financials = result as FinancialsResult;
       if ((financials.financials.validationFlags ?? []).some(flag => flag.code.includes("SKILL_RUNTIME_UNAVAILABLE"))) {
         diagnostic.warnings = [...(diagnostic.warnings ?? []), "exact_financial_skill_runtime_degraded"];
+      }
+      if ((financials.financials.validationFlags ?? []).some(flag => flag.code.startsWith("FINANCIAL_EVIDENCE_"))) {
+        diagnostic.warnings = [...(diagnostic.warnings ?? []), "financial_source_evidence_incomplete"];
+        if(diagnostic.status === "complete") {
+          diagnostic.status = "incomplete";
+          diagnostic.reason = "financial_source_evidence_incomplete";
+        }
+        diagnostic.confidence = Math.min(diagnostic.confidence ?? 0.5, 0.5);
       }
     }
 

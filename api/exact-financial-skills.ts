@@ -1,4 +1,5 @@
 import type { EvidenceReference, FinancialsResult } from "../contracts/analysis";
+import {hasCompleteMetricEvidence} from './financial-evidence';
 import { runRatioSkill, runStatementSkill, SkillRuntimeError } from "./skill-runtime";
 
 type Financials = FinancialsResult["financials"];
@@ -118,7 +119,7 @@ function metricTemplate(financials: Financials, binding: typeof RATIO_BINDINGS[n
     denominator: binding.components.at(-1) ?? null,
     periods: financials.years,
     sources: sourcesFor(financials, binding.components),
-    confidence: binding.components.every(key => (financials.evidence ?? []).some(item => item.metric === key)) ? "high" : "medium",
+    confidence: hasCompleteMetricEvidence(financials,binding.components) ? "high" : "medium",
     note: "Calculated by the exact supplied financial-ratio-toolkit Python utility. FilingLens conventions override incompatible toolkit definitions.",
   };
 }

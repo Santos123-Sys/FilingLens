@@ -1,0 +1,8 @@
+{
+  "schema": "filinglens.sec_acquisition_access.v1",
+  "state": "paused",
+  "reason": "official_http_403",
+  "observedAt": "2026-10-15T09:12:52Z",
+  "evidence": "https://github.com/Santos123-Sys/FilingLens/actions/runs/38711218906",
+  "reviewReference": null
+}
