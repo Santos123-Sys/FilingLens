@@ -1,5 +1,5 @@
 /** Acquire each bounded watchlist issuer and import it through signed GitHub OIDC. */
-import {mkdir,readFile} from "node:fs/promises";
+import {mkdir,readFile,writeFile} from "node:fs/promises";
 import {join} from "node:path";
 import {parseSecEdgarWatchlist} from "../contracts/sec-edgar-watchlist";
 import {acquireToDisk} from "./acquire-sec-companyfacts";
@@ -16,16 +16,33 @@ export async function runScheduledCompanyFacts(
  acquire=acquireToDisk,push=pushOfficialToRailway,
 ){
  const plan=parseSecEdgarWatchlist(JSON.parse(await readFile(watchlistFile,"utf8")) as unknown);
- const imported=[];
+ const imported:{ticker:string;cik:string;retrievedDay:string;payloadSha256:string;readbackVerified:boolean}[]=[];
+ const archive=join(outputRoot,"sec-edgar-filings");
+ await mkdir(archive,{recursive:true,mode:0o700});
+ const receipt=async(status:string,failedIssuer?:string,phase?:string)=>writeFile(
+  join(archive,"acquisition-status.json"),JSON.stringify({schema:"filinglens.sec_acquisition_status.v1",
+   status,recordedAt:new Date().toISOString(),plannedIssuers:plan.issuers.length,
+   imported,failedIssuer,phase},null,2),{mode:0o600});
+ await receipt("running");
  for(const issuer of plan.issuers){
   const directory=join(outputRoot,"sec-edgar-filings",issuer.ticker,"COMPANYFACTS",`CIK${issuer.cik}`);
   await mkdir(directory,{recursive:true,mode:0o700});
   const file=join(directory,"companyfacts.json");
+  let phase="acquire";
+  try{
   const acquired=await acquire(issuer.cik,file,contact);
+  phase="import";
   const result=await push(file,acquired.receiptFile,issuer.cik,endpoint);
   imported.push({ticker:issuer.ticker,cik:issuer.cik,retrievedDay:result.retrievedDay,
    payloadSha256:result.payloadSha256,readbackVerified:result.readbackVerified});
+  await receipt("running");
+  }catch(error){
+   // Never archive arbitrary error messages: they can contain credentials or URLs.
+   await receipt(imported.length?"partial":"failed",issuer.cik,phase);
+   throw error;
+  }
  }
+ await receipt("complete");
  return imported;
 }
 
