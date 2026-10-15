@@ -1,0 +1,1397 @@
+{
+  "result": {
+    "financials": {
+      "unit": "USD millions, except per-share amounts and percentages",
+      "accountingBasis": "us_gaap",
+      "statementScope": "consolidated",
+      "years": [
+        "FY2024",
+        "FY2025"
+      ],
+      "periodEndDates": [
+        "2024-09-28",
+        "2025-09-27"
+      ],
+      "revenue": [
+        391035,
+        416161
+      ],
+      "grossProfit": [
+        180683,
+        195201
+      ],
+      "ebit": [
+        123216,
+        133050
+      ],
+      "ebitda": null,
+      "adjustedEbitda": null,
+      "incomeBeforeTax": [
+        123485,
+        132729
+      ],
+      "incomeTaxExpense": [
+        29749,
+        20719
+      ],
+      "reportedRoic": null,
+      "netIncome": [
+        93736,
+        112010
+      ],
+      "eps": [
+        6.08,
+        7.46
+      ],
+      "grossMargin": [
+        46.206,
+        46.905
+      ],
+      "operatingMargin": [
+        31.51,
+        31.971
+      ],
+      "operatingCashFlow": [
+        118254,
+        111482
+      ],
+      "capex": [
+        9447,
+        12715
+      ],
+      "freeCashFlow": [
+        108807,
+        98767
+      ],
+      "dividends": [
+        15234,
+        15421
+      ],
+      "buybacks": [
+        94949,
+        90711
+      ],
+      "totalAssets": [
+        364980,
+        359241
+      ],
+      "totalLiabilities": [
+        308030,
+        285508
+      ],
+      "totalEquity": [
+        56950,
+        73733
+      ],
+      "totalDebt": [
+        106629,
+        98657
+      ],
+      "shortTermDebt": [
+        20879,
+        20329
+      ],
+      "longTermDebt": [
+        85750,
+        78328
+      ],
+      "cash": [
+        29943,
+        35934
+      ],
+      "currentAssets": [
+        152987,
+        147957
+      ],
+      "currentLiabilities": [
+        176392,
+        165631
+      ],
+      "interestExpense": null,
+      "accountsReceivable": [
+        33410,
+        39777
+      ],
+      "inventory": [
+        7286,
+        5718
+      ],
+      "accountsPayable": [
+        68960,
+        69860
+      ],
+      "costOfGoodsSold": [
+        210352,
+        220960
+      ],
+      "goodwill": null,
+      "trends": [
+        {
+          "metric": "revenue",
+          "period": "FY2025",
+          "comparisonPeriod": "FY2024",
+          "comparison": "YoY",
+          "changePercent": 6.43
+        },
+        {
+          "metric": "costOfGoodsSold",
+          "period": "FY2025",
+          "comparisonPeriod": "FY2024",
+          "comparison": "YoY",
+          "changePercent": 5.04
+        },
+        {
+          "metric": "ebit",
+          "period": "FY2025",
+          "comparisonPeriod": "FY2024",
+          "comparison": "YoY",
+          "changePercent": 7.98
+        },
+        {
+          "metric": "netIncome",
+          "period": "FY2025",
+          "comparisonPeriod": "FY2024",
+          "comparison": "YoY",
+          "changePercent": 19.5
+        },
+        {
+          "metric": "accountsReceivable",
+          "period": "FY2025",
+          "comparisonPeriod": "FY2024",
+          "comparison": "YoY",
+          "changePercent": 19.06
+        },
+        {
+          "metric": "inventory",
+          "period": "FY2025",
+          "comparisonPeriod": "FY2024",
+          "comparison": "YoY",
+          "changePercent": -21.52
+        },
+        {
+          "metric": "totalAssets",
+          "period": "FY2025",
+          "comparisonPeriod": "FY2024",
+          "comparison": "YoY",
+          "changePercent": -1.57
+        },
+        {
+          "metric": "accountsPayable",
+          "period": "FY2025",
+          "comparisonPeriod": "FY2024",
+          "comparison": "YoY",
+          "changePercent": 1.31
+        },
+        {
+          "metric": "totalLiabilities",
+          "period": "FY2025",
+          "comparisonPeriod": "FY2024",
+          "comparison": "YoY",
+          "changePercent": -7.31
+        },
+        {
+          "metric": "totalEquity",
+          "period": "FY2025",
+          "comparisonPeriod": "FY2024",
+          "comparison": "YoY",
+          "changePercent": 29.47
+        },
+        {
+          "metric": "operatingCashFlow",
+          "period": "FY2025",
+          "comparisonPeriod": "FY2024",
+          "comparison": "YoY",
+          "changePercent": -5.73
+        }
+      ],
+      "validationFlags": [
+        {
+          "code": "LIABILITIES_TO_ASSETS_SCREEN",
+          "severity": "warning",
+          "period": "FY2024",
+          "note": "Total liabilities exceeded the supplied analyzer's default share-of-assets review threshold. This is a screening signal, not an interest-bearing debt ratio."
+        },
+        {
+          "code": "LIABILITIES_TO_ASSETS_SCREEN",
+          "severity": "warning",
+          "period": "FY2025",
+          "note": "Total liabilities exceeded the supplied analyzer's default share-of-assets review threshold. This is a screening signal, not an interest-bearing debt ratio."
+        },
+        {
+          "code": "LOW_CURRENT_RATIO",
+          "severity": "warning",
+          "period": "FY2024",
+          "note": "Current ratio fell below the supplied analyzer's default review threshold."
+        },
+        {
+          "code": "LOW_CURRENT_RATIO",
+          "severity": "warning",
+          "period": "FY2025",
+          "note": "Current ratio fell below the supplied analyzer's default review threshold."
+        }
+      ],
+      "crossReferencedPriorFiling": true,
+      "forwardGuidance": [],
+      "evidence": [
+        {
+          "metric": "Revenue, cost of goods sold, gross profit, operating income, pretax income, income tax expense, net income and diluted EPS",
+          "period": "FY2024 and FY2025",
+          "source": {
+            "section": "Condensed Consolidated Statements of Operations, Twelve Months Ended",
+            "page": null,
+            "item": null,
+            "sourceForm": "Issuer earnings statement",
+            "quote": "For September 27, 2025 and September 28, 2024, respectively: Total net sales 416,161 and 391,035; total cost of sales 220,960 and 210,352; gross margin 195,201 and 180,683; operating income 133,050 and 123,216; income before provision for income taxes 132,729 and 123,485; provision for income taxes 20,719 and 29,749; net income 112,010 and 93,736; diluted earnings per share 7.46 and 6.08.",
+            "kind": "excerpt",
+            "url": "",
+            "publisher": "Apple Inc.",
+            "accessed": ""
+          }
+        },
+        {
+          "metric": "Operating cash flow, cash capital expenditure, dividends and buybacks",
+          "period": "FY2024 and FY2025",
+          "source": {
+            "section": "Condensed Consolidated Statements of Cash Flows, Twelve Months Ended",
+            "page": null,
+            "item": null,
+            "sourceForm": "Issuer earnings statement",
+            "quote": "For September 27, 2025 and September 28, 2024, respectively: Cash generated by operating activities 111,482 and 118,254; payments for acquisition of property, plant and equipment (12,715) and (9,447); payments for dividends and dividend equivalents (15,421) and (15,234); repurchases of common stock (90,711) and (94,949).",
+            "kind": "excerpt",
+            "url": "",
+            "publisher": "Apple Inc.",
+            "accessed": ""
+          }
+        },
+        {
+          "metric": "Assets, liabilities, equity, current assets and current liabilities",
+          "period": "FY2024 and FY2025 period ends",
+          "source": {
+            "section": "Condensed Consolidated Balance Sheets",
+            "page": null,
+            "item": null,
+            "sourceForm": "Issuer earnings statement",
+            "quote": "For September 27, 2025 and September 28, 2024, respectively: Total assets 359,241 and 364,980; total liabilities 285,508 and 308,030; total shareholders’ equity 73,733 and 56,950; total current assets 147,957 and 152,987; total current liabilities 165,631 and 176,392.",
+            "kind": "excerpt",
+            "url": "",
+            "publisher": "Apple Inc.",
+            "accessed": ""
+          }
+        },
+        {
+          "metric": "Interest-bearing debt",
+          "period": "FY2024 and FY2025 period ends",
+          "source": {
+            "section": "Condensed Consolidated Balance Sheets, Liabilities",
+            "page": null,
+            "item": null,
+            "sourceForm": "Issuer earnings statement",
+            "quote": "For September 27, 2025 and September 28, 2024, respectively: Current commercial paper 7,979 and 9,967; current term debt 12,350 and 10,912; non-current term debt 78,328 and 85,750.",
+            "kind": "excerpt",
+            "url": "",
+            "publisher": "Apple Inc.",
+            "accessed": ""
+          }
+        },
+        {
+          "metric": "Cash, accounts receivable and inventory",
+          "period": "FY2024 and FY2025 period ends",
+          "source": {
+            "section": "Condensed Consolidated Balance Sheets, Current Assets",
+            "page": null,
+            "item": null,
+            "sourceForm": "Issuer earnings statement",
+            "quote": "For September 27, 2025 and September 28, 2024, respectively: Cash and cash equivalents 35,934 and 29,943; accounts receivable, net 39,777 and 33,410; inventories 5,718 and 7,286.",
+            "kind": "excerpt",
+            "url": "",
+            "publisher": "Apple Inc.",
+            "accessed": ""
+          }
+        },
+        {
+          "metric": "Accounts payable",
+          "period": "FY2024 and FY2025 period ends",
+          "source": {
+            "section": "Condensed Consolidated Balance Sheets, Current Liabilities",
+            "page": null,
+            "item": null,
+            "sourceForm": "Issuer earnings statement",
+            "quote": "For September 27, 2025 and September 28, 2024, respectively: Accounts payable 69,860 and 68,960.",
+            "kind": "excerpt",
+            "url": "",
+            "publisher": "Apple Inc.",
+            "accessed": ""
+          }
+        },
+        {
+          "metric": "Accounting basis, FY2024 tax charge and prior-filing cross-reference",
+          "period": "FY2024",
+          "source": {
+            "section": "Reconciliation of 2024 Non-GAAP to GAAP Results of Operations, footnotes (a) and (b)",
+            "page": null,
+            "item": "Part II, Item 8 of the FY2024 Form 10-K, cited in footnote (b)",
+            "sourceForm": "Issuer earnings statement",
+            "quote": "The reconciliation labels reported results “GAAP.” Footnote (b) says the company recorded a one-time income tax charge of $10.2 billion, net, during the fourth quarter of 2024 and refers readers to Note 7, “Income Taxes,” in Part II, Item 8 of the fiscal 2024 Annual Report on Form 10-K.",
+            "kind": "excerpt",
+            "url": "",
+            "publisher": "Apple Inc.",
+            "accessed": ""
+          }
+        }
+      ],
+      "annualHistory": {
+        "years": [
+          "FY2024",
+          "FY2025"
+        ],
+        "periodEndDates": [
+          "2024-09-28",
+          "2025-09-27"
+        ],
+        "unit": "USD millions",
+        "provider": "Apple Inc.",
+        "provenance": "uploaded_filing",
+        "status": "complete",
+        "revenue": [
+          391035,
+          416161
+        ],
+        "grossProfit": [
+          180683,
+          195201
+        ],
+        "ebit": [
+          123216,
+          133050
+        ],
+        "netIncome": [
+          93736,
+          112010
+        ],
+        "operatingCashFlow": [
+          118254,
+          111482
+        ],
+        "capex": [
+          9447,
+          12715
+        ],
+        "totalAssets": [
+          364980,
+          359241
+        ],
+        "totalLiabilities": [
+          308030,
+          285508
+        ],
+        "totalEquity": [
+          56950,
+          73733
+        ],
+        "totalDebt": [
+          106629,
+          98657
+        ],
+        "cash": [
+          29943,
+          35934
+        ],
+        "sources": [
+          {
+            "section": "Condensed Consolidated Statements of Operations, Twelve Months Ended",
+            "page": null,
+            "item": null,
+            "sourceForm": "Issuer earnings statement",
+            "quote": "Twelve months ended September 27, 2025 and September 28, 2024.",
+            "kind": "excerpt",
+            "url": "",
+            "publisher": "Apple Inc.",
+            "accessed": ""
+          },
+          {
+            "section": "Condensed Consolidated Statements of Cash Flows, Twelve Months Ended",
+            "page": null,
+            "item": null,
+            "sourceForm": "Issuer earnings statement",
+            "quote": "Twelve months ended September 27, 2025 and September 28, 2024.",
+            "kind": "excerpt",
+            "url": "",
+            "publisher": "Apple Inc.",
+            "accessed": ""
+          },
+          {
+            "section": "Condensed Consolidated Balance Sheets",
+            "page": null,
+            "item": null,
+            "sourceForm": "Issuer earnings statement",
+            "quote": "Balances as of September 27, 2025 and September 28, 2024.",
+            "kind": "excerpt",
+            "url": "",
+            "publisher": "Apple Inc.",
+            "accessed": ""
+          }
+        ]
+      },
+      "validation": {
+        "balanceSheetIdentity": "reconciled",
+        "difference": 0,
+        "ocrAnomalies": [],
+        "jumpWarnings": [],
+        "relationshipWarnings": []
+      },
+      "computed": [
+        {
+          "key": "cashLiabilityCoverage",
+          "values": [
+            0.17,
+            0.22
+          ],
+          "unit": "multiple",
+          "type": "calculated",
+          "formula": "Cash and cash equivalents ÷ Current liabilities",
+          "components": [
+            "cash",
+            "currentLiabilities"
+          ],
+          "numerator": "cash",
+          "denominator": "currentLiabilities",
+          "periods": [
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": "Cash-only coverage; excludes separately reported short-term investments. Not the broader cash ratio."
+        },
+        {
+          "key": "workingCapital",
+          "values": [
+            -23405,
+            -17674
+          ],
+          "unit": "currency",
+          "type": "calculated",
+          "formula": "Current assets − Current liabilities",
+          "components": [
+            "currentAssets",
+            "currentLiabilities"
+          ],
+          "numerator": "currentAssets",
+          "denominator": "currentLiabilities",
+          "periods": [
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": "Balance-sheet net working capital; not operating working capital."
+        },
+        {
+          "key": "quickRatio",
+          "values": [
+            0.826,
+            0.8588
+          ],
+          "unit": "ratio",
+          "type": "calculated",
+          "formula": "(Current assets − inventory) ÷ Current liabilities",
+          "components": [
+            "currentAssets",
+            "inventory",
+            "currentLiabilities"
+          ],
+          "numerator": "currentAssets",
+          "denominator": "currentLiabilities",
+          "periods": [
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": "Calculated by the exact supplied financial-ratio-toolkit Python utility. FilingLens debt, denominator, period and locale conventions remain authoritative."
+        },
+        {
+          "key": "cashRatio",
+          "values": [
+            0.1698,
+            0.217
+          ],
+          "unit": "ratio",
+          "type": "calculated",
+          "formula": "Cash and cash equivalents ÷ Current liabilities",
+          "components": [
+            "cash",
+            "currentLiabilities"
+          ],
+          "numerator": "cash",
+          "denominator": "currentLiabilities",
+          "periods": [
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": "Calculated by the exact supplied financial-ratio-toolkit Python utility. FilingLens debt, denominator, period and locale conventions remain authoritative."
+        },
+        {
+          "key": "debtToEquity",
+          "values": [
+            1.87,
+            1.34
+          ],
+          "unit": "multiple",
+          "type": "calculated",
+          "formula": "Interest-bearing debt ÷ Total equity",
+          "components": [
+            "totalDebt",
+            "totalEquity"
+          ],
+          "numerator": "totalDebt",
+          "denominator": "totalEquity",
+          "periods": [
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": "Not meaningful with zero or negative equity."
+        },
+        {
+          "key": "debtToAssets",
+          "values": [
+            29.22,
+            27.46
+          ],
+          "unit": "percent",
+          "type": "calculated",
+          "formula": "Interest-bearing debt ÷ Total assets × 100",
+          "components": [
+            "totalDebt",
+            "totalAssets"
+          ],
+          "numerator": "totalDebt",
+          "denominator": "totalAssets",
+          "periods": [
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": null
+        },
+        {
+          "key": "shortTermDebtShare",
+          "values": [
+            19.58,
+            20.61
+          ],
+          "unit": "percent",
+          "type": "calculated",
+          "formula": "Short-term debt ÷ Total debt × 100",
+          "components": [
+            "shortTermDebt",
+            "totalDebt"
+          ],
+          "numerator": "shortTermDebt",
+          "denominator": "totalDebt",
+          "periods": [
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": "Requires consistent debt scope and short-term debt no greater than total debt."
+        },
+        {
+          "key": "assetTurnover",
+          "values": [
+            null,
+            1.15
+          ],
+          "unit": "multiple",
+          "type": "calculated",
+          "formula": "Annual revenue ÷ Average opening and closing total assets",
+          "components": [
+            "revenue",
+            "totalAssets"
+          ],
+          "numerator": "revenue",
+          "denominator": "totalAssets",
+          "periods": [
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": "Only consecutive explicitly labelled fiscal years. No quarterly annualization or substitution of closing assets."
+        },
+        {
+          "key": "assetTurnoverPeriodEnd",
+          "values": [
+            1.0714,
+            1.1584
+          ],
+          "unit": "multiple",
+          "type": "calculated",
+          "formula": "Revenue for disclosed period ÷ period-end total assets",
+          "components": [
+            "revenue",
+            "totalAssets"
+          ],
+          "numerator": "revenue",
+          "denominator": "totalAssets",
+          "periods": [
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": "Calculated by the exact supplied financial-ratio-toolkit Python utility. FilingLens debt, denominator, period and locale conventions remain authoritative."
+        },
+        {
+          "key": "equityMultiplier",
+          "values": [
+            6.4088,
+            4.8722
+          ],
+          "unit": "multiple",
+          "type": "calculated",
+          "formula": "Period-end total assets ÷ period-end total equity",
+          "components": [
+            "totalAssets",
+            "totalEquity"
+          ],
+          "numerator": "totalAssets",
+          "denominator": "totalEquity",
+          "periods": [
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": "Calculated by the exact supplied financial-ratio-toolkit Python utility. FilingLens debt, denominator, period and locale conventions remain authoritative."
+        },
+        {
+          "key": "roePeriodEnd",
+          "values": [
+            164.5935,
+            151.913
+          ],
+          "unit": "percent",
+          "type": "calculated",
+          "formula": "Net income ÷ period-end total equity × 100",
+          "components": [
+            "netIncome",
+            "totalEquity"
+          ],
+          "numerator": "netIncome",
+          "denominator": "totalEquity",
+          "periods": [
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": "Calculated by the exact supplied financial-ratio-toolkit Python utility. FilingLens debt, denominator, period and locale conventions remain authoritative."
+        },
+        {
+          "key": "roaPeriodEnd",
+          "values": [
+            25.6825,
+            31.1796
+          ],
+          "unit": "percent",
+          "type": "calculated",
+          "formula": "Net income ÷ period-end total assets × 100",
+          "components": [
+            "netIncome",
+            "totalAssets"
+          ],
+          "numerator": "netIncome",
+          "denominator": "totalAssets",
+          "periods": [
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": "Calculated by the exact supplied financial-ratio-toolkit Python utility. FilingLens debt, denominator, period and locale conventions remain authoritative."
+        },
+        {
+          "key": "inventoryTurnover",
+          "values": [
+            28.8707,
+            38.6429
+          ],
+          "unit": "multiple",
+          "type": "calculated",
+          "formula": "Cost of goods sold ÷ period-end inventory",
+          "components": [
+            "costOfGoodsSold",
+            "inventory"
+          ],
+          "numerator": "costOfGoodsSold",
+          "denominator": "inventory",
+          "periods": [
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": "Calculated by the exact supplied financial-ratio-toolkit Python utility. FilingLens debt, denominator, period and locale conventions remain authoritative."
+        },
+        {
+          "key": "daysInventoryOutstanding",
+          "values": [
+            12.6426,
+            9.4455
+          ],
+          "unit": "days",
+          "type": "calculated",
+          "formula": "Disclosed period days ÷ inventory turnover",
+          "components": [
+            "costOfGoodsSold",
+            "inventory"
+          ],
+          "numerator": "costOfGoodsSold",
+          "denominator": "inventory",
+          "periods": [
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": "Calculated by the exact supplied financial-ratio-toolkit Python utility. FilingLens debt, denominator, period and locale conventions remain authoritative."
+        },
+        {
+          "key": "receivablesTurnover",
+          "values": [
+            11.7041,
+            10.4624
+          ],
+          "unit": "multiple",
+          "type": "calculated",
+          "formula": "Revenue for disclosed period ÷ period-end accounts receivable",
+          "components": [
+            "revenue",
+            "accountsReceivable"
+          ],
+          "numerator": "revenue",
+          "denominator": "accountsReceivable",
+          "periods": [
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": "Calculated by the exact supplied financial-ratio-toolkit Python utility. FilingLens debt, denominator, period and locale conventions remain authoritative."
+        },
+        {
+          "key": "daysSalesOutstanding",
+          "values": [
+            31.1856,
+            34.887
+          ],
+          "unit": "days",
+          "type": "calculated",
+          "formula": "Disclosed period days ÷ receivables turnover",
+          "components": [
+            "revenue",
+            "accountsReceivable"
+          ],
+          "numerator": "revenue",
+          "denominator": "accountsReceivable",
+          "periods": [
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": "Calculated by the exact supplied financial-ratio-toolkit Python utility. FilingLens debt, denominator, period and locale conventions remain authoritative."
+        },
+        {
+          "key": "payablesTurnover",
+          "values": [
+            3.05,
+            3.16
+          ],
+          "unit": "multiple",
+          "type": "calculated",
+          "formula": "Cost of goods sold ÷ period-end accounts payable",
+          "components": [
+            "costOfGoodsSold",
+            "accountsPayable"
+          ],
+          "numerator": "costOfGoodsSold",
+          "denominator": "accountsPayable",
+          "periods": [
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": "Disclosed-period turnover; not annualized."
+        },
+        {
+          "key": "daysPayablesOutstanding",
+          "values": [
+            119.99,
+            115.4
+          ],
+          "unit": "days",
+          "type": "calculated",
+          "formula": "Disclosed period days ÷ payables turnover",
+          "components": [
+            "costOfGoodsSold",
+            "accountsPayable"
+          ],
+          "numerator": "costOfGoodsSold",
+          "denominator": "accountsPayable",
+          "periods": [
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": "Only annual or explicitly labelled quarter periods; no quarterly annualization."
+        },
+        {
+          "key": "dupontNetMargin",
+          "values": [
+            23.97,
+            26.92
+          ],
+          "unit": "percent",
+          "type": "calculated",
+          "formula": "Net income ÷ revenue × 100",
+          "components": [
+            "netIncome",
+            "revenue"
+          ],
+          "numerator": "netIncome",
+          "denominator": "revenue",
+          "periods": [
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": null
+        },
+        {
+          "key": "dupontRoe",
+          "values": [
+            164.4,
+            152.08
+          ],
+          "unit": "percent",
+          "type": "calculated",
+          "formula": "Net margin × period-end asset turnover × period-end equity multiplier",
+          "components": [
+            "netIncome",
+            "revenue",
+            "totalAssets",
+            "totalEquity"
+          ],
+          "numerator": "netIncome",
+          "denominator": "totalEquity",
+          "periods": [
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": "DuPont decomposition using period-end balances; does not use market data."
+        },
+        {
+          "key": "operatingCashFlowMargin",
+          "values": [
+            30.24,
+            26.79
+          ],
+          "unit": "percent",
+          "type": "calculated",
+          "formula": "Operating cash flow ÷ Revenue × 100",
+          "components": [
+            "operatingCashFlow",
+            "revenue"
+          ],
+          "numerator": "operatingCashFlow",
+          "denominator": "revenue",
+          "periods": [
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": null
+        },
+        {
+          "key": "earningsCashConversion",
+          "values": [
+            1.2616,
+            0.9953
+          ],
+          "unit": "multiple",
+          "type": "calculated",
+          "formula": "Operating cash flow ÷ Net income",
+          "components": [
+            "operatingCashFlow",
+            "netIncome"
+          ],
+          "numerator": "operatingCashFlow",
+          "denominator": "netIncome",
+          "periods": [
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": "Calculated by the exact supplied financial-ratio-toolkit Python utility. FilingLens debt, denominator, period and locale conventions remain authoritative."
+        },
+        {
+          "key": "capexIntensity",
+          "values": [
+            2.42,
+            3.06
+          ],
+          "unit": "percent",
+          "type": "calculated",
+          "formula": "Absolute capital expenditure ÷ Revenue × 100",
+          "components": [
+            "capex",
+            "revenue"
+          ],
+          "numerator": "capex",
+          "denominator": "revenue",
+          "periods": [
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": null
+        },
+        {
+          "key": "revenueGrowth",
+          "values": [
+            null,
+            6.4255
+          ],
+          "unit": "percent",
+          "type": "calculated",
+          "formula": "(Revenue ÷ prior-period Revenue) − 1",
+          "components": [
+            "revenue"
+          ],
+          "numerator": "revenue",
+          "denominator": null,
+          "periods": [
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": "Calculated by the exact supplied financial-ratio-toolkit Python utility. FilingLens debt, denominator, period and locale conventions remain authoritative."
+        },
+        {
+          "key": "netIncomeGrowth",
+          "values": [
+            null,
+            19.4952
+          ],
+          "unit": "percent",
+          "type": "calculated",
+          "formula": "(Net income ÷ prior-period Net income) − 1",
+          "components": [
+            "netIncome"
+          ],
+          "numerator": "netIncome",
+          "denominator": null,
+          "periods": [
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": "Calculated by the exact supplied financial-ratio-toolkit Python utility. FilingLens debt, denominator, period and locale conventions remain authoritative."
+        },
+        {
+          "key": "grossMarginCalculated",
+          "values": [
+            46.2063,
+            46.9052
+          ],
+          "unit": "percent",
+          "type": "calculated",
+          "formula": "Gross profit ÷ Revenue",
+          "components": [
+            "grossProfit",
+            "revenue"
+          ],
+          "numerator": "grossProfit",
+          "denominator": "revenue",
+          "periods": [
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": "Calculated by the exact supplied financial-ratio-toolkit Python utility. FilingLens debt, denominator, period and locale conventions remain authoritative."
+        },
+        {
+          "key": "ebitMargin",
+          "values": [
+            31.5102,
+            31.9708
+          ],
+          "unit": "percent",
+          "type": "calculated",
+          "formula": "EBIT ÷ Revenue",
+          "components": [
+            "ebit",
+            "revenue"
+          ],
+          "numerator": "ebit",
+          "denominator": "revenue",
+          "periods": [
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": "Calculated by the exact supplied financial-ratio-toolkit Python utility. FilingLens debt, denominator, period and locale conventions remain authoritative."
+        },
+        {
+          "key": "netMargin",
+          "values": [
+            23.9713,
+            26.9151
+          ],
+          "unit": "percent",
+          "type": "calculated",
+          "formula": "Net income ÷ Revenue",
+          "components": [
+            "netIncome",
+            "revenue"
+          ],
+          "numerator": "netIncome",
+          "denominator": "revenue",
+          "periods": [
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": "Calculated by the exact supplied financial-ratio-toolkit Python utility. FilingLens debt, denominator, period and locale conventions remain authoritative."
+        },
+        {
+          "key": "netDebt",
+          "values": [
+            76686,
+            62723
+          ],
+          "unit": "currency",
+          "type": "calculated",
+          "formula": "Total debt − Cash and cash equivalents",
+          "components": [
+            "totalDebt",
+            "cash"
+          ],
+          "numerator": "totalDebt",
+          "denominator": "cash",
+          "periods": [
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": null
+        },
+        {
+          "key": "freeCashFlowCalculated",
+          "values": [
+            108807,
+            98767
+          ],
+          "unit": "currency",
+          "type": "reported",
+          "formula": null,
+          "components": [
+            "operatingCashFlow",
+            "capex",
+            "freeCashFlow"
+          ],
+          "numerator": "operatingCashFlow",
+          "denominator": "freeCashFlow",
+          "periods": [
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": null
+        },
+        {
+          "key": "fcfMargin",
+          "values": [
+            27.83,
+            23.73
+          ],
+          "unit": "percent",
+          "type": "calculated",
+          "formula": "Free cash flow ÷ Revenue",
+          "components": [
+            "freeCashFlow",
+            "operatingCashFlow",
+            "capex",
+            "revenue"
+          ],
+          "numerator": "freeCashFlow",
+          "denominator": "revenue",
+          "periods": [
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": null
+        },
+        {
+          "key": "currentRatio",
+          "values": [
+            0.8673,
+            0.8933
+          ],
+          "unit": "ratio",
+          "type": "calculated",
+          "formula": "Current assets ÷ Current liabilities",
+          "components": [
+            "currentAssets",
+            "currentLiabilities"
+          ],
+          "numerator": "currentAssets",
+          "denominator": "currentLiabilities",
+          "periods": [
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": "Calculated by the exact supplied financial-ratio-toolkit Python utility. FilingLens debt, denominator, period and locale conventions remain authoritative."
+        },
+        {
+          "key": "roe",
+          "values": [
+            null,
+            171.42
+          ],
+          "unit": "percent",
+          "type": "calculated",
+          "formula": "Net income ÷ average equity",
+          "components": [
+            "netIncome",
+            "totalEquity"
+          ],
+          "numerator": "netIncome",
+          "denominator": "totalEquity",
+          "periods": [
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": "Uses average opening and closing equity."
+        },
+        {
+          "key": "roa",
+          "values": [
+            null,
+            30.93
+          ],
+          "unit": "percent",
+          "type": "calculated",
+          "formula": "Net income ÷ average total assets",
+          "components": [
+            "netIncome",
+            "totalAssets"
+          ],
+          "numerator": "netIncome",
+          "denominator": "totalAssets",
+          "periods": [
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": "Uses average opening and closing assets."
+        },
+        {
+          "key": "effectiveTaxRate",
+          "values": [
+            24.09,
+            15.61
+          ],
+          "unit": "percent",
+          "type": "calculated",
+          "formula": "Income tax expense ÷ Income before tax",
+          "components": [
+            "incomeTaxExpense",
+            "incomeBeforeTax"
+          ],
+          "numerator": "incomeTaxExpense",
+          "denominator": "incomeBeforeTax",
+          "periods": [
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": null
+        },
+        {
+          "key": "nopat",
+          "values": [
+            93533.27,
+            112280.9
+          ],
+          "unit": "currency",
+          "type": "calculated",
+          "formula": "EBIT × (1 − reported effective tax rate)",
+          "components": [
+            "ebit",
+            "incomeTaxExpense",
+            "incomeBeforeTax"
+          ],
+          "numerator": "ebit",
+          "denominator": "incomeBeforeTax",
+          "periods": [
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": null
+        },
+        {
+          "key": "investedCapital",
+          "values": [
+            133636,
+            136456
+          ],
+          "unit": "currency",
+          "type": "calculated",
+          "formula": "Total debt + Total equity − Cash and cash equivalents",
+          "components": [
+            "totalDebt",
+            "totalEquity",
+            "cash"
+          ],
+          "numerator": "totalDebt",
+          "denominator": "cash",
+          "periods": [
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": null
+        },
+        {
+          "key": "averageInvestedCapital",
+          "values": [
+            null,
+            135046
+          ],
+          "unit": "currency",
+          "type": "calculated",
+          "formula": "(Opening invested capital + closing invested capital) ÷ 2",
+          "components": [
+            "totalDebt",
+            "totalEquity",
+            "cash"
+          ],
+          "numerator": "totalDebt",
+          "denominator": "cash",
+          "periods": [
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": null
+        },
+        {
+          "key": "roic",
+          "values": [
+            null,
+            83.14
+          ],
+          "unit": "percent",
+          "type": "calculated",
+          "formula": "NOPAT ÷ average invested capital",
+          "components": [
+            "ebit",
+            "incomeTaxExpense",
+            "incomeBeforeTax",
+            "totalDebt",
+            "totalEquity",
+            "cash"
+          ],
+          "numerator": "nopat",
+          "denominator": "averageInvestedCapital",
+          "periods": [
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": "NOPAT = EBIT × (1 − reported effective tax rate). Invested capital = total debt + total equity − cash; uses average opening and closing invested capital."
+        },
+        {
+          "key": "operatingCashFlowRatio",
+          "values": [
+            0.6704,
+            0.6731
+          ],
+          "unit": "multiple",
+          "type": "calculated",
+          "formula": "Operating cash flow ÷ Current liabilities",
+          "components": [
+            "operatingCashFlow",
+            "currentLiabilities"
+          ],
+          "numerator": "operatingCashFlow",
+          "denominator": "currentLiabilities",
+          "periods": [
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": "Calculated by the exact supplied financial-ratio-toolkit Python utility. FilingLens debt, denominator, period and locale conventions remain authoritative."
+        }
+      ]
+    }
+  },
+  "diagnostic": {
+    "status": "complete",
+    "confidence": 0.88
+  },
+  "manager": {
+    "stage": 4,
+    "totalStages": 7,
+    "agent": "financials",
+    "excerptChars": 9477,
+    "attempts": 1,
+    "subtools": [
+      "exact-financial-ratio-toolkit-python",
+      "exact-financial-statement-analyzer-python",
+      "filinglens-reconciliation-validator"
+    ]
+  },
+  "evaluation": {
+    "schemaValid": true,
+    "completeness": "complete"
+  }
+}

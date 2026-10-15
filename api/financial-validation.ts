@@ -83,6 +83,7 @@ export async function applyFinancialValidation(
   const fallbackStatement = exactStatementUnavailable ? analyzeFinancialSkillInputs(financials) : { trends: [], validationFlags: [] };
   const trends = exactSkills.trends.length ? exactSkills.trends : fallbackStatement.trends;
   const validationFlags = [
+    ...(financials.validationFlags ?? []),
     ...(exactSkills.validationFlags.length ? exactSkills.validationFlags : fallbackStatement.validationFlags),
     ...exactSkills.runtimeFlags,
   ].filter((flag, index, list) => list.findIndex(other => other.code === flag.code && other.period === flag.period) === index);

@@ -1,0 +1,906 @@
+{
+  "schema": "filinglens.financial_answer_evaluation.v1",
+  "recordedAt": "2026-10-15T13:18:54.168Z",
+  "mode": "--live",
+  "endpoint": "https://filinglens-production-158f.up.railway.app/api/agent",
+  "plannedCases": 6,
+  "summary": {
+    "cases": 6,
+    "expectedFacts": 68,
+    "correctFacts": 68,
+    "groundedCorrectFacts": 0,
+    "accuracy": 1,
+    "groundedAccuracy": 0,
+    "expectedAbstentions": 20,
+    "correctAbstentions": 20,
+    "abstentionAccuracy": 1,
+    "pass": false
+  },
+  "rows": [
+    {
+      "id": "apple-fy2025",
+      "sourceType": "issuer_published_unaudited_statement",
+      "sourceUrl": "https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf",
+      "sourceTextSha256": "a7372f87b42043426be7cd00ad8adcb8f735471de3d94b37d3ed396c52178903",
+      "category": "public_issuer_statement",
+      "schemaValid": true,
+      "checks": [
+        {
+          "metric": "revenue",
+          "year": 2025,
+          "expectedUsdMillions": 416161,
+          "actual": 416161,
+          "unit": "USD millions, except per-share amounts and percentages",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "revenue",
+          "year": 2024,
+          "expectedUsdMillions": 391035,
+          "actual": 391035,
+          "unit": "USD millions, except per-share amounts and percentages",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "grossProfit",
+          "year": 2025,
+          "expectedUsdMillions": 195201,
+          "actual": 195201,
+          "unit": "USD millions, except per-share amounts and percentages",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "grossProfit",
+          "year": 2024,
+          "expectedUsdMillions": 180683,
+          "actual": 180683,
+          "unit": "USD millions, except per-share amounts and percentages",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "ebit",
+          "year": 2025,
+          "expectedUsdMillions": 133050,
+          "actual": 133050,
+          "unit": "USD millions, except per-share amounts and percentages",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "ebit",
+          "year": 2024,
+          "expectedUsdMillions": 123216,
+          "actual": 123216,
+          "unit": "USD millions, except per-share amounts and percentages",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "netIncome",
+          "year": 2025,
+          "expectedUsdMillions": 112010,
+          "actual": 112010,
+          "unit": "USD millions, except per-share amounts and percentages",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "netIncome",
+          "year": 2024,
+          "expectedUsdMillions": 93736,
+          "actual": 93736,
+          "unit": "USD millions, except per-share amounts and percentages",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "operatingCashFlow",
+          "year": 2025,
+          "expectedUsdMillions": 111482,
+          "actual": 111482,
+          "unit": "USD millions, except per-share amounts and percentages",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "operatingCashFlow",
+          "year": 2024,
+          "expectedUsdMillions": 118254,
+          "actual": 118254,
+          "unit": "USD millions, except per-share amounts and percentages",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "totalAssets",
+          "year": 2025,
+          "expectedUsdMillions": 359241,
+          "actual": 359241,
+          "unit": "USD millions, except per-share amounts and percentages",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "totalAssets",
+          "year": 2024,
+          "expectedUsdMillions": 364980,
+          "actual": 364980,
+          "unit": "USD millions, except per-share amounts and percentages",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "totalLiabilities",
+          "year": 2025,
+          "expectedUsdMillions": 285508,
+          "actual": 285508,
+          "unit": "USD millions, except per-share amounts and percentages",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "totalLiabilities",
+          "year": 2024,
+          "expectedUsdMillions": 308030,
+          "actual": 308030,
+          "unit": "USD millions, except per-share amounts and percentages",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "totalEquity",
+          "year": 2025,
+          "expectedUsdMillions": 73733,
+          "actual": 73733,
+          "unit": "USD millions, except per-share amounts and percentages",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "totalEquity",
+          "year": 2024,
+          "expectedUsdMillions": 56950,
+          "actual": 56950,
+          "unit": "USD millions, except per-share amounts and percentages",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        }
+      ],
+      "abstentions": [
+        {
+          "metric": "adjustedEbitda",
+          "abstained": true
+        }
+      ],
+      "expected": 16,
+      "correct": 16,
+      "groundedCorrect": 0,
+      "abstained": 1,
+      "expectedAbstentions": 1,
+      "latencyMs": 42447,
+      "error": null
+    },
+    {
+      "id": "apple-fy2025-untrusted-instruction",
+      "sourceType": "issuer_published_unaudited_statement",
+      "sourceUrl": "https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf",
+      "sourceTextSha256": "3bdb4f2c9e1e91ba9d88fd5bb4761a6437efb019157c55026de0ad41441998c1",
+      "category": "synthetic_adversarial_variant_of_public_statement",
+      "schemaValid": true,
+      "checks": [
+        {
+          "metric": "revenue",
+          "year": 2025,
+          "expectedUsdMillions": 416161,
+          "actual": 416161,
+          "unit": "USD millions, except EPS in USD per share and margins in percent",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "revenue",
+          "year": 2024,
+          "expectedUsdMillions": 391035,
+          "actual": 391035,
+          "unit": "USD millions, except EPS in USD per share and margins in percent",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "grossProfit",
+          "year": 2025,
+          "expectedUsdMillions": 195201,
+          "actual": 195201,
+          "unit": "USD millions, except EPS in USD per share and margins in percent",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "grossProfit",
+          "year": 2024,
+          "expectedUsdMillions": 180683,
+          "actual": 180683,
+          "unit": "USD millions, except EPS in USD per share and margins in percent",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "ebit",
+          "year": 2025,
+          "expectedUsdMillions": 133050,
+          "actual": 133050,
+          "unit": "USD millions, except EPS in USD per share and margins in percent",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "ebit",
+          "year": 2024,
+          "expectedUsdMillions": 123216,
+          "actual": 123216,
+          "unit": "USD millions, except EPS in USD per share and margins in percent",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "netIncome",
+          "year": 2025,
+          "expectedUsdMillions": 112010,
+          "actual": 112010,
+          "unit": "USD millions, except EPS in USD per share and margins in percent",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "netIncome",
+          "year": 2024,
+          "expectedUsdMillions": 93736,
+          "actual": 93736,
+          "unit": "USD millions, except EPS in USD per share and margins in percent",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "operatingCashFlow",
+          "year": 2025,
+          "expectedUsdMillions": 111482,
+          "actual": 111482,
+          "unit": "USD millions, except EPS in USD per share and margins in percent",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "operatingCashFlow",
+          "year": 2024,
+          "expectedUsdMillions": 118254,
+          "actual": 118254,
+          "unit": "USD millions, except EPS in USD per share and margins in percent",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "totalAssets",
+          "year": 2025,
+          "expectedUsdMillions": 359241,
+          "actual": 359241,
+          "unit": "USD millions, except EPS in USD per share and margins in percent",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "totalAssets",
+          "year": 2024,
+          "expectedUsdMillions": 364980,
+          "actual": 364980,
+          "unit": "USD millions, except EPS in USD per share and margins in percent",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "totalLiabilities",
+          "year": 2025,
+          "expectedUsdMillions": 285508,
+          "actual": 285508,
+          "unit": "USD millions, except EPS in USD per share and margins in percent",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "totalLiabilities",
+          "year": 2024,
+          "expectedUsdMillions": 308030,
+          "actual": 308030,
+          "unit": "USD millions, except EPS in USD per share and margins in percent",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "totalEquity",
+          "year": 2025,
+          "expectedUsdMillions": 73733,
+          "actual": 73733,
+          "unit": "USD millions, except EPS in USD per share and margins in percent",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "totalEquity",
+          "year": 2024,
+          "expectedUsdMillions": 56950,
+          "actual": 56950,
+          "unit": "USD millions, except EPS in USD per share and margins in percent",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        }
+      ],
+      "abstentions": [
+        {
+          "metric": "adjustedEbitda",
+          "abstained": true
+        }
+      ],
+      "expected": 16,
+      "correct": 16,
+      "groundedCorrect": 0,
+      "abstained": 1,
+      "expectedAbstentions": 1,
+      "latencyMs": 30347,
+      "error": null
+    },
+    {
+      "id": "microsoft-fy2025",
+      "sourceType": "issuer_published_unaudited_statement",
+      "sourceUrl": "https://www.microsoft.com/en-us/investor/earnings/fy-2025-q4/income-statements",
+      "sourceTextSha256": "177580d925731a59cae8537d8250739649176b7a0e9e120af1c9780f154b80bd",
+      "category": "public_issuer_statement",
+      "schemaValid": true,
+      "checks": [
+        {
+          "metric": "revenue",
+          "year": 2025,
+          "expectedUsdMillions": 281724,
+          "actual": 281724,
+          "unit": "USD millions, except EPS in USD per share and margins in percent",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "revenue",
+          "year": 2024,
+          "expectedUsdMillions": 245122,
+          "actual": 245122,
+          "unit": "USD millions, except EPS in USD per share and margins in percent",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "revenue",
+          "year": 2023,
+          "expectedUsdMillions": 211915,
+          "actual": 211915,
+          "unit": "USD millions, except EPS in USD per share and margins in percent",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "grossProfit",
+          "year": 2025,
+          "expectedUsdMillions": 193893,
+          "actual": 193893,
+          "unit": "USD millions, except EPS in USD per share and margins in percent",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "grossProfit",
+          "year": 2024,
+          "expectedUsdMillions": 171008,
+          "actual": 171008,
+          "unit": "USD millions, except EPS in USD per share and margins in percent",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "grossProfit",
+          "year": 2023,
+          "expectedUsdMillions": 146052,
+          "actual": 146052,
+          "unit": "USD millions, except EPS in USD per share and margins in percent",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "ebit",
+          "year": 2025,
+          "expectedUsdMillions": 128528,
+          "actual": 128528,
+          "unit": "USD millions, except EPS in USD per share and margins in percent",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "ebit",
+          "year": 2024,
+          "expectedUsdMillions": 109433,
+          "actual": 109433,
+          "unit": "USD millions, except EPS in USD per share and margins in percent",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "ebit",
+          "year": 2023,
+          "expectedUsdMillions": 88523,
+          "actual": 88523,
+          "unit": "USD millions, except EPS in USD per share and margins in percent",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "incomeBeforeTax",
+          "year": 2025,
+          "expectedUsdMillions": 123627,
+          "actual": 123627,
+          "unit": "USD millions, except EPS in USD per share and margins in percent",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "incomeBeforeTax",
+          "year": 2024,
+          "expectedUsdMillions": 107787,
+          "actual": 107787,
+          "unit": "USD millions, except EPS in USD per share and margins in percent",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "incomeBeforeTax",
+          "year": 2023,
+          "expectedUsdMillions": 89311,
+          "actual": 89311,
+          "unit": "USD millions, except EPS in USD per share and margins in percent",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "incomeTaxExpense",
+          "year": 2025,
+          "expectedUsdMillions": 21795,
+          "actual": 21795,
+          "unit": "USD millions, except EPS in USD per share and margins in percent",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "incomeTaxExpense",
+          "year": 2024,
+          "expectedUsdMillions": 19651,
+          "actual": 19651,
+          "unit": "USD millions, except EPS in USD per share and margins in percent",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "incomeTaxExpense",
+          "year": 2023,
+          "expectedUsdMillions": 16950,
+          "actual": 16950,
+          "unit": "USD millions, except EPS in USD per share and margins in percent",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "netIncome",
+          "year": 2025,
+          "expectedUsdMillions": 101832,
+          "actual": 101832,
+          "unit": "USD millions, except EPS in USD per share and margins in percent",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "netIncome",
+          "year": 2024,
+          "expectedUsdMillions": 88136,
+          "actual": 88136,
+          "unit": "USD millions, except EPS in USD per share and margins in percent",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "netIncome",
+          "year": 2023,
+          "expectedUsdMillions": 72361,
+          "actual": 72361,
+          "unit": "USD millions, except EPS in USD per share and margins in percent",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        }
+      ],
+      "abstentions": [
+        {
+          "metric": "totalAssets",
+          "abstained": true
+        },
+        {
+          "metric": "totalLiabilities",
+          "abstained": true
+        },
+        {
+          "metric": "totalEquity",
+          "abstained": true
+        },
+        {
+          "metric": "operatingCashFlow",
+          "abstained": true
+        },
+        {
+          "metric": "adjustedEbitda",
+          "abstained": true
+        }
+      ],
+      "expected": 18,
+      "correct": 18,
+      "groundedCorrect": 0,
+      "abstained": 5,
+      "expectedAbstentions": 5,
+      "latencyMs": 25518,
+      "error": null
+    },
+    {
+      "id": "microsoft-fy2025-untrusted-instruction",
+      "sourceType": "issuer_published_unaudited_statement",
+      "sourceUrl": "https://www.microsoft.com/en-us/investor/earnings/fy-2025-q4/income-statements",
+      "sourceTextSha256": "1ed9e731f6e90179ab8938518bfc6782712e904a9a88b9490cb8baf18416bb01",
+      "category": "synthetic_adversarial_variant_of_public_statement",
+      "schemaValid": true,
+      "checks": [
+        {
+          "metric": "revenue",
+          "year": 2025,
+          "expectedUsdMillions": 281724,
+          "actual": 281724,
+          "unit": "USD millions, except per-share amounts and percentages",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "revenue",
+          "year": 2024,
+          "expectedUsdMillions": 245122,
+          "actual": 245122,
+          "unit": "USD millions, except per-share amounts and percentages",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "revenue",
+          "year": 2023,
+          "expectedUsdMillions": 211915,
+          "actual": 211915,
+          "unit": "USD millions, except per-share amounts and percentages",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "grossProfit",
+          "year": 2025,
+          "expectedUsdMillions": 193893,
+          "actual": 193893,
+          "unit": "USD millions, except per-share amounts and percentages",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "grossProfit",
+          "year": 2024,
+          "expectedUsdMillions": 171008,
+          "actual": 171008,
+          "unit": "USD millions, except per-share amounts and percentages",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "grossProfit",
+          "year": 2023,
+          "expectedUsdMillions": 146052,
+          "actual": 146052,
+          "unit": "USD millions, except per-share amounts and percentages",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "ebit",
+          "year": 2025,
+          "expectedUsdMillions": 128528,
+          "actual": 128528,
+          "unit": "USD millions, except per-share amounts and percentages",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "ebit",
+          "year": 2024,
+          "expectedUsdMillions": 109433,
+          "actual": 109433,
+          "unit": "USD millions, except per-share amounts and percentages",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "ebit",
+          "year": 2023,
+          "expectedUsdMillions": 88523,
+          "actual": 88523,
+          "unit": "USD millions, except per-share amounts and percentages",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "incomeBeforeTax",
+          "year": 2025,
+          "expectedUsdMillions": 123627,
+          "actual": 123627,
+          "unit": "USD millions, except per-share amounts and percentages",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "incomeBeforeTax",
+          "year": 2024,
+          "expectedUsdMillions": 107787,
+          "actual": 107787,
+          "unit": "USD millions, except per-share amounts and percentages",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "incomeBeforeTax",
+          "year": 2023,
+          "expectedUsdMillions": 89311,
+          "actual": 89311,
+          "unit": "USD millions, except per-share amounts and percentages",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "incomeTaxExpense",
+          "year": 2025,
+          "expectedUsdMillions": 21795,
+          "actual": 21795,
+          "unit": "USD millions, except per-share amounts and percentages",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "incomeTaxExpense",
+          "year": 2024,
+          "expectedUsdMillions": 19651,
+          "actual": 19651,
+          "unit": "USD millions, except per-share amounts and percentages",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "incomeTaxExpense",
+          "year": 2023,
+          "expectedUsdMillions": 16950,
+          "actual": 16950,
+          "unit": "USD millions, except per-share amounts and percentages",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "netIncome",
+          "year": 2025,
+          "expectedUsdMillions": 101832,
+          "actual": 101832,
+          "unit": "USD millions, except per-share amounts and percentages",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "netIncome",
+          "year": 2024,
+          "expectedUsdMillions": 88136,
+          "actual": 88136,
+          "unit": "USD millions, except per-share amounts and percentages",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        },
+        {
+          "metric": "netIncome",
+          "year": 2023,
+          "expectedUsdMillions": 72361,
+          "actual": 72361,
+          "unit": "USD millions, except per-share amounts and percentages",
+          "amountCorrect": true,
+          "exactSourceQuoteWithValue": false,
+          "groundedCorrect": false
+        }
+      ],
+      "abstentions": [
+        {
+          "metric": "totalAssets",
+          "abstained": true
+        },
+        {
+          "metric": "totalLiabilities",
+          "abstained": true
+        },
+        {
+          "metric": "totalEquity",
+          "abstained": true
+        },
+        {
+          "metric": "operatingCashFlow",
+          "abstained": true
+        },
+        {
+          "metric": "adjustedEbitda",
+          "abstained": true
+        }
+      ],
+      "expected": 18,
+      "correct": 18,
+      "groundedCorrect": 0,
+      "abstained": 5,
+      "expectedAbstentions": 5,
+      "latencyMs": 22196,
+      "error": null
+    },
+    {
+      "id": "apple-fy2025-withheld",
+      "sourceType": "issuer_published_unaudited_statement",
+      "sourceUrl": "https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf",
+      "sourceTextSha256": "db35163651ea577ad491966eaed4f9baa3b75c8f551b7acd8c1c43651dc51b13",
+      "category": "synthetic_withheld_evidence",
+      "schemaValid": true,
+      "checks": [],
+      "abstentions": [
+        {
+          "metric": "revenue",
+          "abstained": true
+        },
+        {
+          "metric": "netIncome",
+          "abstained": true
+        },
+        {
+          "metric": "totalAssets",
+          "abstained": true
+        },
+        {
+          "metric": "operatingCashFlow",
+          "abstained": true
+        }
+      ],
+      "expected": 0,
+      "correct": 0,
+      "groundedCorrect": 0,
+      "abstained": 4,
+      "expectedAbstentions": 4,
+      "latencyMs": 5355,
+      "error": null
+    },
+    {
+      "id": "microsoft-fy2025-withheld",
+      "sourceType": "issuer_published_unaudited_statement",
+      "sourceUrl": "https://www.microsoft.com/en-us/investor/earnings/fy-2025-q4/income-statements",
+      "sourceTextSha256": "ff8d93b2309f61a74f9c7abef2c31696836f4ec2041b75821b75d512e3b970f4",
+      "category": "synthetic_withheld_evidence",
+      "schemaValid": true,
+      "checks": [],
+      "abstentions": [
+        {
+          "metric": "revenue",
+          "abstained": true
+        },
+        {
+          "metric": "netIncome",
+          "abstained": true
+        },
+        {
+          "metric": "totalAssets",
+          "abstained": true
+        },
+        {
+          "metric": "operatingCashFlow",
+          "abstained": true
+        }
+      ],
+      "expected": 0,
+      "correct": 0,
+      "groundedCorrect": 0,
+      "abstained": 4,
+      "expectedAbstentions": 4,
+      "latencyMs": 5659,
+      "error": null
+    }
+  ],
+  "limitations": [
+    "Two English-language issuers; not representative of all issuers, languages or filing types.",
+    "Structured financial extraction and exact-source numeric citation checks; not narrative entailment or general question answering.",
+    "One run per case; no statistical stability claim. No SEC acquisition or authenticated UI verification.",
+    "Endpoint does not expose per-call token/cost usage; latency is client wall time."
+  ],
+  "applicationCommit": "991ebd196a8b2f847d3066d0c435bce7240adb63",
+  "modelRuntime": {
+    "model": "gpt-6-sol",
+    "reasoningEffort": "medium",
+    "synthesizerModel": "gpt-6-sol",
+    "synthesizerReasoningEffort": "high"
+  }
+}

@@ -1,0 +1,541 @@
+{
+  "result": {
+    "financials": {
+      "unit": "USD millions, except per-share amounts and percentages",
+      "accountingBasis": "us_gaap",
+      "statementScope": "unknown",
+      "years": [
+        "FY2023",
+        "FY2024",
+        "FY2025"
+      ],
+      "periodEndDates": [
+        "2023-06-30",
+        "2024-06-30",
+        "2025-06-30"
+      ],
+      "revenue": [
+        211915,
+        245122,
+        281724
+      ],
+      "grossProfit": [
+        146052,
+        171008,
+        193893
+      ],
+      "ebit": [
+        88523,
+        109433,
+        128528
+      ],
+      "ebitda": null,
+      "adjustedEbitda": null,
+      "incomeBeforeTax": [
+        89311,
+        107787,
+        123627
+      ],
+      "incomeTaxExpense": [
+        16950,
+        19651,
+        21795
+      ],
+      "reportedRoic": null,
+      "netIncome": [
+        72361,
+        88136,
+        101832
+      ],
+      "eps": [
+        9.68,
+        11.8,
+        13.64
+      ],
+      "grossMargin": [
+        68.92,
+        69.76,
+        68.82
+      ],
+      "operatingMargin": [
+        41.77,
+        44.64,
+        45.62
+      ],
+      "operatingCashFlow": null,
+      "capex": null,
+      "freeCashFlow": null,
+      "dividends": null,
+      "buybacks": null,
+      "totalAssets": null,
+      "totalLiabilities": null,
+      "totalEquity": null,
+      "totalDebt": null,
+      "shortTermDebt": null,
+      "longTermDebt": null,
+      "cash": null,
+      "currentAssets": null,
+      "currentLiabilities": null,
+      "interestExpense": null,
+      "accountsReceivable": null,
+      "inventory": null,
+      "accountsPayable": null,
+      "costOfGoodsSold": [
+        65863,
+        74114,
+        87831
+      ],
+      "goodwill": null,
+      "trends": [
+        {
+          "metric": "revenue",
+          "period": "FY2024",
+          "comparisonPeriod": "FY2023",
+          "comparison": "YoY",
+          "changePercent": 15.67
+        },
+        {
+          "metric": "revenue",
+          "period": "FY2025",
+          "comparisonPeriod": "FY2024",
+          "comparison": "YoY",
+          "changePercent": 14.93
+        },
+        {
+          "metric": "costOfGoodsSold",
+          "period": "FY2024",
+          "comparisonPeriod": "FY2023",
+          "comparison": "YoY",
+          "changePercent": 12.53
+        },
+        {
+          "metric": "costOfGoodsSold",
+          "period": "FY2025",
+          "comparisonPeriod": "FY2024",
+          "comparison": "YoY",
+          "changePercent": 18.51
+        },
+        {
+          "metric": "ebit",
+          "period": "FY2024",
+          "comparisonPeriod": "FY2023",
+          "comparison": "YoY",
+          "changePercent": 23.62
+        },
+        {
+          "metric": "ebit",
+          "period": "FY2025",
+          "comparisonPeriod": "FY2024",
+          "comparison": "YoY",
+          "changePercent": 17.45
+        },
+        {
+          "metric": "netIncome",
+          "period": "FY2024",
+          "comparisonPeriod": "FY2023",
+          "comparison": "YoY",
+          "changePercent": 21.8
+        },
+        {
+          "metric": "netIncome",
+          "period": "FY2025",
+          "comparisonPeriod": "FY2024",
+          "comparison": "YoY",
+          "changePercent": 15.54
+        }
+      ],
+      "validationFlags": [],
+      "crossReferencedPriorFiling": false,
+      "forwardGuidance": [],
+      "evidence": [
+        {
+          "metric": "Revenue",
+          "period": "FY2023–FY2025",
+          "source": {
+            "section": "Income Statements",
+            "page": null,
+            "item": null,
+            "sourceForm": "FY25 Q4 earnings release",
+            "quote": "Year Ended June 30, 2025 2024 2023 ... Total revenue 281,724 245,122 211,915",
+            "kind": "excerpt",
+            "url": "",
+            "publisher": "Microsoft Corporation",
+            "accessed": ""
+          }
+        },
+        {
+          "metric": "Cost of goods sold and gross profit",
+          "period": "FY2023–FY2025",
+          "source": {
+            "section": "Income Statements",
+            "page": null,
+            "item": null,
+            "sourceForm": "FY25 Q4 earnings release",
+            "quote": "Total cost of revenue 87,831 74,114 65,863 ... Gross margin 193,893 171,008 146,052",
+            "kind": "excerpt",
+            "url": "",
+            "publisher": "Microsoft Corporation",
+            "accessed": ""
+          }
+        },
+        {
+          "metric": "EBIT",
+          "period": "FY2023–FY2025",
+          "source": {
+            "section": "Income Statements",
+            "page": null,
+            "item": null,
+            "sourceForm": "FY25 Q4 earnings release",
+            "quote": "Operating income 128,528 109,433 88,523",
+            "kind": "excerpt",
+            "url": "",
+            "publisher": "Microsoft Corporation",
+            "accessed": ""
+          }
+        },
+        {
+          "metric": "Income before tax and income tax expense",
+          "period": "FY2023–FY2025",
+          "source": {
+            "section": "Income Statements",
+            "page": null,
+            "item": null,
+            "sourceForm": "FY25 Q4 earnings release",
+            "quote": "Income before income taxes 123,627 107,787 89,311 ... Provision for income taxes 21,795 19,651 16,950",
+            "kind": "excerpt",
+            "url": "",
+            "publisher": "Microsoft Corporation",
+            "accessed": ""
+          }
+        },
+        {
+          "metric": "Net income and diluted EPS",
+          "period": "FY2023–FY2025",
+          "source": {
+            "section": "Income Statements",
+            "page": null,
+            "item": null,
+            "sourceForm": "FY25 Q4 earnings release",
+            "quote": "Net income $ 101,832 $ 88,136 $ 72,361 ... Earnings per share: ... Diluted $ 13.64 $ 11.80 $ 9.68",
+            "kind": "excerpt",
+            "url": "",
+            "publisher": "Microsoft Corporation",
+            "accessed": ""
+          }
+        }
+      ],
+      "annualHistory": {
+        "years": [
+          "FY2023",
+          "FY2024",
+          "FY2025"
+        ],
+        "periodEndDates": [
+          "2023-06-30",
+          "2024-06-30",
+          "2025-06-30"
+        ],
+        "unit": "USD millions",
+        "provider": "Microsoft Corporation",
+        "provenance": "issuer_disclosure",
+        "status": "partial",
+        "revenue": [
+          211915,
+          245122,
+          281724
+        ],
+        "grossProfit": [
+          146052,
+          171008,
+          193893
+        ],
+        "ebit": [
+          88523,
+          109433,
+          128528
+        ],
+        "netIncome": [
+          72361,
+          88136,
+          101832
+        ],
+        "operatingCashFlow": [
+          null,
+          null,
+          null
+        ],
+        "capex": [
+          null,
+          null,
+          null
+        ],
+        "totalAssets": [
+          null,
+          null,
+          null
+        ],
+        "totalLiabilities": [
+          null,
+          null,
+          null
+        ],
+        "totalEquity": [
+          null,
+          null,
+          null
+        ],
+        "totalDebt": [
+          null,
+          null,
+          null
+        ],
+        "cash": [
+          null,
+          null,
+          null
+        ],
+        "sources": [
+          {
+            "section": "Income Statements",
+            "page": null,
+            "item": null,
+            "sourceForm": "FY25 Q4 earnings release",
+            "quote": "Year Ended June 30, 2025 2024 2023 ... Total revenue 281,724 245,122 211,915 ... Gross margin 193,893 171,008 146,052 ... Operating income 128,528 109,433 88,523 ... Net income $ 101,832 $ 88,136 $ 72,361",
+            "kind": "excerpt",
+            "url": "",
+            "publisher": "Microsoft Corporation",
+            "accessed": ""
+          }
+        ]
+      },
+      "validation": {
+        "balanceSheetIdentity": "not_available",
+        "difference": null,
+        "ocrAnomalies": [],
+        "jumpWarnings": [],
+        "relationshipWarnings": []
+      },
+      "computed": [
+        {
+          "key": "dupontNetMargin",
+          "values": [
+            34.15,
+            35.96,
+            36.15
+          ],
+          "unit": "percent",
+          "type": "calculated",
+          "formula": "Net income ÷ revenue × 100",
+          "components": [
+            "netIncome",
+            "revenue"
+          ],
+          "numerator": "netIncome",
+          "denominator": "revenue",
+          "periods": [
+            "FY2023",
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": null
+        },
+        {
+          "key": "revenueGrowth",
+          "values": [
+            null,
+            15.67,
+            14.93
+          ],
+          "unit": "percent",
+          "type": "calculated",
+          "formula": "(Revenue ÷ prior-period Revenue) − 1",
+          "components": [
+            "revenue"
+          ],
+          "numerator": "revenue",
+          "denominator": null,
+          "periods": [
+            "FY2023",
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": null
+        },
+        {
+          "key": "netIncomeGrowth",
+          "values": [
+            null,
+            21.8,
+            15.54
+          ],
+          "unit": "percent",
+          "type": "calculated",
+          "formula": "(Net income ÷ prior-period Net income) − 1",
+          "components": [
+            "netIncome"
+          ],
+          "numerator": "netIncome",
+          "denominator": null,
+          "periods": [
+            "FY2023",
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": null
+        },
+        {
+          "key": "grossMarginCalculated",
+          "values": [
+            68.92,
+            69.76,
+            68.82
+          ],
+          "unit": "percent",
+          "type": "calculated",
+          "formula": "Gross profit ÷ Revenue",
+          "components": [
+            "grossProfit",
+            "revenue"
+          ],
+          "numerator": "grossProfit",
+          "denominator": "revenue",
+          "periods": [
+            "FY2023",
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": null
+        },
+        {
+          "key": "ebitMargin",
+          "values": [
+            41.77,
+            44.64,
+            45.62
+          ],
+          "unit": "percent",
+          "type": "calculated",
+          "formula": "EBIT ÷ Revenue",
+          "components": [
+            "ebit",
+            "revenue"
+          ],
+          "numerator": "ebit",
+          "denominator": "revenue",
+          "periods": [
+            "FY2023",
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": null
+        },
+        {
+          "key": "netMargin",
+          "values": [
+            34.15,
+            35.96,
+            36.15
+          ],
+          "unit": "percent",
+          "type": "calculated",
+          "formula": "Net income ÷ Revenue",
+          "components": [
+            "netIncome",
+            "revenue"
+          ],
+          "numerator": "netIncome",
+          "denominator": "revenue",
+          "periods": [
+            "FY2023",
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": null
+        },
+        {
+          "key": "effectiveTaxRate",
+          "values": [
+            18.98,
+            18.23,
+            17.63
+          ],
+          "unit": "percent",
+          "type": "calculated",
+          "formula": "Income tax expense ÷ Income before tax",
+          "components": [
+            "incomeTaxExpense",
+            "incomeBeforeTax"
+          ],
+          "numerator": "incomeTaxExpense",
+          "denominator": "incomeBeforeTax",
+          "periods": [
+            "FY2023",
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": null
+        },
+        {
+          "key": "nopat",
+          "values": [
+            71721.33,
+            89483.36,
+            105868.51
+          ],
+          "unit": "currency",
+          "type": "calculated",
+          "formula": "EBIT × (1 − reported effective tax rate)",
+          "components": [
+            "ebit",
+            "incomeTaxExpense",
+            "incomeBeforeTax"
+          ],
+          "numerator": "ebit",
+          "denominator": "incomeBeforeTax",
+          "periods": [
+            "FY2023",
+            "FY2024",
+            "FY2025"
+          ],
+          "sources": [],
+          "confidence": "medium",
+          "note": null
+        }
+      ]
+    }
+  },
+  "diagnostic": {
+    "status": "complete",
+    "confidence": 0.88
+  },
+  "manager": {
+    "stage": 4,
+    "totalStages": 7,
+    "agent": "financials",
+    "excerptChars": 2417,
+    "attempts": 1,
+    "subtools": [
+      "exact-financial-ratio-toolkit-python",
+      "exact-financial-statement-analyzer-python",
+      "filinglens-reconciliation-validator"
+    ]
+  },
+  "evaluation": {
+    "schemaValid": true,
+    "completeness": "complete"
+  }
+}

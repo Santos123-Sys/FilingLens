@@ -1,0 +1,79 @@
+{
+  "result": {
+    "financials": {
+      "unit": "millions; currency not disclosed",
+      "accountingBasis": "unknown",
+      "statementScope": "unknown",
+      "years": [],
+      "periodEndDates": [],
+      "revenue": [],
+      "grossProfit": null,
+      "ebit": null,
+      "ebitda": null,
+      "adjustedEbitda": null,
+      "incomeBeforeTax": null,
+      "incomeTaxExpense": null,
+      "reportedRoic": null,
+      "netIncome": [],
+      "eps": null,
+      "grossMargin": null,
+      "operatingMargin": null,
+      "operatingCashFlow": null,
+      "capex": null,
+      "freeCashFlow": null,
+      "dividends": null,
+      "buybacks": null,
+      "totalAssets": null,
+      "totalLiabilities": null,
+      "totalEquity": null,
+      "totalDebt": null,
+      "shortTermDebt": null,
+      "longTermDebt": null,
+      "cash": null,
+      "currentAssets": null,
+      "currentLiabilities": null,
+      "interestExpense": null,
+      "accountsReceivable": null,
+      "inventory": null,
+      "accountsPayable": null,
+      "costOfGoodsSold": null,
+      "goodwill": null,
+      "trends": [],
+      "validationFlags": [],
+      "crossReferencedPriorFiling": false,
+      "forwardGuidance": [],
+      "evidence": [],
+      "computed": [],
+      "validation": {
+        "balanceSheetIdentity": "not_available",
+        "difference": null,
+        "ocrAnomalies": [],
+        "jumpWarnings": [],
+        "relationshipWarnings": []
+      }
+    }
+  },
+  "diagnostic": {
+    "status": "incomplete",
+    "reason": "historical_financials_not_found",
+    "missing": [
+      "at least two periods plus revenue or net income"
+    ]
+  },
+  "manager": {
+    "stage": 4,
+    "totalStages": 7,
+    "agent": "financials",
+    "excerptChars": 3110,
+    "attempts": 1,
+    "subtools": [
+      "exact-financial-ratio-toolkit-python",
+      "exact-financial-statement-analyzer-python",
+      "filinglens-reconciliation-validator"
+    ]
+  },
+  "evaluation": {
+    "schemaValid": true,
+    "completeness": "incomplete"
+  }
+}

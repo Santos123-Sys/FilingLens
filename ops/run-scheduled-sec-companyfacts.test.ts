@@ -3,6 +3,7 @@ import {tmpdir} from "node:os";
 import {join} from "node:path";
 import {describe,expect,it,vi} from "vitest";
 import {runScheduledCompanyFacts} from "./run-scheduled-sec-companyfacts";
+import {SecHttpError} from "../contracts/sec-official-acquisition";
 
 describe("scheduled SEC CompanyFacts acquisition",()=>{
  it("processes the bounded watchlist serially into ticker folders",async()=>{
@@ -52,5 +53,19 @@ it('preserves partial progress and a sanitized failure receipt without retrying'
   expect(receipt).not.toContain('secret-contact');
   expect(acquire).toHaveBeenCalledTimes(2);expect(push).toHaveBeenCalledTimes(1);
   expect(await readFile(join(root,'sec-edgar-filings/AAPL/COMPANYFACTS/CIK0000320193/companyfacts.json'),'utf8')).toBe('public evidence');
+ }finally{await rm(root,{recursive:true,force:true});}
+});
+
+it('records a typed provider denial without leaking arbitrary error text or importing',async()=>{
+ const root=await mkdtemp(join(tmpdir(),'sec-blocked-'));
+ try{
+  const file=join(root,'watchlist.json');
+  await writeFile(file,JSON.stringify({schema:'filinglens.sec_edgar_watchlist.v1',lookbackDays:3,limitPerForm:1,
+   issuers:[{ticker:'AAPL',cik:'0000320193',forms:['10-K']},{ticker:'MSFT',cik:'0000789019',forms:['10-Q']}]}));
+  const acquire=vi.fn(async()=>{throw new SecHttpError(403);});const push=vi.fn();
+  await expect(runScheduledCompanyFacts(file,root,'private@example.org','https://example.test',acquire,push as never)).rejects.toThrow('HTTP 403');
+  const receipt=JSON.parse(await readFile(join(root,'sec-edgar-filings/acquisition-status.json'),'utf8'));
+  expect(receipt).toMatchObject({status:'blocked',httpStatus:403,requiresAccessReview:true,imported:[]});
+  expect(acquire).toHaveBeenCalledTimes(1);expect(push).not.toHaveBeenCalled();
  }finally{await rm(root,{recursive:true,force:true});}
 });

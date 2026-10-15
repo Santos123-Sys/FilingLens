@@ -4,6 +4,7 @@ import {join} from "node:path";
 import {parseSecEdgarWatchlist} from "../contracts/sec-edgar-watchlist";
 import {acquireToDisk} from "./acquire-sec-companyfacts";
 import {pushOfficialToRailway} from "./sec-upload-github-oidc";
+import {SecHttpError} from "../contracts/sec-official-acquisition";
 
 const env=(key:string)=>{
  const value=process.env[key];
@@ -19,10 +20,11 @@ export async function runScheduledCompanyFacts(
  const imported:{ticker:string;cik:string;retrievedDay:string;payloadSha256:string;readbackVerified:boolean}[]=[];
  const archive=join(outputRoot,"sec-edgar-filings");
  await mkdir(archive,{recursive:true,mode:0o700});
- const receipt=async(status:string,failedIssuer?:string,phase?:string)=>writeFile(
+ const receipt=async(status:string,failedIssuer?:string,phase?:string,httpStatus?:number)=>writeFile(
   join(archive,"acquisition-status.json"),JSON.stringify({schema:"filinglens.sec_acquisition_status.v1",
    status,recordedAt:new Date().toISOString(),plannedIssuers:plan.issuers.length,
-   imported,failedIssuer,phase},null,2),{mode:0o600});
+   imported,failedIssuer,phase,httpStatus,
+   requiresAccessReview:httpStatus===403||httpStatus===429},null,2),{mode:0o600});
  await receipt("running");
  for(const issuer of plan.issuers){
   const directory=join(outputRoot,"sec-edgar-filings",issuer.ticker,"COMPANYFACTS",`CIK${issuer.cik}`);
@@ -38,7 +40,8 @@ export async function runScheduledCompanyFacts(
   await receipt("running");
   }catch(error){
    // Never archive arbitrary error messages: they can contain credentials or URLs.
-   await receipt(imported.length?"partial":"failed",issuer.cik,phase);
+   const httpStatus=error instanceof SecHttpError?error.status:undefined;
+   await receipt(httpStatus===403||httpStatus===429?"blocked":imported.length?"partial":"failed",issuer.cik,phase,httpStatus);
    throw error;
   }
  }

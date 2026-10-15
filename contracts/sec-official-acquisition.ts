@@ -15,6 +15,14 @@ export type OfficialSecReceipt={
  origin:"direct_official_sec_http";
 };
 const contactPattern=/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/;
+export class SecHttpError extends Error {
+ readonly status:number;
+ constructor(status:number){
+  super(`Official SEC returned HTTP ${status}; stop and contact SEC support if access is denied`);
+  this.name="SecHttpError";
+  this.status=status;
+ }
+}
 export function secContactUserAgent(contact:string){
  if(!contactPattern.test(contact)||contact.length>160||/[\r\n]/.test(contact))
   throw new Error("SEC requires a genuine operator contact email for fair-access requests");
@@ -28,7 +36,7 @@ export async function acquireOfficialSecCompanyFacts(cik:string,contact:string,
   method:"GET",headers:{"User-Agent":secContactUserAgent(contact),"Accept":"application/json"},
   redirect:"error",signal:AbortSignal.timeout(15_000),
  });
- if(!response.ok)throw new Error(`Official SEC returned HTTP ${response.status}; stop and contact SEC support if access is denied`);
+ if(!response.ok)throw new SecHttpError(response.status);
  if(response.url!==url || !response.headers.get("content-type")?.toLowerCase().includes("json"))
   throw new Error("SEC acquisition origin or response content type mismatch");
  const size=Number(response.headers.get("content-length")??"0");
