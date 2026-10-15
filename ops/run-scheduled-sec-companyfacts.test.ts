@@ -32,3 +32,25 @@ describe("scheduled SEC CompanyFacts acquisition",()=>{
   }finally{await rm(root,{recursive:true,force:true});}
  });
 });
+
+it('preserves partial progress and a sanitized failure receipt without retrying',async()=>{
+ const root=await mkdtemp(join(tmpdir(),'filinglens-sec-failure-'));
+ try{
+  const watchlist=join(root,'watchlist.json');
+  await writeFile(watchlist,JSON.stringify({schema:'filinglens.sec_edgar_watchlist.v1',lookbackDays:3,limitPerForm:1,issuers:[
+   {ticker:'AAPL',cik:'0000320193',forms:['10-K']},{ticker:'MSFT',cik:'0000789019',forms:['10-Q']},
+  ]}));
+  const acquire=vi.fn(async(cik:string,file:string)=>{
+   if(cik==='0000789019')throw Error('HTTP 403 secret-contact@example.org');
+   await writeFile(file,'public evidence');
+   return {file,receiptFile:file+'.receipt',cik,bytes:15,retrievedDay:'2026-10-15',sourceFileSha256:'a',sourceUrl:'https://data.sec.gov'};
+  });
+  const push=vi.fn(async()=>({retrievedDay:'2026-10-15',payloadSha256:'b'.repeat(64),readbackVerified:true}));
+  await expect(runScheduledCompanyFacts(watchlist,root,'secret-contact@example.org','https://example.test',acquire,push as never)).rejects.toThrow('HTTP 403');
+  const receipt=await readFile(join(root,'sec-edgar-filings/acquisition-status.json'),'utf8');
+  expect(JSON.parse(receipt)).toMatchObject({status:'partial',failedIssuer:'0000789019',phase:'acquire',plannedIssuers:2,imported:[{ticker:'AAPL',readbackVerified:true}]});
+  expect(receipt).not.toContain('secret-contact');
+  expect(acquire).toHaveBeenCalledTimes(2);expect(push).toHaveBeenCalledTimes(1);
+  expect(await readFile(join(root,'sec-edgar-filings/AAPL/COMPANYFACTS/CIK0000320193/companyfacts.json'),'utf8')).toBe('public evidence');
+ }finally{await rm(root,{recursive:true,force:true});}
+});

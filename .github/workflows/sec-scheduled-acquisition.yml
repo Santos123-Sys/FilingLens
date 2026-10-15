@@ -52,10 +52,11 @@ jobs:
           SEC_IMPORT_URL: https://filinglens-sec-oidc-importer-production.up.railway.app/v1/sec/import
         run: npx --yes tsx ops/run-scheduled-sec-companyfacts.ts
       - name: Upload short-lived public-source archive
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
           name: sec-edgar-watchlist-${{ github.run_id }}
           path: /tmp/sec-official/sec-edgar-filings/
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 3
           compression-level: 6
