@@ -11,6 +11,18 @@ const input=()=>financialsSchema.parse({financials:{
  evidence:[{metric:'revenue',period:'FY2025',source:{section:'Income statement',quote:'Revenue 100 120'}}],
 }});
 describe('financial source binding',()=>{
+ it('preserves server evidence warnings when the model has filled its entire flag allowance',async()=>{
+  const result=input();result.financials.validationFlags=Array.from({length:100},(_,i)=>({code:'MODEL_'+i,severity:'warning' as const,note:'Model note'}));
+  result.financials.totalAssets=[200,240];result.financials.totalLiabilities=[190,230];result.financials.totalEquity=[10,10];
+  result.financials.evidence![0].source.quote='An invented quotation with an unsupported figure.';
+  const bound=bindFinancialEvidence(result,excerpt);
+  expect(bound.financials.validationFlags!.map(f=>f.code)).toContain('FINANCIAL_EVIDENCE_REJECTED');
+  expect(bound.financials.validationFlags!.map(f=>f.code)).toContain('FINANCIAL_EVIDENCE_INCOMPLETE');
+  const validated=await applyFinancialValidation(bound);
+  expect(validated.financials.validationFlags!.map(f=>f.code)).toContain('FINANCIAL_EVIDENCE_INCOMPLETE');
+  expect(validated.financials.validationFlags!.length).toBeLessThanOrEqual(100);
+  expect(()=>financialsSchema.parse(validated)).not.toThrow();
+ });
  it('requires every component and period before a calculated series can claim high evidence confidence',()=>{
   const result=input();expect(hasCompleteMetricEvidence(result.financials,['revenue'])).toBe(false);
   result.financials.evidence!.push({metric:'revenue',period:'FY2024',source:{section:'Income statement',quote:'Revenue 100 120'}});

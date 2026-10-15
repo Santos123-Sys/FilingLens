@@ -21,12 +21,15 @@ export function bindFinancialEvidence(result:FinancialsResult,excerpt:string):Fi
   if(!valid)rejected++;
   return valid;
  });
- const flags=[...(financials.validationFlags??[])];
+ const flags:NonNullable<typeof financials.validationFlags>=[];
  if(rejected)flags.push({code:'FINANCIAL_EVIDENCE_REJECTED',severity:'warning',
   note:`${rejected} financial citation(s) removed: exact source text, canonical metric or period binding failed.`});
  const missing=Object.entries(financials).some(([metric,values])=>Array.isArray(values)&&values.length>0&&
   values.every(value=>typeof value==='number')&&financials.years.some(period=>!evidence.some(row=>row.metric===metric&&row.period===period)));
  if(missing)flags.push({code:'FINANCIAL_EVIDENCE_INCOMPLETE',severity:'warning',
   note:'Some extracted numeric series lack a bound source quote per period; values require human verification.'});
- return {financials:{...financials,evidence,validationFlags:flags.slice(0,100)}};
+ // Server evidence diagnostics take precedence over model-provided notes.
+ // Remove reserved model codes so they cannot impersonate these controls.
+ return {financials:{...financials,evidence,validationFlags:[...flags,
+  ...(financials.validationFlags??[]).filter(flag=>!flag.code.startsWith('FINANCIAL_EVIDENCE_'))].slice(0,100)}};
 }
