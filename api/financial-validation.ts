@@ -83,10 +83,11 @@ export async function applyFinancialValidation(
   const fallbackStatement = exactStatementUnavailable ? analyzeFinancialSkillInputs(financials) : { trends: [], validationFlags: [] };
   const trends = exactSkills.trends.length ? exactSkills.trends : fallbackStatement.trends;
   const validationFlags = [
-    ...(financials.validationFlags ?? []),
-    ...(exactSkills.validationFlags.length ? exactSkills.validationFlags : fallbackStatement.validationFlags),
+    ...(financials.validationFlags ?? []).filter(flag=>flag.code.startsWith('FINANCIAL_EVIDENCE_')),
     ...exactSkills.runtimeFlags,
-  ].filter((flag, index, list) => list.findIndex(other => other.code === flag.code && other.period === flag.period) === index);
+    ...(exactSkills.validationFlags.length ? exactSkills.validationFlags : fallbackStatement.validationFlags),
+    ...(financials.validationFlags ?? []),
+  ].filter((flag, index, list) => list.findIndex(other => other.code === flag.code && other.period === flag.period) === index).slice(0,100);
 
   const relationshipWarnings: string[] = [];
   const calculatedFcf = exactSkills.computed.find(item => item.key === "freeCashFlowCalculated");
