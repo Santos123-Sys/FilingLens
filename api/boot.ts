@@ -1,3 +1,4 @@
+import {workspaceEmbedding} from './workspace-embedding';
 import { executionRuntimeStatus, withExecutionScope, safeErrorName } from "./ai/execution";
 import { Hono } from "hono";
 import { bodyLimit } from "hono/body-limit";
@@ -38,6 +39,7 @@ let regulatoryArchive: RegulatoryArchiveFn | null = null;
 export function registerRegulatoryArchiver(callback:RegulatoryArchiveFn) {regulatoryArchive=callback;}
 
 const app = new Hono();
+app.use(workspaceEmbedding);
 
 app.use((c,next)=>bodyLimit({maxSize:c.req.path==="/api/integration/v1/valuations"?750_000:
   c.req.path==="/api/integration/v1/handoff/context"?2500:65*1024*1024})(c,next));

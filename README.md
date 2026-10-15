@@ -77,3 +77,12 @@ The React UI and stateless Hono API deploy as a Cloudflare Worker with static as
 For peer research when SEC CompanyFacts egress is unavailable, FilingLens supports a distinctly labeled **issuer-published financial-statement corroboration** path. The first supported issuer is Apple FY2025, matching annual net sales, gross margin, operating income and net income directly to Apple's public **unaudited** consolidated statement. Live SEC peer API requests are opt-in (`SEC_LIVE_LOOKUP_ENABLED=true`); otherwise source verification uses issuer publications or pre-imported official facts where available. No private analysis data is sent with the fixed public issuer PDF GET.
 
 See [privacy and source boundaries](docs/phase2-issuer-primary-private-proof.md) and [verified real-data acceptance](docs/phase2-issuer-primary-acceptance-record.md). **Issuer-verified ≠ SEC CompanyFacts-verified.**
+
+### Embedded GPI workspace
+
+The application can run as the financial module within GPI. The existing
+`GPI_API_URL` must be an HTTPS origin with a root path; it determines the sole
+external origin allowed by the frame-ancestors policy. Publication returns only
+a bounded version/issuer notification to that exact parent origin. GPI checks
+the source window and independently authorizes the server-side valuation import.
+Standalone usage and server-to-server notification remain supported.
