@@ -1,6 +1,6 @@
 # SEC access recovery
 
-Scheduled acquisition is paused after the official CompanyFacts endpoint returned HTTP 403 in [run 38711218906](https://github.com/Santos123-Sys/FilingLens/actions/runs/38711218906). This is an external access denial, not missing contact configuration: signed OIDC contact loading succeeded. The pause applies to primary filings and CompanyFacts and runs before contact loading. Paused jobs fail visibly and archive a receipt with zero attempted requests. Existing stored snapshots are not refreshed by this change.
+Scheduled and operator-dispatched acquisition are paused after the official CompanyFacts endpoint returned HTTP 403 in [run 38711218906](https://github.com/Santos123-Sys/FilingLens/actions/runs/38711218906). This is an external access denial, not missing contact configuration: signed OIDC contact loading succeeded. The pause applies to primary filings and CompanyFacts and runs before contact loading in both acquisition workflows. Paused jobs fail visibly and archive a receipt with zero attempted requests. Existing stored snapshots are not refreshed by this change.
 
 ## Operator recovery
 
