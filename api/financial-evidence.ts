@@ -1,6 +1,10 @@
 import type {FinancialsResult} from '../contracts/analysis';
 
 const normalized=(text:string)=>text.normalize('NFKC').replace(/\s+/g,' ').trim();
+export function hasCompleteMetricEvidence(financials:FinancialsResult['financials'],metrics:string[]):boolean{
+ return financials.years.length>0&&metrics.length>0&&metrics.every(metric=>
+  financials.years.every(period=>(financials.evidence??[]).some(row=>row.metric===metric&&row.period===period)));
+}
 /** Bind model citations before any downstream tool can assign evidence confidence.
  * Exact text existence does not establish entailment, units or column selection.
  */
