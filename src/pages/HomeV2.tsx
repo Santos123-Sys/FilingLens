@@ -379,6 +379,7 @@ export default function HomeV2() {
         {phase !== "done" && <>
           <section className="mt-12 max-w-4xl"><span className="inline-flex items-center gap-2 rounded-full border border-blue-500/25 bg-blue-500/10 px-3 py-1 text-[9px] font-semibold uppercase tracking-[0.16em] text-blue-200"><Sparkles className="h-3 w-3" />{c.badge}</span><h1 className="mt-5 text-4xl font-semibold leading-[1.08] tracking-tight text-white sm:text-5xl">{c.h1}</h1><p className="mt-4 max-w-3xl text-sm leading-7 text-slate-400">{c.lead}</p></section>
           <div className="mt-5">
+            <a href="/valuation/validation" target="_blank" rel="noreferrer" className="inline-flex items-center rounded-lg border border-slate-600 px-4 py-2 text-xs font-semibold text-cyan-200">{lang === "pt" ? "Validação de projeções e modelos setoriais" : "Forecast validation and sector models"}</a>
             <a href="/value-drivers/apple" className="inline-flex items-center rounded-lg border border-cyan-500/40 bg-cyan-500/10 px-4 py-2 text-xs font-semibold text-cyan-200 transition hover:border-cyan-300 hover:text-white">
               {lang === "pt" ? "Explorar estudo real da Apple — Direcionadores de Valor →" : "Explore the real-data Apple value-driver simulation →"}
             </a>

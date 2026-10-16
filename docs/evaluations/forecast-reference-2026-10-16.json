@@ -1,0 +1,3079 @@
+{
+  "retrievedOn": "2026-10-16",
+  "reports": [
+    {
+      "schemaVersion": "forecast-evaluation.v1",
+      "issuer": "Apple",
+      "currency": "USD",
+      "unit": "millions",
+      "evaluationType": "retrospective_original_disclosure_replay",
+      "methodology": "Expanding origins, next-day publication cutoff; no tuning or model selection on holdouts.",
+      "limitations": [
+        "Two selected US technology issuers are not a representative investment universe.",
+        "Current copies of historical issuer disclosures are not independently timestamped archival captures.",
+        "Retrospective reconstruction is not a prospectively registered forecast. Revenue error does not measure fair-value or return accuracy.",
+        "Longer horizons have fewer overlapping folds; no statistical significance or prediction-interval claim.",
+        "User-edited drivers and future company-specific forecasts are not validated by this reference benchmark."
+      ],
+      "observations": [
+        {
+          "id": "apple-revenue-fy2018-original",
+          "issuer": "Apple",
+          "metric": "revenue",
+          "fiscalYear": 2018,
+          "periodEnd": "2018-09-29",
+          "publishedOn": "2018-11-01",
+          "value": 265595,
+          "currency": "USD",
+          "unit": "millions",
+          "definition": "us_gaap_consolidated_total_revenue",
+          "sourceUrl": "https://www.apple.com/newsroom/pdfs/Q4-FY18-Consolidated-Financial-Statements.pdf",
+          "publicationUrl": "https://www.apple.com/newsroom/2018/11/apple-reports-fourth-quarter-results/",
+          "locator": "Annual current-year total revenue column, FY2018; PDF page 1",
+          "sourceSha256": "c1840d03c47114c92b9c71dc44d3c6738ba07564e8fd8922e92abf13e535857a",
+          "sourceQuote": "Net sales $ 62,900 $ 52,579 $ 265,595 $ 229,234"
+        },
+        {
+          "id": "apple-revenue-fy2019-original",
+          "issuer": "Apple",
+          "metric": "revenue",
+          "fiscalYear": 2019,
+          "periodEnd": "2019-09-28",
+          "publishedOn": "2019-10-30",
+          "value": 260174,
+          "currency": "USD",
+          "unit": "millions",
+          "definition": "us_gaap_consolidated_total_revenue",
+          "sourceUrl": "https://www.apple.com/newsroom/pdfs/Q4%20FY19%20Consolidated%20Financial%20Statements.pdf",
+          "publicationUrl": "https://www.apple.com/newsroom/2019/10/apple-reports-fourth-quarter-results/",
+          "locator": "Annual current-year total revenue column, FY2019; PDF page 1",
+          "sourceSha256": "f8f23442744ca4e655a485dc4dce0dc32b524954c2dec5f21a4b2302905b9819",
+          "sourceQuote": "Total net sales (1) 64,040 62,900 260,174 265,595"
+        },
+        {
+          "id": "apple-revenue-fy2020-original",
+          "issuer": "Apple",
+          "metric": "revenue",
+          "fiscalYear": 2020,
+          "periodEnd": "2020-09-26",
+          "publishedOn": "2020-10-29",
+          "value": 274515,
+          "currency": "USD",
+          "unit": "millions",
+          "definition": "us_gaap_consolidated_total_revenue",
+          "sourceUrl": "https://www.apple.com/newsroom/pdfs/FY20_Q4_Consolidated_Financial_Statements.pdf",
+          "publicationUrl": "https://www.apple.com/newsroom/2020/10/apple-reports-fourth-quarter-results/",
+          "locator": "Annual current-year total revenue column, FY2020; PDF page 1",
+          "sourceSha256": "039f634214265f74b42bbbc64810481e0d5b4a85a03d42b8510b67964ac8c618",
+          "sourceQuote": "Total net sales (1) 64,698 64,040 274,515 260,174"
+        },
+        {
+          "id": "apple-revenue-fy2021-original",
+          "issuer": "Apple",
+          "metric": "revenue",
+          "fiscalYear": 2021,
+          "periodEnd": "2021-09-25",
+          "publishedOn": "2021-10-28",
+          "value": 365817,
+          "currency": "USD",
+          "unit": "millions",
+          "definition": "us_gaap_consolidated_total_revenue",
+          "sourceUrl": "https://www.apple.com/newsroom/pdfs/FY21_Q4_Consolidated_Financial_Statements.pdf",
+          "publicationUrl": "https://www.apple.com/newsroom/2021/10/apple-reports-fourth-quarter-results/",
+          "locator": "Annual current-year total revenue column, FY2021; PDF page 1",
+          "sourceSha256": "1f4d188c324cf611e46c640b4232687a398d309178f89876dd9f63272537f6c9",
+          "sourceQuote": "Total net sales (1) 83,360 64,698 365,817 274,515"
+        },
+        {
+          "id": "apple-revenue-fy2022-original",
+          "issuer": "Apple",
+          "metric": "revenue",
+          "fiscalYear": 2022,
+          "periodEnd": "2022-09-24",
+          "publishedOn": "2022-10-27",
+          "value": 394328,
+          "currency": "USD",
+          "unit": "millions",
+          "definition": "us_gaap_consolidated_total_revenue",
+          "sourceUrl": "https://www.apple.com/newsroom/pdfs/FY22_Q4_Consolidated_Financial_Statements.pdf",
+          "publicationUrl": "https://www.apple.com/newsroom/2022/10/apple-reports-fourth-quarter-results/",
+          "locator": "Annual current-year total revenue column, FY2022; PDF page 1",
+          "sourceSha256": "bf169af3c7143cf0c39d70fa7c077a804bdfdb131671d949e838d35161e31ec9",
+          "sourceQuote": "Total net sales ! 90,146 ! 83,360 ! 394,328 ! 365,817"
+        },
+        {
+          "id": "apple-revenue-fy2023-original",
+          "issuer": "Apple",
+          "metric": "revenue",
+          "fiscalYear": 2023,
+          "periodEnd": "2023-09-30",
+          "publishedOn": "2023-11-02",
+          "value": 383285,
+          "currency": "USD",
+          "unit": "millions",
+          "definition": "us_gaap_consolidated_total_revenue",
+          "sourceUrl": "https://www.apple.com/newsroom/pdfs/fy2023-q4/FY23_Q4_Consolidated_Financial_Statements.pdf",
+          "publicationUrl": "https://www.apple.com/newsroom/2023/11/apple-reports-fourth-quarter-results/",
+          "locator": "Annual current-year total revenue column, FY2023; PDF page 1",
+          "sourceSha256": "db786041d2e0f87d77a731323a56a3baa3457750fdfe8c61d88264f1465f4234",
+          "sourceQuote": "Total net sales ! 89,498 ! 90,146 ! 383,285 ! 394,328"
+        },
+        {
+          "id": "apple-revenue-fy2024-original",
+          "issuer": "Apple",
+          "metric": "revenue",
+          "fiscalYear": 2024,
+          "periodEnd": "2024-09-28",
+          "publishedOn": "2024-10-31",
+          "value": 391035,
+          "currency": "USD",
+          "unit": "millions",
+          "definition": "us_gaap_consolidated_total_revenue",
+          "sourceUrl": "https://www.apple.com/newsroom/pdfs/fy2024-q4/FY24_Q4_Consolidated_Financial_Statements.pdf",
+          "publicationUrl": "https://www.apple.com/newsroom/2024/10/apple-reports-fourth-quarter-results/",
+          "locator": "Annual current-year total revenue column, FY2024; PDF page 1",
+          "sourceSha256": "af9646018330484238d357f1168ae74194fd768f4ea9921e4b2828c88309320c",
+          "sourceQuote": "Total net sales $ 94,930 $ 89,498 $ 391,035 $ 383,285"
+        },
+        {
+          "id": "apple-revenue-fy2025-original",
+          "issuer": "Apple",
+          "metric": "revenue",
+          "fiscalYear": 2025,
+          "periodEnd": "2025-09-27",
+          "publishedOn": "2025-10-30",
+          "value": 416161,
+          "currency": "USD",
+          "unit": "millions",
+          "definition": "us_gaap_consolidated_total_revenue",
+          "sourceUrl": "https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf",
+          "publicationUrl": "https://www.apple.com/newsroom/2025/10/apple-reports-fourth-quarter-results/",
+          "locator": "Annual current-year total revenue column, FY2025; PDF page 1",
+          "sourceSha256": "43e7f0730b3cce0fc37301a2f43c29712bbde6ab299d97c6df345fd0c754508a",
+          "sourceQuote": "Total net sales $ 102,466 $ 94,930 $ 416,161 $ 391,035"
+        }
+      ],
+      "rows": [
+        {
+          "origin": "2020-10-30",
+          "horizon": 1,
+          "targetYear": 2021,
+          "model": "filinglens_growth_v1",
+          "prediction": 289640.7765,
+          "actual": 365817,
+          "error": -76176.22350000002,
+          "absoluteError": 76176.22350000002,
+          "apePercent": 20.823587613478878,
+          "scaledError": 7.709363778969742,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original"
+          ],
+          "targetId": "apple-revenue-fy2021-original"
+        },
+        {
+          "origin": "2020-10-30",
+          "horizon": 1,
+          "targetYear": 2021,
+          "model": "naive",
+          "prediction": 274515,
+          "actual": 365817,
+          "error": -91302,
+          "absoluteError": 91302,
+          "apePercent": 24.958380829759143,
+          "scaledError": 9.240157878757211,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original"
+          ],
+          "targetId": "apple-revenue-fy2021-original"
+        },
+        {
+          "origin": "2020-10-30",
+          "horizon": 1,
+          "targetYear": 2021,
+          "model": "drift",
+          "prediction": 278975,
+          "actual": 365817,
+          "error": -86842,
+          "absoluteError": 86842,
+          "apePercent": 23.73919200037177,
+          "scaledError": 8.788786560064771,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original"
+          ],
+          "targetId": "apple-revenue-fy2021-original"
+        },
+        {
+          "origin": "2020-10-30",
+          "horizon": 1,
+          "targetYear": 2021,
+          "model": "three_year_cagr",
+          "prediction": 279086.72068037366,
+          "actual": 365817,
+          "error": -86730.27931962634,
+          "absoluteError": 86730.27931962634,
+          "apePercent": 23.708651954290353,
+          "scaledError": 8.777479943287759,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original"
+          ],
+          "targetId": "apple-revenue-fy2021-original"
+        },
+        {
+          "origin": "2020-10-30",
+          "horizon": 2,
+          "targetYear": 2022,
+          "model": "filinglens_growth_v1",
+          "prediction": 303224.92891784996,
+          "actual": 394328,
+          "error": -91103.07108215004,
+          "absoluteError": 91103.07108215004,
+          "apePercent": 23.103373608303247,
+          "scaledError": 9.220025410601158,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original"
+          ],
+          "targetId": "apple-revenue-fy2022-original"
+        },
+        {
+          "origin": "2020-10-30",
+          "horizon": 2,
+          "targetYear": 2022,
+          "model": "naive",
+          "prediction": 274515,
+          "actual": 394328,
+          "error": -119813,
+          "absoluteError": 119813,
+          "apePercent": 30.384096488202715,
+          "scaledError": 12.12559457544783,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original"
+          ],
+          "targetId": "apple-revenue-fy2022-original"
+        },
+        {
+          "origin": "2020-10-30",
+          "horizon": 2,
+          "targetYear": 2022,
+          "model": "drift",
+          "prediction": 283435,
+          "actual": 394328,
+          "error": -110893,
+          "absoluteError": 110893,
+          "apePercent": 28.122020247103936,
+          "scaledError": 11.222851938062949,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original"
+          ],
+          "targetId": "apple-revenue-fy2022-original"
+        },
+        {
+          "origin": "2020-10-30",
+          "horizon": 2,
+          "targetYear": 2022,
+          "model": "three_year_cagr",
+          "prediction": 283734.57792880136,
+          "actual": 394328,
+          "error": -110593.42207119864,
+          "absoluteError": 110593.42207119864,
+          "apePercent": 28.046048485321517,
+          "scaledError": 11.192533354032856,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original"
+          ],
+          "targetId": "apple-revenue-fy2022-original"
+        },
+        {
+          "origin": "2020-10-30",
+          "horizon": 3,
+          "targetYear": 2023,
+          "model": "filinglens_growth_v1",
+          "prediction": 314929.41117407894,
+          "actual": 383285,
+          "error": -68355.58882592106,
+          "absoluteError": 68355.58882592106,
+          "apePercent": 17.834141389806817,
+          "scaledError": 6.917881674518881,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original"
+          ],
+          "targetId": "apple-revenue-fy2023-original"
+        },
+        {
+          "origin": "2020-10-30",
+          "horizon": 3,
+          "targetYear": 2023,
+          "model": "naive",
+          "prediction": 274515,
+          "actual": 383285,
+          "error": -108770,
+          "absoluteError": 108770,
+          "apePercent": 28.378360749833675,
+          "scaledError": 11.007995142192085,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original"
+          ],
+          "targetId": "apple-revenue-fy2023-original"
+        },
+        {
+          "origin": "2020-10-30",
+          "horizon": 3,
+          "targetYear": 2023,
+          "model": "drift",
+          "prediction": 287895,
+          "actual": 383285,
+          "error": -95390,
+          "absoluteError": 95390,
+          "apePercent": 24.88748581342865,
+          "scaledError": 9.653881186114766,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original"
+          ],
+          "targetId": "apple-revenue-fy2023-original"
+        },
+        {
+          "origin": "2020-10-30",
+          "horizon": 3,
+          "targetYear": 2023,
+          "model": "three_year_cagr",
+          "prediction": 288459.83970922936,
+          "actual": 383285,
+          "error": -94825.16029077064,
+          "absoluteError": 94825.16029077064,
+          "apePercent": 24.740117742872965,
+          "scaledError": 9.596716960911916,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original"
+          ],
+          "targetId": "apple-revenue-fy2023-original"
+        },
+        {
+          "origin": "2020-10-30",
+          "horizon": 4,
+          "targetYear": 2024,
+          "model": "filinglens_growth_v1",
+          "prediction": 324471.7723326535,
+          "actual": 391035,
+          "error": -66563.22766734648,
+          "absoluteError": 66563.22766734648,
+          "apePercent": 17.022319656129625,
+          "scaledError": 6.73648696157742,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original"
+          ],
+          "targetId": "apple-revenue-fy2024-original"
+        },
+        {
+          "origin": "2020-10-30",
+          "horizon": 4,
+          "targetYear": 2024,
+          "model": "naive",
+          "prediction": 274515,
+          "actual": 391035,
+          "error": -116520,
+          "absoluteError": 116520,
+          "apePercent": 29.79784418274579,
+          "scaledError": 11.79232871166886,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original"
+          ],
+          "targetId": "apple-revenue-fy2024-original"
+        },
+        {
+          "origin": "2020-10-30",
+          "horizon": 4,
+          "targetYear": 2024,
+          "model": "drift",
+          "prediction": 292355,
+          "actual": 391035,
+          "error": -98680,
+          "absoluteError": 98680,
+          "apePercent": 25.23559272187911,
+          "scaledError": 9.986843436899099,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original"
+          ],
+          "targetId": "apple-revenue-fy2024-original"
+        },
+        {
+          "origin": "2020-10-30",
+          "horizon": 4,
+          "targetYear": 2024,
+          "model": "three_year_cagr",
+          "prediction": 293263.7951020347,
+          "actual": 391035,
+          "error": -97771.2048979653,
+          "absoluteError": 97771.2048979653,
+          "apePercent": 25.003185110786834,
+          "scaledError": 9.894869436085953,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original"
+          ],
+          "targetId": "apple-revenue-fy2024-original"
+        },
+        {
+          "origin": "2020-10-30",
+          "horizon": 5,
+          "targetYear": 2025,
+          "model": "filinglens_growth_v1",
+          "prediction": 331610.1513239719,
+          "actual": 416161,
+          "error": -84550.84867602808,
+          "absoluteError": 84550.84867602808,
+          "apePercent": 20.31686022381436,
+          "scaledError": 8.556912121852857,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original"
+          ],
+          "targetId": "apple-revenue-fy2025-original"
+        },
+        {
+          "origin": "2020-10-30",
+          "horizon": 5,
+          "targetYear": 2025,
+          "model": "naive",
+          "prediction": 274515,
+          "actual": 416161,
+          "error": -141646,
+          "absoluteError": 141646,
+          "apePercent": 34.03634651012469,
+          "scaledError": 14.335188746078332,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original"
+          ],
+          "targetId": "apple-revenue-fy2025-original"
+        },
+        {
+          "origin": "2020-10-30",
+          "horizon": 5,
+          "targetYear": 2025,
+          "model": "drift",
+          "prediction": 296815,
+          "actual": 416161,
+          "error": -119346,
+          "absoluteError": 119346,
+          "apePercent": 28.677843430787604,
+          "scaledError": 12.078332152616133,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original"
+          ],
+          "targetId": "apple-revenue-fy2025-original"
+        },
+        {
+          "origin": "2020-10-30",
+          "horizon": 5,
+          "targetYear": 2025,
+          "model": "three_year_cagr",
+          "prediction": 298147.75465569424,
+          "actual": 416161,
+          "error": -118013.24534430576,
+          "absoluteError": 118013.24534430576,
+          "apePercent": 28.35759365829709,
+          "scaledError": 11.94345160857259,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original"
+          ],
+          "targetId": "apple-revenue-fy2025-original"
+        },
+        {
+          "origin": "2021-10-29",
+          "horizon": 1,
+          "targetYear": 2022,
+          "model": "filinglens_growth_v1",
+          "prediction": 487487.7342,
+          "actual": 394328,
+          "error": 93159.7342,
+          "absoluteError": 93159.7342,
+          "apePercent": 23.624935130145463,
+          "scaledError": 2.5163797684218108,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original",
+            "apple-revenue-fy2021-original"
+          ],
+          "targetId": "apple-revenue-fy2022-original"
+        },
+        {
+          "origin": "2021-10-29",
+          "horizon": 1,
+          "targetYear": 2022,
+          "model": "naive",
+          "prediction": 365817,
+          "actual": 394328,
+          "error": -28511,
+          "absoluteError": 28511,
+          "apePercent": 7.230275303807996,
+          "scaledError": 0.7701235323777281,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original",
+            "apple-revenue-fy2021-original"
+          ],
+          "targetId": "apple-revenue-fy2022-original"
+        },
+        {
+          "origin": "2021-10-29",
+          "horizon": 1,
+          "targetYear": 2022,
+          "model": "drift",
+          "prediction": 399224.3333333333,
+          "actual": 394328,
+          "error": 4896.333333333314,
+          "absoluteError": 4896.333333333314,
+          "apePercent": 1.2416905046898303,
+          "scaledError": 0.13225707700064773,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original",
+            "apple-revenue-fy2021-original"
+          ],
+          "targetId": "apple-revenue-fy2022-original"
+        },
+        {
+          "origin": "2021-10-29",
+          "horizon": 1,
+          "targetYear": 2022,
+          "model": "three_year_cagr",
+          "prediction": 407016.3732592454,
+          "actual": 394328,
+          "error": 12688.373259245418,
+          "absoluteError": 12688.373259245418,
+          "apePercent": 3.2177205928175066,
+          "scaledError": 0.34273139611157755,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original",
+            "apple-revenue-fy2021-original"
+          ],
+          "targetId": "apple-revenue-fy2022-original"
+        },
+        {
+          "origin": "2021-10-29",
+          "horizon": 2,
+          "targetYear": 2023,
+          "model": "filinglens_growth_v1",
+          "prediction": 625300.51665834,
+          "actual": 383285,
+          "error": 242015.51665834,
+          "absoluteError": 242015.51665834,
+          "apePercent": 63.14244404512047,
+          "scaledError": 6.5371907186398825,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original",
+            "apple-revenue-fy2021-original"
+          ],
+          "targetId": "apple-revenue-fy2023-original"
+        },
+        {
+          "origin": "2021-10-29",
+          "horizon": 2,
+          "targetYear": 2023,
+          "model": "naive",
+          "prediction": 365817,
+          "actual": 383285,
+          "error": -17468,
+          "absoluteError": 17468,
+          "apePercent": 4.557444199486023,
+          "scaledError": 0.4718360584887992,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original",
+            "apple-revenue-fy2021-original"
+          ],
+          "targetId": "apple-revenue-fy2023-original"
+        },
+        {
+          "origin": "2021-10-29",
+          "horizon": 2,
+          "targetYear": 2023,
+          "model": "drift",
+          "prediction": 432631.6666666667,
+          "actual": 383285,
+          "error": 49346.666666666686,
+          "absoluteError": 49346.666666666686,
+          "apePercent": 12.874666805814652,
+          "scaledError": 1.3329251602679542,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original",
+            "apple-revenue-fy2021-original"
+          ],
+          "targetId": "apple-revenue-fy2023-original"
+        },
+        {
+          "origin": "2021-10-29",
+          "horizon": 2,
+          "targetYear": 2023,
+          "model": "three_year_cagr",
+          "prediction": 452855.7396214757,
+          "actual": 383285,
+          "error": 69570.73962147569,
+          "absoluteError": 69570.73962147569,
+          "apePercent": 18.15117722360011,
+          "scaledError": 1.8792067534433035,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original",
+            "apple-revenue-fy2021-original"
+          ],
+          "targetId": "apple-revenue-fy2023-original"
+        },
+        {
+          "origin": "2021-10-29",
+          "horizon": 3,
+          "targetYear": 2024,
+          "model": "filinglens_growth_v1",
+          "prediction": 770870.4769364016,
+          "actual": 391035,
+          "error": 379835.47693640157,
+          "absoluteError": 379835.47693640157,
+          "apePercent": 97.13592822545336,
+          "scaledError": 10.259908078308044,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original",
+            "apple-revenue-fy2021-original"
+          ],
+          "targetId": "apple-revenue-fy2024-original"
+        },
+        {
+          "origin": "2021-10-29",
+          "horizon": 3,
+          "targetYear": 2024,
+          "model": "naive",
+          "prediction": 365817,
+          "actual": 391035,
+          "error": -25218,
+          "absoluteError": 25218,
+          "apePercent": 6.4490390885726345,
+          "scaledError": 0.681174818122884,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original",
+            "apple-revenue-fy2021-original"
+          ],
+          "targetId": "apple-revenue-fy2024-original"
+        },
+        {
+          "origin": "2021-10-29",
+          "horizon": 3,
+          "targetYear": 2024,
+          "model": "drift",
+          "prediction": 466039,
+          "actual": 391035,
+          "error": 75004,
+          "absoluteError": 75004,
+          "apePercent": 19.18089173603386,
+          "scaledError": 2.025967010012245,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original",
+            "apple-revenue-fy2021-original"
+          ],
+          "targetId": "apple-revenue-fy2024-original"
+        },
+        {
+          "origin": "2021-10-29",
+          "horizon": 3,
+          "targetYear": 2024,
+          "model": "three_year_cagr",
+          "prediction": 503857.6685893936,
+          "actual": 391035,
+          "error": 112822.66858939361,
+          "absoluteError": 112822.66858939361,
+          "apePercent": 28.852319764060407,
+          "scaledError": 3.0475041936917524,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original",
+            "apple-revenue-fy2021-original"
+          ],
+          "targetId": "apple-revenue-fy2024-original"
+        },
+        {
+          "origin": "2021-10-29",
+          "horizon": 4,
+          "targetYear": 2025,
+          "model": "filinglens_growth_v1",
+          "prediction": 911862.6871680694,
+          "actual": 416161,
+          "error": 495701.6871680694,
+          "absoluteError": 495701.6871680694,
+          "apePercent": 119.11296040908914,
+          "scaledError": 13.389622753585394,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original",
+            "apple-revenue-fy2021-original"
+          ],
+          "targetId": "apple-revenue-fy2025-original"
+        },
+        {
+          "origin": "2021-10-29",
+          "horizon": 4,
+          "targetYear": 2025,
+          "model": "naive",
+          "prediction": 365817,
+          "actual": 416161,
+          "error": -50344,
+          "absoluteError": 50344,
+          "apePercent": 12.097241211934804,
+          "scaledError": 1.3598645825830151,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original",
+            "apple-revenue-fy2021-original"
+          ],
+          "targetId": "apple-revenue-fy2025-original"
+        },
+        {
+          "origin": "2021-10-29",
+          "horizon": 4,
+          "targetYear": 2025,
+          "model": "drift",
+          "prediction": 499446.3333333334,
+          "actual": 416161,
+          "error": 83285.33333333337,
+          "absoluteError": 83285.33333333337,
+          "apePercent": 20.012767494631493,
+          "scaledError": 2.2496578549304913,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original",
+            "apple-revenue-fy2021-original"
+          ],
+          "targetId": "apple-revenue-fy2025-original"
+        },
+        {
+          "origin": "2021-10-29",
+          "horizon": 4,
+          "targetYear": 2025,
+          "model": "three_year_cagr",
+          "prediction": 560603.5829611904,
+          "actual": 416161,
+          "error": 144442.58296119038,
+          "absoluteError": 144442.58296119038,
+          "apePercent": 34.70834195448165,
+          "scaledError": 3.9016040200566438,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original",
+            "apple-revenue-fy2021-original"
+          ],
+          "targetId": "apple-revenue-fy2025-original"
+        },
+        {
+          "origin": "2022-10-28",
+          "horizon": 1,
+          "targetYear": 2023,
+          "model": "filinglens_growth_v1",
+          "prediction": 425046.1512,
+          "actual": 383285,
+          "error": 41761.15120000002,
+          "absoluteError": 41761.15120000002,
+          "apePercent": 10.895587147944747,
+          "scaledError": 1.1968089185025979,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original",
+            "apple-revenue-fy2021-original",
+            "apple-revenue-fy2022-original"
+          ],
+          "targetId": "apple-revenue-fy2023-original"
+        },
+        {
+          "origin": "2022-10-28",
+          "horizon": 1,
+          "targetYear": 2023,
+          "model": "naive",
+          "prediction": 394328,
+          "actual": 383285,
+          "error": 11043,
+          "absoluteError": 11043,
+          "apePercent": 2.8811458836114117,
+          "scaledError": 0.3164750134336378,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original",
+            "apple-revenue-fy2021-original",
+            "apple-revenue-fy2022-original"
+          ],
+          "targetId": "apple-revenue-fy2023-original"
+        },
+        {
+          "origin": "2022-10-28",
+          "horizon": 1,
+          "targetYear": 2023,
+          "model": "drift",
+          "prediction": 426511.25,
+          "actual": 383285,
+          "error": 43226.25,
+          "absoluteError": 43226.25,
+          "apePercent": 11.27783503137352,
+          "scaledError": 1.2387963460505105,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original",
+            "apple-revenue-fy2021-original",
+            "apple-revenue-fy2022-original"
+          ],
+          "targetId": "apple-revenue-fy2023-original"
+        },
+        {
+          "origin": "2022-10-28",
+          "horizon": 1,
+          "targetYear": 2023,
+          "model": "three_year_cagr",
+          "prediction": 452955.485383522,
+          "actual": 383285,
+          "error": 69670.485383522,
+          "absoluteError": 69670.485383522,
+          "apePercent": 18.17720113845363,
+          "scaledError": 1.9966465451125774,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original",
+            "apple-revenue-fy2021-original",
+            "apple-revenue-fy2022-original"
+          ],
+          "targetId": "apple-revenue-fy2023-original"
+        },
+        {
+          "origin": "2022-10-28",
+          "horizon": 2,
+          "targetYear": 2024,
+          "model": "filinglens_growth_v1",
+          "prediction": 453184.20640944,
+          "actual": 391035,
+          "error": 62149.20640944003,
+          "absoluteError": 62149.20640944003,
+          "apePercent": 15.893515007464812,
+          "scaledError": 1.7810985179133807,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original",
+            "apple-revenue-fy2021-original",
+            "apple-revenue-fy2022-original"
+          ],
+          "targetId": "apple-revenue-fy2024-original"
+        },
+        {
+          "origin": "2022-10-28",
+          "horizon": 2,
+          "targetYear": 2024,
+          "model": "naive",
+          "prediction": 394328,
+          "actual": 391035,
+          "error": 3293,
+          "absoluteError": 3293,
+          "apePercent": 0.8421241065377779,
+          "scaledError": 0.09437220132545227,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original",
+            "apple-revenue-fy2021-original",
+            "apple-revenue-fy2022-original"
+          ],
+          "targetId": "apple-revenue-fy2024-original"
+        },
+        {
+          "origin": "2022-10-28",
+          "horizon": 2,
+          "targetYear": 2024,
+          "model": "drift",
+          "prediction": 458694.5,
+          "actual": 391035,
+          "error": 67659.5,
+          "absoluteError": 67659.5,
+          "apePercent": 17.302671116396233,
+          "scaledError": 1.9390148665591975,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original",
+            "apple-revenue-fy2021-original",
+            "apple-revenue-fy2022-original"
+          ],
+          "targetId": "apple-revenue-fy2024-original"
+        },
+        {
+          "origin": "2022-10-28",
+          "horizon": 2,
+          "targetYear": 2024,
+          "model": "three_year_cagr",
+          "prediction": 520299.52663524274,
+          "actual": 391035,
+          "error": 129264.52663524274,
+          "absoluteError": 129264.52663524274,
+          "apePercent": 33.05702216815445,
+          "scaledError": 3.7045180479381763,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original",
+            "apple-revenue-fy2021-original",
+            "apple-revenue-fy2022-original"
+          ],
+          "targetId": "apple-revenue-fy2024-original"
+        },
+        {
+          "origin": "2022-10-28",
+          "horizon": 3,
+          "targetYear": 2025,
+          "model": "filinglens_growth_v1",
+          "prediction": 477928.06407939544,
+          "actual": 416161,
+          "error": 61767.06407939544,
+          "absoluteError": 61767.06407939544,
+          "apePercent": 14.842107761033695,
+          "scaledError": 1.7701469197032544,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original",
+            "apple-revenue-fy2021-original",
+            "apple-revenue-fy2022-original"
+          ],
+          "targetId": "apple-revenue-fy2025-original"
+        },
+        {
+          "origin": "2022-10-28",
+          "horizon": 3,
+          "targetYear": 2025,
+          "model": "naive",
+          "prediction": 394328,
+          "actual": 416161,
+          "error": -21833,
+          "absoluteError": 21833,
+          "apePercent": 5.246286893774284,
+          "scaledError": 0.6256994447429697,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original",
+            "apple-revenue-fy2021-original",
+            "apple-revenue-fy2022-original"
+          ],
+          "targetId": "apple-revenue-fy2025-original"
+        },
+        {
+          "origin": "2022-10-28",
+          "horizon": 3,
+          "targetYear": 2025,
+          "model": "drift",
+          "prediction": 490877.75,
+          "actual": 416161,
+          "error": 74716.75,
+          "absoluteError": 74716.75,
+          "apePercent": 17.95380874228964,
+          "scaledError": 2.141264553107648,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original",
+            "apple-revenue-fy2021-original",
+            "apple-revenue-fy2022-original"
+          ],
+          "targetId": "apple-revenue-fy2025-original"
+        },
+        {
+          "origin": "2022-10-28",
+          "horizon": 3,
+          "targetYear": 2025,
+          "model": "three_year_cagr",
+          "prediction": 597656.0747192263,
+          "actual": 416161,
+          "error": 181495.07471922634,
+          "absoluteError": 181495.07471922634,
+          "apePercent": 43.61174514652414,
+          "scaledError": 5.201363416635539,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original",
+            "apple-revenue-fy2021-original",
+            "apple-revenue-fy2022-original"
+          ],
+          "targetId": "apple-revenue-fy2025-original"
+        },
+        {
+          "origin": "2023-11-03",
+          "horizon": 1,
+          "targetYear": 2024,
+          "model": "filinglens_growth_v1",
+          "prediction": 372553.02,
+          "actual": 391035,
+          "error": -18481.97999999998,
+          "absoluteError": 18481.97999999998,
+          "apePercent": 4.726426023245996,
+          "scaledError": 0.6135382225232038,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original",
+            "apple-revenue-fy2021-original",
+            "apple-revenue-fy2022-original",
+            "apple-revenue-fy2023-original"
+          ],
+          "targetId": "apple-revenue-fy2024-original"
+        },
+        {
+          "origin": "2023-11-03",
+          "horizon": 1,
+          "targetYear": 2024,
+          "model": "naive",
+          "prediction": 383285,
+          "actual": 391035,
+          "error": -7750,
+          "absoluteError": 7750,
+          "apePercent": 1.9819197770020587,
+          "scaledError": 0.25727336706104187,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original",
+            "apple-revenue-fy2021-original",
+            "apple-revenue-fy2022-original",
+            "apple-revenue-fy2023-original"
+          ],
+          "targetId": "apple-revenue-fy2024-original"
+        },
+        {
+          "origin": "2023-11-03",
+          "horizon": 1,
+          "targetYear": 2024,
+          "model": "drift",
+          "prediction": 406823,
+          "actual": 391035,
+          "error": 15788,
+          "absoluteError": 15788,
+          "apePercent": 4.037490250233356,
+          "scaledError": 0.5241073444077069,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original",
+            "apple-revenue-fy2021-original",
+            "apple-revenue-fy2022-original",
+            "apple-revenue-fy2023-original"
+          ],
+          "targetId": "apple-revenue-fy2024-original"
+        },
+        {
+          "origin": "2023-11-03",
+          "horizon": 1,
+          "targetYear": 2024,
+          "model": "three_year_cagr",
+          "prediction": 428391.0652608228,
+          "actual": 391035,
+          "error": 37356.06526082283,
+          "absoluteError": 37356.06526082283,
+          "apePercent": 9.553125745987655,
+          "scaledError": 1.240092992232762,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original",
+            "apple-revenue-fy2021-original",
+            "apple-revenue-fy2022-original",
+            "apple-revenue-fy2023-original"
+          ],
+          "targetId": "apple-revenue-fy2024-original"
+        },
+        {
+          "origin": "2023-11-03",
+          "horizon": 2,
+          "targetYear": 2025,
+          "model": "filinglens_growth_v1",
+          "prediction": 363686.258124,
+          "actual": 416161,
+          "error": -52474.741876000015,
+          "absoluteError": 52474.741876000015,
+          "apePercent": 12.609240624662094,
+          "scaledError": 1.7419811003996872,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original",
+            "apple-revenue-fy2021-original",
+            "apple-revenue-fy2022-original",
+            "apple-revenue-fy2023-original"
+          ],
+          "targetId": "apple-revenue-fy2025-original"
+        },
+        {
+          "origin": "2023-11-03",
+          "horizon": 2,
+          "targetYear": 2025,
+          "model": "naive",
+          "prediction": 383285,
+          "actual": 416161,
+          "error": -32876,
+          "absoluteError": 32876,
+          "apePercent": 7.899827230326724,
+          "scaledError": 1.0913702213546854,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original",
+            "apple-revenue-fy2021-original",
+            "apple-revenue-fy2022-original",
+            "apple-revenue-fy2023-original"
+          ],
+          "targetId": "apple-revenue-fy2025-original"
+        },
+        {
+          "origin": "2023-11-03",
+          "horizon": 2,
+          "targetYear": 2025,
+          "model": "drift",
+          "prediction": 430361,
+          "actual": 416161,
+          "error": 14200,
+          "absoluteError": 14200,
+          "apePercent": 3.412140974286394,
+          "scaledError": 0.47139120158281217,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original",
+            "apple-revenue-fy2021-original",
+            "apple-revenue-fy2022-original",
+            "apple-revenue-fy2023-original"
+          ],
+          "targetId": "apple-revenue-fy2025-original"
+        },
+        {
+          "origin": "2023-11-03",
+          "horizon": 2,
+          "targetYear": 2025,
+          "model": "three_year_cagr",
+          "prediction": 478805.3401393286,
+          "actual": 416161,
+          "error": 62644.34013932862,
+          "absoluteError": 62644.34013932862,
+          "apePercent": 15.052909844826551,
+          "scaledError": 2.0795768148338385,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original",
+            "apple-revenue-fy2021-original",
+            "apple-revenue-fy2022-original",
+            "apple-revenue-fy2023-original"
+          ],
+          "targetId": "apple-revenue-fy2025-original"
+        },
+        {
+          "origin": "2024-11-01",
+          "horizon": 1,
+          "targetYear": 2025,
+          "model": "filinglens_growth_v1",
+          "prediction": 398933.907,
+          "actual": 416161,
+          "error": -17227.092999999993,
+          "absoluteError": 17227.092999999993,
+          "apePercent": 4.139526048812837,
+          "scaledError": 0.6526732546979185,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original",
+            "apple-revenue-fy2021-original",
+            "apple-revenue-fy2022-original",
+            "apple-revenue-fy2023-original",
+            "apple-revenue-fy2024-original"
+          ],
+          "targetId": "apple-revenue-fy2025-original"
+        },
+        {
+          "origin": "2024-11-01",
+          "horizon": 1,
+          "targetYear": 2025,
+          "model": "naive",
+          "prediction": 391035,
+          "actual": 416161,
+          "error": -25126,
+          "absoluteError": 25126,
+          "apePercent": 6.0375671915436575,
+          "scaledError": 0.9519347342897555,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original",
+            "apple-revenue-fy2021-original",
+            "apple-revenue-fy2022-original",
+            "apple-revenue-fy2023-original",
+            "apple-revenue-fy2024-original"
+          ],
+          "targetId": "apple-revenue-fy2025-original"
+        },
+        {
+          "origin": "2024-11-01",
+          "horizon": 1,
+          "targetYear": 2025,
+          "model": "drift",
+          "prediction": 411941.6666666667,
+          "actual": 416161,
+          "error": -4219.333333333314,
+          "absoluteError": 4219.333333333314,
+          "apePercent": 1.0138704331576756,
+          "scaledError": 0.1598555263689627,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original",
+            "apple-revenue-fy2021-original",
+            "apple-revenue-fy2022-original",
+            "apple-revenue-fy2023-original",
+            "apple-revenue-fy2024-original"
+          ],
+          "targetId": "apple-revenue-fy2025-original"
+        },
+        {
+          "origin": "2024-11-01",
+          "horizon": 1,
+          "targetYear": 2025,
+          "model": "three_year_cagr",
+          "prediction": 399821.5638777172,
+          "actual": 416161,
+          "error": -16339.436122282816,
+          "absoluteError": 16339.436122282816,
+          "apePercent": 3.9262295415194637,
+          "scaledError": 0.6190430941458936,
+          "trainingIds": [
+            "apple-revenue-fy2018-original",
+            "apple-revenue-fy2019-original",
+            "apple-revenue-fy2020-original",
+            "apple-revenue-fy2021-original",
+            "apple-revenue-fy2022-original",
+            "apple-revenue-fy2023-original",
+            "apple-revenue-fy2024-original"
+          ],
+          "targetId": "apple-revenue-fy2025-original"
+        }
+      ],
+      "scores": [
+        {
+          "model": "filinglens_growth_v1",
+          "horizon": 1,
+          "count": 5,
+          "mae": 49361.23638,
+          "rmse": 58075.64579139335,
+          "bias": 4607.117780000006,
+          "mapePercent": 12.842012392725584,
+          "mase": 2.537752788623054,
+          "maseCount": 5
+        },
+        {
+          "model": "filinglens_growth_v1",
+          "horizon": 2,
+          "count": 4,
+          "mae": 111935.63400648252,
+          "rmse": 135542.79975000382,
+          "bias": 40146.72752740749,
+          "mapePercent": 28.687143321387655,
+          "mase": 4.8200739368885275,
+          "maseCount": 4
+        },
+        {
+          "model": "filinglens_growth_v1",
+          "horizon": 3,
+          "count": 3,
+          "mae": 169986.0432805727,
+          "rmse": 225656.55782496117,
+          "bias": 124415.65072995865,
+          "mapePercent": 43.270725792097956,
+          "mase": 6.315978890843393,
+          "maseCount": 3
+        },
+        {
+          "model": "filinglens_growth_v1",
+          "horizon": 4,
+          "count": 2,
+          "mae": 281132.45741770795,
+          "rmse": 353660.02455661114,
+          "bias": 214569.22975036147,
+          "mapePercent": 68.06764003260938,
+          "mase": 10.063054857581406,
+          "maseCount": 2
+        },
+        {
+          "model": "filinglens_growth_v1",
+          "horizon": 5,
+          "count": 1,
+          "mae": 84550.84867602808,
+          "rmse": 84550.84867602808,
+          "bias": -84550.84867602808,
+          "mapePercent": 20.31686022381436,
+          "mase": 8.556912121852857,
+          "maseCount": 1
+        },
+        {
+          "model": "naive",
+          "horizon": 1,
+          "count": 5,
+          "mae": 32746.4,
+          "rmse": 44636.88732427475,
+          "bias": -28329.2,
+          "mapePercent": 8.617857797144854,
+          "mase": 2.3071929051838747,
+          "maseCount": 5
+        },
+        {
+          "model": "naive",
+          "horizon": 2,
+          "count": 4,
+          "mae": 43362.5,
+          "rmse": 62753.40870821282,
+          "bias": -41716,
+          "mapePercent": 10.92087300613831,
+          "mase": 3.4457932641541915,
+          "maseCount": 4
+        },
+        {
+          "model": "naive",
+          "horizon": 3,
+          "count": 3,
+          "mae": 51940.333333333336,
+          "rmse": 65684.95594629463,
+          "bias": -51940.333333333336,
+          "mapePercent": 13.35789557739353,
+          "mase": 4.104956468352646,
+          "maseCount": 3
+        },
+        {
+          "model": "naive",
+          "horizon": 4,
+          "count": 2,
+          "mae": 83432,
+          "rmse": 89753.63150313195,
+          "bias": -83432,
+          "mapePercent": 20.947542697340296,
+          "mase": 6.5760966471259374,
+          "maseCount": 2
+        },
+        {
+          "model": "naive",
+          "horizon": 5,
+          "count": 1,
+          "mae": 141646,
+          "rmse": 141646,
+          "bias": -141646,
+          "mapePercent": 34.03634651012469,
+          "mase": 14.335188746078332,
+          "maseCount": 1
+        },
+        {
+          "model": "drift",
+          "horizon": 1,
+          "count": 5,
+          "mae": 30994.383333333324,
+          "rmse": 44047.88179005067,
+          "bias": -5430.15,
+          "mapePercent": 8.262015643965231,
+          "mase": 2.16876057077852,
+          "maseCount": 5
+        },
+        {
+          "model": "drift",
+          "horizon": 2,
+          "count": 4,
+          "mae": 60524.79166666667,
+          "rmse": 69842.32044462927,
+          "bias": 5078.2916666666715,
+          "mapePercent": 15.427874785900304,
+          "mase": 3.741545791618228,
+          "maseCount": 4
+        },
+        {
+          "model": "drift",
+          "horizon": 3,
+          "count": 3,
+          "mae": 81703.58333333333,
+          "rmse": 82274.83383263378,
+          "bias": 18110.25,
+          "mapePercent": 20.674062097250715,
+          "mase": 4.6070375830782195,
+          "maseCount": 3
+        },
+        {
+          "model": "drift",
+          "horizon": 4,
+          "count": 2,
+          "mae": 90982.66666666669,
+          "rmse": 91307.69175826441,
+          "bias": -7697.333333333314,
+          "mapePercent": 22.624180108255302,
+          "mase": 6.118250645914795,
+          "maseCount": 2
+        },
+        {
+          "model": "drift",
+          "horizon": 5,
+          "count": 1,
+          "mae": 119346,
+          "rmse": 119346,
+          "bias": -119346,
+          "mapePercent": 28.677843430787604,
+          "mase": 12.078332152616133,
+          "maseCount": 1
+        },
+        {
+          "model": "three_year_cagr",
+          "horizon": 1,
+          "count": 5,
+          "mae": 44556.927869099876,
+          "rmse": 53290.83501872889,
+          "bias": 3329.041692336218,
+          "mapePercent": 11.71658579461372,
+          "mase": 2.5951987941781143,
+          "maseCount": 5
+        },
+        {
+          "model": "three_year_cagr",
+          "horizon": 2,
+          "count": 4,
+          "mae": 93018.25711681142,
+          "rmse": 97088.39273391894,
+          "bias": 37721.5460812121,
+          "mapePercent": 23.576789430475657,
+          "mase": 4.713958742562044,
+          "maseCount": 4
+        },
+        {
+          "model": "three_year_cagr",
+          "horizon": 3,
+          "count": 3,
+          "mae": 129714.30119979686,
+          "rmse": 134982.99611326365,
+          "bias": 66497.52767261643,
+          "mapePercent": 32.40139421781917,
+          "mase": 5.948528190413069,
+          "maseCount": 3
+        },
+        {
+          "model": "three_year_cagr",
+          "horizon": 4,
+          "count": 2,
+          "mae": 121106.89392957784,
+          "rmse": 123334.64290234978,
+          "bias": 23335.689031612535,
+          "mapePercent": 29.855763532634242,
+          "mase": 6.898236728071298,
+          "maseCount": 2
+        },
+        {
+          "model": "three_year_cagr",
+          "horizon": 5,
+          "count": 1,
+          "mae": 118013.24534430576,
+          "rmse": 118013.24534430576,
+          "bias": -118013.24534430576,
+          "mapePercent": 28.35759365829709,
+          "mase": 11.94345160857259,
+          "maseCount": 1
+        }
+      ]
+    },
+    {
+      "schemaVersion": "forecast-evaluation.v1",
+      "issuer": "Microsoft",
+      "currency": "USD",
+      "unit": "millions",
+      "evaluationType": "retrospective_original_disclosure_replay",
+      "methodology": "Expanding origins, next-day publication cutoff; no tuning or model selection on holdouts.",
+      "limitations": [
+        "Two selected US technology issuers are not a representative investment universe.",
+        "Current copies of historical issuer disclosures are not independently timestamped archival captures.",
+        "Retrospective reconstruction is not a prospectively registered forecast. Revenue error does not measure fair-value or return accuracy.",
+        "Longer horizons have fewer overlapping folds; no statistical significance or prediction-interval claim.",
+        "User-edited drivers and future company-specific forecasts are not validated by this reference benchmark."
+      ],
+      "observations": [
+        {
+          "id": "microsoft-revenue-fy2018-original",
+          "issuer": "Microsoft",
+          "metric": "revenue",
+          "fiscalYear": 2018,
+          "periodEnd": "2018-06-30",
+          "publishedOn": "2018-07-19",
+          "value": 110360,
+          "currency": "USD",
+          "unit": "millions",
+          "definition": "us_gaap_consolidated_total_revenue",
+          "sourceUrl": "https://www.microsoft.com/en-us/Investor/earnings/FY-2018-Q4/press-release-webcast",
+          "publicationUrl": "https://www.microsoft.com/en-us/Investor/earnings/FY-2018-Q4/press-release-webcast",
+          "locator": "Annual current-year total revenue column, FY2018; Consolidated income statements, twelve months ended June 30",
+          "sourceSha256": "3d81cbf6fad50c4af32b4391c5a01e6509e49e724268c1b269a08db00f03b007",
+          "sourceQuote": "Total revenue 30,085 25,605 110,360 96,571"
+        },
+        {
+          "id": "microsoft-revenue-fy2019-original",
+          "issuer": "Microsoft",
+          "metric": "revenue",
+          "fiscalYear": 2019,
+          "periodEnd": "2019-06-30",
+          "publishedOn": "2019-07-18",
+          "value": 125843,
+          "currency": "USD",
+          "unit": "millions",
+          "definition": "us_gaap_consolidated_total_revenue",
+          "sourceUrl": "https://www.microsoft.com/en-us/Investor/earnings/FY-2019-Q4/press-release-webcast",
+          "publicationUrl": "https://www.microsoft.com/en-us/Investor/earnings/FY-2019-Q4/press-release-webcast",
+          "locator": "Annual current-year total revenue column, FY2019; Consolidated income statements, twelve months ended June 30",
+          "sourceSha256": "24bf5af89dd280063cc41245f309762e5e6cbbb5359170121145f9878d2e073c",
+          "sourceQuote": "Total revenue 33,717 30,085 125,843 110,360"
+        },
+        {
+          "id": "microsoft-revenue-fy2020-original",
+          "issuer": "Microsoft",
+          "metric": "revenue",
+          "fiscalYear": 2020,
+          "periodEnd": "2020-06-30",
+          "publishedOn": "2020-07-22",
+          "value": 143015,
+          "currency": "USD",
+          "unit": "millions",
+          "definition": "us_gaap_consolidated_total_revenue",
+          "sourceUrl": "https://www.microsoft.com/en-us/Investor/earnings/FY-2020-Q4/press-release-webcast",
+          "publicationUrl": "https://www.microsoft.com/en-us/Investor/earnings/FY-2020-Q4/press-release-webcast",
+          "locator": "Annual current-year total revenue column, FY2020; Consolidated income statements, twelve months ended June 30",
+          "sourceSha256": "68ebddb1cf3430d41758997c769730596aac5a19f2215536e8b3e4cfe2c02752",
+          "sourceQuote": "Total revenue 38,033 33,717 143,015 125,843"
+        },
+        {
+          "id": "microsoft-revenue-fy2021-original",
+          "issuer": "Microsoft",
+          "metric": "revenue",
+          "fiscalYear": 2021,
+          "periodEnd": "2021-06-30",
+          "publishedOn": "2021-07-27",
+          "value": 168088,
+          "currency": "USD",
+          "unit": "millions",
+          "definition": "us_gaap_consolidated_total_revenue",
+          "sourceUrl": "https://www.microsoft.com/en-us/Investor/earnings/FY-2021-Q4/press-release-webcast",
+          "publicationUrl": "https://www.microsoft.com/en-us/Investor/earnings/FY-2021-Q4/press-release-webcast",
+          "locator": "Annual current-year total revenue column, FY2021; Consolidated income statements, twelve months ended June 30",
+          "sourceSha256": "7196b9ca7d8efb6f6ec41e6a3e69e3231be75d43c1dfeb0b006d0af7a217c0ea",
+          "sourceQuote": "Total revenue 46,152 38,033 168,088 143,015"
+        },
+        {
+          "id": "microsoft-revenue-fy2022-original",
+          "issuer": "Microsoft",
+          "metric": "revenue",
+          "fiscalYear": 2022,
+          "periodEnd": "2022-06-30",
+          "publishedOn": "2022-07-26",
+          "value": 198270,
+          "currency": "USD",
+          "unit": "millions",
+          "definition": "us_gaap_consolidated_total_revenue",
+          "sourceUrl": "https://www.microsoft.com/en-us/Investor/earnings/FY-2022-Q4/press-release-webcast",
+          "publicationUrl": "https://www.microsoft.com/en-us/Investor/earnings/FY-2022-Q4/press-release-webcast",
+          "locator": "Annual current-year total revenue column, FY2022; Consolidated income statements, twelve months ended June 30",
+          "sourceSha256": "a3294c62493b2d3d13f2e659abeb061d36c544cd7fb16925a16052e7895d534c",
+          "sourceQuote": "Total revenue 51,865 46,152 198,270 168,088"
+        },
+        {
+          "id": "microsoft-revenue-fy2023-original",
+          "issuer": "Microsoft",
+          "metric": "revenue",
+          "fiscalYear": 2023,
+          "periodEnd": "2023-06-30",
+          "publishedOn": "2023-07-25",
+          "value": 211915,
+          "currency": "USD",
+          "unit": "millions",
+          "definition": "us_gaap_consolidated_total_revenue",
+          "sourceUrl": "https://www.microsoft.com/en-us/Investor/earnings/FY-2023-Q4/press-release-webcast",
+          "publicationUrl": "https://www.microsoft.com/en-us/Investor/earnings/FY-2023-Q4/press-release-webcast",
+          "locator": "Annual current-year total revenue column, FY2023; Consolidated income statements, twelve months ended June 30",
+          "sourceSha256": "81067d75bc534f4ef25ac64dbfef6dcc834bde4fb160c290b6e597922a540703",
+          "sourceQuote": "Total revenue 56,189 51,865 211,915 198,270"
+        },
+        {
+          "id": "microsoft-revenue-fy2024-original",
+          "issuer": "Microsoft",
+          "metric": "revenue",
+          "fiscalYear": 2024,
+          "periodEnd": "2024-06-30",
+          "publishedOn": "2024-07-30",
+          "value": 245122,
+          "currency": "USD",
+          "unit": "millions",
+          "definition": "us_gaap_consolidated_total_revenue",
+          "sourceUrl": "https://www.microsoft.com/en-us/Investor/earnings/FY-2024-Q4/press-release-webcast",
+          "publicationUrl": "https://www.microsoft.com/en-us/Investor/earnings/FY-2024-Q4/press-release-webcast",
+          "locator": "Annual current-year total revenue column, FY2024; Consolidated income statements, twelve months ended June 30",
+          "sourceSha256": "6add17e43be2ec37cd8f0d7cd956cbea42b65152cda9986e095524c97ebb80fd",
+          "sourceQuote": "Total revenue 64,727 56,189 245,122 211,915"
+        },
+        {
+          "id": "microsoft-revenue-fy2025-original",
+          "issuer": "Microsoft",
+          "metric": "revenue",
+          "fiscalYear": 2025,
+          "periodEnd": "2025-06-30",
+          "publishedOn": "2025-07-30",
+          "value": 281724,
+          "currency": "USD",
+          "unit": "millions",
+          "definition": "us_gaap_consolidated_total_revenue",
+          "sourceUrl": "https://www.microsoft.com/en-us/Investor/earnings/FY-2025-Q4/press-release-webcast",
+          "publicationUrl": "https://www.microsoft.com/en-us/Investor/earnings/FY-2025-Q4/press-release-webcast",
+          "locator": "Annual current-year total revenue column, FY2025; Consolidated income statements, twelve months ended June 30",
+          "sourceSha256": "700b9f1caf8e0ffaa6a60a62a82338ca50b58b01e50293b0d6048c14d0a633d0",
+          "sourceQuote": "Total revenue 76,441 64,727 281,724 245,122"
+        }
+      ],
+      "rows": [
+        {
+          "origin": "2020-07-23",
+          "horizon": 1,
+          "targetYear": 2021,
+          "model": "filinglens_growth_v1",
+          "prediction": 162536.54750000002,
+          "actual": 168088,
+          "error": -5551.452499999985,
+          "absoluteError": 5551.452499999985,
+          "apePercent": 3.302706023035544,
+          "scaledError": 0.34000627775225756,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original"
+          ],
+          "targetId": "microsoft-revenue-fy2021-original"
+        },
+        {
+          "origin": "2020-07-23",
+          "horizon": 1,
+          "targetYear": 2021,
+          "model": "naive",
+          "prediction": 143015,
+          "actual": 168088,
+          "error": -25073,
+          "absoluteError": 25073,
+          "apePercent": 14.91659130931417,
+          "scaledError": 1.535630071964477,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original"
+          ],
+          "targetId": "microsoft-revenue-fy2021-original"
+        },
+        {
+          "origin": "2020-07-23",
+          "horizon": 1,
+          "targetYear": 2021,
+          "model": "drift",
+          "prediction": 159342.5,
+          "actual": 168088,
+          "error": -8745.5,
+          "absoluteError": 8745.5,
+          "apePercent": 5.2029294179239445,
+          "scaledError": 0.5356300719644771,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original"
+          ],
+          "targetId": "microsoft-revenue-fy2021-original"
+        },
+        {
+          "origin": "2020-07-23",
+          "horizon": 1,
+          "targetYear": 2021,
+          "model": "three_year_cagr",
+          "prediction": 162804.55057635444,
+          "actual": 168088,
+          "error": -5283.449423645565,
+          "absoluteError": 5283.449423645565,
+          "apePercent": 3.143263899651114,
+          "scaledError": 0.32359206391949563,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original"
+          ],
+          "targetId": "microsoft-revenue-fy2021-original"
+        },
+        {
+          "origin": "2020-07-23",
+          "horizon": 2,
+          "targetYear": 2022,
+          "model": "filinglens_growth_v1",
+          "prediction": 181390.78701000003,
+          "actual": 198270,
+          "error": -16879.21298999997,
+          "absoluteError": 16879.21298999997,
+          "apePercent": 8.513246073536072,
+          "scaledError": 1.0337904143316472,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original"
+          ],
+          "targetId": "microsoft-revenue-fy2022-original"
+        },
+        {
+          "origin": "2020-07-23",
+          "horizon": 2,
+          "targetYear": 2022,
+          "model": "naive",
+          "prediction": 143015,
+          "actual": 198270,
+          "error": -55255,
+          "absoluteError": 55255,
+          "apePercent": 27.86856307056035,
+          "scaledError": 3.3841678150359824,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original"
+          ],
+          "targetId": "microsoft-revenue-fy2022-original"
+        },
+        {
+          "origin": "2020-07-23",
+          "horizon": 2,
+          "targetYear": 2022,
+          "model": "drift",
+          "prediction": 175670,
+          "actual": 198270,
+          "error": -22600,
+          "absoluteError": 22600,
+          "apePercent": 11.398597871589248,
+          "scaledError": 1.3841678150359822,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original"
+          ],
+          "targetId": "microsoft-revenue-fy2022-original"
+        },
+        {
+          "origin": "2020-07-23",
+          "horizon": 2,
+          "targetYear": 2022,
+          "model": "three_year_cagr",
+          "prediction": 185332.45945088798,
+          "actual": 198270,
+          "error": -12937.540549112018,
+          "absoluteError": 12937.540549112018,
+          "apePercent": 6.52521337020831,
+          "scaledError": 0.7923773112302568,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original"
+          ],
+          "targetId": "microsoft-revenue-fy2022-original"
+        },
+        {
+          "origin": "2020-07-23",
+          "horizon": 3,
+          "targetYear": 2023,
+          "model": "filinglens_growth_v1",
+          "prediction": 198713.607169455,
+          "actual": 211915,
+          "error": -13201.392830544995,
+          "absoluteError": 13201.392830544995,
+          "apePercent": 6.229569794750252,
+          "scaledError": 0.8085373039684578,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original"
+          ],
+          "targetId": "microsoft-revenue-fy2023-original"
+        },
+        {
+          "origin": "2020-07-23",
+          "horizon": 3,
+          "targetYear": 2023,
+          "model": "naive",
+          "prediction": 143015,
+          "actual": 211915,
+          "error": -68900,
+          "absoluteError": 68900,
+          "apePercent": 32.51303588703018,
+          "scaledError": 4.219874444954831,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original"
+          ],
+          "targetId": "microsoft-revenue-fy2023-original"
+        },
+        {
+          "origin": "2020-07-23",
+          "horizon": 3,
+          "targetYear": 2023,
+          "model": "drift",
+          "prediction": 191997.5,
+          "actual": 211915,
+          "error": -19917.5,
+          "absoluteError": 19917.5,
+          "apePercent": 9.398815562843593,
+          "scaledError": 1.2198744449548309,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original"
+          ],
+          "targetId": "microsoft-revenue-fy2023-original"
+        },
+        {
+          "origin": "2020-07-23",
+          "horizon": 3,
+          "targetYear": 2023,
+          "model": "three_year_cagr",
+          "prediction": 210977.64408007727,
+          "actual": 211915,
+          "error": -937.3559199227311,
+          "absoluteError": 937.3559199227311,
+          "apePercent": 0.44232636666716896,
+          "scaledError": 0.05740964139780928,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original"
+          ],
+          "targetId": "microsoft-revenue-fy2023-original"
+        },
+        {
+          "origin": "2020-07-23",
+          "horizon": 4,
+          "targetYear": 2024,
+          "model": "filinglens_growth_v1",
+          "prediction": 213636.99906788106,
+          "actual": 245122,
+          "error": -31485.000932118943,
+          "absoluteError": 31485.000932118943,
+          "apePercent": 12.844624689794854,
+          "scaledError": 1.9283418117972098,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original"
+          ],
+          "targetId": "microsoft-revenue-fy2024-original"
+        },
+        {
+          "origin": "2020-07-23",
+          "horizon": 4,
+          "targetYear": 2024,
+          "model": "naive",
+          "prediction": 143015,
+          "actual": 245122,
+          "error": -102107,
+          "absoluteError": 102107,
+          "apePercent": 41.655583750132585,
+          "scaledError": 6.253682437605267,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original"
+          ],
+          "targetId": "microsoft-revenue-fy2024-original"
+        },
+        {
+          "origin": "2020-07-23",
+          "horizon": 4,
+          "targetYear": 2024,
+          "model": "drift",
+          "prediction": 208325,
+          "actual": 245122,
+          "error": -36797,
+          "absoluteError": 36797,
+          "apePercent": 15.0117084553814,
+          "scaledError": 2.253682437605267,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original"
+          ],
+          "targetId": "microsoft-revenue-fy2024-original"
+        },
+        {
+          "origin": "2020-07-23",
+          "horizon": 4,
+          "targetYear": 2024,
+          "model": "three_year_cagr",
+          "prediction": 240171.45422588568,
+          "actual": 245122,
+          "error": -4950.545774114318,
+          "absoluteError": 4950.545774114318,
+          "apePercent": 2.0196252372754455,
+          "scaledError": 0.3032029259907713,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original"
+          ],
+          "targetId": "microsoft-revenue-fy2024-original"
+        },
+        {
+          "origin": "2020-07-23",
+          "horizon": 5,
+          "targetYear": 2025,
+          "model": "filinglens_growth_v1",
+          "prediction": 225301.57921698736,
+          "actual": 281724,
+          "error": -56422.42078301264,
+          "absoluteError": 56422.42078301264,
+          "apePercent": 20.02755206621113,
+          "scaledError": 3.455668092666522,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original"
+          ],
+          "targetId": "microsoft-revenue-fy2025-original"
+        },
+        {
+          "origin": "2020-07-23",
+          "horizon": 5,
+          "targetYear": 2025,
+          "model": "naive",
+          "prediction": 143015,
+          "actual": 281724,
+          "error": -138709,
+          "absoluteError": 138709,
+          "apePercent": 49.235776859621474,
+          "scaledError": 8.495421834328587,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original"
+          ],
+          "targetId": "microsoft-revenue-fy2025-original"
+        },
+        {
+          "origin": "2020-07-23",
+          "horizon": 5,
+          "targetYear": 2025,
+          "model": "drift",
+          "prediction": 224652.5,
+          "actual": 281724,
+          "error": -57071.5,
+          "absoluteError": 57071.5,
+          "apePercent": 20.257947494711136,
+          "scaledError": 3.4954218343285866,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original"
+          ],
+          "targetId": "microsoft-revenue-fy2025-original"
+        },
+        {
+          "origin": "2020-07-23",
+          "horizon": 5,
+          "targetYear": 2025,
+          "model": "three_year_cagr",
+          "prediction": 273404.92722102435,
+          "actual": 281724,
+          "error": -8319.07277897565,
+          "absoluteError": 8319.07277897565,
+          "apePercent": 2.952915896045651,
+          "scaledError": 0.5095129553805328,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original"
+          ],
+          "targetId": "microsoft-revenue-fy2025-original"
+        },
+        {
+          "origin": "2021-07-28",
+          "horizon": 1,
+          "targetYear": 2022,
+          "model": "filinglens_growth_v1",
+          "prediction": 197553.8264,
+          "actual": 198270,
+          "error": -716.1736000000092,
+          "absoluteError": 716.1736000000092,
+          "apePercent": 0.36121127755081917,
+          "scaledError": 0.03721800166297165,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original",
+            "microsoft-revenue-fy2021-original"
+          ],
+          "targetId": "microsoft-revenue-fy2022-original"
+        },
+        {
+          "origin": "2021-07-28",
+          "horizon": 1,
+          "targetYear": 2022,
+          "model": "naive",
+          "prediction": 168088,
+          "actual": 198270,
+          "error": -30182,
+          "absoluteError": 30182,
+          "apePercent": 15.222676148686135,
+          "scaledError": 1.5684936252771617,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original",
+            "microsoft-revenue-fy2021-original"
+          ],
+          "targetId": "microsoft-revenue-fy2022-original"
+        },
+        {
+          "origin": "2021-07-28",
+          "horizon": 1,
+          "targetYear": 2022,
+          "model": "drift",
+          "prediction": 187330.66666666666,
+          "actual": 198270,
+          "error": -10939.333333333343,
+          "absoluteError": 10939.333333333343,
+          "apePercent": 5.51739210840437,
+          "scaledError": 0.5684936252771623,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original",
+            "microsoft-revenue-fy2021-original"
+          ],
+          "targetId": "microsoft-revenue-fy2022-original"
+        },
+        {
+          "origin": "2021-07-28",
+          "horizon": 1,
+          "targetYear": 2022,
+          "model": "three_year_cagr",
+          "prediction": 193394.91421033064,
+          "actual": 198270,
+          "error": -4875.085789669363,
+          "absoluteError": 4875.085789669363,
+          "apePercent": 2.458811615307088,
+          "scaledError": 0.25334772327134303,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original",
+            "microsoft-revenue-fy2021-original"
+          ],
+          "targetId": "microsoft-revenue-fy2022-original"
+        },
+        {
+          "origin": "2021-07-28",
+          "horizon": 2,
+          "targetYear": 2023,
+          "model": "filinglens_growth_v1",
+          "prediction": 226989.3465336,
+          "actual": 211915,
+          "error": 15074.346533600008,
+          "absoluteError": 15074.346533600008,
+          "apePercent": 7.113392885638113,
+          "scaledError": 0.78338136780765,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original",
+            "microsoft-revenue-fy2021-original"
+          ],
+          "targetId": "microsoft-revenue-fy2023-original"
+        },
+        {
+          "origin": "2021-07-28",
+          "horizon": 2,
+          "targetYear": 2023,
+          "model": "naive",
+          "prediction": 168088,
+          "actual": 211915,
+          "error": -43827,
+          "absoluteError": 43827,
+          "apePercent": 20.681405280419035,
+          "scaledError": 2.2775949279379155,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original",
+            "microsoft-revenue-fy2021-original"
+          ],
+          "targetId": "microsoft-revenue-fy2023-original"
+        },
+        {
+          "origin": "2021-07-28",
+          "horizon": 2,
+          "targetYear": 2023,
+          "model": "drift",
+          "prediction": 206573.33333333334,
+          "actual": 211915,
+          "error": -5341.666666666657,
+          "absoluteError": 5341.666666666657,
+          "apePercent": 2.5206647319286777,
+          "scaledError": 0.27759492793791524,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original",
+            "microsoft-revenue-fy2021-original"
+          ],
+          "targetId": "microsoft-revenue-fy2023-original"
+        },
+        {
+          "origin": "2021-07-28",
+          "horizon": 2,
+          "targetYear": 2023,
+          "model": "three_year_cagr",
+          "prediction": 222511.97493230415,
+          "actual": 211915,
+          "error": 10596.974932304147,
+          "absoluteError": 10596.974932304147,
+          "apePercent": 5.0005780300139895,
+          "scaledError": 0.5507019955119256,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original",
+            "microsoft-revenue-fy2021-original"
+          ],
+          "targetId": "microsoft-revenue-fy2023-original"
+        },
+        {
+          "origin": "2021-07-28",
+          "horizon": 3,
+          "targetYear": 2024,
+          "model": "filinglens_growth_v1",
+          "prediction": 254840.93935327273,
+          "actual": 245122,
+          "error": 9718.939353272726,
+          "absoluteError": 9718.939353272726,
+          "apePercent": 3.9649396436357107,
+          "scaledError": 0.5050723749275599,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original",
+            "microsoft-revenue-fy2021-original"
+          ],
+          "targetId": "microsoft-revenue-fy2024-original"
+        },
+        {
+          "origin": "2021-07-28",
+          "horizon": 3,
+          "targetYear": 2024,
+          "model": "naive",
+          "prediction": 168088,
+          "actual": 245122,
+          "error": -77034,
+          "absoluteError": 77034,
+          "apePercent": 31.426799716059755,
+          "scaledError": 4.003291297117516,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original",
+            "microsoft-revenue-fy2021-original"
+          ],
+          "targetId": "microsoft-revenue-fy2024-original"
+        },
+        {
+          "origin": "2021-07-28",
+          "horizon": 3,
+          "targetYear": 2024,
+          "model": "drift",
+          "prediction": 225816,
+          "actual": 245122,
+          "error": -19306,
+          "absoluteError": 19306,
+          "apePercent": 7.876078034611337,
+          "scaledError": 1.0032912971175165,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original",
+            "microsoft-revenue-fy2021-original"
+          ],
+          "targetId": "microsoft-revenue-fy2024-original"
+        },
+        {
+          "origin": "2021-07-28",
+          "horizon": 3,
+          "targetYear": 2024,
+          "model": "three_year_cagr",
+          "prediction": 256012.8284160928,
+          "actual": 245122,
+          "error": 10890.828416092787,
+          "absoluteError": 10890.828416092787,
+          "apePercent": 4.443023643774442,
+          "scaledError": 0.5659729290513851,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original",
+            "microsoft-revenue-fy2021-original"
+          ],
+          "targetId": "microsoft-revenue-fy2024-original"
+        },
+        {
+          "origin": "2021-07-28",
+          "horizon": 4,
+          "targetYear": 2025,
+          "model": "filinglens_growth_v1",
+          "prediction": 279407.60590692825,
+          "actual": 281724,
+          "error": -2316.394093071751,
+          "absoluteError": 2316.394093071751,
+          "apePercent": 0.8222210720676091,
+          "scaledError": 0.1203780189719937,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original",
+            "microsoft-revenue-fy2021-original"
+          ],
+          "targetId": "microsoft-revenue-fy2025-original"
+        },
+        {
+          "origin": "2021-07-28",
+          "horizon": 4,
+          "targetYear": 2025,
+          "model": "naive",
+          "prediction": 168088,
+          "actual": 281724,
+          "error": -113636,
+          "absoluteError": 113636,
+          "apePercent": 40.33593162101916,
+          "scaledError": 5.905418514412417,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original",
+            "microsoft-revenue-fy2021-original"
+          ],
+          "targetId": "microsoft-revenue-fy2025-original"
+        },
+        {
+          "origin": "2021-07-28",
+          "horizon": 4,
+          "targetYear": 2025,
+          "model": "drift",
+          "prediction": 245058.6666666667,
+          "actual": 281724,
+          "error": -36665.333333333314,
+          "absoluteError": 36665.333333333314,
+          "apePercent": 13.01462897493054,
+          "scaledError": 1.9054185144124158,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original",
+            "microsoft-revenue-fy2021-original"
+          ],
+          "targetId": "microsoft-revenue-fy2025-original"
+        },
+        {
+          "origin": "2021-07-28",
+          "horizon": 4,
+          "targetYear": 2025,
+          "model": "three_year_cagr",
+          "prediction": 294557.4876747558,
+          "actual": 281724,
+          "error": 12833.487674755801,
+          "absoluteError": 12833.487674755801,
+          "apePercent": 4.555340572601483,
+          "scaledError": 0.6669287524990888,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original",
+            "microsoft-revenue-fy2021-original"
+          ],
+          "targetId": "microsoft-revenue-fy2025-original"
+        },
+        {
+          "origin": "2022-07-27",
+          "horizon": 1,
+          "targetYear": 2023,
+          "model": "filinglens_growth_v1",
+          "prediction": 233879.292,
+          "actual": 211915,
+          "error": 21964.291999999987,
+          "absoluteError": 21964.291999999987,
+          "apePercent": 10.364670740627131,
+          "scaledError": 0.9993990217267654,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original",
+            "microsoft-revenue-fy2021-original",
+            "microsoft-revenue-fy2022-original"
+          ],
+          "targetId": "microsoft-revenue-fy2023-original"
+        },
+        {
+          "origin": "2022-07-27",
+          "horizon": 1,
+          "targetYear": 2023,
+          "model": "naive",
+          "prediction": 198270,
+          "actual": 211915,
+          "error": -13645,
+          "absoluteError": 13645,
+          "apePercent": 6.4389023901092415,
+          "scaledError": 0.6208622454783301,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original",
+            "microsoft-revenue-fy2021-original",
+            "microsoft-revenue-fy2022-original"
+          ],
+          "targetId": "microsoft-revenue-fy2023-original"
+        },
+        {
+          "origin": "2022-07-27",
+          "horizon": 1,
+          "targetYear": 2023,
+          "model": "drift",
+          "prediction": 220247.5,
+          "actual": 211915,
+          "error": 8332.5,
+          "absoluteError": 8332.5,
+          "apePercent": 3.9320010381520896,
+          "scaledError": 0.37913775452166987,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original",
+            "microsoft-revenue-fy2021-original",
+            "microsoft-revenue-fy2022-original"
+          ],
+          "targetId": "microsoft-revenue-fy2023-original"
+        },
+        {
+          "origin": "2022-07-27",
+          "horizon": 1,
+          "targetYear": 2023,
+          "model": "three_year_cagr",
+          "prediction": 230709.94790621905,
+          "actual": 211915,
+          "error": 18794.94790621905,
+          "absoluteError": 18794.94790621905,
+          "apePercent": 8.869097471259256,
+          "scaledError": 0.8551904405059289,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original",
+            "microsoft-revenue-fy2021-original",
+            "microsoft-revenue-fy2022-original"
+          ],
+          "targetId": "microsoft-revenue-fy2023-original"
+        },
+        {
+          "origin": "2022-07-27",
+          "horizon": 2,
+          "targetYear": 2024,
+          "model": "filinglens_growth_v1",
+          "prediction": 269569.2719592,
+          "actual": 245122,
+          "error": 24447.271959199978,
+          "absoluteError": 24447.271959199978,
+          "apePercent": 9.973511948825474,
+          "scaledError": 1.11237729310431,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original",
+            "microsoft-revenue-fy2021-original",
+            "microsoft-revenue-fy2022-original"
+          ],
+          "targetId": "microsoft-revenue-fy2024-original"
+        },
+        {
+          "origin": "2022-07-27",
+          "horizon": 2,
+          "targetYear": 2024,
+          "model": "naive",
+          "prediction": 198270,
+          "actual": 245122,
+          "error": -46852,
+          "absoluteError": 46852,
+          "apePercent": 19.11374744005026,
+          "scaledError": 2.1318166306449777,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original",
+            "microsoft-revenue-fy2021-original",
+            "microsoft-revenue-fy2022-original"
+          ],
+          "targetId": "microsoft-revenue-fy2024-original"
+        },
+        {
+          "origin": "2022-07-27",
+          "horizon": 2,
+          "targetYear": 2024,
+          "model": "drift",
+          "prediction": 242225,
+          "actual": 245122,
+          "error": -2897,
+          "absoluteError": 2897,
+          "apePercent": 1.181860461321301,
+          "scaledError": 0.1318166306449778,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original",
+            "microsoft-revenue-fy2021-original",
+            "microsoft-revenue-fy2022-original"
+          ],
+          "targetId": "microsoft-revenue-fy2024-original"
+        },
+        {
+          "origin": "2022-07-27",
+          "horizon": 2,
+          "targetYear": 2024,
+          "model": "three_year_cagr",
+          "prediction": 268457.5581928195,
+          "actual": 245122,
+          "error": 23335.558192819473,
+          "absoluteError": 23335.558192819473,
+          "apePercent": 9.51997706971201,
+          "scaledError": 1.061793115359776,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original",
+            "microsoft-revenue-fy2021-original",
+            "microsoft-revenue-fy2022-original"
+          ],
+          "targetId": "microsoft-revenue-fy2024-original"
+        },
+        {
+          "origin": "2022-07-27",
+          "horizon": 3,
+          "targetYear": 2025,
+          "model": "filinglens_growth_v1",
+          "prediction": 303454.1294444714,
+          "actual": 281724,
+          "error": 21730.129444471386,
+          "absoluteError": 21730.129444471386,
+          "apePercent": 7.713268817875433,
+          "scaledError": 0.9887443724022926,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original",
+            "microsoft-revenue-fy2021-original",
+            "microsoft-revenue-fy2022-original"
+          ],
+          "targetId": "microsoft-revenue-fy2025-original"
+        },
+        {
+          "origin": "2022-07-27",
+          "horizon": 3,
+          "targetYear": 2025,
+          "model": "naive",
+          "prediction": 198270,
+          "actual": 281724,
+          "error": -83454,
+          "absoluteError": 83454,
+          "apePercent": 29.622609362354645,
+          "scaledError": 3.797247184620635,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original",
+            "microsoft-revenue-fy2021-original",
+            "microsoft-revenue-fy2022-original"
+          ],
+          "targetId": "microsoft-revenue-fy2025-original"
+        },
+        {
+          "origin": "2022-07-27",
+          "horizon": 3,
+          "targetYear": 2025,
+          "model": "drift",
+          "prediction": 264202.5,
+          "actual": 281724,
+          "error": -17521.5,
+          "absoluteError": 17521.5,
+          "apePercent": 6.219384929931422,
+          "scaledError": 0.7972471846206347,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original",
+            "microsoft-revenue-fy2021-original",
+            "microsoft-revenue-fy2022-original"
+          ],
+          "targetId": "microsoft-revenue-fy2025-original"
+        },
+        {
+          "origin": "2022-07-27",
+          "horizon": 3,
+          "targetYear": 2025,
+          "model": "three_year_cagr",
+          "prediction": 312381.244089858,
+          "actual": 281724,
+          "error": 30657.244089858024,
+          "absoluteError": 30657.244089858024,
+          "apePercent": 10.882013633860808,
+          "scaledError": 1.3949377358597668,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original",
+            "microsoft-revenue-fy2021-original",
+            "microsoft-revenue-fy2022-original"
+          ],
+          "targetId": "microsoft-revenue-fy2025-original"
+        },
+        {
+          "origin": "2023-07-26",
+          "horizon": 1,
+          "targetYear": 2024,
+          "model": "filinglens_growth_v1",
+          "prediction": 226494.752,
+          "actual": 245122,
+          "error": -18627.247999999992,
+          "absoluteError": 18627.247999999992,
+          "apePercent": 7.599174288721532,
+          "scaledError": 0.9171014721087092,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original",
+            "microsoft-revenue-fy2021-original",
+            "microsoft-revenue-fy2022-original",
+            "microsoft-revenue-fy2023-original"
+          ],
+          "targetId": "microsoft-revenue-fy2024-original"
+        },
+        {
+          "origin": "2023-07-26",
+          "horizon": 1,
+          "targetYear": 2024,
+          "model": "naive",
+          "prediction": 211915,
+          "actual": 245122,
+          "error": -33207,
+          "absoluteError": 33207,
+          "apePercent": 13.547131632411617,
+          "scaledError": 1.6349268869085718,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original",
+            "microsoft-revenue-fy2021-original",
+            "microsoft-revenue-fy2022-original",
+            "microsoft-revenue-fy2023-original"
+          ],
+          "targetId": "microsoft-revenue-fy2024-original"
+        },
+        {
+          "origin": "2023-07-26",
+          "horizon": 1,
+          "targetYear": 2024,
+          "model": "drift",
+          "prediction": 232226,
+          "actual": 245122,
+          "error": -12896,
+          "absoluteError": 12896,
+          "apePercent": 5.261053679392303,
+          "scaledError": 0.6349268869085717,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original",
+            "microsoft-revenue-fy2021-original",
+            "microsoft-revenue-fy2022-original",
+            "microsoft-revenue-fy2023-original"
+          ],
+          "targetId": "microsoft-revenue-fy2024-original"
+        },
+        {
+          "origin": "2023-07-26",
+          "horizon": 1,
+          "targetYear": 2024,
+          "model": "three_year_cagr",
+          "prediction": 241595.2554623226,
+          "actual": 245122,
+          "error": -3526.744537677412,
+          "absoluteError": 3526.744537677412,
+          "apePercent": 1.4387711171079758,
+          "scaledError": 0.17363716890736114,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original",
+            "microsoft-revenue-fy2021-original",
+            "microsoft-revenue-fy2022-original",
+            "microsoft-revenue-fy2023-original"
+          ],
+          "targetId": "microsoft-revenue-fy2024-original"
+        },
+        {
+          "origin": "2023-07-26",
+          "horizon": 2,
+          "targetYear": 2025,
+          "model": "filinglens_growth_v1",
+          "prediction": 239744.694992,
+          "actual": 281724,
+          "error": -41979.305007999996,
+          "absoluteError": 41979.305007999996,
+          "apePercent": 14.900862194204256,
+          "scaledError": 2.0668261044754073,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original",
+            "microsoft-revenue-fy2021-original",
+            "microsoft-revenue-fy2022-original",
+            "microsoft-revenue-fy2023-original"
+          ],
+          "targetId": "microsoft-revenue-fy2025-original"
+        },
+        {
+          "origin": "2023-07-26",
+          "horizon": 2,
+          "targetYear": 2025,
+          "model": "naive",
+          "prediction": 211915,
+          "actual": 281724,
+          "error": -69809,
+          "absoluteError": 69809,
+          "apePercent": 24.77921653817211,
+          "scaledError": 3.437004578799665,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original",
+            "microsoft-revenue-fy2021-original",
+            "microsoft-revenue-fy2022-original",
+            "microsoft-revenue-fy2023-original"
+          ],
+          "targetId": "microsoft-revenue-fy2025-original"
+        },
+        {
+          "origin": "2023-07-26",
+          "horizon": 2,
+          "targetYear": 2025,
+          "model": "drift",
+          "prediction": 252537,
+          "actual": 281724,
+          "error": -29187,
+          "absoluteError": 29187,
+          "apePercent": 10.360139711206713,
+          "scaledError": 1.4370045787996653,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original",
+            "microsoft-revenue-fy2021-original",
+            "microsoft-revenue-fy2022-original",
+            "microsoft-revenue-fy2023-original"
+          ],
+          "targetId": "microsoft-revenue-fy2025-original"
+        },
+        {
+          "origin": "2023-07-26",
+          "horizon": 2,
+          "targetYear": 2025,
+          "model": "three_year_cagr",
+          "prediction": 275432.4491513339,
+          "actual": 281724,
+          "error": -6291.550848666113,
+          "absoluteError": 6291.550848666113,
+          "apePercent": 2.2332321167760334,
+          "scaledError": 0.30976076257526036,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original",
+            "microsoft-revenue-fy2021-original",
+            "microsoft-revenue-fy2022-original",
+            "microsoft-revenue-fy2023-original"
+          ],
+          "targetId": "microsoft-revenue-fy2025-original"
+        },
+        {
+          "origin": "2024-07-31",
+          "horizon": 1,
+          "targetYear": 2025,
+          "model": "filinglens_growth_v1",
+          "prediction": 283532.6174,
+          "actual": 281724,
+          "error": 1808.6173999999883,
+          "absoluteError": 1808.6173999999883,
+          "apePercent": 0.6419820107623022,
+          "scaledError": 0.08052495807423406,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original",
+            "microsoft-revenue-fy2021-original",
+            "microsoft-revenue-fy2022-original",
+            "microsoft-revenue-fy2023-original",
+            "microsoft-revenue-fy2024-original"
+          ],
+          "targetId": "microsoft-revenue-fy2025-original"
+        },
+        {
+          "origin": "2024-07-31",
+          "horizon": 1,
+          "targetYear": 2025,
+          "model": "naive",
+          "prediction": 245122,
+          "actual": 281724,
+          "error": -36602,
+          "absoluteError": 36602,
+          "apePercent": 12.992148343769077,
+          "scaledError": 1.6296285302978586,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original",
+            "microsoft-revenue-fy2021-original",
+            "microsoft-revenue-fy2022-original",
+            "microsoft-revenue-fy2023-original",
+            "microsoft-revenue-fy2024-original"
+          ],
+          "targetId": "microsoft-revenue-fy2025-original"
+        },
+        {
+          "origin": "2024-07-31",
+          "horizon": 1,
+          "targetYear": 2025,
+          "model": "drift",
+          "prediction": 267582.3333333333,
+          "actual": 281724,
+          "error": -14141.666666666686,
+          "absoluteError": 14141.666666666686,
+          "apePercent": 5.019688300132998,
+          "scaledError": 0.6296285302978594,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original",
+            "microsoft-revenue-fy2021-original",
+            "microsoft-revenue-fy2022-original",
+            "microsoft-revenue-fy2023-original",
+            "microsoft-revenue-fy2024-original"
+          ],
+          "targetId": "microsoft-revenue-fy2025-original"
+        },
+        {
+          "origin": "2024-07-31",
+          "horizon": 1,
+          "targetYear": 2025,
+          "model": "three_year_cagr",
+          "prediction": 277969.7172832787,
+          "actual": 281724,
+          "error": -3754.2827167212963,
+          "absoluteError": 3754.2827167212963,
+          "apePercent": 1.3326101846918603,
+          "scaledError": 0.16715169187402812,
+          "trainingIds": [
+            "microsoft-revenue-fy2018-original",
+            "microsoft-revenue-fy2019-original",
+            "microsoft-revenue-fy2020-original",
+            "microsoft-revenue-fy2021-original",
+            "microsoft-revenue-fy2022-original",
+            "microsoft-revenue-fy2023-original",
+            "microsoft-revenue-fy2024-original"
+          ],
+          "targetId": "microsoft-revenue-fy2025-original"
+        }
+      ],
+      "scores": [
+        {
+          "model": "filinglens_growth_v1",
+          "horizon": 1,
+          "count": 5,
+          "mae": 9733.556699999992,
+          "rmse": 13145.395524665228,
+          "bias": -224.39294000000228,
+          "mapePercent": 4.453948868139465,
+          "mase": 0.47484994626498755,
+          "maseCount": 5
+        },
+        {
+          "model": "filinglens_growth_v1",
+          "horizon": 2,
+          "count": 4,
+          "mae": 24595.034122699988,
+          "rmse": 26795.871462683488,
+          "bias": -4834.224876299995,
+          "mapePercent": 10.125253275550978,
+          "mase": 1.2490937949297538,
+          "maseCount": 4
+        },
+        {
+          "model": "filinglens_growth_v1",
+          "horizon": 3,
+          "count": 3,
+          "mae": 14883.487209429702,
+          "rmse": 15715.523965095155,
+          "bias": 6082.558655733039,
+          "mapePercent": 5.969259418753798,
+          "mase": 0.7674513504327701,
+          "maseCount": 3
+        },
+        {
+          "model": "filinglens_growth_v1",
+          "horizon": 4,
+          "count": 2,
+          "mae": 16900.697512595347,
+          "rmse": 22323.429007322648,
+          "bias": -16900.697512595347,
+          "mapePercent": 6.833422880931232,
+          "mase": 1.0243599153846017,
+          "maseCount": 2
+        },
+        {
+          "model": "filinglens_growth_v1",
+          "horizon": 5,
+          "count": 1,
+          "mae": 56422.42078301264,
+          "rmse": 56422.42078301264,
+          "bias": -56422.42078301264,
+          "mapePercent": 20.02755206621113,
+          "mase": 3.455668092666522,
+          "maseCount": 1
+        },
+        {
+          "model": "naive",
+          "horizon": 1,
+          "count": 5,
+          "mae": 27741.8,
+          "rmse": 28872.844442486094,
+          "bias": -27741.8,
+          "mapePercent": 12.623489964858047,
+          "mase": 1.3979082719852798,
+          "maseCount": 5
+        },
+        {
+          "model": "naive",
+          "horizon": 2,
+          "count": 4,
+          "mae": 53935.75,
+          "rmse": 54868.76921118242,
+          "bias": -53935.75,
+          "mapePercent": 23.110733082300438,
+          "mase": 2.8076459881046354,
+          "maseCount": 4
+        },
+        {
+          "model": "naive",
+          "horizon": 3,
+          "count": 3,
+          "mae": 76462.66666666667,
+          "rmse": 76694.23548959421,
+          "bias": -76462.66666666667,
+          "mapePercent": 31.18748165514819,
+          "mase": 4.00680430889766,
+          "maseCount": 3
+        },
+        {
+          "model": "naive",
+          "horizon": 4,
+          "count": 2,
+          "mae": 107871.5,
+          "rmse": 108025.41354931255,
+          "bias": -107871.5,
+          "mapePercent": 40.99575768557587,
+          "mase": 6.079550476008842,
+          "maseCount": 2
+        },
+        {
+          "model": "naive",
+          "horizon": 5,
+          "count": 1,
+          "mae": 138709,
+          "rmse": 138709,
+          "bias": -138709,
+          "mapePercent": 49.235776859621474,
+          "mase": 8.495421834328587,
+          "maseCount": 1
+        },
+        {
+          "model": "drift",
+          "horizon": 1,
+          "count": 5,
+          "mae": 11011.000000000005,
+          "rmse": 11241.680411654565,
+          "bias": -7678.0000000000055,
+          "mapePercent": 4.98661290880114,
+          "mase": 0.549563373793948,
+          "maseCount": 5
+        },
+        {
+          "model": "drift",
+          "horizon": 2,
+          "count": 4,
+          "mae": 15006.416666666664,
+          "rmse": 18705.39347873881,
+          "bias": -15006.416666666664,
+          "mapePercent": 6.3653156940114854,
+          "mase": 0.8076459881046352,
+          "maseCount": 4
+        },
+        {
+          "model": "drift",
+          "horizon": 3,
+          "count": 3,
+          "mae": 18915,
+          "rmse": 18942.293107400346,
+          "bias": -18915,
+          "mapePercent": 7.831426175795451,
+          "mase": 1.0068043088976608,
+          "maseCount": 3
+        },
+        {
+          "model": "drift",
+          "horizon": 4,
+          "count": 2,
+          "mae": 36731.16666666666,
+          "rmse": 36731.22566321769,
+          "bias": -36731.16666666666,
+          "mapePercent": 14.01316871515597,
+          "mase": 2.0795504760088415,
+          "maseCount": 2
+        },
+        {
+          "model": "drift",
+          "horizon": 5,
+          "count": 1,
+          "mae": 57071.5,
+          "rmse": 57071.5,
+          "bias": -57071.5,
+          "mapePercent": 20.257947494711136,
+          "mase": 3.4954218343285866,
+          "maseCount": 1
+        },
+        {
+          "model": "three_year_cagr",
+          "horizon": 1,
+          "count": 5,
+          "mae": 7246.902074786538,
+          "rmse": 9289.391065268535,
+          "bias": 271.0770877010829,
+          "mapePercent": 3.448510857603458,
+          "mase": 0.3545838176956314,
+          "maseCount": 5
+        },
+        {
+          "model": "three_year_cagr",
+          "horizon": 2,
+          "count": 4,
+          "mae": 13290.406130725438,
+          "rmse": 14695.303003235553,
+          "bias": 3675.8604318363723,
+          "mapePercent": 5.819750146677586,
+          "mase": 0.6786582961693046,
+          "maseCount": 4
+        },
+        {
+          "model": "three_year_cagr",
+          "horizon": 3,
+          "count": 3,
+          "mae": 14161.80947529118,
+          "rmse": 18791.446590532647,
+          "bias": 13536.905528676027,
+          "mapePercent": 5.25578788143414,
+          "mase": 0.6727734354363203,
+          "maseCount": 3
+        },
+        {
+          "model": "three_year_cagr",
+          "horizon": 4,
+          "count": 2,
+          "mae": 8892.01672443506,
+          "rmse": 9726.415304718132,
+          "bias": 3941.4709503207414,
+          "mapePercent": 3.2874829049384644,
+          "mase": 0.4850658392449301,
+          "maseCount": 2
+        },
+        {
+          "model": "three_year_cagr",
+          "horizon": 5,
+          "count": 1,
+          "mae": 8319.07277897565,
+          "rmse": 8319.07277897565,
+          "bias": -8319.07277897565,
+          "mapePercent": 2.952915896045651,
+          "mase": 0.5095129553805328,
+          "maseCount": 1
+        }
+      ]
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 import { lazy, Suspense } from "react";
 const ValuationReference = lazy(() => import("./pages/ValuationReference"));
+const ValuationValidation = lazy(() => import("./pages/ValuationValidation"));
 import { Routes, Route } from "react-router";
 import HomeV2 from "./pages/HomeV2";
 import ValueDriverIntelligence from "./components/ValueDriverIntelligence";
@@ -7,6 +8,7 @@ import ValueDriverIntelligence from "./components/ValueDriverIntelligence";
 export default function App() {
   return (
     <Routes>
+      <Route path="/valuation/validation" element={<Suspense fallback={<p role="status">Loading valuation validation…</p>}><ValuationValidation /></Suspense>} />
       <Route
         path="/valuation/reference/apple"
         element={

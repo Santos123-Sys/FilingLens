@@ -2,6 +2,9 @@ import {workspaceEmbedding} from './workspace-embedding';
 import { executionRuntimeStatus, withExecutionScope, safeErrorName } from "./ai/execution";
 import { Hono } from "hono";
 import { bodyLimit } from "hono/body-limit";
+import { z } from "zod";
+import { evaluateForecasts } from "../contracts/forecast-evaluation";
+import { calculateSectorValuation } from "../contracts/sector-valuation";
 import { delegatedAnalysisAccess, MODEL_ROUTES, gpiLaunchUrl } from './analysis-access';
 
 import { enrichIssuerHistory } from "./issuer-history";
@@ -43,7 +46,7 @@ const app = new Hono();
 app.use(workspaceEmbedding);
 app.use('/api/*',delegatedAnalysisAccess);
 
-app.use((c,next)=>bodyLimit({maxSize:c.req.path==="/api/integration/v1/valuations"?750_000:
+app.use((c,next)=>bodyLimit({maxSize:["/api/valuation/sector", "/api/forecast/evaluate"].includes(c.req.path)?100_000:c.req.path==="/api/integration/v1/valuations"?750_000:
   c.req.path==="/api/integration/v1/handoff/context"?2500:65*1024*1024})(c,next));
 
 app.use("/api/*", async (c, next) => {
@@ -442,6 +445,20 @@ app.post("/api/presentation", async (c) => {
     return c.json({ error: "presentation_generation_failed" }, 503);
   }
 });
+
+// Stateless, bounded deterministic calculators. No provider, private store or source URL is accessed.
+for (const [path, calculate] of [["/api/valuation/sector", calculateSectorValuation], ["/api/forecast/evaluate", evaluateForecasts]] as const) {
+  app.post(path, async c => {
+    c.header("Cache-Control", "no-store");
+    let input: unknown;
+    try { input = await c.req.json(); } catch { return c.json({error:"invalid_json"},400); }
+    try { return c.json({result:calculate(input)}); }
+    catch (error) {
+      return c.json({error:error instanceof z.ZodError ? "Invalid or unreviewed model inputs" :
+        error instanceof Error ? error.message : "invalid_model_inputs"},422);
+    }
+  });
+}
 
 /* Valuation assumptions are prepared first and must be explicitly validated before calculation. */
 app.post("/api/valuation/propose", async (c) => {
