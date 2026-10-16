@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { FilingAnalysis, ValuationAssumption } from "../contracts/analysis";
+import type { ValuationAssumption } from "../contracts/analysis";
 import { calculateDcf, prepareDcf } from "./valuation/dcf";
 import { prepareComps, calculateComps } from "./valuation/comps";
 import { annualBasis, moneyBasis } from "./valuation/basis";
@@ -7,13 +7,9 @@ import { num, validatedRows } from "./valuation/common";
 import { discountCashFlows } from "../vendor/financetoolkit/valuation";
 import { evaluateTradingPeer } from "../contracts/trading-comps-eligibility";
 
-export const valuationFixture = (): FilingAnalysis => ({ schemaVersion: "2.0", jurisdiction: "us",
-  metadata: { jurisdiction: "us", filingType: "10-K", reportingPeriod: "2025-12-31", filedAt: null, confidence: 1, cnpj: null, cvmDocumentClass: null, registryData: null, cik: "1", sicCode: null, fiscalYearEnd: null, stateOfIncorporation: null, sources: [] },
-  company: { name: "Valuation test issuer", ticker: "TST", exchange: "NYSE", filingType: "10-K", periodEnd: "2025-12-31", filedAt: null, description: "Synthetic arithmetic fixture; not a real valuation." },
-  financials: { unit: "USD millions", accountingBasis: "us_gaap", statementScope: "consolidated", years: ["2024", "2025"], revenue: [100, 100], ebit: [20, 20], ebitda: [25, 25], netIncome: [20, 20], eps: [2, 2], incomeBeforeTax: [20, 20], incomeTaxExpense: [5, 5], grossMargin: null, operatingMargin: [0.2, 0.2], operatingCashFlow: [20, 20], capex: [-5, -5], freeCashFlow: [15, 15], dividends: null, buybacks: null, totalAssets: [100, 100], totalDebt: [40, 40], cash: [10, 10], accountsReceivable: [20, 20], inventory: [10, 10], accountsPayable: [20, 20], interestExpense: [0, 0] },
-  kpis: [], market: { industry: "Synthetic", competitors: ["A", "B", "C"], segments: [], geographies: [] }, risks: [], timeline: [], events: [], summary: [], confidenceNotes: [], missingData: [] });
+import {valuationFixture} from "./fixtures/valuation-case";
 function reviewedDcf(a = valuationFixture()): ValuationAssumption[] {
-  const inputs: Record<string, number> = { "dcf.risk_free_rate": 10, "dcf.beta": 0, "dcf.equity_risk_premium": 0, "dcf.debt_weight": 0, "dcf.terminal_growth": 0, "dcf.equity_adjustment": 0 };
+  const inputs: Record<string, number> = { "dcf.risk_free_rate": 10, "dcf.beta": 0, "dcf.equity_risk_premium": 0, "dcf.debt_weight": 0, "dcf.terminal_roic": 10, "dcf.terminal_growth": 0, "dcf.equity_adjustment": 0 };
   return prepareDcf(a).assumptions.map(row => ({ ...row, proposed_value: inputs[row.id] ?? row.proposed_value, status: "accepted" }));
 }
 const snapshots = () => [7, 9, 11, 13].map((multiple, i) => ({

@@ -1,0 +1,1109 @@
+{
+  "workflowLabel": "Source-backed annual issuer transcription + explicit analyst FCFF scenario; not current investment valuation",
+  "source": {
+    "sourceType": "issuer_published_unaudited_statement",
+    "url": "https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf",
+    "retrievedAt": "2026-10-09",
+    "pdfSha256": "43e7f0730b3cce0fc37301a2f43c29712bbde6ab299d97c6df345fd0c754508a",
+    "parser": "pdf-parse 1.1.1"
+  },
+  "publicationDate": null,
+  "analysis": {
+    "schemaVersion": "2.0",
+    "jurisdiction": "us",
+    "metadata": {
+      "jurisdiction": "us",
+      "filingType": "Issuer annual unaudited statement",
+      "reportingPeriod": "FY2025",
+      "filedAt": null,
+      "confidence": 1,
+      "cnpj": null,
+      "cvmDocumentClass": null,
+      "registryData": null,
+      "cik": "0000320193",
+      "sicCode": null,
+      "fiscalYearEnd": "0927",
+      "stateOfIncorporation": null,
+      "sources": [
+        {
+          "section": "Condensed consolidated financial statements (Unaudited)",
+          "url": "https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf",
+          "publisher": "Apple Inc.",
+          "accessed": "2026-10-09"
+        }
+      ]
+    },
+    "company": {
+      "name": "Apple Inc.",
+      "ticker": "AAPL",
+      "exchange": "NASDAQ",
+      "filingType": "Issuer annual unaudited statement",
+      "periodEnd": "2025-09-27",
+      "filedAt": null,
+      "description": "Diversified consumer technology and services. Real issuer statement transcription used only for a reproducible analyst simulation; no live market data."
+    },
+    "kpis": [],
+    "financials": {
+      "unit": "USD millions",
+      "accountingBasis": "us_gaap",
+      "statementScope": "consolidated",
+      "years": [
+        "FY2024",
+        "FY2025"
+      ],
+      "periodEndDates": [
+        "2024-09-28",
+        "2025-09-27"
+      ],
+      "revenue": [
+        391035,
+        416161
+      ],
+      "grossProfit": [
+        180683,
+        195201
+      ],
+      "ebit": [
+        123216,
+        133050
+      ],
+      "incomeBeforeTax": [
+        123485,
+        132729
+      ],
+      "incomeTaxExpense": [
+        29749,
+        20719
+      ],
+      "netIncome": [
+        93736,
+        112010
+      ],
+      "eps": [
+        6.08,
+        7.46
+      ],
+      "operatingCashFlow": [
+        118254,
+        111482
+      ],
+      "capex": [
+        -9447,
+        -12715
+      ],
+      "cash": [
+        29943,
+        35934
+      ],
+      "accountsReceivable": [
+        33410,
+        39777
+      ],
+      "inventory": [
+        7286,
+        5718
+      ],
+      "accountsPayable": [
+        68960,
+        69860
+      ],
+      "currentAssets": [
+        152987,
+        147957
+      ],
+      "currentLiabilities": [
+        176392,
+        165631
+      ],
+      "ebitda": null,
+      "grossMargin": null,
+      "operatingMargin": null,
+      "freeCashFlow": null,
+      "dividends": null,
+      "buybacks": null,
+      "totalAssets": null,
+      "totalDebt": null,
+      "totalEquity": null,
+      "interestExpense": null,
+      "evidence": [
+        {
+          "metric": "revenue",
+          "period": "FY2024",
+          "source": {
+            "section": "Condensed consolidated statements of operations; revenue; comparative fiscal year/closing date ended September 28, 2024",
+            "sourceForm": "Issuer FY2025 unaudited earnings statement PDF",
+            "kind": "excerpt",
+            "quote": "Total net sales \n(1)\n  102,466  \n \n 94,930  \n \n 416,161  \n \n 391,035",
+            "url": "https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf",
+            "publisher": "Apple Inc.",
+            "accessed": "2026-10-09"
+          }
+        },
+        {
+          "metric": "revenue",
+          "period": "FY2025",
+          "source": {
+            "section": "Condensed consolidated statements of operations; revenue; fiscal year/closing date ended September 27, 2025",
+            "sourceForm": "Issuer FY2025 unaudited earnings statement PDF",
+            "kind": "excerpt",
+            "quote": "Total net sales \n(1)\n  102,466  \n \n 94,930  \n \n 416,161  \n \n 391,035",
+            "url": "https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf",
+            "publisher": "Apple Inc.",
+            "accessed": "2026-10-09"
+          }
+        },
+        {
+          "metric": "grossProfit",
+          "period": "FY2024",
+          "source": {
+            "section": "Condensed consolidated statements of operations; grossProfit; comparative fiscal year/closing date ended September 28, 2024",
+            "sourceForm": "Issuer FY2025 unaudited earnings statement PDF",
+            "kind": "excerpt",
+            "quote": "Gross margin  48,341  \n \n 43,879  \n \n 195,201  \n \n 180,683",
+            "url": "https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf",
+            "publisher": "Apple Inc.",
+            "accessed": "2026-10-09"
+          }
+        },
+        {
+          "metric": "grossProfit",
+          "period": "FY2025",
+          "source": {
+            "section": "Condensed consolidated statements of operations; grossProfit; fiscal year/closing date ended September 27, 2025",
+            "sourceForm": "Issuer FY2025 unaudited earnings statement PDF",
+            "kind": "excerpt",
+            "quote": "Gross margin  48,341  \n \n 43,879  \n \n 195,201  \n \n 180,683",
+            "url": "https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf",
+            "publisher": "Apple Inc.",
+            "accessed": "2026-10-09"
+          }
+        },
+        {
+          "metric": "ebit",
+          "period": "FY2024",
+          "source": {
+            "section": "Condensed consolidated statements of operations; ebit; comparative fiscal year/closing date ended September 28, 2024",
+            "sourceForm": "Issuer FY2025 unaudited earnings statement PDF",
+            "kind": "excerpt",
+            "quote": "Operating income  32,427  \n \n 29,591  \n \n 133,050  \n \n 123,216",
+            "url": "https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf",
+            "publisher": "Apple Inc.",
+            "accessed": "2026-10-09"
+          }
+        },
+        {
+          "metric": "ebit",
+          "period": "FY2025",
+          "source": {
+            "section": "Condensed consolidated statements of operations; ebit; fiscal year/closing date ended September 27, 2025",
+            "sourceForm": "Issuer FY2025 unaudited earnings statement PDF",
+            "kind": "excerpt",
+            "quote": "Operating income  32,427  \n \n 29,591  \n \n 133,050  \n \n 123,216",
+            "url": "https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf",
+            "publisher": "Apple Inc.",
+            "accessed": "2026-10-09"
+          }
+        },
+        {
+          "metric": "incomeBeforeTax",
+          "period": "FY2024",
+          "source": {
+            "section": "Condensed consolidated statements of operations; incomeBeforeTax; comparative fiscal year/closing date ended September 28, 2024",
+            "sourceForm": "Issuer FY2025 unaudited earnings statement PDF",
+            "kind": "excerpt",
+            "quote": "Income before provision for income taxes  32,804  \n \n 29,610  \n \n 132,729  \n \n 123,485",
+            "url": "https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf",
+            "publisher": "Apple Inc.",
+            "accessed": "2026-10-09"
+          }
+        },
+        {
+          "metric": "incomeBeforeTax",
+          "period": "FY2025",
+          "source": {
+            "section": "Condensed consolidated statements of operations; incomeBeforeTax; fiscal year/closing date ended September 27, 2025",
+            "sourceForm": "Issuer FY2025 unaudited earnings statement PDF",
+            "kind": "excerpt",
+            "quote": "Income before provision for income taxes  32,804  \n \n 29,610  \n \n 132,729  \n \n 123,485",
+            "url": "https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf",
+            "publisher": "Apple Inc.",
+            "accessed": "2026-10-09"
+          }
+        },
+        {
+          "metric": "incomeTaxExpense",
+          "period": "FY2024",
+          "source": {
+            "section": "Condensed consolidated statements of operations; incomeTaxExpense; comparative fiscal year/closing date ended September 28, 2024",
+            "sourceForm": "Issuer FY2025 unaudited earnings statement PDF",
+            "kind": "excerpt",
+            "quote": "Provision for income taxes  5,338  \n \n 14,874  \n \n 20,719  \n \n 29,749",
+            "url": "https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf",
+            "publisher": "Apple Inc.",
+            "accessed": "2026-10-09"
+          }
+        },
+        {
+          "metric": "incomeTaxExpense",
+          "period": "FY2025",
+          "source": {
+            "section": "Condensed consolidated statements of operations; incomeTaxExpense; fiscal year/closing date ended September 27, 2025",
+            "sourceForm": "Issuer FY2025 unaudited earnings statement PDF",
+            "kind": "excerpt",
+            "quote": "Provision for income taxes  5,338  \n \n 14,874  \n \n 20,719  \n \n 29,749",
+            "url": "https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf",
+            "publisher": "Apple Inc.",
+            "accessed": "2026-10-09"
+          }
+        },
+        {
+          "metric": "netIncome",
+          "period": "FY2024",
+          "source": {
+            "section": "Condensed consolidated statements of operations; netIncome; comparative fiscal year/closing date ended September 28, 2024",
+            "sourceForm": "Issuer FY2025 unaudited earnings statement PDF",
+            "kind": "excerpt",
+            "quote": "Net income $ 27,466  \n \n$ 14,736  \n \n$ 112,010  \n \n$ 93,736",
+            "url": "https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf",
+            "publisher": "Apple Inc.",
+            "accessed": "2026-10-09"
+          }
+        },
+        {
+          "metric": "netIncome",
+          "period": "FY2025",
+          "source": {
+            "section": "Condensed consolidated statements of operations; netIncome; fiscal year/closing date ended September 27, 2025",
+            "sourceForm": "Issuer FY2025 unaudited earnings statement PDF",
+            "kind": "excerpt",
+            "quote": "Net income $ 27,466  \n \n$ 14,736  \n \n$ 112,010  \n \n$ 93,736",
+            "url": "https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf",
+            "publisher": "Apple Inc.",
+            "accessed": "2026-10-09"
+          }
+        },
+        {
+          "metric": "eps",
+          "period": "FY2024",
+          "source": {
+            "section": "Condensed consolidated statements of operations; eps; comparative fiscal year/closing date ended September 28, 2024",
+            "sourceForm": "Issuer FY2025 unaudited earnings statement PDF",
+            "kind": "excerpt",
+            "quote": "Diluted $ 1.85  \n \n$ 0.97  \n \n$ 7.46  \n \n$ 6.08",
+            "url": "https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf",
+            "publisher": "Apple Inc.",
+            "accessed": "2026-10-09"
+          }
+        },
+        {
+          "metric": "eps",
+          "period": "FY2025",
+          "source": {
+            "section": "Condensed consolidated statements of operations; eps; fiscal year/closing date ended September 27, 2025",
+            "sourceForm": "Issuer FY2025 unaudited earnings statement PDF",
+            "kind": "excerpt",
+            "quote": "Diluted $ 1.85  \n \n$ 0.97  \n \n$ 7.46  \n \n$ 6.08",
+            "url": "https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf",
+            "publisher": "Apple Inc.",
+            "accessed": "2026-10-09"
+          }
+        },
+        {
+          "metric": "operatingCashFlow",
+          "period": "FY2024",
+          "source": {
+            "section": "Condensed consolidated statements of cash flows; operatingCashFlow; comparative fiscal year/closing date ended September 28, 2024",
+            "sourceForm": "Issuer FY2025 unaudited earnings statement PDF",
+            "kind": "excerpt",
+            "quote": "Cash generated by operating activities  111,482  \n \n 118,254",
+            "url": "https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf",
+            "publisher": "Apple Inc.",
+            "accessed": "2026-10-09"
+          }
+        },
+        {
+          "metric": "operatingCashFlow",
+          "period": "FY2025",
+          "source": {
+            "section": "Condensed consolidated statements of cash flows; operatingCashFlow; fiscal year/closing date ended September 27, 2025",
+            "sourceForm": "Issuer FY2025 unaudited earnings statement PDF",
+            "kind": "excerpt",
+            "quote": "Cash generated by operating activities  111,482  \n \n 118,254",
+            "url": "https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf",
+            "publisher": "Apple Inc.",
+            "accessed": "2026-10-09"
+          }
+        },
+        {
+          "metric": "capex",
+          "period": "FY2024",
+          "source": {
+            "section": "Condensed consolidated statements of cash flows; capex; comparative fiscal year/closing date ended September 28, 2024",
+            "sourceForm": "Issuer FY2025 unaudited earnings statement PDF",
+            "kind": "excerpt",
+            "quote": "Payments for acquisition of property, plant and equipment  (12,715) \n \n (9,447)",
+            "url": "https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf",
+            "publisher": "Apple Inc.",
+            "accessed": "2026-10-09"
+          }
+        },
+        {
+          "metric": "capex",
+          "period": "FY2025",
+          "source": {
+            "section": "Condensed consolidated statements of cash flows; capex; fiscal year/closing date ended September 27, 2025",
+            "sourceForm": "Issuer FY2025 unaudited earnings statement PDF",
+            "kind": "excerpt",
+            "quote": "Payments for acquisition of property, plant and equipment  (12,715) \n \n (9,447)",
+            "url": "https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf",
+            "publisher": "Apple Inc.",
+            "accessed": "2026-10-09"
+          }
+        },
+        {
+          "metric": "cash",
+          "period": "FY2024",
+          "source": {
+            "section": "Condensed consolidated statements of balance sheets; cash; comparative fiscal year/closing date ended September 28, 2024",
+            "sourceForm": "Issuer FY2025 unaudited earnings statement PDF",
+            "kind": "excerpt",
+            "quote": "Cash and cash equivalents $ 35,934  \n \n$ 29,943",
+            "url": "https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf",
+            "publisher": "Apple Inc.",
+            "accessed": "2026-10-09"
+          }
+        },
+        {
+          "metric": "cash",
+          "period": "FY2025",
+          "source": {
+            "section": "Condensed consolidated statements of balance sheets; cash; fiscal year/closing date ended September 27, 2025",
+            "sourceForm": "Issuer FY2025 unaudited earnings statement PDF",
+            "kind": "excerpt",
+            "quote": "Cash and cash equivalents $ 35,934  \n \n$ 29,943",
+            "url": "https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf",
+            "publisher": "Apple Inc.",
+            "accessed": "2026-10-09"
+          }
+        },
+        {
+          "metric": "accountsReceivable",
+          "period": "FY2024",
+          "source": {
+            "section": "Condensed consolidated statements of balance sheets; accountsReceivable; comparative fiscal year/closing date ended September 28, 2024",
+            "sourceForm": "Issuer FY2025 unaudited earnings statement PDF",
+            "kind": "excerpt",
+            "quote": "Accounts receivable, net  39,777  \n \n 33,410",
+            "url": "https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf",
+            "publisher": "Apple Inc.",
+            "accessed": "2026-10-09"
+          }
+        },
+        {
+          "metric": "accountsReceivable",
+          "period": "FY2025",
+          "source": {
+            "section": "Condensed consolidated statements of balance sheets; accountsReceivable; fiscal year/closing date ended September 27, 2025",
+            "sourceForm": "Issuer FY2025 unaudited earnings statement PDF",
+            "kind": "excerpt",
+            "quote": "Accounts receivable, net  39,777  \n \n 33,410",
+            "url": "https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf",
+            "publisher": "Apple Inc.",
+            "accessed": "2026-10-09"
+          }
+        },
+        {
+          "metric": "inventory",
+          "period": "FY2024",
+          "source": {
+            "section": "Condensed consolidated statements of balance sheets; inventory; comparative fiscal year/closing date ended September 28, 2024",
+            "sourceForm": "Issuer FY2025 unaudited earnings statement PDF",
+            "kind": "excerpt",
+            "quote": "Inventories  5,718  \n \n 7,286",
+            "url": "https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf",
+            "publisher": "Apple Inc.",
+            "accessed": "2026-10-09"
+          }
+        },
+        {
+          "metric": "inventory",
+          "period": "FY2025",
+          "source": {
+            "section": "Condensed consolidated statements of balance sheets; inventory; fiscal year/closing date ended September 27, 2025",
+            "sourceForm": "Issuer FY2025 unaudited earnings statement PDF",
+            "kind": "excerpt",
+            "quote": "Inventories  5,718  \n \n 7,286",
+            "url": "https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf",
+            "publisher": "Apple Inc.",
+            "accessed": "2026-10-09"
+          }
+        },
+        {
+          "metric": "accountsPayable",
+          "period": "FY2024",
+          "source": {
+            "section": "Condensed consolidated statements of balance sheets; accountsPayable; comparative fiscal year/closing date ended September 28, 2024",
+            "sourceForm": "Issuer FY2025 unaudited earnings statement PDF",
+            "kind": "excerpt",
+            "quote": "Accounts payable $ 69,860\n  \n \n$ 68,960",
+            "url": "https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf",
+            "publisher": "Apple Inc.",
+            "accessed": "2026-10-09"
+          }
+        },
+        {
+          "metric": "accountsPayable",
+          "period": "FY2025",
+          "source": {
+            "section": "Condensed consolidated statements of balance sheets; accountsPayable; fiscal year/closing date ended September 27, 2025",
+            "sourceForm": "Issuer FY2025 unaudited earnings statement PDF",
+            "kind": "excerpt",
+            "quote": "Accounts payable $ 69,860\n  \n \n$ 68,960",
+            "url": "https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf",
+            "publisher": "Apple Inc.",
+            "accessed": "2026-10-09"
+          }
+        },
+        {
+          "metric": "currentAssets",
+          "period": "FY2024",
+          "source": {
+            "section": "Condensed consolidated statements of balance sheets; currentAssets; comparative fiscal year/closing date ended September 28, 2024",
+            "sourceForm": "Issuer FY2025 unaudited earnings statement PDF",
+            "kind": "excerpt",
+            "quote": "Total current assets  147,957  \n \n 152,987",
+            "url": "https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf",
+            "publisher": "Apple Inc.",
+            "accessed": "2026-10-09"
+          }
+        },
+        {
+          "metric": "currentAssets",
+          "period": "FY2025",
+          "source": {
+            "section": "Condensed consolidated statements of balance sheets; currentAssets; fiscal year/closing date ended September 27, 2025",
+            "sourceForm": "Issuer FY2025 unaudited earnings statement PDF",
+            "kind": "excerpt",
+            "quote": "Total current assets  147,957  \n \n 152,987",
+            "url": "https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf",
+            "publisher": "Apple Inc.",
+            "accessed": "2026-10-09"
+          }
+        },
+        {
+          "metric": "currentLiabilities",
+          "period": "FY2024",
+          "source": {
+            "section": "Condensed consolidated statements of balance sheets; currentLiabilities; comparative fiscal year/closing date ended September 28, 2024",
+            "sourceForm": "Issuer FY2025 unaudited earnings statement PDF",
+            "kind": "excerpt",
+            "quote": "Total current liabilities  165,631  \n \n 176,392",
+            "url": "https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf",
+            "publisher": "Apple Inc.",
+            "accessed": "2026-10-09"
+          }
+        },
+        {
+          "metric": "currentLiabilities",
+          "period": "FY2025",
+          "source": {
+            "section": "Condensed consolidated statements of balance sheets; currentLiabilities; fiscal year/closing date ended September 27, 2025",
+            "sourceForm": "Issuer FY2025 unaudited earnings statement PDF",
+            "kind": "excerpt",
+            "quote": "Total current liabilities  165,631  \n \n 176,392",
+            "url": "https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf",
+            "publisher": "Apple Inc.",
+            "accessed": "2026-10-09"
+          }
+        }
+      ]
+    },
+    "market": {
+      "industry": "Consumer technology hardware and services",
+      "competitors": [],
+      "geographies": [],
+      "segments": []
+    },
+    "risks": [],
+    "timeline": [],
+    "events": [],
+    "summary": [],
+    "confidenceNotes": [
+      "Issuer-published unaudited source; not an authenticated SEC archive. Metadata confidence is a required fixture field, not a calibrated probability."
+    ],
+    "missingData": [
+      "No independently refreshed valuation-date balance sheet, share count, cost of capital, equity bridge claims or security values.",
+      "Debt scope excludes leases; marketable securities are deliberately excluded from the illustrative equity adjustment.",
+      "No integrated projected balance sheet/cash flow statement, NOL schedule or SBC dilution model."
+    ]
+  },
+  "reviewedDcfAssumptions": [
+    {
+      "id": "dcf.valuation_date",
+      "method": "dcf",
+      "category": "baseline",
+      "label": "Valuation date",
+      "proposed_value": "2026-10-16",
+      "unit": null,
+      "rationale": "Y1 is one year after this date; no automatic stub-period or historical-base roll-forward is applied.",
+      "confidence": "low",
+      "impact": "high",
+      "status": "accepted",
+      "final_value": "2026-10-16"
+    },
+    {
+      "id": "dcf.currency",
+      "method": "dcf",
+      "category": "baseline",
+      "label": "Reporting currency",
+      "proposed_value": "USD",
+      "unit": null,
+      "rationale": "Explicit analyst simulation assumption for demonstration; neither issuer guidance, external consensus nor a currently observed market rate.",
+      "confidence": "high",
+      "impact": "high",
+      "status": "edited",
+      "final_value": "USD"
+    },
+    {
+      "id": "dcf.base_period",
+      "method": "dcf",
+      "category": "baseline",
+      "label": "Annual forecast base period",
+      "proposed_value": "FY2025",
+      "unit": null,
+      "rationale": "Explicit analyst simulation assumption for demonstration; neither issuer guidance, external consensus nor a currently observed market rate.",
+      "confidence": "high",
+      "impact": "high",
+      "status": "edited",
+      "final_value": "FY2025"
+    },
+    {
+      "id": "dcf.base_revenue",
+      "method": "dcf",
+      "category": "baseline",
+      "label": "Annual base revenue",
+      "proposed_value": 416161,
+      "unit": "USD millions",
+      "rationale": "Reported FY2025 annual revenue: third numeric column in statement of operations, after two quarterly columns. USD millions.",
+      "confidence": "high",
+      "impact": "high",
+      "status": "edited",
+      "final_value": 416161
+    },
+    {
+      "id": "dcf.equity_adjustment",
+      "method": "dcf",
+      "category": "equity_bridge",
+      "label": "Other equity bridge adjustments",
+      "proposed_value": null,
+      "unit": "USD millions",
+      "rationale": "Explicit illustrative analyst zero. Excludes current/non-current marketable securities18,763/77,723 and makes no verified preferred/minority-interest claim. Not a fully reconciled investable equity bridge.",
+      "confidence": "low",
+      "impact": "high",
+      "status": "edited",
+      "final_value": 0
+    },
+    {
+      "id": "dcf.revenue_growth_y1",
+      "method": "dcf",
+      "category": "operating_forecast",
+      "label": "Revenue growth \u2014 Year 1",
+      "proposed_value": 6.43,
+      "unit": "%",
+      "rationale": "Explicit analyst simulation assumption for demonstration; neither issuer guidance, external consensus nor a currently observed market rate.",
+      "confidence": "medium",
+      "impact": "high",
+      "status": "edited",
+      "final_value": 5
+    },
+    {
+      "id": "dcf.ebit_margin_y1",
+      "method": "dcf",
+      "category": "operating_forecast",
+      "label": "EBIT margin \u2014 Year 1",
+      "proposed_value": 31.97,
+      "unit": "%",
+      "rationale": "Explicit analyst simulation assumption for demonstration; neither issuer guidance, external consensus nor a currently observed market rate.",
+      "confidence": "medium",
+      "impact": "high",
+      "status": "edited",
+      "final_value": 31.970799762591884
+    },
+    {
+      "id": "dcf.revenue_growth_y2",
+      "method": "dcf",
+      "category": "operating_forecast",
+      "label": "Revenue growth \u2014 Year 2",
+      "proposed_value": 5.46,
+      "unit": "%",
+      "rationale": "Explicit analyst simulation assumption for demonstration; neither issuer guidance, external consensus nor a currently observed market rate.",
+      "confidence": "medium",
+      "impact": "high",
+      "status": "edited",
+      "final_value": 5
+    },
+    {
+      "id": "dcf.ebit_margin_y2",
+      "method": "dcf",
+      "category": "operating_forecast",
+      "label": "EBIT margin \u2014 Year 2",
+      "proposed_value": 31.97,
+      "unit": "%",
+      "rationale": "Explicit analyst simulation assumption for demonstration; neither issuer guidance, external consensus nor a currently observed market rate.",
+      "confidence": "medium",
+      "impact": "high",
+      "status": "edited",
+      "final_value": 31.970799762591884
+    },
+    {
+      "id": "dcf.revenue_growth_y3",
+      "method": "dcf",
+      "category": "operating_forecast",
+      "label": "Revenue growth \u2014 Year 3",
+      "proposed_value": 4.5,
+      "unit": "%",
+      "rationale": "Explicit analyst simulation assumption for demonstration; neither issuer guidance, external consensus nor a currently observed market rate.",
+      "confidence": "medium",
+      "impact": "high",
+      "status": "edited",
+      "final_value": 4
+    },
+    {
+      "id": "dcf.ebit_margin_y3",
+      "method": "dcf",
+      "category": "operating_forecast",
+      "label": "EBIT margin \u2014 Year 3",
+      "proposed_value": 31.97,
+      "unit": "%",
+      "rationale": "Explicit analyst simulation assumption for demonstration; neither issuer guidance, external consensus nor a currently observed market rate.",
+      "confidence": "medium",
+      "impact": "high",
+      "status": "edited",
+      "final_value": 31.970799762591884
+    },
+    {
+      "id": "dcf.revenue_growth_y4",
+      "method": "dcf",
+      "category": "operating_forecast",
+      "label": "Revenue growth \u2014 Year 4",
+      "proposed_value": 3.53,
+      "unit": "%",
+      "rationale": "Explicit analyst simulation assumption for demonstration; neither issuer guidance, external consensus nor a currently observed market rate.",
+      "confidence": "medium",
+      "impact": "high",
+      "status": "edited",
+      "final_value": 4
+    },
+    {
+      "id": "dcf.ebit_margin_y4",
+      "method": "dcf",
+      "category": "operating_forecast",
+      "label": "EBIT margin \u2014 Year 4",
+      "proposed_value": 31.97,
+      "unit": "%",
+      "rationale": "Explicit analyst simulation assumption for demonstration; neither issuer guidance, external consensus nor a currently observed market rate.",
+      "confidence": "medium",
+      "impact": "high",
+      "status": "edited",
+      "final_value": 31.970799762591884
+    },
+    {
+      "id": "dcf.revenue_growth_y5",
+      "method": "dcf",
+      "category": "operating_forecast",
+      "label": "Revenue growth \u2014 Year 5",
+      "proposed_value": 2.57,
+      "unit": "%",
+      "rationale": "Explicit analyst simulation assumption for demonstration; neither issuer guidance, external consensus nor a currently observed market rate.",
+      "confidence": "medium",
+      "impact": "high",
+      "status": "edited",
+      "final_value": 3
+    },
+    {
+      "id": "dcf.ebit_margin_y5",
+      "method": "dcf",
+      "category": "operating_forecast",
+      "label": "EBIT margin \u2014 Year 5",
+      "proposed_value": 31.97,
+      "unit": "%",
+      "rationale": "Explicit analyst simulation assumption for demonstration; neither issuer guidance, external consensus nor a currently observed market rate.",
+      "confidence": "medium",
+      "impact": "high",
+      "status": "edited",
+      "final_value": 31.970799762591884
+    },
+    {
+      "id": "dcf.tax_rate",
+      "method": "dcf",
+      "category": "cash_flow",
+      "label": "Cash tax rate",
+      "proposed_value": 15.61,
+      "unit": "%",
+      "rationale": "Explicit analyst simulation assumption for demonstration; neither issuer guidance, external consensus nor a currently observed market rate.",
+      "confidence": "medium",
+      "impact": "high",
+      "status": "edited",
+      "final_value": 20
+    },
+    {
+      "id": "dcf.da_pct_revenue",
+      "method": "dcf",
+      "category": "cash_flow",
+      "label": "D&A as % of revenue",
+      "proposed_value": null,
+      "unit": "%",
+      "rationale": "Analyst ratio of reported D&A11,698 / reported revenue416,161 \u00d7100; D&A source in cash flow statement. EBITDA is not fabricated.",
+      "confidence": "low",
+      "impact": "medium",
+      "status": "edited",
+      "final_value": 2.8109313462818477,
+      "source": {
+        "section": "Apple FY2025 consolidated financial statements (Unaudited)",
+        "page": "3",
+        "item": "Twelve months ended September 27, 2025; D&A / revenue",
+        "quote": "Depreciation and amortization  11,698  \n \n 11,445",
+        "kind": "excerpt",
+        "sourceForm": "Issuer financial statement (unaudited)",
+        "url": "https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf",
+        "publisher": "Apple Inc.",
+        "accessed": "2026-10-09"
+      }
+    },
+    {
+      "id": "dcf.capex_pct_revenue",
+      "method": "dcf",
+      "category": "cash_flow",
+      "label": "Capex as % of revenue",
+      "proposed_value": 3.06,
+      "unit": "%",
+      "rationale": "Analyst ratio of absolute reported PP&E cash payments12,715 / revenue416,161 \u00d7100; not total investing cash flow.",
+      "confidence": "medium",
+      "impact": "high",
+      "status": "edited",
+      "final_value": 3.0553079216937675
+    },
+    {
+      "id": "dcf.nwc_pct_revenue",
+      "method": "dcf",
+      "category": "cash_flow",
+      "label": "Operating NWC as % of revenue",
+      "proposed_value": -5.85,
+      "unit": "%",
+      "rationale": "Analyst proxy (A/R39,777 + inventory5,718 \u2212 A/P69,860) / revenue416,161 \u00d7100. Excludes vendor non-trade receivables, deferred revenue and other operating balances; not complete operating working capital.",
+      "confidence": "medium",
+      "impact": "medium",
+      "status": "edited",
+      "final_value": -5.854705270316055
+    },
+    {
+      "id": "dcf.pre_tax_cost_debt",
+      "method": "dcf",
+      "category": "cash_flow",
+      "label": "Pre-tax cost of debt",
+      "proposed_value": null,
+      "unit": "%",
+      "rationale": "Explicit analyst simulation assumption for demonstration; neither issuer guidance, external consensus nor a currently observed market rate.",
+      "confidence": "low",
+      "impact": "high",
+      "status": "edited",
+      "final_value": 5
+    },
+    {
+      "id": "dcf.net_debt",
+      "method": "dcf",
+      "category": "equity_bridge",
+      "label": "Net debt",
+      "proposed_value": null,
+      "unit": "USD millions",
+      "rationale": "Analyst calculation: commercial paper7,979 + current term debt12,350 + long-term term debt78,328 \u2212 cash35,934 =62,723 USD millions, all as of2025-09-27. Leases excluded; not current valuation-date debt.",
+      "confidence": "low",
+      "impact": "high",
+      "status": "edited",
+      "final_value": 62723,
+      "source": {
+        "section": "Apple FY2025 consolidated financial statements (Unaudited)",
+        "page": "2",
+        "item": "FY2025 first balance-sheet column; debt subtotal is calculated, then cash is subtracted",
+        "quote": "Commercial paper  7,979  \n \n 9,967  \nTerm debt  12,350  \n \n 10,912  \nTotal current liabilities  165,631  \n \n 176,392  \n    \nNon-current liabilities: \n   \nTerm debt  78,328  \n \n 85,750",
+        "kind": "excerpt",
+        "sourceForm": "Issuer financial statement (unaudited)",
+        "url": "https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf",
+        "publisher": "Apple Inc.",
+        "accessed": "2026-10-09"
+      }
+    },
+    {
+      "id": "dcf.shares_outstanding",
+      "method": "dcf",
+      "category": "equity_bridge",
+      "label": "Shares outstanding",
+      "proposed_value": 15014.745308310992,
+      "unit": "million shares",
+      "rationale": "Source-disclosed FY2025 weighted-average diluted shares15,004,697 thousand /1,000 =15,004.697 million. Explicit demonstration convention; not period-end14,773.260 million common shares or refreshed valuation-date diluted shares. Avoid net-income/rounded-EPS approximation.",
+      "confidence": "medium",
+      "impact": "high",
+      "status": "edited",
+      "final_value": 15004.697,
+      "source": {
+        "section": "Apple FY2025 consolidated financial statements (Unaudited)",
+        "page": "1",
+        "item": "FY2025 third numeric column; weighted-average diluted shares in thousands divided by 1,000",
+        "quote": "Diluted  14,863,609\n  \n \n 15,242,853  \n \n 15,004,697  \n \n 15,408,095",
+        "kind": "excerpt",
+        "sourceForm": "Issuer financial statement (unaudited)",
+        "url": "https://www.apple.com/newsroom/pdfs/fy2025-q4/FY25_Q4_Consolidated_Financial_Statements.pdf",
+        "publisher": "Apple Inc.",
+        "accessed": "2026-10-09"
+      }
+    },
+    {
+      "id": "dcf.risk_free_rate",
+      "method": "dcf",
+      "category": "wacc",
+      "label": "Risk-free rate",
+      "proposed_value": null,
+      "unit": "%",
+      "rationale": "Explicit analyst simulation assumption for demonstration; neither issuer guidance, external consensus nor a currently observed market rate.",
+      "confidence": "low",
+      "impact": "high",
+      "status": "edited",
+      "final_value": 4
+    },
+    {
+      "id": "dcf.beta",
+      "method": "dcf",
+      "category": "wacc",
+      "label": "Equity beta",
+      "proposed_value": null,
+      "unit": "x",
+      "rationale": "Explicit analyst simulation assumption for demonstration; neither issuer guidance, external consensus nor a currently observed market rate.",
+      "confidence": "low",
+      "impact": "high",
+      "status": "edited",
+      "final_value": 1
+    },
+    {
+      "id": "dcf.equity_risk_premium",
+      "method": "dcf",
+      "category": "wacc",
+      "label": "Equity risk premium",
+      "proposed_value": null,
+      "unit": "%",
+      "rationale": "Explicit analyst simulation assumption for demonstration; neither issuer guidance, external consensus nor a currently observed market rate.",
+      "confidence": "low",
+      "impact": "high",
+      "status": "edited",
+      "final_value": 5
+    },
+    {
+      "id": "dcf.debt_weight",
+      "method": "dcf",
+      "category": "wacc",
+      "label": "Debt weight in capital structure",
+      "proposed_value": null,
+      "unit": "%",
+      "rationale": "Explicit analyst simulation assumption for demonstration; neither issuer guidance, external consensus nor a currently observed market rate.",
+      "confidence": "low",
+      "impact": "high",
+      "status": "edited",
+      "final_value": 20
+    },
+    {
+      "id": "dcf.terminal_method",
+      "method": "dcf",
+      "category": "terminal",
+      "label": "Terminal method",
+      "proposed_value": "perpetuity_growth",
+      "unit": null,
+      "rationale": "Explicit analyst simulation assumption for demonstration; neither issuer guidance, external consensus nor a currently observed market rate.",
+      "confidence": "high",
+      "impact": "high",
+      "status": "edited",
+      "final_value": "perpetuity_growth"
+    },
+    {
+      "id": "dcf.terminal_roic",
+      "method": "dcf",
+      "category": "terminal",
+      "label": "Terminal incremental ROIC",
+      "proposed_value": null,
+      "unit": "%",
+      "rationale": "Explicit analyst simulation assumption for demonstration; neither issuer guidance, external consensus nor a currently observed market rate.",
+      "confidence": "low",
+      "impact": "high",
+      "status": "edited",
+      "final_value": 20
+    },
+    {
+      "id": "dcf.terminal_growth",
+      "method": "dcf",
+      "category": "terminal",
+      "label": "Terminal growth",
+      "proposed_value": null,
+      "unit": "%",
+      "rationale": "Explicit analyst simulation assumption for demonstration; neither issuer guidance, external consensus nor a currently observed market rate.",
+      "confidence": "low",
+      "impact": "high",
+      "status": "edited",
+      "final_value": 2
+    },
+    {
+      "id": "dcf.sbc_treatment",
+      "method": "dcf",
+      "category": "cash_flow",
+      "label": "SBC treatment",
+      "proposed_value": "expense_as_reported",
+      "unit": null,
+      "rationale": "Explicit analyst simulation assumption for demonstration; neither issuer guidance, external consensus nor a currently observed market rate.",
+      "confidence": "medium",
+      "impact": "medium",
+      "status": "edited",
+      "final_value": "expense_as_reported"
+    },
+    {
+      "id": "dcf.scenario_growth_spread",
+      "method": "dcf",
+      "category": "scenario",
+      "label": "Bull/Bear growth spread",
+      "proposed_value": 2,
+      "unit": "pp",
+      "rationale": "Explicit analyst simulation assumption for demonstration; neither issuer guidance, external consensus nor a currently observed market rate.",
+      "confidence": "medium",
+      "impact": "medium",
+      "status": "edited",
+      "final_value": 1
+    },
+    {
+      "id": "dcf.scenario_margin_spread",
+      "method": "dcf",
+      "category": "scenario",
+      "label": "Bull/Bear margin spread",
+      "proposed_value": 1,
+      "unit": "pp",
+      "rationale": "Explicit analyst simulation assumption for demonstration; neither issuer guidance, external consensus nor a currently observed market rate.",
+      "confidence": "medium",
+      "impact": "medium",
+      "status": "edited",
+      "final_value": 1
+    },
+    {
+      "id": "dcf.scenario_wacc_spread",
+      "method": "dcf",
+      "category": "scenario",
+      "label": "Bull/Bear WACC spread",
+      "proposed_value": 1,
+      "unit": "pp",
+      "rationale": "Explicit analyst simulation assumption for demonstration; neither issuer guidance, external consensus nor a currently observed market rate.",
+      "confidence": "medium",
+      "impact": "medium",
+      "status": "edited",
+      "final_value": 0.5
+    },
+    {
+      "id": "dcf.scenario_terminal_spread",
+      "method": "dcf",
+      "category": "scenario",
+      "label": "Bull/Bear terminal growth spread",
+      "proposed_value": 0.5,
+      "unit": "pp",
+      "rationale": "Explicit analyst simulation assumption for demonstration; neither issuer guidance, external consensus nor a currently observed market rate.",
+      "confidence": "medium",
+      "impact": "medium",
+      "status": "edited",
+      "final_value": 0.5
+    }
+  ],
+  "supportingExactQuotes": {
+    "revenue": "Total net sales \n(1)\n  102,466  \n \n 94,930  \n \n 416,161  \n \n 391,035",
+    "grossProfit": "Gross margin  48,341  \n \n 43,879  \n \n 195,201  \n \n 180,683",
+    "ebit": "Operating income  32,427  \n \n 29,591  \n \n 133,050  \n \n 123,216",
+    "incomeBeforeTax": "Income before provision for income taxes  32,804  \n \n 29,610  \n \n 132,729  \n \n 123,485",
+    "incomeTaxExpense": "Provision for income taxes  5,338  \n \n 14,874  \n \n 20,719  \n \n 29,749",
+    "netIncome": "Net income $ 27,466  \n \n$ 14,736  \n \n$ 112,010  \n \n$ 93,736",
+    "eps": "Diluted $ 1.85  \n \n$ 0.97  \n \n$ 7.46  \n \n$ 6.08",
+    "operatingCashFlow": "Cash generated by operating activities  111,482  \n \n 118,254",
+    "capex": "Payments for acquisition of property, plant and equipment  (12,715) \n \n (9,447)",
+    "cash": "Cash and cash equivalents $ 35,934  \n \n$ 29,943",
+    "accountsReceivable": "Accounts receivable, net  39,777  \n \n 33,410",
+    "inventory": "Inventories  5,718  \n \n 7,286",
+    "accountsPayable": "Accounts payable $ 69,860\n  \n \n$ 68,960",
+    "currentAssets": "Total current assets  147,957  \n \n 152,987",
+    "currentLiabilities": "Total current liabilities  165,631  \n \n 176,392",
+    "netDebt": "Commercial paper  7,979  \n \n 9,967  \nTerm debt  12,350  \n \n 10,912",
+    "longTermDebt": "Term debt  78,328  \n \n 85,750",
+    "dAndA": "Depreciation and amortization  11,698  \n \n 11,445",
+    "dilutedShares": "Diluted  14,863,609\n  \n \n 15,242,853  \n \n 15,004,697  \n \n 15,408,095",
+    "yearEndShares": "Common stock and additional paid-in capital, $0.00001 par value: 50,400,000 shares \nauthorized; 14,773,260 and 15,116,786 shares issued and outstanding, respectively \n 93,568  \n \n 83,276"
+  },
+  "classificationNotes": {
+    "dcf.base_revenue": "Reported FY2025 annual revenue: third numeric column in statement of operations, after two quarterly columns. USD millions.",
+    "dcf.net_debt": "Analyst calculation: commercial paper7,979 + current term debt12,350 + long-term term debt78,328 \u2212 cash35,934 =62,723 USD millions, all as of2025-09-27. Leases excluded; not current valuation-date debt.",
+    "dcf.shares_outstanding": "Source-disclosed FY2025 weighted-average diluted shares15,004,697 thousand /1,000 =15,004.697 million. Explicit demonstration convention; not period-end14,773.260 million common shares or refreshed valuation-date diluted shares. Avoid net-income/rounded-EPS approximation.",
+    "dcf.da_pct_revenue": "Analyst ratio of reported D&A11,698 / reported revenue416,161 \u00d7100; D&A source in cash flow statement. EBITDA is not fabricated.",
+    "dcf.capex_pct_revenue": "Analyst ratio of absolute reported PP&E cash payments12,715 / revenue416,161 \u00d7100; not total investing cash flow.",
+    "dcf.nwc_pct_revenue": "Analyst proxy (A/R39,777 + inventory5,718 \u2212 A/P69,860) / revenue416,161 \u00d7100. Excludes vendor non-trade receivables, deferred revenue and other operating balances; not complete operating working capital.",
+    "dcf.equity_adjustment": "Explicit illustrative analyst zero. Excludes current/non-current marketable securities18,763/77,723 and makes no verified preferred/minority-interest claim. Not a fully reconciled investable equity bridge."
+  },
+  "independentReference": {
+    "calculationConvention": "Five annual end-year FCFF; perpetuity terminal FCFF=NOPAT6*(1-g/terminalROIC); signed equity bridge; USD millions and million shares.",
+    "waccPercent": 8,
+    "projections": [
+      {
+        "year": 1,
+        "revenue": 436969.05000000005,
+        "nopat": 111762.00000000003,
+        "changeNwc": -1218.25,
+        "fcff": 111912.40000000002
+      },
+      {
+        "year": 2,
+        "revenue": 458817.50250000006,
+        "nopat": 117350.10000000003,
+        "changeNwc": -1279.1625000000022,
+        "fcff": 117508.02000000003
+      },
+      {
+        "year": 3,
+        "revenue": 477170.2026000001,
+        "nopat": 122044.10400000004,
+        "changeNwc": -1074.496500000001,
+        "fcff": 121952.50830000004
+      },
+      {
+        "year": 4,
+        "revenue": 496257.0107040001,
+        "nopat": 126925.86816000003,
+        "changeNwc": -1117.4763600000006,
+        "fcff": 126830.60863200002
+      },
+      {
+        "year": 5,
+        "revenue": 511144.72102512006,
+        "nopat": 130733.64420480002,
+        "changeNwc": -871.6315607999968,
+        "fcff": 130356.15780096003
+      }
+    ],
+    "terminalNopat": 133348.31708889603,
+    "terminalFcff": 120013.48538000643,
+    "terminalValue": 2000224.7563334405,
+    "pvExplicitFcff": 483119.1070192882,
+    "pvTerminalValue": 1361319.3594514723,
+    "enterpriseValue": 1844438.4664707605,
+    "netDebt": 62723,
+    "otherEquityAdjustment": 0,
+    "equityValue": 1781715.4664707605,
+    "sharesMillions": 15004.697,
+    "impliedPerShare": 118.74384844097555
+  },
+  "limitations": [
+    "No independently refreshed valuation-date balance sheet, share count, cost of capital, equity bridge claims or security values.",
+    "Debt scope excludes leases; marketable securities are deliberately excluded from the illustrative equity adjustment.",
+    "No integrated projected balance sheet/cash flow statement, NOL schedule or SBC dilution model.",
+    "Publication date was not available in the saved fixture; no date is fabricated.",
+    "This is an evidence-backed arithmetic/user-flow example. Only two years are available; no forecast-accuracy backtest is supported.",
+    "Source text integrity and quote membership do not establish independent audited correctness.",
+    "Negative working capital proxy can provide cash during modeled growth; that result depends on stable supplier/customer timing."
+  ]
+}

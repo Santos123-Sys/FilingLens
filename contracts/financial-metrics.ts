@@ -66,7 +66,9 @@ function metric(
     denominator: relationship?.denominator ?? (components.length > 1 ? components.at(-1) ?? null : null),
     periods: financials.years,
     sources,
-    confidence: components.every(key => (financials.evidence ?? []).some(item => item.metric === key)) ? "high" : "medium",
+    confidence: financials.years.length > 0 && components.every(key =>
+      financials.years.every(period => (financials.evidence ?? []).some(item => item.metric === key && item.period === period)),
+    ) ? "high" : "medium",
     note: note ?? null,
   };
 }
@@ -119,7 +121,8 @@ export function computeFinancialMetrics(financials: Financials): ComputedMetric[
     ocf === null || capex[index] === null ? null : rounded(ocf - Math.abs(capex[index]!)),
   );
   const fcf = reportedFcf.some(value => value !== null) ? reportedFcf : calculatedFcf;
-  const fcfType: ComputedMetric["type"] = reportedFcf.some(value => value !== null) ? "reported" : "calculated";
+  const fcfComponents = reportedFcf.some(value => value !== null)
+    ? ["freeCashFlow"] : ["operatingCashFlow", "capex"];
   const effectiveTaxRate = incomeBeforeTax.map((pretaxIncome, index) => {
     const taxExpense = incomeTaxExpense[index];
     if (pretaxIncome === null || taxExpense === null || pretaxIncome <= 0 || taxExpense < 0) return null;
@@ -240,9 +243,11 @@ export function computeFinancialMetrics(financials: Financials): ComputedMetric[
     metric(financials, "netDebt", netDebt, "currency", "calculated", "Total debt − Cash and cash equivalents", ["totalDebt", "cash"]),
     metric(financials, "grossDebtToEbitda", totalDebt.map((value, index) => ebitda[index] !== null && ebitda[index]! > 0 ? rounded(divide(value, ebitda[index])) : null), "multiple", "calculated", "Total debt ÷ EBITDA", ["totalDebt", "ebitda"], "N/M when EBITDA is zero or negative."),
     metric(financials, "netDebtToEbitda", netDebt.map((value, index) => ebitda[index] !== null && ebitda[index]! > 0 ? rounded(divide(value, ebitda[index])) : null), "multiple", "calculated", "Net debt ÷ EBITDA", ["totalDebt", "cash", "ebitda"], "N/M when EBITDA is zero or negative."),
-    metric(financials, "freeCashFlowCalculated", fcf, "currency", fcfType, fcfType === "reported" ? null : "Operating cash flow − Capex", ["operatingCashFlow", "capex", "freeCashFlow"]),
-    metric(financials, "fcfMargin", fcf.map((value, index) => rounded(divide(value, revenue[index]) === null ? null : divide(value, revenue[index])! * 100)), "percent", "calculated", "Free cash flow ÷ Revenue", ["freeCashFlow", "operatingCashFlow", "capex", "revenue"]),
-    metric(financials, "fcfConversion", fcf.map((value, index) => ebitda[index] !== null && ebitda[index]! > 0 ? rounded(divide(value, ebitda[index]) === null ? null : divide(value, ebitda[index])! * 100) : null), "percent", "calculated", "Free cash flow ÷ EBITDA", ["freeCashFlow", "operatingCashFlow", "capex", "ebitda"]),
+    // Keep this independent of reported FCF so reconciliation cannot compare a report with itself.
+    // The original reported definition and amounts remain in financials.freeCashFlow.
+    metric(financials, "freeCashFlowCalculated", calculatedFcf, "currency", "calculated", "Operating cash flow − Absolute capex", ["operatingCashFlow", "capex"], "Independent cash-flow diagnostic; a reported FCF definition can differ and is preserved separately."),
+    metric(financials, "fcfMargin", fcf.map((value, index) => rounded(divide(value, revenue[index]) === null ? null : divide(value, revenue[index])! * 100)), "percent", "calculated", "Free cash flow ÷ Revenue", [...fcfComponents, "revenue"]),
+    metric(financials, "fcfConversion", fcf.map((value, index) => ebitda[index] !== null && ebitda[index]! > 0 ? rounded(divide(value, ebitda[index]) === null ? null : divide(value, ebitda[index])! * 100) : null), "percent", "calculated", "Free cash flow ÷ EBITDA", [...fcfComponents, "ebitda"]),
     metric(financials, "currentRatio", currentAssets.map((value, index) => positiveRatio(value, currentLiabilities[index])), "ratio", "calculated", "Current assets ÷ Current liabilities", ["currentAssets", "currentLiabilities"]),
     metric(financials, "interestCoverage", ebit.map((value, index) => interestExpense[index] !== null && Math.abs(interestExpense[index]!) > 0 ? rounded(divide(value, Math.abs(interestExpense[index]!))) : null), "multiple", "calculated", "EBIT ÷ Net interest expense", ["ebit", "interestExpense"]),
     metric(financials, "roe", netIncome.map((value, index) => index === 0 || totalEquity[index] === null || totalEquity[index - 1] === null ? null : rounded(divide(value, (totalEquity[index]! + totalEquity[index - 1]!) / 2) === null ? null : divide(value, (totalEquity[index]! + totalEquity[index - 1]!) / 2)! * 100)), "percent", "calculated", "Net income ÷ average equity", ["netIncome", "totalEquity"], "Uses average opening and closing equity."),

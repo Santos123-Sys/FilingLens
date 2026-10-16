@@ -1,9 +1,10 @@
+import {buildFinancialLineage} from "../contracts/financial-lineage";
 import {createHash,createHmac,timingSafeEqual} from 'node:crypto';
 import type {Hono} from 'hono';
 import mysql from 'mysql2/promise';
 import {z} from 'zod';
 import {verifyHandoff} from '../contracts/workspace-handoff';
-import {companySchema,financialsSchema,valuationAssumptionSchema,type FilingAnalysis} from '../contracts/analysis';
+import {companySchema,financialsSchema,valuationAssumptionSchema,dcfValuationResultSchema,compsValuationResultSchema,type FilingAnalysis} from '../contracts/analysis';
 import {calculateValuation} from './valuation-manager';
 import {requireAnalysisAccess,AnalysisAccessError} from './analysis-access';
 const digest=(v:string)=>createHash('sha256').update(v).digest('hex');
@@ -26,12 +27,12 @@ export function reviewedVersion(input:z.infer<typeof PublishRequest>,secret:stri
  const figure=result.figures.implied_per_share,currency=figure.unit.split('/')[0];
  if((currency!=='USD'&&currency!=='BRL')||figure.value===null||!Number.isFinite(figure.value)||figure.value<=0)throw Error('unpublishable_valuation');
  const assumptionsHash=digest(JSON.stringify(input.assumptions));
- const sourceHash=digest(JSON.stringify({company:input.analysis.company,financials:input.analysis.financials}));
+ const sourceHash=digest(JSON.stringify({company:input.analysis.company,financials:input.analysis.financials,industry:(input.analysis.market as {industry?:string}|undefined)?.industry}));
  const version:Version={schemaVersion:'valuation.v1',valuationVersionId:'flv1_'+digest(ctx.nonce+':'+input.method),
  issuerId:ctx.issuerId,method:input.method,scenario:input.scenario,currency,impliedValuePerShare:String(figure.value),
- valuationAsOf:now.toISOString(),approvedAt:now.toISOString(),approvedBy:ctx.reviewerUserId,
+ valuationAsOf:result.method==='dcf'&&result.valuation_date?result.valuation_date+'T00:00:00.000Z':now.toISOString(),approvedAt:now.toISOString(),approvedBy:ctx.reviewerUserId,
  sourceSnapshotIds:['reviewed-analysis:'+sourceHash],assumptionsHash,approvalStatus:'approved'};
- return {ctx,version,audit:{company:input.analysis.company,financials:input.analysis.financials,assumptions:input.assumptions,result},requestHash:digest(JSON.stringify({sourceHash,assumptionsHash,method:input.method}))};
+ return {ctx,version,audit:{company:input.analysis.company,metadata:input.analysis.metadata,market:input.analysis.market,financials:input.analysis.financials,assumptions:input.assumptions,result,lineage:buildFinancialLineage(input.analysis as unknown as FilingAnalysis,{assumptions:{[input.method]:input.assumptions},...(input.method==="dcf"?{dcf:result as import("../contracts/analysis").DcfValuationResult}:{comps:result as import("../contracts/analysis").CompsValuationResult})})},requestHash:digest(JSON.stringify({sourceHash,assumptionsHash,method:input.method}))};
 }
 async function database(){
  return mysql.createConnection(process.env.DATABASE_URL!);
@@ -106,6 +107,27 @@ export function registerValuationPublisher(app:Hono,connect:typeof database=data
    }catch(e){await db.rollback();throw e;}finally{await db.end();}
   }catch(e){if(e instanceof AnalysisAccessError)return c.json({error:e.message},e.status);
    return c.json({error:e instanceof Error&&['issuer_mismatch','expired_handoff','invalid_handoff','unpublishable_valuation'].includes(e.message)?e.message:'valuation_publication_failed'},422);}
+ });
+ app.get('/api/integration/v1/valuations/:id/audit',async c=>{
+  c.header('Cache-Control','no-store');c.header('Vary','Authorization');
+  if(!bearer(c.req.header('Authorization')))return c.json({error:'unauthorized'},401);
+  const workspace=c.req.header('X-Workspace-Id'),id=c.req.param('id');
+  if(!z.string().uuid().safeParse(workspace).success||!/^flv1_[a-f0-9]{64}$/.test(id))return c.json({error:'invalid_scope'},400);
+  if(!process.env.DATABASE_URL)return c.json({error:'publisher_disabled'},503);
+  try{const db=await connect();try{
+   const [rows]=await db.query('SELECT payload_json,audit_json FROM shared_valuation_versions WHERE id=? AND workspace_id=? LIMIT 1',[id,workspace]);
+   const row=(rows as Array<{payload_json:string;audit_json:string}>)[0];if(!row)return c.json({error:'valuation_not_found'},404);
+   const version=JSON.parse(row.payload_json),audit=JSON.parse(row.audit_json);
+   if(version.valuationVersionId!==id||!/^us:\d{10}$|^br:\d{14}$/.test(version.issuerId))throw Error('invalid_audit_identity');
+   const company=companySchema.shape.company.parse(audit.company),financials=financialsSchema.shape.financials.parse(audit.financials);
+   const assumptions=valuationAssumptionSchema.array().max(150).parse(audit.assumptions);
+   const result=version.method==='dcf'?dcfValuationResultSchema.parse(audit.result):compsValuationResultSchema.parse(audit.result);
+   const [jurisdiction,registry]=version.issuerId.split(':');
+   const metadata=audit.metadata??{cik:jurisdiction==='us'?registry:null,cnpj:jurisdiction==='br'?registry:null};
+   const analysis={company,financials,metadata,jurisdiction,market:audit.market} as FilingAnalysis;
+   const lineage=audit.lineage??buildFinancialLineage(analysis,{assumptions:{[version.method]:assumptions},...(version.method==='dcf'?{dcf:result as import('../contracts/analysis').DcfValuationResult}:{comps:result as import('../contracts/analysis').CompsValuationResult})});
+   return c.json({schemaVersion:'valuation-audit.v1',valuationVersionId:id,issuerId:version.issuerId,lineage});
+  }finally{await db.end();}}catch{return c.json({error:'valuation_audit_unavailable'},503);}
  });
  app.get('/api/integration/v1/valuations/:id',async c=>{
   c.header('Cache-Control','no-store');c.header('Vary','Authorization');

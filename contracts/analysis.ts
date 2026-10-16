@@ -552,6 +552,13 @@ export type DcfProjection = z.infer<typeof dcfProjectionSchema>;
 export const dcfValuationResultSchema = z.object({
   method: z.literal("dcf"),
   status: z.literal("complete"),
+  // Optional for reading historical versions; fresh calculations always set v2.
+  calculation_version: z.literal("fcff-roic.v2").optional(),
+  valuation_date: z.string().optional(),
+  terminal: z.object({
+    nopat: z.number(), roic_percent: z.number(), reinvestment_rate_percent: z.number(),
+    reinvestment: z.number(), fcff: z.number(), present_value: z.number(),
+  }).optional(),
   projections: z.array(dcfProjectionSchema).length(5),
   figures: z.object({
     wacc: valuationFigureSchema,
