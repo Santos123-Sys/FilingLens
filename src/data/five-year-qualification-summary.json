@@ -1,0 +1,6673 @@
+{
+  "schemaVersion": "five-year-evaluation.v3",
+  "protocolCommit": "1d83c38",
+  "predictorFreezeCommit": "b3f3f60",
+  "acquiredOn": "2026-10-16",
+  "protocolSha256": "704f9af882815b69a134612c2a9152c879e01d5326f148353fab8b09b671f957",
+  "engineSha256": "37287f8e13cc2d38cd7f303c878cf90242721db08a44f84d686e4908333f91d6",
+  "datasetSha256": "5fe6757d523390f9b7e17bd3e130bd80a51d82457ad9eea6ae324b8a8f5c766a",
+  "developmentDatasetSha256": "0d3cb72a08dd14b7ade421d9097c6c24cc0fd78846f5a385bc361f376ddb00d2",
+  "developmentIssuers": 60,
+  "heldOutIssuers": 120,
+  "heldOutObservations": 1675,
+  "qualifiedHorizons": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "summaries": [
+    {
+      "horizon": 1,
+      "attempted": 360,
+      "scored": 266,
+      "excluded": 94,
+      "pairedCases": 266,
+      "pairedIssuers": 98,
+      "exclusions": {
+        "five_consecutive_available_positive_annuals_required": 85,
+        "missing_retained_target": 9
+      },
+      "status": "qualified_in_fresh_issuer_cohort",
+      "gates": [
+        {
+          "name": "30 paired issuers",
+          "pass": true
+        },
+        {
+          "name": "100 paired cases",
+          "pass": true
+        },
+        {
+          "name": "60% scored coverage",
+          "pass": true
+        },
+        {
+          "name": "Six sectors with three issuers",
+          "pass": true
+        },
+        {
+          "name": "5% lower macro error than legacy",
+          "pass": true
+        },
+        {
+          "name": "No more than 5% worse than naive",
+          "pass": true
+        }
+      ],
+      "scores": [
+        {
+          "model": "bounded_v3",
+          "count": 266,
+          "issuerCount": 98,
+          "macroScaledAbsoluteErrorPercent": 19.312428185702508,
+          "meanScaledAbsoluteErrorPercent": 19.035695826368872,
+          "medianScaledAbsoluteErrorPercent": 10.751007290323319,
+          "mapePercent": 90.602370625519
+        },
+        {
+          "model": "naive",
+          "count": 266,
+          "issuerCount": 98,
+          "macroScaledAbsoluteErrorPercent": 19.45956529438074,
+          "meanScaledAbsoluteErrorPercent": 18.998112557630527,
+          "medianScaledAbsoluteErrorPercent": 11.337212349442707,
+          "mapePercent": 90.8659104288764
+        },
+        {
+          "model": "legacy",
+          "count": 266,
+          "issuerCount": 98,
+          "macroScaledAbsoluteErrorPercent": 28.775773062532977,
+          "meanScaledAbsoluteErrorPercent": 27.538091039746256,
+          "medianScaledAbsoluteErrorPercent": 14.174784832954415,
+          "mapePercent": 96.94773940855511
+        },
+        {
+          "model": "adaptive_v2",
+          "count": 266,
+          "issuerCount": 98,
+          "macroScaledAbsoluteErrorPercent": 20.573726409718986,
+          "meanScaledAbsoluteErrorPercent": 20.22959572713238,
+          "medianScaledAbsoluteErrorPercent": 10.987294258753803,
+          "mapePercent": 93.0994233305131
+        }
+      ],
+      "sectors": [
+        {
+          "sector": "Agricultura (Açúcar, Álcool e Cana)",
+          "testIssuers": 2,
+          "cases": 6,
+          "evidence": "sparse",
+          "macroErrorPercent": 21.35049141095725
+        },
+        {
+          "sector": "Alimentos",
+          "testIssuers": 3,
+          "cases": 9,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 15.821130653363245
+        },
+        {
+          "sector": "Bancos",
+          "testIssuers": 1,
+          "cases": 2,
+          "evidence": "sparse",
+          "macroErrorPercent": 24.59755613190105
+        },
+        {
+          "sector": "Brinquedos e Lazer",
+          "testIssuers": 0,
+          "cases": 0,
+          "evidence": "sparse",
+          "macroErrorPercent": null
+        },
+        {
+          "sector": "Comunicação e Informática",
+          "testIssuers": 0,
+          "cases": 0,
+          "evidence": "sparse",
+          "macroErrorPercent": null
+        },
+        {
+          "sector": "Comércio (Atacado e Varejo)",
+          "testIssuers": 9,
+          "cases": 23,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 9.554909205877799
+        },
+        {
+          "sector": "Construção Civil, Mat. Constr. e Decoração",
+          "testIssuers": 7,
+          "cases": 18,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 32.27007186476445
+        },
+        {
+          "sector": "Educação",
+          "testIssuers": 2,
+          "cases": 4,
+          "evidence": "sparse",
+          "macroErrorPercent": 26.101427274449442
+        },
+        {
+          "sector": "Emp. Adm. Part. - Agricultura (Açúcar, Álcool e Cana)",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 21.07576662061654
+        },
+        {
+          "sector": "Emp. Adm. Part. - Alimentos",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 7.777975918925016
+        },
+        {
+          "sector": "Emp. Adm. Part. - Comunicação e Informática",
+          "testIssuers": 2,
+          "cases": 5,
+          "evidence": "sparse",
+          "macroErrorPercent": 14.757107573843909
+        },
+        {
+          "sector": "Emp. Adm. Part. - Comércio (Atacado e Varejo)",
+          "testIssuers": 2,
+          "cases": 5,
+          "evidence": "sparse",
+          "macroErrorPercent": 28.534518315379813
+        },
+        {
+          "sector": "Emp. Adm. Part. - Const. Civil, Mat. Const. e Decoração",
+          "testIssuers": 6,
+          "cases": 15,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 48.68635741908251
+        },
+        {
+          "sector": "Emp. Adm. Part. - Crédito Imobiliário",
+          "testIssuers": 1,
+          "cases": 1,
+          "evidence": "sparse",
+          "macroErrorPercent": 18.00290038844538
+        },
+        {
+          "sector": "Emp. Adm. Part. - Energia Elétrica",
+          "testIssuers": 5,
+          "cases": 14,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 6.837611291459281
+        },
+        {
+          "sector": "Emp. Adm. Part. - Intermediação Financeira",
+          "testIssuers": 2,
+          "cases": 4,
+          "evidence": "sparse",
+          "macroErrorPercent": 8.849270865537017
+        },
+        {
+          "sector": "Emp. Adm. Part. - Metalurgia e Siderurgia",
+          "testIssuers": 2,
+          "cases": 6,
+          "evidence": "sparse",
+          "macroErrorPercent": 16.436628912894847
+        },
+        {
+          "sector": "Emp. Adm. Part. - Máqs., Equip., Veíc. e Peças",
+          "testIssuers": 2,
+          "cases": 6,
+          "evidence": "sparse",
+          "macroErrorPercent": 11.890368212234664
+        },
+        {
+          "sector": "Emp. Adm. Part. - Petróleo e Gás",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 11.264612459049665
+        },
+        {
+          "sector": "Emp. Adm. Part. - Seguradoras e Corretoras",
+          "testIssuers": 1,
+          "cases": 1,
+          "evidence": "sparse",
+          "macroErrorPercent": 16.954970869950152
+        },
+        {
+          "sector": "Emp. Adm. Part. - Sem Setor Principal",
+          "testIssuers": 4,
+          "cases": 11,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 45.23272041554443
+        },
+        {
+          "sector": "Emp. Adm. Part. - Serviços Transporte e Logística",
+          "testIssuers": 3,
+          "cases": 8,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 13.592300888161857
+        },
+        {
+          "sector": "Emp. Adm. Part. - Serviços médicos",
+          "testIssuers": 0,
+          "cases": 0,
+          "evidence": "sparse",
+          "macroErrorPercent": null
+        },
+        {
+          "sector": "Energia Elétrica",
+          "testIssuers": 7,
+          "cases": 19,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 13.331485608547577
+        },
+        {
+          "sector": "Farmacêutico e Higiene",
+          "testIssuers": 2,
+          "cases": 5,
+          "evidence": "sparse",
+          "macroErrorPercent": 12.993195471100494
+        },
+        {
+          "sector": "Hospedagem e Turismo",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 12.7818700380917
+        },
+        {
+          "sector": "Metalurgia e Siderurgia",
+          "testIssuers": 2,
+          "cases": 6,
+          "evidence": "sparse",
+          "macroErrorPercent": 35.15257621636817
+        },
+        {
+          "sector": "Máquinas, Equipamentos, Veículos e Peças",
+          "testIssuers": 4,
+          "cases": 12,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 18.360045414622032
+        },
+        {
+          "sector": "Papel e Celulose",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 20.379532529744086
+        },
+        {
+          "sector": "Petroquímicos e Borracha",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 28.597360241527188
+        },
+        {
+          "sector": "Petróleo e Gás",
+          "testIssuers": 2,
+          "cases": 6,
+          "evidence": "sparse",
+          "macroErrorPercent": 22.960609282654925
+        },
+        {
+          "sector": "Saneamento, Serv. Água e Gás",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 4.711044507032803
+        },
+        {
+          "sector": "Securitização de Recebíveis",
+          "testIssuers": 0,
+          "cases": 0,
+          "evidence": "sparse",
+          "macroErrorPercent": null
+        },
+        {
+          "sector": "Seguradoras e Corretoras",
+          "testIssuers": 2,
+          "cases": 6,
+          "evidence": "sparse",
+          "macroErrorPercent": 7.277232321972761
+        },
+        {
+          "sector": "Serviços Médicos",
+          "testIssuers": 2,
+          "cases": 6,
+          "evidence": "sparse",
+          "macroErrorPercent": 7.493420634573594
+        },
+        {
+          "sector": "Serviços Transporte e Logística",
+          "testIssuers": 8,
+          "cases": 23,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 15.104663013664915
+        },
+        {
+          "sector": "Telecomunicações",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 4.051847653041587
+        },
+        {
+          "sector": "Têxtil e Vestuário",
+          "testIssuers": 7,
+          "cases": 21,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 14.266983380593038
+        },
+        {
+          "sector": "Unclassified",
+          "testIssuers": 0,
+          "cases": 0,
+          "evidence": "sparse",
+          "macroErrorPercent": null
+        }
+      ],
+      "intervalCount": 266,
+      "intervalCoveragePercent": 86.8421052631579,
+      "medianIntervalWidthPercent": 66.94855765041898,
+      "meanIntervalWidthPercent": 67.34582204335621,
+      "intervalUsefulness": "passes_project_precision_gate",
+      "winsTiesLossesVsV2": {
+        "wins": 130,
+        "ties": 0,
+        "losses": 136
+      },
+      "worstCases": [
+        {
+          "issuer": "4723",
+          "name": "CONSTRUTORA ADOLPHO LINDENBERG S.A.",
+          "sector": "Construção Civil, Mat. Constr. e Decoração",
+          "horizon": 1,
+          "targetYear": 2025,
+          "origin": "2025-07-01",
+          "status": "scored",
+          "reason": null,
+          "trainingIds": [
+            "CVM-4723-2010-v2",
+            "CVM-4723-2011-v2",
+            "CVM-4723-2012-v4",
+            "CVM-4723-2013-v2",
+            "CVM-4723-2014-v1",
+            "CVM-4723-2015-v1",
+            "CVM-4723-2016-v1",
+            "CVM-4723-2017-v1",
+            "CVM-4723-2018-v1",
+            "CVM-4723-2019-v1",
+            "CVM-4723-2020-v1",
+            "CVM-4723-2021-v1",
+            "CVM-4723-2022-v1",
+            "CVM-4723-2023-v1",
+            "CVM-4723-2024-v2"
+          ],
+          "targetId": "CVM-4723-2025-v1",
+          "base": 75.149,
+          "actual": 365.614,
+          "predictions": {
+            "bounded_v3": 93.93625,
+            "naive": 75.149,
+            "legacy": 59.0069948,
+            "adaptive_v2": 75.149
+          },
+          "interval": {
+            "lower": 68.78066420564333,
+            "upper": 119.09183579435667,
+            "nominalPercent": 80
+          },
+          "calibrationPool": "development-only:2025-07-01:h1",
+          "boundsApplied": true
+        },
+        {
+          "issuer": "21040",
+          "name": "SYN PROP & TECH S.A.",
+          "sector": "Emp. Adm. Part. - Const. Civil, Mat. Const. e Decoração",
+          "horizon": 1,
+          "targetYear": 2024,
+          "origin": "2024-07-01",
+          "status": "scored",
+          "reason": null,
+          "trainingIds": [
+            "CVM-21040-2010-v1",
+            "CVM-21040-2011-v1",
+            "CVM-21040-2012-v1",
+            "CVM-21040-2013-v1",
+            "CVM-21040-2014-v2",
+            "CVM-21040-2015-v1",
+            "CVM-21040-2016-v1",
+            "CVM-21040-2017-v3",
+            "CVM-21040-2018-v1",
+            "CVM-21040-2019-v1",
+            "CVM-21040-2020-v2",
+            "CVM-21040-2021-v2",
+            "CVM-21040-2022-v1",
+            "CVM-21040-2023-v1"
+          ],
+          "targetId": "CVM-21040-2024-v1",
+          "base": 424.708,
+          "actual": 1357.743,
+          "predictions": {
+            "bounded_v3": 408.28305940908,
+            "naive": 424.708,
+            "legacy": 380.1561308,
+            "adaptive_v2": 424.708
+          },
+          "interval": {
+            "lower": 263.62179244601987,
+            "upper": 552.9443263721402,
+            "nominalPercent": 80
+          },
+          "calibrationPool": "development-only:2024-07-01:h1",
+          "boundsApplied": false
+        },
+        {
+          "issuer": "23957",
+          "name": "SUGOI S.A.",
+          "sector": "Emp. Adm. Part. - Const. Civil, Mat. Const. e Decoração",
+          "horizon": 1,
+          "targetYear": 2024,
+          "origin": "2024-07-01",
+          "status": "scored",
+          "reason": null,
+          "trainingIds": [
+            "CVM-23957-2015-v1",
+            "CVM-23957-2016-v1",
+            "CVM-23957-2017-v2",
+            "CVM-23957-2018-v1",
+            "CVM-23957-2019-v1",
+            "CVM-23957-2020-v1",
+            "CVM-23957-2021-v1",
+            "CVM-23957-2022-v2",
+            "CVM-23957-2023-v1"
+          ],
+          "targetId": "CVM-23957-2024-v1",
+          "base": 276.998,
+          "actual": -12.594,
+          "predictions": {
+            "bounded_v3": 340.35693532145996,
+            "naive": 276.998,
+            "legacy": 465.7998368,
+            "adaptive_v2": 310.339
+          },
+          "interval": {
+            "lower": 246.0076844803321,
+            "upper": 434.7061861625878,
+            "nominalPercent": 80
+          },
+          "calibrationPool": "development-only:2024-07-01:h1",
+          "boundsApplied": false
+        },
+        {
+          "issuer": "22357",
+          "name": "ALLOS S.A.",
+          "sector": "Emp. Adm. Part. - Comércio (Atacado e Varejo)",
+          "horizon": 1,
+          "targetYear": 2023,
+          "origin": "2023-07-01",
+          "status": "scored",
+          "reason": null,
+          "trainingIds": [
+            "CVM-22357-2010-v2",
+            "CVM-22357-2011-v2",
+            "CVM-22357-2012-v1",
+            "CVM-22357-2013-v2",
+            "CVM-22357-2014-v1",
+            "CVM-22357-2015-v1",
+            "CVM-22357-2016-v1",
+            "CVM-22357-2017-v1",
+            "CVM-22357-2018-v2",
+            "CVM-22357-2019-v1",
+            "CVM-22357-2020-v1",
+            "CVM-22357-2021-v1",
+            "CVM-22357-2022-v2"
+          ],
+          "targetId": "CVM-22357-2023-v1",
+          "base": 1111.321,
+          "actual": 2712.274,
+          "predictions": {
+            "bounded_v3": 1306.51923264883,
+            "naive": 1111.321,
+            "legacy": 1317.1376492,
+            "adaptive_v2": 1188.5136666666665
+          },
+          "interval": {
+            "lower": 934.5125424657238,
+            "upper": 1678.5259228319362,
+            "nominalPercent": 80
+          },
+          "calibrationPool": "development-only:2023-07-01:h1",
+          "boundsApplied": false
+        },
+        {
+          "issuer": "15458",
+          "name": "EMBPAR PARTICIPAÇÕES S/A",
+          "sector": "Emp. Adm. Part. - Sem Setor Principal",
+          "horizon": 1,
+          "targetYear": 2024,
+          "origin": "2024-07-01",
+          "status": "scored",
+          "reason": null,
+          "trainingIds": [
+            "CVM-15458-2017-v2",
+            "CVM-15458-2018-v1",
+            "CVM-15458-2019-v2",
+            "CVM-15458-2020-v1",
+            "CVM-15458-2021-v1",
+            "CVM-15458-2022-v1",
+            "CVM-15458-2023-v1"
+          ],
+          "targetId": "CVM-15458-2024-v1",
+          "base": 457.471,
+          "actual": 24.373,
+          "predictions": {
+            "bounded_v3": 526.96267935871,
+            "naive": 457.471,
+            "legacy": 192.59529100000003,
+            "adaptive_v2": 457.471
+          },
+          "interval": {
+            "lower": 371.14189317418305,
+            "upper": 682.7834655432371,
+            "nominalPercent": 80
+          },
+          "calibrationPool": "development-only:2024-07-01:h1",
+          "boundsApplied": false
+        }
+      ],
+      "byIssuer": [
+        {
+          "issuer": "20800",
+          "cases": 3,
+          "macroErrorPercent": 13.893121367141722
+        },
+        {
+          "issuer": "19763",
+          "cases": 3,
+          "macroErrorPercent": 9.751290653300003
+        },
+        {
+          "issuer": "17892",
+          "cases": 2,
+          "macroErrorPercent": 12.7558370683669
+        },
+        {
+          "issuer": "4723",
+          "cases": 3,
+          "macroErrorPercent": 156.28329439022437
+        },
+        {
+          "issuer": "3298",
+          "cases": 1,
+          "macroErrorPercent": 18.00290038844538
+        },
+        {
+          "issuer": "20915",
+          "cases": 2,
+          "macroErrorPercent": 11.402835465375617
+        },
+        {
+          "issuer": "21350",
+          "cases": 2,
+          "macroErrorPercent": 17.569610612690816
+        },
+        {
+          "issuer": "21180",
+          "cases": 2,
+          "macroErrorPercent": 49.24591041391425
+        },
+        {
+          "issuer": "10880",
+          "cases": 3,
+          "macroErrorPercent": 6.9069539843407375
+        },
+        {
+          "issuer": "24120",
+          "cases": 3,
+          "macroErrorPercent": 10.202043366793639
+        },
+        {
+          "issuer": "9512",
+          "cases": 3,
+          "macroErrorPercent": 18.274938968618756
+        },
+        {
+          "issuer": "22020",
+          "cases": 3,
+          "macroErrorPercent": 9.938168607948205
+        },
+        {
+          "issuer": "24473",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "20370",
+          "cases": 3,
+          "macroErrorPercent": 9.034703015488944
+        },
+        {
+          "issuer": "3158",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "14311",
+          "cases": 3,
+          "macroErrorPercent": 7.990869062243827
+        },
+        {
+          "issuer": "22497",
+          "cases": 3,
+          "macroErrorPercent": 8.365537104820515
+        },
+        {
+          "issuer": "23493",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "14761",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "15539",
+          "cases": 3,
+          "macroErrorPercent": 4.213082961584176
+        },
+        {
+          "issuer": "24694",
+          "cases": 3,
+          "macroErrorPercent": 6.150197114076655
+        },
+        {
+          "issuer": "20990",
+          "cases": 1,
+          "macroErrorPercent": 27.961251114642145
+        },
+        {
+          "issuer": "15083",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "8893",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "11070",
+          "cases": 3,
+          "macroErrorPercent": 13.107359700940627
+        },
+        {
+          "issuer": "22500",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "1597",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "13781",
+          "cases": 2,
+          "macroErrorPercent": 48.36103178223276
+        },
+        {
+          "issuer": "23965",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "1384",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "5258",
+          "cases": 3,
+          "macroErrorPercent": 3.0319622778148774
+        },
+        {
+          "issuer": "22187",
+          "cases": 3,
+          "macroErrorPercent": 27.646279596691098
+        },
+        {
+          "issuer": "21156",
+          "cases": 3,
+          "macroErrorPercent": 8.268808832612738
+        },
+        {
+          "issuer": "22780",
+          "cases": 2,
+          "macroErrorPercent": 6.752800428228895
+        },
+        {
+          "issuer": "24201",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "4707",
+          "cases": 1,
+          "macroErrorPercent": 4.2949516750788765
+        },
+        {
+          "issuer": "18775",
+          "cases": 3,
+          "macroErrorPercent": 6.793992103508866
+        },
+        {
+          "issuer": "8192",
+          "cases": 3,
+          "macroErrorPercent": 7.3641616301217665
+        },
+        {
+          "issuer": "20257",
+          "cases": 3,
+          "macroErrorPercent": 11.109064768468402
+        },
+        {
+          "issuer": "22519",
+          "cases": 2,
+          "macroErrorPercent": 6.890860270775145
+        },
+        {
+          "issuer": "23221",
+          "cases": 3,
+          "macroErrorPercent": 3.461183574220235
+        },
+        {
+          "issuer": "19836",
+          "cases": 3,
+          "macroErrorPercent": 19.57107385144092
+        },
+        {
+          "issuer": "20877",
+          "cases": 3,
+          "macroErrorPercent": 18.05176821381585
+        },
+        {
+          "issuer": "19445",
+          "cases": 3,
+          "macroErrorPercent": 4.711044507032803
+        },
+        {
+          "issuer": "23574",
+          "cases": 3,
+          "macroErrorPercent": 10.033573669349003
+        },
+        {
+          "issuer": "21199",
+          "cases": 2,
+          "macroErrorPercent": 24.59755613190105
+        },
+        {
+          "issuer": "6505",
+          "cases": 3,
+          "macroErrorPercent": 8.154612617470951
+        },
+        {
+          "issuer": "23957",
+          "cases": 2,
+          "macroErrorPercent": 86.3532418756372
+        },
+        {
+          "issuer": "22560",
+          "cases": 3,
+          "macroErrorPercent": 5.757963674809804
+        },
+        {
+          "issuer": "21040",
+          "cases": 3,
+          "macroErrorPercent": 105.49981011265182
+        },
+        {
+          "issuer": "19100",
+          "cases": 2,
+          "macroErrorPercent": 25.807296900150256
+        },
+        {
+          "issuer": "21520",
+          "cases": 3,
+          "macroErrorPercent": 27.093335238763334
+        },
+        {
+          "issuer": "12793",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "8745",
+          "cases": 3,
+          "macroErrorPercent": 28.597360241527188
+        },
+        {
+          "issuer": "24490",
+          "cases": 1,
+          "macroErrorPercent": 48.74167097467864
+        },
+        {
+          "issuer": "22357",
+          "cases": 3,
+          "macroErrorPercent": 52.402575474057635
+        },
+        {
+          "issuer": "24392",
+          "cases": 3,
+          "macroErrorPercent": 10.977456256294195
+        },
+        {
+          "issuer": "22349",
+          "cases": 3,
+          "macroErrorPercent": 25.575537969934363
+        },
+        {
+          "issuer": "17671",
+          "cases": 3,
+          "macroErrorPercent": 4.051847653041587
+        },
+        {
+          "issuer": "16659",
+          "cases": 3,
+          "macroErrorPercent": 6.1889275391250065
+        },
+        {
+          "issuer": "12823",
+          "cases": 3,
+          "macroErrorPercent": 21.07576662061654
+        },
+        {
+          "issuer": "20931",
+          "cases": 3,
+          "macroErrorPercent": 29.161009458127985
+        },
+        {
+          "issuer": "19330",
+          "cases": 3,
+          "macroErrorPercent": 21.227073492609808
+        },
+        {
+          "issuer": "19879",
+          "cases": 3,
+          "macroErrorPercent": 2.1394258992765276
+        },
+        {
+          "issuer": "10456",
+          "cases": 3,
+          "macroErrorPercent": 11.921321591770758
+        },
+        {
+          "issuer": "24171",
+          "cases": 2,
+          "macroErrorPercent": 4.666461156701994
+        },
+        {
+          "issuer": "24627",
+          "cases": 3,
+          "macroErrorPercent": 18.0371604136341
+        },
+        {
+          "issuer": "24546",
+          "cases": 3,
+          "macroErrorPercent": 10.673376723528701
+        },
+        {
+          "issuer": "23302",
+          "cases": 3,
+          "macroErrorPercent": 3.7069182475375597
+        },
+        {
+          "issuer": "8656",
+          "cases": 3,
+          "macroErrorPercent": 11.93197731273953
+        },
+        {
+          "issuer": "4669",
+          "cases": 3,
+          "macroErrorPercent": 3.0620529522538296
+        },
+        {
+          "issuer": "2100",
+          "cases": 3,
+          "macroErrorPercent": 11.510724855185293
+        },
+        {
+          "issuer": "7510",
+          "cases": 3,
+          "macroErrorPercent": 20.015701329605616
+        },
+        {
+          "issuer": "24716",
+          "cases": 3,
+          "macroErrorPercent": 17.115365096445803
+        },
+        {
+          "issuer": "7544",
+          "cases": 3,
+          "macroErrorPercent": 33.08572446445827
+        },
+        {
+          "issuer": "24090",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "19739",
+          "cases": 3,
+          "macroErrorPercent": 18.126363650537193
+        },
+        {
+          "issuer": "1520",
+          "cases": 3,
+          "macroErrorPercent": 29.858101761491575
+        },
+        {
+          "issuer": "20320",
+          "cases": 3,
+          "macroErrorPercent": 15.266160319753434
+        },
+        {
+          "issuer": "20745",
+          "cases": 3,
+          "macroErrorPercent": 23.12990897047358
+        },
+        {
+          "issuer": "20125",
+          "cases": 3,
+          "macroErrorPercent": 4.009385012852993
+        },
+        {
+          "issuer": "18465",
+          "cases": 3,
+          "macroErrorPercent": 11.264612459049665
+        },
+        {
+          "issuer": "21008",
+          "cases": 3,
+          "macroErrorPercent": 11.26093062082036
+        },
+        {
+          "issuer": "21555",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "20710",
+          "cases": 3,
+          "macroErrorPercent": 5.607184674645793
+        },
+        {
+          "issuer": "24384",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "20087",
+          "cases": 3,
+          "macroErrorPercent": 11.683730772162832
+        },
+        {
+          "issuer": "4863",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "13986",
+          "cases": 3,
+          "macroErrorPercent": 20.379532529744086
+        },
+        {
+          "issuer": "18708",
+          "cases": 3,
+          "macroErrorPercent": 32.086960469119994
+        },
+        {
+          "issuer": "20770",
+          "cases": 2,
+          "macroErrorPercent": 24.01318430288633
+        },
+        {
+          "issuer": "8753",
+          "cases": 3,
+          "macroErrorPercent": 36.57114749282504
+        },
+        {
+          "issuer": "19615",
+          "cases": 3,
+          "macroErrorPercent": 8.955558155738942
+        },
+        {
+          "issuer": "22217",
+          "cases": 1,
+          "macroErrorPercent": 16.954970869950152
+        },
+        {
+          "issuer": "4537",
+          "cases": 3,
+          "macroErrorPercent": 6.097168405336351
+        },
+        {
+          "issuer": "19453",
+          "cases": 3,
+          "macroErrorPercent": 14.380110148016618
+        },
+        {
+          "issuer": "12190",
+          "cases": 2,
+          "macroErrorPercent": 7.949230528566884
+        },
+        {
+          "issuer": "13773",
+          "cases": 3,
+          "macroErrorPercent": 8.923239958674877
+        },
+        {
+          "issuer": "18287",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "21130",
+          "cases": 3,
+          "macroErrorPercent": 17.97129479391648
+        },
+        {
+          "issuer": "24295",
+          "cases": 3,
+          "macroErrorPercent": 12.803358656811655
+        },
+        {
+          "issuer": "14133",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "7617",
+          "cases": 3,
+          "macroErrorPercent": 13.403590055995156
+        },
+        {
+          "issuer": "15458",
+          "cases": 3,
+          "macroErrorPercent": 93.11872778070321
+        },
+        {
+          "issuer": "14451",
+          "cases": 3,
+          "macroErrorPercent": 22.42440223731004
+        },
+        {
+          "issuer": "12530",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "23310",
+          "cases": 3,
+          "macroErrorPercent": 12.7818700380917
+        },
+        {
+          "issuer": "7870",
+          "cases": 3,
+          "macroErrorPercent": 20.941280513050163
+        },
+        {
+          "issuer": "20958",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "3069",
+          "cases": 3,
+          "macroErrorPercent": 33.73400493991131
+        },
+        {
+          "issuer": "20346",
+          "cases": 2,
+          "macroErrorPercent": 3.643841775152037
+        },
+        {
+          "issuer": "2453",
+          "cases": 3,
+          "macroErrorPercent": 1.980487966616144
+        },
+        {
+          "issuer": "24660",
+          "cases": 2,
+          "macroErrorPercent": 28.28546099937378
+        },
+        {
+          "issuer": "16292",
+          "cases": 3,
+          "macroErrorPercent": 7.777975918925016
+        },
+        {
+          "issuer": "14346",
+          "cases": 3,
+          "macroErrorPercent": 11.882647795228108
+        },
+        {
+          "issuer": "11207",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "80063",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "22594",
+          "cases": 1,
+          "macroErrorPercent": 8.813853781846271
+        },
+        {
+          "issuer": "15253",
+          "cases": 2,
+          "macroErrorPercent": 6.524439461173656
+        },
+        {
+          "issuer": "21202",
+          "cases": 3,
+          "macroErrorPercent": 13.491529565210215
+        }
+      ]
+    },
+    {
+      "horizon": 2,
+      "attempted": 360,
+      "scored": 264,
+      "excluded": 96,
+      "pairedCases": 264,
+      "pairedIssuers": 98,
+      "exclusions": {
+        "five_consecutive_available_positive_annuals_required": 77,
+        "missing_retained_target": 19
+      },
+      "status": "qualified_in_fresh_issuer_cohort",
+      "gates": [
+        {
+          "name": "30 paired issuers",
+          "pass": true
+        },
+        {
+          "name": "100 paired cases",
+          "pass": true
+        },
+        {
+          "name": "60% scored coverage",
+          "pass": true
+        },
+        {
+          "name": "Six sectors with three issuers",
+          "pass": true
+        },
+        {
+          "name": "5% lower macro error than legacy",
+          "pass": true
+        },
+        {
+          "name": "No more than 5% worse than naive",
+          "pass": true
+        }
+      ],
+      "scores": [
+        {
+          "model": "bounded_v3",
+          "count": 264,
+          "issuerCount": 98,
+          "macroScaledAbsoluteErrorPercent": 36.32899681354389,
+          "meanScaledAbsoluteErrorPercent": 35.49281830244809,
+          "medianScaledAbsoluteErrorPercent": 22.21334659858765,
+          "mapePercent": 211.12735242344493
+        },
+        {
+          "model": "naive",
+          "count": 264,
+          "issuerCount": 98,
+          "macroScaledAbsoluteErrorPercent": 36.3417641600807,
+          "meanScaledAbsoluteErrorPercent": 34.692240977791265,
+          "medianScaledAbsoluteErrorPercent": 19.42439184152662,
+          "mapePercent": 182.00328875441858
+        },
+        {
+          "model": "legacy",
+          "count": 264,
+          "issuerCount": 98,
+          "macroScaledAbsoluteErrorPercent": 75.91362638058943,
+          "meanScaledAbsoluteErrorPercent": 73.78322917085394,
+          "medianScaledAbsoluteErrorPercent": 36.69696888246361,
+          "mapePercent": 216.4175434835556
+        },
+        {
+          "model": "adaptive_v2",
+          "count": 264,
+          "issuerCount": 98,
+          "macroScaledAbsoluteErrorPercent": 38.59334656304063,
+          "meanScaledAbsoluteErrorPercent": 37.41652317805262,
+          "medianScaledAbsoluteErrorPercent": 19.556383140839806,
+          "mapePercent": 198.34102333291978
+        }
+      ],
+      "sectors": [
+        {
+          "sector": "Agricultura (Açúcar, Álcool e Cana)",
+          "testIssuers": 2,
+          "cases": 6,
+          "evidence": "sparse",
+          "macroErrorPercent": 35.09597217484529
+        },
+        {
+          "sector": "Alimentos",
+          "testIssuers": 3,
+          "cases": 9,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 29.522214827128025
+        },
+        {
+          "sector": "Bancos",
+          "testIssuers": 1,
+          "cases": 2,
+          "evidence": "sparse",
+          "macroErrorPercent": 43.04962660901302
+        },
+        {
+          "sector": "Brinquedos e Lazer",
+          "testIssuers": 0,
+          "cases": 0,
+          "evidence": "sparse",
+          "macroErrorPercent": null
+        },
+        {
+          "sector": "Comunicação e Informática",
+          "testIssuers": 0,
+          "cases": 0,
+          "evidence": "sparse",
+          "macroErrorPercent": null
+        },
+        {
+          "sector": "Comércio (Atacado e Varejo)",
+          "testIssuers": 9,
+          "cases": 22,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 18.365174861322078
+        },
+        {
+          "sector": "Construção Civil, Mat. Constr. e Decoração",
+          "testIssuers": 7,
+          "cases": 17,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 38.821727981554815
+        },
+        {
+          "sector": "Educação",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 14.360781940171877
+        },
+        {
+          "sector": "Emp. Adm. Part. - Agricultura (Açúcar, Álcool e Cana)",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 38.96069114861716
+        },
+        {
+          "sector": "Emp. Adm. Part. - Alimentos",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 5.534866382143577
+        },
+        {
+          "sector": "Emp. Adm. Part. - Comunicação e Informática",
+          "testIssuers": 2,
+          "cases": 5,
+          "evidence": "sparse",
+          "macroErrorPercent": 46.6880049666001
+        },
+        {
+          "sector": "Emp. Adm. Part. - Comércio (Atacado e Varejo)",
+          "testIssuers": 2,
+          "cases": 5,
+          "evidence": "sparse",
+          "macroErrorPercent": 61.06989689145343
+        },
+        {
+          "sector": "Emp. Adm. Part. - Const. Civil, Mat. Const. e Decoração",
+          "testIssuers": 6,
+          "cases": 15,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 54.08123086151685
+        },
+        {
+          "sector": "Emp. Adm. Part. - Crédito Imobiliário",
+          "testIssuers": 0,
+          "cases": 0,
+          "evidence": "sparse",
+          "macroErrorPercent": null
+        },
+        {
+          "sector": "Emp. Adm. Part. - Energia Elétrica",
+          "testIssuers": 5,
+          "cases": 13,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 14.293792433531708
+        },
+        {
+          "sector": "Emp. Adm. Part. - Intermediação Financeira",
+          "testIssuers": 2,
+          "cases": 4,
+          "evidence": "sparse",
+          "macroErrorPercent": 8.23294218502006
+        },
+        {
+          "sector": "Emp. Adm. Part. - Metalurgia e Siderurgia",
+          "testIssuers": 2,
+          "cases": 6,
+          "evidence": "sparse",
+          "macroErrorPercent": 25.666238690080057
+        },
+        {
+          "sector": "Emp. Adm. Part. - Máqs., Equip., Veíc. e Peças",
+          "testIssuers": 2,
+          "cases": 6,
+          "evidence": "sparse",
+          "macroErrorPercent": 19.839903021474864
+        },
+        {
+          "sector": "Emp. Adm. Part. - Petróleo e Gás",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 18.89972752708168
+        },
+        {
+          "sector": "Emp. Adm. Part. - Seguradoras e Corretoras",
+          "testIssuers": 1,
+          "cases": 2,
+          "evidence": "sparse",
+          "macroErrorPercent": 60.07561383353111
+        },
+        {
+          "sector": "Emp. Adm. Part. - Sem Setor Principal",
+          "testIssuers": 5,
+          "cases": 12,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 107.34032295886891
+        },
+        {
+          "sector": "Emp. Adm. Part. - Serviços Transporte e Logística",
+          "testIssuers": 3,
+          "cases": 8,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 30.004170593582856
+        },
+        {
+          "sector": "Emp. Adm. Part. - Serviços médicos",
+          "testIssuers": 0,
+          "cases": 0,
+          "evidence": "sparse",
+          "macroErrorPercent": null
+        },
+        {
+          "sector": "Energia Elétrica",
+          "testIssuers": 7,
+          "cases": 18,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 23.914849839974714
+        },
+        {
+          "sector": "Farmacêutico e Higiene",
+          "testIssuers": 2,
+          "cases": 6,
+          "evidence": "sparse",
+          "macroErrorPercent": 19.513680566724155
+        },
+        {
+          "sector": "Hospedagem e Turismo",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 38.16793171262828
+        },
+        {
+          "sector": "Metalurgia e Siderurgia",
+          "testIssuers": 2,
+          "cases": 6,
+          "evidence": "sparse",
+          "macroErrorPercent": 57.71832481004316
+        },
+        {
+          "sector": "Máquinas, Equipamentos, Veículos e Peças",
+          "testIssuers": 4,
+          "cases": 12,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 41.665649940441355
+        },
+        {
+          "sector": "Papel e Celulose",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 40.96893518532076
+        },
+        {
+          "sector": "Petroquímicos e Borracha",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 21.809275159873152
+        },
+        {
+          "sector": "Petróleo e Gás",
+          "testIssuers": 2,
+          "cases": 6,
+          "evidence": "sparse",
+          "macroErrorPercent": 52.043934613618525
+        },
+        {
+          "sector": "Saneamento, Serv. Água e Gás",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 8.043011110834792
+        },
+        {
+          "sector": "Securitização de Recebíveis",
+          "testIssuers": 0,
+          "cases": 0,
+          "evidence": "sparse",
+          "macroErrorPercent": null
+        },
+        {
+          "sector": "Seguradoras e Corretoras",
+          "testIssuers": 2,
+          "cases": 6,
+          "evidence": "sparse",
+          "macroErrorPercent": 20.983761562980856
+        },
+        {
+          "sector": "Serviços Médicos",
+          "testIssuers": 2,
+          "cases": 6,
+          "evidence": "sparse",
+          "macroErrorPercent": 36.473927564966665
+        },
+        {
+          "sector": "Serviços Transporte e Logística",
+          "testIssuers": 8,
+          "cases": 23,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 38.78932305930937
+        },
+        {
+          "sector": "Telecomunicações",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 12.93352913180257
+        },
+        {
+          "sector": "Têxtil e Vestuário",
+          "testIssuers": 8,
+          "cases": 22,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 37.26595034482354
+        },
+        {
+          "sector": "Unclassified",
+          "testIssuers": 0,
+          "cases": 0,
+          "evidence": "sparse",
+          "macroErrorPercent": null
+        }
+      ],
+      "intervalCount": 264,
+      "intervalCoveragePercent": 76.89393939393939,
+      "medianIntervalWidthPercent": 106.14641968792738,
+      "meanIntervalWidthPercent": 102.57180443329133,
+      "intervalUsefulness": "passes_project_precision_gate",
+      "winsTiesLossesVsV2": {
+        "wins": 126,
+        "ties": 0,
+        "losses": 138
+      },
+      "worstCases": [
+        {
+          "issuer": "13781",
+          "name": "SAO CARLOS EMPREEND E PARTICIPACOES S.A.",
+          "sector": "Emp. Adm. Part. - Sem Setor Principal",
+          "horizon": 2,
+          "targetYear": 2023,
+          "origin": "2022-07-01",
+          "status": "scored",
+          "reason": null,
+          "trainingIds": [
+            "CVM-13781-2010-v1",
+            "CVM-13781-2011-v1",
+            "CVM-13781-2012-v1",
+            "CVM-13781-2013-v1",
+            "CVM-13781-2014-v1",
+            "CVM-13781-2015-v1",
+            "CVM-13781-2016-v1",
+            "CVM-13781-2017-v1",
+            "CVM-13781-2018-v1",
+            "CVM-13781-2019-v1",
+            "CVM-13781-2020-v1",
+            "CVM-13781-2021-v1"
+          ],
+          "targetId": "CVM-13781-2023-v1",
+          "base": 288.062,
+          "actual": 1400.006,
+          "predictions": {
+            "bounded_v3": 243.7358590054425,
+            "naive": 288.062,
+            "legacy": 213.0878728104,
+            "adaptive_v2": 288.062
+          },
+          "interval": {
+            "lower": 110.04135928253083,
+            "upper": 377.4303587283542,
+            "nominalPercent": 80
+          },
+          "calibrationPool": "development-only:2022-07-01:h2",
+          "boundsApplied": false
+        },
+        {
+          "issuer": "4723",
+          "name": "CONSTRUTORA ADOLPHO LINDENBERG S.A.",
+          "sector": "Construção Civil, Mat. Constr. e Decoração",
+          "horizon": 2,
+          "targetYear": 2025,
+          "origin": "2024-07-01",
+          "status": "scored",
+          "reason": null,
+          "trainingIds": [
+            "CVM-4723-2010-v2",
+            "CVM-4723-2011-v2",
+            "CVM-4723-2012-v4",
+            "CVM-4723-2013-v2",
+            "CVM-4723-2014-v1",
+            "CVM-4723-2015-v1",
+            "CVM-4723-2016-v1",
+            "CVM-4723-2017-v1",
+            "CVM-4723-2018-v1",
+            "CVM-4723-2019-v1",
+            "CVM-4723-2020-v1",
+            "CVM-4723-2021-v1",
+            "CVM-4723-2022-v1",
+            "CVM-4723-2023-v1"
+          ],
+          "targetId": "CVM-4723-2025-v1",
+          "base": 95.712,
+          "actual": 365.614,
+          "predictions": {
+            "bounded_v3": 143.02251577680002,
+            "naive": 95.712,
+            "legacy": 42.690897134400004,
+            "adaptive_v2": 95.712
+          },
+          "interval": {
+            "lower": 90.61896947729875,
+            "upper": 195.4260620763013,
+            "nominalPercent": 80
+          },
+          "calibrationPool": "development-only:2024-07-01:h2",
+          "boundsApplied": true
+        },
+        {
+          "issuer": "21040",
+          "name": "SYN PROP & TECH S.A.",
+          "sector": "Emp. Adm. Part. - Const. Civil, Mat. Const. e Decoração",
+          "horizon": 2,
+          "targetYear": 2024,
+          "origin": "2023-07-01",
+          "status": "scored",
+          "reason": null,
+          "trainingIds": [
+            "CVM-21040-2010-v1",
+            "CVM-21040-2011-v1",
+            "CVM-21040-2012-v1",
+            "CVM-21040-2013-v1",
+            "CVM-21040-2014-v2",
+            "CVM-21040-2015-v1",
+            "CVM-21040-2016-v1",
+            "CVM-21040-2017-v3",
+            "CVM-21040-2018-v1",
+            "CVM-21040-2019-v1",
+            "CVM-21040-2020-v2",
+            "CVM-21040-2021-v2",
+            "CVM-21040-2022-v1"
+          ],
+          "targetId": "CVM-21040-2024-v1",
+          "base": 474.499,
+          "actual": 1357.743,
+          "predictions": {
+            "bounded_v3": 502.9823905678449,
+            "naive": 474.499,
+            "legacy": 31.727100425579998,
+            "adaptive_v2": 474.499
+          },
+          "interval": {
+            "lower": 251.15054059033562,
+            "upper": 754.8142405453542,
+            "nominalPercent": 80
+          },
+          "calibrationPool": "development-only:2023-07-01:h2",
+          "boundsApplied": false
+        },
+        {
+          "issuer": "22357",
+          "name": "ALLOS S.A.",
+          "sector": "Emp. Adm. Part. - Comércio (Atacado e Varejo)",
+          "horizon": 2,
+          "targetYear": 2023,
+          "origin": "2022-07-01",
+          "status": "scored",
+          "reason": null,
+          "trainingIds": [
+            "CVM-22357-2010-v2",
+            "CVM-22357-2011-v2",
+            "CVM-22357-2012-v1",
+            "CVM-22357-2013-v2",
+            "CVM-22357-2014-v1",
+            "CVM-22357-2015-v1",
+            "CVM-22357-2016-v1",
+            "CVM-22357-2017-v1",
+            "CVM-22357-2018-v2",
+            "CVM-22357-2019-v1",
+            "CVM-22357-2020-v1",
+            "CVM-22357-2021-v1"
+          ],
+          "targetId": "CVM-22357-2023-v1",
+          "base": 937.677,
+          "actual": 2712.274,
+          "predictions": {
+            "bounded_v3": 1064.8202179192365,
+            "naive": 937.677,
+            "legacy": 1266.91141022316,
+            "adaptive_v2": 1074.5257272727272
+          },
+          "interval": {
+            "lower": 629.6282890404511,
+            "upper": 1500.0121467980218,
+            "nominalPercent": 80
+          },
+          "calibrationPool": "development-only:2022-07-01:h2",
+          "boundsApplied": false
+        },
+        {
+          "issuer": "23957",
+          "name": "SUGOI S.A.",
+          "sector": "Emp. Adm. Part. - Const. Civil, Mat. Const. e Decoração",
+          "horizon": 2,
+          "targetYear": 2024,
+          "origin": "2023-07-01",
+          "status": "scored",
+          "reason": null,
+          "trainingIds": [
+            "CVM-23957-2015-v1",
+            "CVM-23957-2016-v1",
+            "CVM-23957-2017-v2",
+            "CVM-23957-2018-v1",
+            "CVM-23957-2019-v1",
+            "CVM-23957-2020-v1",
+            "CVM-23957-2021-v1",
+            "CVM-23957-2022-v2"
+          ],
+          "targetId": "CVM-23957-2024-v1",
+          "base": 164.723,
+          "actual": -12.594,
+          "predictions": {
+            "bounded_v3": 238.65942615584342,
+            "naive": 164.723,
+            "legacy": 104.37873692337,
+            "adaptive_v2": 208.8524285714286
+          },
+          "interval": {
+            "lower": 151.2356427045711,
+            "upper": 326.08320960711575,
+            "nominalPercent": 80
+          },
+          "calibrationPool": "development-only:2023-07-01:h2",
+          "boundsApplied": false
+        }
+      ],
+      "byIssuer": [
+        {
+          "issuer": "20800",
+          "cases": 3,
+          "macroErrorPercent": 36.25230307199221
+        },
+        {
+          "issuer": "19763",
+          "cases": 3,
+          "macroErrorPercent": 17.995195263978616
+        },
+        {
+          "issuer": "17892",
+          "cases": 2,
+          "macroErrorPercent": 39.57540963440237
+        },
+        {
+          "issuer": "4723",
+          "cases": 3,
+          "macroErrorPercent": 131.93652742896066
+        },
+        {
+          "issuer": "3298",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "20915",
+          "cases": 1,
+          "macroErrorPercent": 28.551505237708735
+        },
+        {
+          "issuer": "21350",
+          "cases": 2,
+          "macroErrorPercent": 25.909429442712383
+        },
+        {
+          "issuer": "21180",
+          "cases": 2,
+          "macroErrorPercent": 77.71269745357752
+        },
+        {
+          "issuer": "10880",
+          "cases": 3,
+          "macroErrorPercent": 38.9380608852603
+        },
+        {
+          "issuer": "24120",
+          "cases": 3,
+          "macroErrorPercent": 9.540976909252997
+        },
+        {
+          "issuer": "9512",
+          "cases": 3,
+          "macroErrorPercent": 32.03587634725132
+        },
+        {
+          "issuer": "22020",
+          "cases": 3,
+          "macroErrorPercent": 29.624317940864735
+        },
+        {
+          "issuer": "24473",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "20370",
+          "cases": 3,
+          "macroErrorPercent": 27.38205406140818
+        },
+        {
+          "issuer": "3158",
+          "cases": 1,
+          "macroErrorPercent": 73.95241312929333
+        },
+        {
+          "issuer": "14311",
+          "cases": 3,
+          "macroErrorPercent": 15.02258100758257
+        },
+        {
+          "issuer": "22497",
+          "cases": 3,
+          "macroErrorPercent": 21.502159576300546
+        },
+        {
+          "issuer": "23493",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "14761",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "15539",
+          "cases": 3,
+          "macroErrorPercent": 18.746623609999858
+        },
+        {
+          "issuer": "24694",
+          "cases": 2,
+          "macroErrorPercent": 15.140527747223725
+        },
+        {
+          "issuer": "20990",
+          "cases": 1,
+          "macroErrorPercent": 42.051439170481295
+        },
+        {
+          "issuer": "15083",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "8893",
+          "cases": 1,
+          "macroErrorPercent": 66.92093120000001
+        },
+        {
+          "issuer": "11070",
+          "cases": 3,
+          "macroErrorPercent": 14.51542617061751
+        },
+        {
+          "issuer": "22500",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "1597",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "13781",
+          "cases": 2,
+          "macroErrorPercent": 240.76168611494916
+        },
+        {
+          "issuer": "23965",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "1384",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "5258",
+          "cases": 3,
+          "macroErrorPercent": 5.200068672610709
+        },
+        {
+          "issuer": "22187",
+          "cases": 3,
+          "macroErrorPercent": 72.05199287998573
+        },
+        {
+          "issuer": "21156",
+          "cases": 3,
+          "macroErrorPercent": 21.66421735411175
+        },
+        {
+          "issuer": "22780",
+          "cases": 2,
+          "macroErrorPercent": 5.317389992678088
+        },
+        {
+          "issuer": "24201",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "4707",
+          "cases": 1,
+          "macroErrorPercent": 0.5920952627795978
+        },
+        {
+          "issuer": "18775",
+          "cases": 3,
+          "macroErrorPercent": 39.607569832352205
+        },
+        {
+          "issuer": "8192",
+          "cases": 3,
+          "macroErrorPercent": 13.58237269754579
+        },
+        {
+          "issuer": "20257",
+          "cases": 3,
+          "macroErrorPercent": 21.513502918110213
+        },
+        {
+          "issuer": "22519",
+          "cases": 2,
+          "macroErrorPercent": 13.35038116440608
+        },
+        {
+          "issuer": "23221",
+          "cases": 3,
+          "macroErrorPercent": 14.360781940171877
+        },
+        {
+          "issuer": "19836",
+          "cases": 3,
+          "macroErrorPercent": 31.627436323056692
+        },
+        {
+          "issuer": "20877",
+          "cases": 3,
+          "macroErrorPercent": 30.349599688767714
+        },
+        {
+          "issuer": "19445",
+          "cases": 3,
+          "macroErrorPercent": 8.043011110834792
+        },
+        {
+          "issuer": "23574",
+          "cases": 3,
+          "macroErrorPercent": 18.00036425314822
+        },
+        {
+          "issuer": "21199",
+          "cases": 2,
+          "macroErrorPercent": 43.04962660901302
+        },
+        {
+          "issuer": "6505",
+          "cases": 3,
+          "macroErrorPercent": 13.812130356865016
+        },
+        {
+          "issuer": "23957",
+          "cases": 2,
+          "macroErrorPercent": 83.154500761724
+        },
+        {
+          "issuer": "22560",
+          "cases": 3,
+          "macroErrorPercent": 20.899958469238022
+        },
+        {
+          "issuer": "21040",
+          "cases": 3,
+          "macroErrorPercent": 96.22101913685634
+        },
+        {
+          "issuer": "19100",
+          "cases": 2,
+          "macroErrorPercent": 60.49965749220168
+        },
+        {
+          "issuer": "21520",
+          "cases": 3,
+          "macroErrorPercent": 31.388937883827822
+        },
+        {
+          "issuer": "12793",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "8745",
+          "cases": 3,
+          "macroErrorPercent": 21.809275159873152
+        },
+        {
+          "issuer": "24490",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "22357",
+          "cases": 3,
+          "macroErrorPercent": 106.26075079746253
+        },
+        {
+          "issuer": "24392",
+          "cases": 3,
+          "macroErrorPercent": 65.14459049772215
+        },
+        {
+          "issuer": "22349",
+          "cases": 3,
+          "macroErrorPercent": 79.41437231339391
+        },
+        {
+          "issuer": "17671",
+          "cases": 3,
+          "macroErrorPercent": 12.93352913180257
+        },
+        {
+          "issuer": "16659",
+          "cases": 3,
+          "macroErrorPercent": 20.465363549661163
+        },
+        {
+          "issuer": "12823",
+          "cases": 3,
+          "macroErrorPercent": 38.96069114861716
+        },
+        {
+          "issuer": "20931",
+          "cases": 3,
+          "macroErrorPercent": 48.902062874124105
+        },
+        {
+          "issuer": "19330",
+          "cases": 3,
+          "macroErrorPercent": 10.82953231399401
+        },
+        {
+          "issuer": "19879",
+          "cases": 3,
+          "macroErrorPercent": 11.649216814347392
+        },
+        {
+          "issuer": "10456",
+          "cases": 3,
+          "macroErrorPercent": 14.987881987608043
+        },
+        {
+          "issuer": "24171",
+          "cases": 2,
+          "macroErrorPercent": 15.87904298544434
+        },
+        {
+          "issuer": "24627",
+          "cases": 3,
+          "macroErrorPercent": 22.129926873090362
+        },
+        {
+          "issuer": "24546",
+          "cases": 3,
+          "macroErrorPercent": 25.16437987233222
+        },
+        {
+          "issuer": "23302",
+          "cases": 3,
+          "macroErrorPercent": 32.87635244099851
+        },
+        {
+          "issuer": "8656",
+          "cases": 3,
+          "macroErrorPercent": 26.11010039757431
+        },
+        {
+          "issuer": "4669",
+          "cases": 3,
+          "macroErrorPercent": 5.573132800540403
+        },
+        {
+          "issuer": "2100",
+          "cases": 3,
+          "macroErrorPercent": 44.643687915836736
+        },
+        {
+          "issuer": "7510",
+          "cases": 3,
+          "macroErrorPercent": 37.34746865270136
+        },
+        {
+          "issuer": "24716",
+          "cases": 2,
+          "macroErrorPercent": 54.318698007974064
+        },
+        {
+          "issuer": "7544",
+          "cases": 3,
+          "macroErrorPercent": 53.156864480059475
+        },
+        {
+          "issuer": "24090",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "19739",
+          "cases": 3,
+          "macroErrorPercent": 60.23956776188538
+        },
+        {
+          "issuer": "1520",
+          "cases": 3,
+          "macroErrorPercent": 68.36193335426861
+        },
+        {
+          "issuer": "20320",
+          "cases": 3,
+          "macroErrorPercent": 24.63215715100332
+        },
+        {
+          "issuer": "20745",
+          "cases": 3,
+          "macroErrorPercent": 38.56450802663389
+        },
+        {
+          "issuer": "20125",
+          "cases": 3,
+          "macroErrorPercent": 7.803264632211181
+        },
+        {
+          "issuer": "18465",
+          "cases": 3,
+          "macroErrorPercent": 18.89972752708168
+        },
+        {
+          "issuer": "21008",
+          "cases": 3,
+          "macroErrorPercent": 33.31462465731611
+        },
+        {
+          "issuer": "21555",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "20710",
+          "cases": 3,
+          "macroErrorPercent": 22.78157821694637
+        },
+        {
+          "issuer": "24384",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "20087",
+          "cases": 3,
+          "macroErrorPercent": 32.98316589501775
+        },
+        {
+          "issuer": "4863",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "13986",
+          "cases": 3,
+          "macroErrorPercent": 40.96893518532076
+        },
+        {
+          "issuer": "18708",
+          "cases": 3,
+          "macroErrorPercent": 89.90905511044114
+        },
+        {
+          "issuer": "20770",
+          "cases": 2,
+          "macroErrorPercent": 12.645809467748215
+        },
+        {
+          "issuer": "8753",
+          "cases": 3,
+          "macroErrorPercent": 55.99674127256456
+        },
+        {
+          "issuer": "19615",
+          "cases": 3,
+          "macroErrorPercent": 5.499291662618397
+        },
+        {
+          "issuer": "22217",
+          "cases": 2,
+          "macroErrorPercent": 60.07561383353111
+        },
+        {
+          "issuer": "4537",
+          "cases": 3,
+          "macroErrorPercent": 5.478010045379433
+        },
+        {
+          "issuer": "19453",
+          "cases": 3,
+          "macroErrorPercent": 38.49751524951593
+        },
+        {
+          "issuer": "12190",
+          "cases": 3,
+          "macroErrorPercent": 16.897434260357947
+        },
+        {
+          "issuer": "13773",
+          "cases": 3,
+          "macroErrorPercent": 10.749583194795804
+        },
+        {
+          "issuer": "18287",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "21130",
+          "cases": 3,
+          "macroErrorPercent": 27.37130428778683
+        },
+        {
+          "issuer": "24295",
+          "cases": 3,
+          "macroErrorPercent": 28.495440534275644
+        },
+        {
+          "issuer": "14133",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "7617",
+          "cases": 3,
+          "macroErrorPercent": 15.873789107260519
+        },
+        {
+          "issuer": "15458",
+          "cases": 3,
+          "macroErrorPercent": 125.52756967140843
+        },
+        {
+          "issuer": "14451",
+          "cases": 2,
+          "macroErrorPercent": 25.289721447043867
+        },
+        {
+          "issuer": "12530",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "23310",
+          "cases": 3,
+          "macroErrorPercent": 38.16793171262828
+        },
+        {
+          "issuer": "7870",
+          "cases": 3,
+          "macroErrorPercent": 25.22237698258581
+        },
+        {
+          "issuer": "20958",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "3069",
+          "cases": 3,
+          "macroErrorPercent": 59.43990834752175
+        },
+        {
+          "issuer": "20346",
+          "cases": 2,
+          "macroErrorPercent": 8.443951403340705
+        },
+        {
+          "issuer": "2453",
+          "cases": 3,
+          "macroErrorPercent": 10.413938153777135
+        },
+        {
+          "issuer": "24660",
+          "cases": 3,
+          "macroErrorPercent": 49.07624076174706
+        },
+        {
+          "issuer": "16292",
+          "cases": 3,
+          "macroErrorPercent": 5.534866382143577
+        },
+        {
+          "issuer": "14346",
+          "cases": 3,
+          "macroErrorPercent": 27.970031859777688
+        },
+        {
+          "issuer": "11207",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "80063",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "22594",
+          "cases": 1,
+          "macroErrorPercent": 42.661417972609684
+        },
+        {
+          "issuer": "15253",
+          "cases": 1,
+          "macroErrorPercent": 10.018641915948072
+        },
+        {
+          "issuer": "21202",
+          "cases": 3,
+          "macroErrorPercent": 19.52436346354919
+        }
+      ]
+    },
+    {
+      "horizon": 3,
+      "attempted": 360,
+      "scored": 260,
+      "excluded": 100,
+      "pairedCases": 260,
+      "pairedIssuers": 98,
+      "exclusions": {
+        "five_consecutive_available_positive_annuals_required": 74,
+        "missing_retained_target": 26
+      },
+      "status": "qualified_in_fresh_issuer_cohort",
+      "gates": [
+        {
+          "name": "30 paired issuers",
+          "pass": true
+        },
+        {
+          "name": "100 paired cases",
+          "pass": true
+        },
+        {
+          "name": "60% scored coverage",
+          "pass": true
+        },
+        {
+          "name": "Six sectors with three issuers",
+          "pass": true
+        },
+        {
+          "name": "5% lower macro error than legacy",
+          "pass": true
+        },
+        {
+          "name": "No more than 5% worse than naive",
+          "pass": true
+        }
+      ],
+      "scores": [
+        {
+          "model": "bounded_v3",
+          "count": 260,
+          "issuerCount": 98,
+          "macroScaledAbsoluteErrorPercent": 56.164348045877134,
+          "meanScaledAbsoluteErrorPercent": 55.65198520567411,
+          "medianScaledAbsoluteErrorPercent": 40.29046212568241,
+          "mapePercent": 370.95091204237804
+        },
+        {
+          "model": "naive",
+          "count": 260,
+          "issuerCount": 98,
+          "macroScaledAbsoluteErrorPercent": 56.95964296483298,
+          "meanScaledAbsoluteErrorPercent": 56.43510781777788,
+          "medianScaledAbsoluteErrorPercent": 36.026154332960054,
+          "mapePercent": 227.9416815558378
+        },
+        {
+          "model": "legacy",
+          "count": 260,
+          "issuerCount": 98,
+          "macroScaledAbsoluteErrorPercent": 274232.570932976,
+          "meanScaledAbsoluteErrorPercent": 206796.211858221,
+          "medianScaledAbsoluteErrorPercent": 66.13215922950099,
+          "mapePercent": 522.9198733148231
+        },
+        {
+          "model": "adaptive_v2",
+          "count": 260,
+          "issuerCount": 98,
+          "macroScaledAbsoluteErrorPercent": 59.64297199066779,
+          "meanScaledAbsoluteErrorPercent": 59.93583366433084,
+          "medianScaledAbsoluteErrorPercent": 33.13639191071114,
+          "mapePercent": 232.08013635474825
+        }
+      ],
+      "sectors": [
+        {
+          "sector": "Agricultura (Açúcar, Álcool e Cana)",
+          "testIssuers": 2,
+          "cases": 6,
+          "evidence": "sparse",
+          "macroErrorPercent": 74.2378260563177
+        },
+        {
+          "sector": "Alimentos",
+          "testIssuers": 3,
+          "cases": 8,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 33.973154790810696
+        },
+        {
+          "sector": "Bancos",
+          "testIssuers": 1,
+          "cases": 2,
+          "evidence": "sparse",
+          "macroErrorPercent": 47.623361289870225
+        },
+        {
+          "sector": "Brinquedos e Lazer",
+          "testIssuers": 0,
+          "cases": 0,
+          "evidence": "sparse",
+          "macroErrorPercent": null
+        },
+        {
+          "sector": "Comunicação e Informática",
+          "testIssuers": 0,
+          "cases": 0,
+          "evidence": "sparse",
+          "macroErrorPercent": null
+        },
+        {
+          "sector": "Comércio (Atacado e Varejo)",
+          "testIssuers": 9,
+          "cases": 23,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 36.98562382181787
+        },
+        {
+          "sector": "Construção Civil, Mat. Constr. e Decoração",
+          "testIssuers": 7,
+          "cases": 18,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 55.85992011832332
+        },
+        {
+          "sector": "Educação",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 33.61902694686583
+        },
+        {
+          "sector": "Emp. Adm. Part. - Agricultura (Açúcar, Álcool e Cana)",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 75.62612990080488
+        },
+        {
+          "sector": "Emp. Adm. Part. - Alimentos",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 11.398036015203024
+        },
+        {
+          "sector": "Emp. Adm. Part. - Comunicação e Informática",
+          "testIssuers": 2,
+          "cases": 5,
+          "evidence": "sparse",
+          "macroErrorPercent": 41.95690626592869
+        },
+        {
+          "sector": "Emp. Adm. Part. - Comércio (Atacado e Varejo)",
+          "testIssuers": 2,
+          "cases": 5,
+          "evidence": "sparse",
+          "macroErrorPercent": 98.46220522925049
+        },
+        {
+          "sector": "Emp. Adm. Part. - Const. Civil, Mat. Const. e Decoração",
+          "testIssuers": 6,
+          "cases": 15,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 49.54995244820415
+        },
+        {
+          "sector": "Emp. Adm. Part. - Crédito Imobiliário",
+          "testIssuers": 0,
+          "cases": 0,
+          "evidence": "sparse",
+          "macroErrorPercent": null
+        },
+        {
+          "sector": "Emp. Adm. Part. - Energia Elétrica",
+          "testIssuers": 5,
+          "cases": 12,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 16.919054911021902
+        },
+        {
+          "sector": "Emp. Adm. Part. - Intermediação Financeira",
+          "testIssuers": 2,
+          "cases": 4,
+          "evidence": "sparse",
+          "macroErrorPercent": 55.62293578343187
+        },
+        {
+          "sector": "Emp. Adm. Part. - Metalurgia e Siderurgia",
+          "testIssuers": 2,
+          "cases": 6,
+          "evidence": "sparse",
+          "macroErrorPercent": 56.25448998773628
+        },
+        {
+          "sector": "Emp. Adm. Part. - Máqs., Equip., Veíc. e Peças",
+          "testIssuers": 2,
+          "cases": 5,
+          "evidence": "sparse",
+          "macroErrorPercent": 31.219209912112962
+        },
+        {
+          "sector": "Emp. Adm. Part. - Petróleo e Gás",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 33.1159479369675
+        },
+        {
+          "sector": "Emp. Adm. Part. - Seguradoras e Corretoras",
+          "testIssuers": 1,
+          "cases": 2,
+          "evidence": "sparse",
+          "macroErrorPercent": 146.82869052190495
+        },
+        {
+          "sector": "Emp. Adm. Part. - Sem Setor Principal",
+          "testIssuers": 5,
+          "cases": 12,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 120.98274800318629
+        },
+        {
+          "sector": "Emp. Adm. Part. - Serviços Transporte e Logística",
+          "testIssuers": 3,
+          "cases": 8,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 74.51191048507275
+        },
+        {
+          "sector": "Emp. Adm. Part. - Serviços médicos",
+          "testIssuers": 0,
+          "cases": 0,
+          "evidence": "sparse",
+          "macroErrorPercent": null
+        },
+        {
+          "sector": "Energia Elétrica",
+          "testIssuers": 7,
+          "cases": 18,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 39.38442443255409
+        },
+        {
+          "sector": "Farmacêutico e Higiene",
+          "testIssuers": 2,
+          "cases": 5,
+          "evidence": "sparse",
+          "macroErrorPercent": 31.533978895158533
+        },
+        {
+          "sector": "Hospedagem e Turismo",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 63.8696149003316
+        },
+        {
+          "sector": "Metalurgia e Siderurgia",
+          "testIssuers": 2,
+          "cases": 6,
+          "evidence": "sparse",
+          "macroErrorPercent": 60.02274861330914
+        },
+        {
+          "sector": "Máquinas, Equipamentos, Veículos e Peças",
+          "testIssuers": 4,
+          "cases": 12,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 54.25472540561612
+        },
+        {
+          "sector": "Papel e Celulose",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 48.304222506136334
+        },
+        {
+          "sector": "Petroquímicos e Borracha",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 52.52246917088006
+        },
+        {
+          "sector": "Petróleo e Gás",
+          "testIssuers": 2,
+          "cases": 6,
+          "evidence": "sparse",
+          "macroErrorPercent": 147.85394830267163
+        },
+        {
+          "sector": "Saneamento, Serv. Água e Gás",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 14.10792974065657
+        },
+        {
+          "sector": "Securitização de Recebíveis",
+          "testIssuers": 0,
+          "cases": 0,
+          "evidence": "sparse",
+          "macroErrorPercent": null
+        },
+        {
+          "sector": "Seguradoras e Corretoras",
+          "testIssuers": 2,
+          "cases": 6,
+          "evidence": "sparse",
+          "macroErrorPercent": 39.41496751283437
+        },
+        {
+          "sector": "Serviços Médicos",
+          "testIssuers": 2,
+          "cases": 5,
+          "evidence": "sparse",
+          "macroErrorPercent": 46.73511355281164
+        },
+        {
+          "sector": "Serviços Transporte e Logística",
+          "testIssuers": 8,
+          "cases": 21,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 70.4733110012856
+        },
+        {
+          "sector": "Telecomunicações",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 19.663209082104437
+        },
+        {
+          "sector": "Têxtil e Vestuário",
+          "testIssuers": 8,
+          "cases": 23,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 62.26855866099229
+        },
+        {
+          "sector": "Unclassified",
+          "testIssuers": 0,
+          "cases": 0,
+          "evidence": "sparse",
+          "macroErrorPercent": null
+        }
+      ],
+      "intervalCount": 260,
+      "intervalCoveragePercent": 71.53846153846153,
+      "medianIntervalWidthPercent": 132.4574340500118,
+      "meanIntervalWidthPercent": 131.2983121863612,
+      "intervalUsefulness": "not_established",
+      "winsTiesLossesVsV2": {
+        "wins": 125,
+        "ties": 0,
+        "losses": 135
+      },
+      "worstCases": [
+        {
+          "issuer": "22187",
+          "name": "PRIO S.A.",
+          "sector": "Petróleo e Gás",
+          "horizon": 3,
+          "targetYear": 2023,
+          "origin": "2021-07-01",
+          "status": "scored",
+          "reason": null,
+          "trainingIds": [
+            "CVM-22187-2010-v3",
+            "CVM-22187-2011-v2",
+            "CVM-22187-2012-v1",
+            "CVM-22187-2013-v2",
+            "CVM-22187-2014-v1",
+            "CVM-22187-2015-v1",
+            "CVM-22187-2016-v2",
+            "CVM-22187-2017-v2",
+            "CVM-22187-2018-v1",
+            "CVM-22187-2019-v3",
+            "CVM-22187-2020-v1"
+          ],
+          "targetId": "CVM-22187-2023-v1",
+          "base": 1904.185,
+          "actual": 11905.041,
+          "predictions": {
+            "bounded_v3": 3282.2342134330315,
+            "naive": 1904.185,
+            "legacy": 2777.8148823080037,
+            "adaptive_v2": 1904.185
+          },
+          "interval": {
+            "lower": 2178.3974006338767,
+            "upper": 4386.071026232186,
+            "nominalPercent": 80
+          },
+          "calibrationPool": "development-only:2021-07-01:h3",
+          "boundsApplied": true
+        },
+        {
+          "issuer": "13781",
+          "name": "SAO CARLOS EMPREEND E PARTICIPACOES S.A.",
+          "sector": "Emp. Adm. Part. - Sem Setor Principal",
+          "horizon": 3,
+          "targetYear": 2023,
+          "origin": "2021-07-01",
+          "status": "scored",
+          "reason": null,
+          "trainingIds": [
+            "CVM-13781-2010-v1",
+            "CVM-13781-2011-v1",
+            "CVM-13781-2012-v1",
+            "CVM-13781-2013-v1",
+            "CVM-13781-2014-v1",
+            "CVM-13781-2015-v1",
+            "CVM-13781-2016-v1",
+            "CVM-13781-2017-v1",
+            "CVM-13781-2018-v1",
+            "CVM-13781-2019-v1",
+            "CVM-13781-2020-v1"
+          ],
+          "targetId": "CVM-13781-2023-v1",
+          "base": 339.364,
+          "actual": 1400.006,
+          "predictions": {
+            "bounded_v3": 294.4527129790202,
+            "naive": 339.364,
+            "legacy": 268.216332199586,
+            "adaptive_v2": 339.364
+          },
+          "interval": {
+            "lower": 97.72682965425273,
+            "upper": 491.1785963037877,
+            "nominalPercent": 80
+          },
+          "calibrationPool": "development-only:2021-07-01:h3",
+          "boundsApplied": false
+        },
+        {
+          "issuer": "4723",
+          "name": "CONSTRUTORA ADOLPHO LINDENBERG S.A.",
+          "sector": "Construção Civil, Mat. Constr. e Decoração",
+          "horizon": 3,
+          "targetYear": 2023,
+          "origin": "2021-07-01",
+          "status": "scored",
+          "reason": null,
+          "trainingIds": [
+            "CVM-4723-2010-v2",
+            "CVM-4723-2011-v2",
+            "CVM-4723-2012-v4",
+            "CVM-4723-2013-v2",
+            "CVM-4723-2014-v1",
+            "CVM-4723-2015-v1",
+            "CVM-4723-2016-v1",
+            "CVM-4723-2017-v1",
+            "CVM-4723-2018-v1",
+            "CVM-4723-2019-v1",
+            "CVM-4723-2020-v1"
+          ],
+          "targetId": "CVM-4723-2023-v1",
+          "base": 30.039,
+          "actual": 95.712,
+          "predictions": {
+            "bounded_v3": 17.42709649650223,
+            "naive": 30.039,
+            "legacy": 7751.428248113027,
+            "adaptive_v2": 30.039
+          },
+          "interval": {
+            "lower": 0.01379158144733239,
+            "upper": 34.840401411557124,
+            "nominalPercent": 80
+          },
+          "calibrationPool": "development-only:2021-07-01:h3",
+          "boundsApplied": true
+        },
+        {
+          "issuer": "22357",
+          "name": "ALLOS S.A.",
+          "sector": "Emp. Adm. Part. - Comércio (Atacado e Varejo)",
+          "horizon": 3,
+          "targetYear": 2023,
+          "origin": "2021-07-01",
+          "status": "scored",
+          "reason": null,
+          "trainingIds": [
+            "CVM-22357-2010-v2",
+            "CVM-22357-2011-v2",
+            "CVM-22357-2012-v1",
+            "CVM-22357-2013-v2",
+            "CVM-22357-2014-v1",
+            "CVM-22357-2015-v1",
+            "CVM-22357-2016-v1",
+            "CVM-22357-2017-v1",
+            "CVM-22357-2018-v2",
+            "CVM-22357-2019-v1",
+            "CVM-22357-2020-v1"
+          ],
+          "targetId": "CVM-22357-2023-v1",
+          "base": 797.585,
+          "actual": 2712.274,
+          "predictions": {
+            "bounded_v3": 907.3476592864642,
+            "naive": 797.585,
+            "legacy": 955.76096901331,
+            "adaptive_v2": 981.3578
+          },
+          "interval": {
+            "lower": 444.9956901571969,
+            "upper": 1369.6996284157317,
+            "nominalPercent": 80
+          },
+          "calibrationPool": "development-only:2021-07-01:h3",
+          "boundsApplied": false
+        },
+        {
+          "issuer": "22217",
+          "name": "ALPER CONSULTORIA E CORRETORA DE SEGUROS S.A.",
+          "sector": "Emp. Adm. Part. - Seguradoras e Corretoras",
+          "horizon": 3,
+          "targetYear": 2023,
+          "origin": "2021-07-01",
+          "status": "scored",
+          "reason": null,
+          "trainingIds": [
+            "CVM-22217-2010-v4",
+            "CVM-22217-2011-v2",
+            "CVM-22217-2012-v1",
+            "CVM-22217-2013-v1",
+            "CVM-22217-2014-v1",
+            "CVM-22217-2015-v2",
+            "CVM-22217-2016-v3",
+            "CVM-22217-2017-v1",
+            "CVM-22217-2018-v1",
+            "CVM-22217-2019-v2",
+            "CVM-22217-2020-v1"
+          ],
+          "targetId": "CVM-22217-2023-v1",
+          "base": 104.06,
+          "actual": 319.205,
+          "predictions": {
+            "bounded_v3": 88.1802301184064,
+            "naive": 104.06,
+            "legacy": 146.3789881028961,
+            "adaptive_v2": 104.06
+          },
+          "interval": {
+            "lower": 27.857699093385165,
+            "upper": 148.50276114342762,
+            "nominalPercent": 80
+          },
+          "calibrationPool": "development-only:2021-07-01:h3",
+          "boundsApplied": false
+        }
+      ],
+      "byIssuer": [
+        {
+          "issuer": "20800",
+          "cases": 3,
+          "macroErrorPercent": 56.25154109765131
+        },
+        {
+          "issuer": "19763",
+          "cases": 3,
+          "macroErrorPercent": 18.737907127820165
+        },
+        {
+          "issuer": "17892",
+          "cases": 2,
+          "macroErrorPercent": 103.8658260230969
+        },
+        {
+          "issuer": "4723",
+          "cases": 3,
+          "macroErrorPercent": 126.07572662552099
+        },
+        {
+          "issuer": "3298",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "20915",
+          "cases": 1,
+          "macroErrorPercent": 19.34710612549538
+        },
+        {
+          "issuer": "21350",
+          "cases": 2,
+          "macroErrorPercent": 43.637054796788775
+        },
+        {
+          "issuer": "21180",
+          "cases": 2,
+          "macroErrorPercent": 68.84744557248621
+        },
+        {
+          "issuer": "10880",
+          "cases": 3,
+          "macroErrorPercent": 102.32251586090584
+        },
+        {
+          "issuer": "24120",
+          "cases": 2,
+          "macroErrorPercent": 11.184215372461848
+        },
+        {
+          "issuer": "9512",
+          "cases": 3,
+          "macroErrorPercent": 69.15198153147672
+        },
+        {
+          "issuer": "22020",
+          "cases": 3,
+          "macroErrorPercent": 74.43539351973313
+        },
+        {
+          "issuer": "24473",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "20370",
+          "cases": 3,
+          "macroErrorPercent": 30.80029305989139
+        },
+        {
+          "issuer": "3158",
+          "cases": 2,
+          "macroErrorPercent": 79.87200871466116
+        },
+        {
+          "issuer": "14311",
+          "cases": 3,
+          "macroErrorPercent": 11.589999484531335
+        },
+        {
+          "issuer": "22497",
+          "cases": 3,
+          "macroErrorPercent": 28.615690930978953
+        },
+        {
+          "issuer": "23493",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "14761",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "15539",
+          "cases": 3,
+          "macroErrorPercent": 24.825228685953142
+        },
+        {
+          "issuer": "24694",
+          "cases": 1,
+          "macroErrorPercent": 23.34048006859213
+        },
+        {
+          "issuer": "20990",
+          "cases": 2,
+          "macroErrorPercent": 53.00043556059634
+        },
+        {
+          "issuer": "15083",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "8893",
+          "cases": 2,
+          "macroErrorPercent": 69.01374936510581
+        },
+        {
+          "issuer": "11070",
+          "cases": 3,
+          "macroErrorPercent": 39.99522692844728
+        },
+        {
+          "issuer": "22500",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "1597",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "13781",
+          "cases": 2,
+          "macroErrorPercent": 211.34971299306525
+        },
+        {
+          "issuer": "23965",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "1384",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "5258",
+          "cases": 3,
+          "macroErrorPercent": 11.708202256463334
+        },
+        {
+          "issuer": "22187",
+          "cases": 3,
+          "macroErrorPercent": 226.55591507386652
+        },
+        {
+          "issuer": "21156",
+          "cases": 2,
+          "macroErrorPercent": 21.833738683348784
+        },
+        {
+          "issuer": "22780",
+          "cases": 3,
+          "macroErrorPercent": 21.489199781700826
+        },
+        {
+          "issuer": "24201",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "4707",
+          "cases": 1,
+          "macroErrorPercent": 93.08500169071067
+        },
+        {
+          "issuer": "18775",
+          "cases": 3,
+          "macroErrorPercent": 93.8344737537923
+        },
+        {
+          "issuer": "8192",
+          "cases": 3,
+          "macroErrorPercent": 9.818367101483844
+        },
+        {
+          "issuer": "20257",
+          "cases": 3,
+          "macroErrorPercent": 33.58840584966825
+        },
+        {
+          "issuer": "22519",
+          "cases": 3,
+          "macroErrorPercent": 43.08863921209219
+        },
+        {
+          "issuer": "23221",
+          "cases": 3,
+          "macroErrorPercent": 33.61902694686583
+        },
+        {
+          "issuer": "19836",
+          "cases": 3,
+          "macroErrorPercent": 87.56284545868556
+        },
+        {
+          "issuer": "20877",
+          "cases": 3,
+          "macroErrorPercent": 48.072032671165
+        },
+        {
+          "issuer": "19445",
+          "cases": 3,
+          "macroErrorPercent": 14.10792974065657
+        },
+        {
+          "issuer": "23574",
+          "cases": 3,
+          "macroErrorPercent": 51.55527658166373
+        },
+        {
+          "issuer": "21199",
+          "cases": 2,
+          "macroErrorPercent": 47.623361289870225
+        },
+        {
+          "issuer": "6505",
+          "cases": 3,
+          "macroErrorPercent": 19.899561931861122
+        },
+        {
+          "issuer": "23957",
+          "cases": 2,
+          "macroErrorPercent": 96.32580576421775
+        },
+        {
+          "issuer": "22560",
+          "cases": 3,
+          "macroErrorPercent": 47.52349804346292
+        },
+        {
+          "issuer": "21040",
+          "cases": 3,
+          "macroErrorPercent": 41.06581375600996
+        },
+        {
+          "issuer": "19100",
+          "cases": 2,
+          "macroErrorPercent": 26.979078562466714
+        },
+        {
+          "issuer": "21520",
+          "cases": 3,
+          "macroErrorPercent": 57.862962334188396
+        },
+        {
+          "issuer": "12793",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "8745",
+          "cases": 3,
+          "macroErrorPercent": 52.52246917088006
+        },
+        {
+          "issuer": "24490",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "22357",
+          "cases": 3,
+          "macroErrorPercent": 169.51335888973216
+        },
+        {
+          "issuer": "24392",
+          "cases": 2,
+          "macroErrorPercent": 83.25374932118908
+        },
+        {
+          "issuer": "22349",
+          "cases": 3,
+          "macroErrorPercent": 161.8702880047879
+        },
+        {
+          "issuer": "17671",
+          "cases": 3,
+          "macroErrorPercent": 19.663209082104437
+        },
+        {
+          "issuer": "16659",
+          "cases": 3,
+          "macroErrorPercent": 50.21424409468979
+        },
+        {
+          "issuer": "12823",
+          "cases": 3,
+          "macroErrorPercent": 75.62612990080488
+        },
+        {
+          "issuer": "20931",
+          "cases": 3,
+          "macroErrorPercent": 28.53044910741958
+        },
+        {
+          "issuer": "19330",
+          "cases": 3,
+          "macroErrorPercent": 25.835431678328984
+        },
+        {
+          "issuer": "19879",
+          "cases": 3,
+          "macroErrorPercent": 13.31165545561974
+        },
+        {
+          "issuer": "10456",
+          "cases": 3,
+          "macroErrorPercent": 13.824095552663913
+        },
+        {
+          "issuer": "24171",
+          "cases": 2,
+          "macroErrorPercent": 27.41105156876883
+        },
+        {
+          "issuer": "24627",
+          "cases": 2,
+          "macroErrorPercent": 37.48050896967187
+        },
+        {
+          "issuer": "24546",
+          "cases": 2,
+          "macroErrorPercent": 22.443192895778637
+        },
+        {
+          "issuer": "23302",
+          "cases": 3,
+          "macroErrorPercent": 56.93473396939065
+        },
+        {
+          "issuer": "8656",
+          "cases": 3,
+          "macroErrorPercent": 48.98253037248339
+        },
+        {
+          "issuer": "4669",
+          "cases": 3,
+          "macroErrorPercent": 11.917542538480761
+        },
+        {
+          "issuer": "2100",
+          "cases": 3,
+          "macroErrorPercent": 102.15717966533664
+        },
+        {
+          "issuer": "7510",
+          "cases": 3,
+          "macroErrorPercent": 36.813936926972744
+        },
+        {
+          "issuer": "24716",
+          "cases": 1,
+          "macroErrorPercent": 55.22763052591751
+        },
+        {
+          "issuer": "7544",
+          "cases": 3,
+          "macroErrorPercent": 62.90567963370102
+        },
+        {
+          "issuer": "24090",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "19739",
+          "cases": 3,
+          "macroErrorPercent": 113.3775971786805
+        },
+        {
+          "issuer": "1520",
+          "cases": 3,
+          "macroErrorPercent": 95.06457349114811
+        },
+        {
+          "issuer": "20320",
+          "cases": 3,
+          "macroErrorPercent": 27.56782817617818
+        },
+        {
+          "issuer": "20745",
+          "cases": 3,
+          "macroErrorPercent": 60.91280665394986
+        },
+        {
+          "issuer": "20125",
+          "cases": 3,
+          "macroErrorPercent": 10.216477784434206
+        },
+        {
+          "issuer": "18465",
+          "cases": 3,
+          "macroErrorPercent": 33.1159479369675
+        },
+        {
+          "issuer": "21008",
+          "cases": 3,
+          "macroErrorPercent": 77.40542512764405
+        },
+        {
+          "issuer": "21555",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "20710",
+          "cases": 3,
+          "macroErrorPercent": 59.780136411692965
+        },
+        {
+          "issuer": "24384",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "20087",
+          "cases": 3,
+          "macroErrorPercent": 52.99807838358584
+        },
+        {
+          "issuer": "4863",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "13986",
+          "cases": 3,
+          "macroErrorPercent": 48.304222506136334
+        },
+        {
+          "issuer": "18708",
+          "cases": 3,
+          "macroErrorPercent": 143.76441047773213
+        },
+        {
+          "issuer": "20770",
+          "cases": 2,
+          "macroErrorPercent": 23.63629782468107
+        },
+        {
+          "issuer": "8753",
+          "cases": 3,
+          "macroErrorPercent": 60.54700382658423
+        },
+        {
+          "issuer": "19615",
+          "cases": 3,
+          "macroErrorPercent": 18.078177134843973
+        },
+        {
+          "issuer": "22217",
+          "cases": 2,
+          "macroErrorPercent": 146.82869052190495
+        },
+        {
+          "issuer": "4537",
+          "cases": 3,
+          "macroErrorPercent": 18.432224528124543
+        },
+        {
+          "issuer": "19453",
+          "cases": 3,
+          "macroErrorPercent": 80.27529019752588
+        },
+        {
+          "issuer": "12190",
+          "cases": 3,
+          "macroErrorPercent": 25.587448820645193
+        },
+        {
+          "issuer": "13773",
+          "cases": 3,
+          "macroErrorPercent": 30.075804966686498
+        },
+        {
+          "issuer": "18287",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "21130",
+          "cases": 3,
+          "macroErrorPercent": 36.624058711938495
+        },
+        {
+          "issuer": "24295",
+          "cases": 3,
+          "macroErrorPercent": 60.86497171227653
+        },
+        {
+          "issuer": "14133",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "7617",
+          "cases": 3,
+          "macroErrorPercent": 18.160869876153075
+        },
+        {
+          "issuer": "15458",
+          "cases": 2,
+          "macroErrorPercent": 170.96750007854445
+        },
+        {
+          "issuer": "14451",
+          "cases": 2,
+          "macroErrorPercent": 59.55880897320978
+        },
+        {
+          "issuer": "12530",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "23310",
+          "cases": 3,
+          "macroErrorPercent": 63.8696149003316
+        },
+        {
+          "issuer": "7870",
+          "cases": 3,
+          "macroErrorPercent": 63.526449602989175
+        },
+        {
+          "issuer": "20958",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "3069",
+          "cases": 3,
+          "macroErrorPercent": 59.498493400034036
+        },
+        {
+          "issuer": "20346",
+          "cases": 2,
+          "macroErrorPercent": 25.130673998710627
+        },
+        {
+          "issuer": "2453",
+          "cases": 3,
+          "macroErrorPercent": 25.613474256094015
+        },
+        {
+          "issuer": "24660",
+          "cases": 2,
+          "macroErrorPercent": 77.66730860603404
+        },
+        {
+          "issuer": "16292",
+          "cases": 3,
+          "macroErrorPercent": 11.398036015203024
+        },
+        {
+          "issuer": "14346",
+          "cases": 3,
+          "macroErrorPercent": 32.14231282075777
+        },
+        {
+          "issuer": "11207",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "80063",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "22594",
+          "cases": 1,
+          "macroErrorPercent": 74.75999067585681
+        },
+        {
+          "issuer": "15253",
+          "cases": 1,
+          "macroErrorPercent": 1.6857691914065387
+        },
+        {
+          "issuer": "21202",
+          "cases": 3,
+          "macroErrorPercent": 46.77159047304937
+        }
+      ]
+    },
+    {
+      "horizon": 4,
+      "attempted": 360,
+      "scored": 253,
+      "excluded": 107,
+      "pairedCases": 253,
+      "pairedIssuers": 96,
+      "exclusions": {
+        "changed_target_currency_or_definition": 2,
+        "five_consecutive_available_positive_annuals_required": 73,
+        "missing_retained_target": 32
+      },
+      "status": "qualified_in_fresh_issuer_cohort",
+      "gates": [
+        {
+          "name": "30 paired issuers",
+          "pass": true
+        },
+        {
+          "name": "100 paired cases",
+          "pass": true
+        },
+        {
+          "name": "60% scored coverage",
+          "pass": true
+        },
+        {
+          "name": "Six sectors with three issuers",
+          "pass": true
+        },
+        {
+          "name": "5% lower macro error than legacy",
+          "pass": true
+        },
+        {
+          "name": "No more than 5% worse than naive",
+          "pass": true
+        }
+      ],
+      "scores": [
+        {
+          "model": "bounded_v3",
+          "count": 253,
+          "issuerCount": 96,
+          "macroScaledAbsoluteErrorPercent": 83.12844130192322,
+          "meanScaledAbsoluteErrorPercent": 82.37784351071251,
+          "medianScaledAbsoluteErrorPercent": 52.075064673660975,
+          "mapePercent": 516.0204349912759
+        },
+        {
+          "model": "naive",
+          "count": 253,
+          "issuerCount": 96,
+          "macroScaledAbsoluteErrorPercent": 86.36016680665223,
+          "meanScaledAbsoluteErrorPercent": 85.6823800454319,
+          "medianScaledAbsoluteErrorPercent": 54.26153958483177,
+          "mapePercent": 294.27586255305897
+        },
+        {
+          "model": "legacy",
+          "count": 253,
+          "issuerCount": 96,
+          "macroScaledAbsoluteErrorPercent": 14963764.599303491,
+          "meanScaledAbsoluteErrorPercent": 11356115.598226165,
+          "medianScaledAbsoluteErrorPercent": 80.2172091987094,
+          "mapePercent": 2930.8297190035046
+        },
+        {
+          "model": "adaptive_v2",
+          "count": 253,
+          "issuerCount": 96,
+          "macroScaledAbsoluteErrorPercent": 86.02521017040998,
+          "meanScaledAbsoluteErrorPercent": 85.55471792032996,
+          "medianScaledAbsoluteErrorPercent": 52.16919739696313,
+          "mapePercent": 245.593796860273
+        }
+      ],
+      "sectors": [
+        {
+          "sector": "Agricultura (Açúcar, Álcool e Cana)",
+          "testIssuers": 2,
+          "cases": 6,
+          "evidence": "sparse",
+          "macroErrorPercent": 102.8260471488147
+        },
+        {
+          "sector": "Alimentos",
+          "testIssuers": 3,
+          "cases": 7,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 30.14661148057592
+        },
+        {
+          "sector": "Bancos",
+          "testIssuers": 1,
+          "cases": 2,
+          "evidence": "sparse",
+          "macroErrorPercent": 50.34702729013
+        },
+        {
+          "sector": "Brinquedos e Lazer",
+          "testIssuers": 0,
+          "cases": 0,
+          "evidence": "sparse",
+          "macroErrorPercent": null
+        },
+        {
+          "sector": "Comunicação e Informática",
+          "testIssuers": 0,
+          "cases": 0,
+          "evidence": "sparse",
+          "macroErrorPercent": null
+        },
+        {
+          "sector": "Comércio (Atacado e Varejo)",
+          "testIssuers": 8,
+          "cases": 23,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 54.01671917788269
+        },
+        {
+          "sector": "Construção Civil, Mat. Constr. e Decoração",
+          "testIssuers": 7,
+          "cases": 20,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 206.001995983282
+        },
+        {
+          "sector": "Educação",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 37.93239564180942
+        },
+        {
+          "sector": "Emp. Adm. Part. - Agricultura (Açúcar, Álcool e Cana)",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 74.53821184766217
+        },
+        {
+          "sector": "Emp. Adm. Part. - Alimentos",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 29.028752820135335
+        },
+        {
+          "sector": "Emp. Adm. Part. - Comunicação e Informática",
+          "testIssuers": 2,
+          "cases": 6,
+          "evidence": "sparse",
+          "macroErrorPercent": 54.53825718787002
+        },
+        {
+          "sector": "Emp. Adm. Part. - Comércio (Atacado e Varejo)",
+          "testIssuers": 2,
+          "cases": 4,
+          "evidence": "sparse",
+          "macroErrorPercent": 126.43268223570476
+        },
+        {
+          "sector": "Emp. Adm. Part. - Const. Civil, Mat. Const. e Decoração",
+          "testIssuers": 6,
+          "cases": 17,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 66.58355979403234
+        },
+        {
+          "sector": "Emp. Adm. Part. - Crédito Imobiliário",
+          "testIssuers": 0,
+          "cases": 0,
+          "evidence": "sparse",
+          "macroErrorPercent": null
+        },
+        {
+          "sector": "Emp. Adm. Part. - Energia Elétrica",
+          "testIssuers": 5,
+          "cases": 12,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 21.651863276340315
+        },
+        {
+          "sector": "Emp. Adm. Part. - Intermediação Financeira",
+          "testIssuers": 2,
+          "cases": 4,
+          "evidence": "sparse",
+          "macroErrorPercent": 77.53982160791584
+        },
+        {
+          "sector": "Emp. Adm. Part. - Metalurgia e Siderurgia",
+          "testIssuers": 2,
+          "cases": 5,
+          "evidence": "sparse",
+          "macroErrorPercent": 71.90814911001328
+        },
+        {
+          "sector": "Emp. Adm. Part. - Máqs., Equip., Veíc. e Peças",
+          "testIssuers": 2,
+          "cases": 4,
+          "evidence": "sparse",
+          "macroErrorPercent": 65.96082144071251
+        },
+        {
+          "sector": "Emp. Adm. Part. - Petróleo e Gás",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 35.83495354413552
+        },
+        {
+          "sector": "Emp. Adm. Part. - Seguradoras e Corretoras",
+          "testIssuers": 1,
+          "cases": 2,
+          "evidence": "sparse",
+          "macroErrorPercent": 262.3632388836521
+        },
+        {
+          "sector": "Emp. Adm. Part. - Sem Setor Principal",
+          "testIssuers": 5,
+          "cases": 12,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 110.93476929064505
+        },
+        {
+          "sector": "Emp. Adm. Part. - Serviços Transporte e Logística",
+          "testIssuers": 3,
+          "cases": 9,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 100.04645948879482
+        },
+        {
+          "sector": "Emp. Adm. Part. - Serviços médicos",
+          "testIssuers": 0,
+          "cases": 0,
+          "evidence": "sparse",
+          "macroErrorPercent": null
+        },
+        {
+          "sector": "Energia Elétrica",
+          "testIssuers": 7,
+          "cases": 17,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 50.31242356632596
+        },
+        {
+          "sector": "Farmacêutico e Higiene",
+          "testIssuers": 2,
+          "cases": 4,
+          "evidence": "sparse",
+          "macroErrorPercent": 50.19971672576962
+        },
+        {
+          "sector": "Hospedagem e Turismo",
+          "testIssuers": 1,
+          "cases": 2,
+          "evidence": "sparse",
+          "macroErrorPercent": 66.29963926293087
+        },
+        {
+          "sector": "Metalurgia e Siderurgia",
+          "testIssuers": 2,
+          "cases": 6,
+          "evidence": "sparse",
+          "macroErrorPercent": 49.11296152215655
+        },
+        {
+          "sector": "Máquinas, Equipamentos, Veículos e Peças",
+          "testIssuers": 4,
+          "cases": 11,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 83.36932787193638
+        },
+        {
+          "sector": "Papel e Celulose",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 38.34006171550167
+        },
+        {
+          "sector": "Petroquímicos e Borracha",
+          "testIssuers": 1,
+          "cases": 2,
+          "evidence": "sparse",
+          "macroErrorPercent": 95.27426587559528
+        },
+        {
+          "sector": "Petróleo e Gás",
+          "testIssuers": 2,
+          "cases": 5,
+          "evidence": "sparse",
+          "macroErrorPercent": 213.6029953962638
+        },
+        {
+          "sector": "Saneamento, Serv. Água e Gás",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 19.245112865168682
+        },
+        {
+          "sector": "Securitização de Recebíveis",
+          "testIssuers": 0,
+          "cases": 0,
+          "evidence": "sparse",
+          "macroErrorPercent": null
+        },
+        {
+          "sector": "Seguradoras e Corretoras",
+          "testIssuers": 2,
+          "cases": 6,
+          "evidence": "sparse",
+          "macroErrorPercent": 54.17109782339866
+        },
+        {
+          "sector": "Serviços Médicos",
+          "testIssuers": 2,
+          "cases": 4,
+          "evidence": "sparse",
+          "macroErrorPercent": 76.65110501757768
+        },
+        {
+          "sector": "Serviços Transporte e Logística",
+          "testIssuers": 7,
+          "cases": 19,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 103.1711288691047
+        },
+        {
+          "sector": "Telecomunicações",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 22.366750667150328
+        },
+        {
+          "sector": "Têxtil e Vestuário",
+          "testIssuers": 8,
+          "cases": 23,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 78.48112572366641
+        },
+        {
+          "sector": "Unclassified",
+          "testIssuers": 0,
+          "cases": 0,
+          "evidence": "sparse",
+          "macroErrorPercent": null
+        }
+      ],
+      "intervalCount": 253,
+      "intervalCoveragePercent": 67.98418972332016,
+      "medianIntervalWidthPercent": 158.8086710761685,
+      "meanIntervalWidthPercent": 160.70499063643305,
+      "intervalUsefulness": "not_established",
+      "winsTiesLossesVsV2": {
+        "wins": 128,
+        "ties": 0,
+        "losses": 125
+      },
+      "worstCases": [
+        {
+          "issuer": "4723",
+          "name": "CONSTRUTORA ADOLPHO LINDENBERG S.A.",
+          "sector": "Construção Civil, Mat. Constr. e Decoração",
+          "horizon": 4,
+          "targetYear": 2023,
+          "origin": "2020-07-01",
+          "status": "scored",
+          "reason": null,
+          "trainingIds": [
+            "CVM-4723-2010-v2",
+            "CVM-4723-2011-v2",
+            "CVM-4723-2012-v4",
+            "CVM-4723-2013-v2",
+            "CVM-4723-2014-v1",
+            "CVM-4723-2015-v1",
+            "CVM-4723-2016-v1",
+            "CVM-4723-2017-v1",
+            "CVM-4723-2018-v1",
+            "CVM-4723-2019-v1"
+          ],
+          "targetId": "CVM-4723-2023-v1",
+          "base": 4.076,
+          "actual": 95.712,
+          "predictions": {
+            "bounded_v3": 2.109384814972195,
+            "naive": 4.076,
+            "legacy": 0.8989208750007078,
+            "adaptive_v2": 4.076
+          },
+          "interval": {
+            "lower": 0,
+            "upper": 5.345905531504509,
+            "nominalPercent": 80
+          },
+          "calibrationPool": "development-only:2020-07-01:h4",
+          "boundsApplied": true
+        },
+        {
+          "issuer": "22187",
+          "name": "PRIO S.A.",
+          "sector": "Petróleo e Gás",
+          "horizon": 4,
+          "targetYear": 2024,
+          "origin": "2021-07-01",
+          "status": "scored",
+          "reason": null,
+          "trainingIds": [
+            "CVM-22187-2010-v3",
+            "CVM-22187-2011-v2",
+            "CVM-22187-2012-v1",
+            "CVM-22187-2013-v2",
+            "CVM-22187-2014-v1",
+            "CVM-22187-2015-v1",
+            "CVM-22187-2016-v2",
+            "CVM-22187-2017-v2",
+            "CVM-22187-2018-v1",
+            "CVM-22187-2019-v3",
+            "CVM-22187-2020-v1"
+          ],
+          "targetId": "CVM-22187-2024-v1",
+          "base": 1904.185,
+          "actual": 14360.653,
+          "predictions": {
+            "bounded_v3": 3679.4888954840735,
+            "naive": 1904.185,
+            "legacy": 3019.206995580569,
+            "adaptive_v2": 2659.6218
+          },
+          "interval": {
+            "lower": 2167.483448818204,
+            "upper": 5191.494342149943,
+            "nominalPercent": 80
+          },
+          "calibrationPool": "development-only:2021-07-01:h4",
+          "boundsApplied": true
+        },
+        {
+          "issuer": "4723",
+          "name": "CONSTRUTORA ADOLPHO LINDENBERG S.A.",
+          "sector": "Construção Civil, Mat. Constr. e Decoração",
+          "horizon": 4,
+          "targetYear": 2025,
+          "origin": "2022-07-01",
+          "status": "scored",
+          "reason": null,
+          "trainingIds": [
+            "CVM-4723-2010-v2",
+            "CVM-4723-2011-v2",
+            "CVM-4723-2012-v4",
+            "CVM-4723-2013-v2",
+            "CVM-4723-2014-v1",
+            "CVM-4723-2015-v1",
+            "CVM-4723-2016-v1",
+            "CVM-4723-2017-v1",
+            "CVM-4723-2018-v1",
+            "CVM-4723-2019-v1",
+            "CVM-4723-2020-v1",
+            "CVM-4723-2021-v1"
+          ],
+          "targetId": "CVM-4723-2025-v1",
+          "base": 73.003,
+          "actual": 365.614,
+          "predictions": {
+            "bounded_v3": 37.78003426089676,
+            "naive": 73.003,
+            "legacy": 1405.5738983795427,
+            "adaptive_v2": 73.003
+          },
+          "interval": {
+            "lower": 0,
+            "upper": 100.52173385881585,
+            "nominalPercent": 80
+          },
+          "calibrationPool": "development-only:2022-07-01:h4",
+          "boundsApplied": true
+        },
+        {
+          "issuer": "22349",
+          "name": "AZZAS 2154 S.A.",
+          "sector": "Têxtil e Vestuário",
+          "horizon": 4,
+          "targetYear": 2024,
+          "origin": "2021-07-01",
+          "status": "scored",
+          "reason": null,
+          "trainingIds": [
+            "CVM-22349-2010-v1",
+            "CVM-22349-2011-v1",
+            "CVM-22349-2012-v1",
+            "CVM-22349-2013-v1",
+            "CVM-22349-2014-v1",
+            "CVM-22349-2015-v1",
+            "CVM-22349-2016-v3",
+            "CVM-22349-2017-v2",
+            "CVM-22349-2018-v1",
+            "CVM-22349-2019-v2",
+            "CVM-22349-2020-v2"
+          ],
+          "targetId": "CVM-22349-2024-v2",
+          "base": 1590.992,
+          "actual": 8379.753,
+          "predictions": {
+            "bounded_v3": 2107.611549289648,
+            "naive": 1590.992,
+            "legacy": 1346.9994559327254,
+            "adaptive_v2": 1998.7788
+          },
+          "interval": {
+            "lower": 844.2949232255703,
+            "upper": 3370.9281753537252,
+            "nominalPercent": 80
+          },
+          "calibrationPool": "development-only:2021-07-01:h4",
+          "boundsApplied": false
+        },
+        {
+          "issuer": "22217",
+          "name": "ALPER CONSULTORIA E CORRETORA DE SEGUROS S.A.",
+          "sector": "Emp. Adm. Part. - Seguradoras e Corretoras",
+          "horizon": 4,
+          "targetYear": 2023,
+          "origin": "2020-07-01",
+          "status": "scored",
+          "reason": null,
+          "trainingIds": [
+            "CVM-22217-2010-v4",
+            "CVM-22217-2011-v2",
+            "CVM-22217-2012-v1",
+            "CVM-22217-2013-v1",
+            "CVM-22217-2014-v1",
+            "CVM-22217-2015-v2",
+            "CVM-22217-2016-v3",
+            "CVM-22217-2017-v1",
+            "CVM-22217-2018-v1",
+            "CVM-22217-2019-v2"
+          ],
+          "targetId": "CVM-22217-2023-v1",
+          "base": 91.129,
+          "actual": 319.205,
+          "predictions": {
+            "bounded_v3": 54.96995949469425,
+            "naive": 91.129,
+            "legacy": 103.10634635611814,
+            "adaptive_v2": 91.129
+          },
+          "interval": {
+            "lower": 0,
+            "upper": 127.33033642719506,
+            "nominalPercent": 80
+          },
+          "calibrationPool": "development-only:2020-07-01:h4",
+          "boundsApplied": false
+        }
+      ],
+      "byIssuer": [
+        {
+          "issuer": "20800",
+          "cases": 3,
+          "macroErrorPercent": 62.08492402929389
+        },
+        {
+          "issuer": "19763",
+          "cases": 3,
+          "macroErrorPercent": 23.54610012600765
+        },
+        {
+          "issuer": "17892",
+          "cases": 3,
+          "macroErrorPercent": 152.6686152271094
+        },
+        {
+          "issuer": "4723",
+          "cases": 3,
+          "macroErrorPercent": 981.3074727165707
+        },
+        {
+          "issuer": "3298",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "20915",
+          "cases": 2,
+          "macroErrorPercent": 10.19196400452255
+        },
+        {
+          "issuer": "21350",
+          "cases": 3,
+          "macroErrorPercent": 96.84393920114621
+        },
+        {
+          "issuer": "21180",
+          "cases": 3,
+          "macroErrorPercent": 90.40313525148956
+        },
+        {
+          "issuer": "10880",
+          "cases": 3,
+          "macroErrorPercent": 195.89024212706008
+        },
+        {
+          "issuer": "24120",
+          "cases": 1,
+          "macroErrorPercent": 4.161534592626288
+        },
+        {
+          "issuer": "9512",
+          "cases": 3,
+          "macroErrorPercent": 66.10486169691956
+        },
+        {
+          "issuer": "22020",
+          "cases": 3,
+          "macroErrorPercent": 109.80976785693326
+        },
+        {
+          "issuer": "24473",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "20370",
+          "cases": 3,
+          "macroErrorPercent": 48.0784489861211
+        },
+        {
+          "issuer": "3158",
+          "cases": 2,
+          "macroErrorPercent": 76.91184840860605
+        },
+        {
+          "issuer": "14311",
+          "cases": 3,
+          "macroErrorPercent": 10.596755697849236
+        },
+        {
+          "issuer": "22497",
+          "cases": 3,
+          "macroErrorPercent": 35.34308276139921
+        },
+        {
+          "issuer": "23493",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "14761",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "15539",
+          "cases": 3,
+          "macroErrorPercent": 31.19009777785728
+        },
+        {
+          "issuer": "24694",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "20990",
+          "cases": 3,
+          "macroErrorPercent": 82.45717816795312
+        },
+        {
+          "issuer": "15083",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "8893",
+          "cases": 2,
+          "macroErrorPercent": 64.05317352640536
+        },
+        {
+          "issuer": "11070",
+          "cases": 3,
+          "macroErrorPercent": 84.8040651437882
+        },
+        {
+          "issuer": "22500",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "1597",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "13781",
+          "cases": 3,
+          "macroErrorPercent": 122.40359083072813
+        },
+        {
+          "issuer": "23965",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "1384",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "5258",
+          "cases": 3,
+          "macroErrorPercent": 28.82828851451052
+        },
+        {
+          "issuer": "22187",
+          "cases": 2,
+          "macroErrorPercent": 361.10112909560803
+        },
+        {
+          "issuer": "21156",
+          "cases": 1,
+          "macroErrorPercent": 15.754487174327068
+        },
+        {
+          "issuer": "22780",
+          "cases": 3,
+          "macroErrorPercent": 47.63228104181441
+        },
+        {
+          "issuer": "24201",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "4707",
+          "cases": 1,
+          "macroErrorPercent": 121.22513082743238
+        },
+        {
+          "issuer": "18775",
+          "cases": 3,
+          "macroErrorPercent": 102.37715165707311
+        },
+        {
+          "issuer": "8192",
+          "cases": 3,
+          "macroErrorPercent": 18.98150900031823
+        },
+        {
+          "issuer": "20257",
+          "cases": 3,
+          "macroErrorPercent": 35.53124676067449
+        },
+        {
+          "issuer": "22519",
+          "cases": 3,
+          "macroErrorPercent": 60.30889004552639
+        },
+        {
+          "issuer": "23221",
+          "cases": 3,
+          "macroErrorPercent": 37.93239564180942
+        },
+        {
+          "issuer": "19836",
+          "cases": 3,
+          "macroErrorPercent": 143.58828076039333
+        },
+        {
+          "issuer": "20877",
+          "cases": 3,
+          "macroErrorPercent": 50.82133997096236
+        },
+        {
+          "issuer": "19445",
+          "cases": 3,
+          "macroErrorPercent": 19.245112865168682
+        },
+        {
+          "issuer": "23574",
+          "cases": 3,
+          "macroErrorPercent": 48.97522213337503
+        },
+        {
+          "issuer": "21199",
+          "cases": 2,
+          "macroErrorPercent": 50.34702729013
+        },
+        {
+          "issuer": "6505",
+          "cases": 3,
+          "macroErrorPercent": 17.2852501769839
+        },
+        {
+          "issuer": "23957",
+          "cases": 2,
+          "macroErrorPercent": 103.90643963977443
+        },
+        {
+          "issuer": "22560",
+          "cases": 3,
+          "macroErrorPercent": 45.6722826791899
+        },
+        {
+          "issuer": "21040",
+          "cases": 3,
+          "macroErrorPercent": 97.78031094467616
+        },
+        {
+          "issuer": "19100",
+          "cases": 3,
+          "macroErrorPercent": 14.697159547220373
+        },
+        {
+          "issuer": "21520",
+          "cases": 3,
+          "macroErrorPercent": 97.37136397762333
+        },
+        {
+          "issuer": "12793",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "8745",
+          "cases": 2,
+          "macroErrorPercent": 95.27426587559528
+        },
+        {
+          "issuer": "24490",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "22357",
+          "cases": 3,
+          "macroErrorPercent": 220.44425817446657
+        },
+        {
+          "issuer": "24392",
+          "cases": 1,
+          "macroErrorPercent": 143.9301950666853
+        },
+        {
+          "issuer": "22349",
+          "cases": 3,
+          "macroErrorPercent": 274.0540359891403
+        },
+        {
+          "issuer": "17671",
+          "cases": 3,
+          "macroErrorPercent": 22.366750667150328
+        },
+        {
+          "issuer": "16659",
+          "cases": 3,
+          "macroErrorPercent": 72.99911288539812
+        },
+        {
+          "issuer": "12823",
+          "cases": 3,
+          "macroErrorPercent": 74.53821184766217
+        },
+        {
+          "issuer": "20931",
+          "cases": 3,
+          "macroErrorPercent": 25.71012513402567
+        },
+        {
+          "issuer": "19330",
+          "cases": 3,
+          "macroErrorPercent": 45.093611582201945
+        },
+        {
+          "issuer": "19879",
+          "cases": 3,
+          "macroErrorPercent": 25.53709689753299
+        },
+        {
+          "issuer": "10456",
+          "cases": 3,
+          "macroErrorPercent": 23.691485735998693
+        },
+        {
+          "issuer": "24171",
+          "cases": 1,
+          "macroErrorPercent": 32.421106296942966
+        },
+        {
+          "issuer": "24627",
+          "cases": 1,
+          "macroErrorPercent": 59.30626960999783
+        },
+        {
+          "issuer": "24546",
+          "cases": 1,
+          "macroErrorPercent": 47.11757773763684
+        },
+        {
+          "issuer": "23302",
+          "cases": 3,
+          "macroErrorPercent": 94.37935482851968
+        },
+        {
+          "issuer": "8656",
+          "cases": 3,
+          "macroErrorPercent": 61.0972272134989
+        },
+        {
+          "issuer": "4669",
+          "cases": 3,
+          "macroErrorPercent": 19.851655155657134
+        },
+        {
+          "issuer": "2100",
+          "cases": 3,
+          "macroErrorPercent": 131.76505909103804
+        },
+        {
+          "issuer": "7510",
+          "cases": 3,
+          "macroErrorPercent": 37.9971628445318
+        },
+        {
+          "issuer": "24716",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "7544",
+          "cases": 3,
+          "macroErrorPercent": 29.07107083675813
+        },
+        {
+          "issuer": "24090",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "19739",
+          "cases": 3,
+          "macroErrorPercent": 149.54823434694865
+        },
+        {
+          "issuer": "1520",
+          "cases": 2,
+          "macroErrorPercent": 142.85473383074964
+        },
+        {
+          "issuer": "20320",
+          "cases": 2,
+          "macroErrorPercent": 40.78998773175528
+        },
+        {
+          "issuer": "20745",
+          "cases": 3,
+          "macroErrorPercent": 62.06381353723604
+        },
+        {
+          "issuer": "20125",
+          "cases": 3,
+          "macroErrorPercent": 9.37201496847009
+        },
+        {
+          "issuer": "18465",
+          "cases": 3,
+          "macroErrorPercent": 35.83495354413552
+        },
+        {
+          "issuer": "21008",
+          "cases": 3,
+          "macroErrorPercent": 79.87574681523584
+        },
+        {
+          "issuer": "21555",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "20710",
+          "cases": 3,
+          "macroErrorPercent": 102.84781936406004
+        },
+        {
+          "issuer": "24384",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "20087",
+          "cases": 3,
+          "macroErrorPercent": 104.71096847040589
+        },
+        {
+          "issuer": "4863",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "13986",
+          "cases": 3,
+          "macroErrorPercent": 38.34006171550167
+        },
+        {
+          "issuer": "18708",
+          "cases": 3,
+          "macroErrorPercent": 156.25736713055727
+        },
+        {
+          "issuer": "20770",
+          "cases": 3,
+          "macroErrorPercent": 27.20842610909575
+        },
+        {
+          "issuer": "8753",
+          "cases": 3,
+          "macroErrorPercent": 44.33848799510063
+        },
+        {
+          "issuer": "19615",
+          "cases": 3,
+          "macroErrorPercent": 26.83156789294304
+        },
+        {
+          "issuer": "22217",
+          "cases": 2,
+          "macroErrorPercent": 262.3632388836521
+        },
+        {
+          "issuer": "4537",
+          "cases": 3,
+          "macroErrorPercent": 28.189682989160353
+        },
+        {
+          "issuer": "19453",
+          "cases": 3,
+          "macroErrorPercent": 124.53978712077539
+        },
+        {
+          "issuer": "12190",
+          "cases": 3,
+          "macroErrorPercent": 41.093163841541404
+        },
+        {
+          "issuer": "13773",
+          "cases": 3,
+          "macroErrorPercent": 59.326732820897554
+        },
+        {
+          "issuer": "18287",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "21130",
+          "cases": 3,
+          "macroErrorPercent": 32.12459783303706
+        },
+        {
+          "issuer": "24295",
+          "cases": 2,
+          "macroErrorPercent": 85.55343386346333
+        },
+        {
+          "issuer": "14133",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "7617",
+          "cases": 3,
+          "macroErrorPercent": 33.85451238839929
+        },
+        {
+          "issuer": "15458",
+          "cases": 1,
+          "macroErrorPercent": 192.97820596521626
+        },
+        {
+          "issuer": "14451",
+          "cases": 2,
+          "macroErrorPercent": 78.63131058460546
+        },
+        {
+          "issuer": "12530",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "23310",
+          "cases": 2,
+          "macroErrorPercent": 66.29963926293087
+        },
+        {
+          "issuer": "7870",
+          "cases": 2,
+          "macroErrorPercent": 82.71907100652768
+        },
+        {
+          "issuer": "20958",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "3069",
+          "cases": 3,
+          "macroErrorPercent": 53.887435049212485
+        },
+        {
+          "issuer": "20346",
+          "cases": 3,
+          "macroErrorPercent": 49.635282850228
+        },
+        {
+          "issuer": "2453",
+          "cases": 3,
+          "macroErrorPercent": 28.887975220496692
+        },
+        {
+          "issuer": "24660",
+          "cases": 1,
+          "macroErrorPercent": 94.02206279632536
+        },
+        {
+          "issuer": "16292",
+          "cases": 3,
+          "macroErrorPercent": 29.028752820135335
+        },
+        {
+          "issuer": "14346",
+          "cases": 3,
+          "macroErrorPercent": 47.9144463420582
+        },
+        {
+          "issuer": "11207",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "80063",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "22594",
+          "cases": 1,
+          "macroErrorPercent": 72.36347162594406
+        },
+        {
+          "issuer": "15253",
+          "cases": 2,
+          "macroErrorPercent": 11.839340353010531
+        },
+        {
+          "issuer": "21202",
+          "cases": 3,
+          "macroErrorPercent": 79.34530656939648
+        }
+      ]
+    },
+    {
+      "horizon": 5,
+      "attempted": 360,
+      "scored": 241,
+      "excluded": 119,
+      "pairedCases": 241,
+      "pairedIssuers": 90,
+      "exclusions": {
+        "changed_target_currency_or_definition": 2,
+        "five_consecutive_available_positive_annuals_required": 76,
+        "missing_retained_target": 41
+      },
+      "status": "qualified_in_fresh_issuer_cohort",
+      "gates": [
+        {
+          "name": "30 paired issuers",
+          "pass": true
+        },
+        {
+          "name": "100 paired cases",
+          "pass": true
+        },
+        {
+          "name": "60% scored coverage",
+          "pass": true
+        },
+        {
+          "name": "Six sectors with three issuers",
+          "pass": true
+        },
+        {
+          "name": "5% lower macro error than legacy",
+          "pass": true
+        },
+        {
+          "name": "No more than 5% worse than naive",
+          "pass": true
+        }
+      ],
+      "scores": [
+        {
+          "model": "bounded_v3",
+          "count": 241,
+          "issuerCount": 90,
+          "macroScaledAbsoluteErrorPercent": 113.88365808091889,
+          "meanScaledAbsoluteErrorPercent": 106.65066101889886,
+          "medianScaledAbsoluteErrorPercent": 60.61455260254939,
+          "mapePercent": 91.75606898031505
+        },
+        {
+          "model": "naive",
+          "count": 241,
+          "issuerCount": 90,
+          "macroScaledAbsoluteErrorPercent": 118.32163536208861,
+          "meanScaledAbsoluteErrorPercent": 111.6647531167804,
+          "medianScaledAbsoluteErrorPercent": 66.74605536603413,
+          "mapePercent": 122.16594330417098
+        },
+        {
+          "model": "legacy",
+          "count": 241,
+          "issuerCount": 90,
+          "macroScaledAbsoluteErrorPercent": 1723.0973254613432,
+          "meanScaledAbsoluteErrorPercent": 1867.167381246513,
+          "medianScaledAbsoluteErrorPercent": 68.0775429533996,
+          "mapePercent": 253.90728498738417
+        },
+        {
+          "model": "adaptive_v2",
+          "count": 241,
+          "issuerCount": 90,
+          "macroScaledAbsoluteErrorPercent": 122.32738912713252,
+          "meanScaledAbsoluteErrorPercent": 115.953756997299,
+          "medianScaledAbsoluteErrorPercent": 64.43690095846645,
+          "mapePercent": 84.95253279479395
+        }
+      ],
+      "sectors": [
+        {
+          "sector": "Agricultura (Açúcar, Álcool e Cana)",
+          "testIssuers": 2,
+          "cases": 6,
+          "evidence": "sparse",
+          "macroErrorPercent": 152.38936560865992
+        },
+        {
+          "sector": "Alimentos",
+          "testIssuers": 3,
+          "cases": 7,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 47.68387641865783
+        },
+        {
+          "sector": "Bancos",
+          "testIssuers": 1,
+          "cases": 2,
+          "evidence": "sparse",
+          "macroErrorPercent": 74.24908076403676
+        },
+        {
+          "sector": "Brinquedos e Lazer",
+          "testIssuers": 0,
+          "cases": 0,
+          "evidence": "sparse",
+          "macroErrorPercent": null
+        },
+        {
+          "sector": "Comunicação e Informática",
+          "testIssuers": 0,
+          "cases": 0,
+          "evidence": "sparse",
+          "macroErrorPercent": null
+        },
+        {
+          "sector": "Comércio (Atacado e Varejo)",
+          "testIssuers": 8,
+          "cases": 21,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 69.66404220649032
+        },
+        {
+          "sector": "Construção Civil, Mat. Constr. e Decoração",
+          "testIssuers": 7,
+          "cases": 21,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 306.4830074193944
+        },
+        {
+          "sector": "Educação",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 31.46719793306896
+        },
+        {
+          "sector": "Emp. Adm. Part. - Agricultura (Açúcar, Álcool e Cana)",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 66.63177808298501
+        },
+        {
+          "sector": "Emp. Adm. Part. - Alimentos",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 64.86538459473616
+        },
+        {
+          "sector": "Emp. Adm. Part. - Comunicação e Informática",
+          "testIssuers": 2,
+          "cases": 5,
+          "evidence": "sparse",
+          "macroErrorPercent": 57.29307698722261
+        },
+        {
+          "sector": "Emp. Adm. Part. - Comércio (Atacado e Varejo)",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 368.3915271670541
+        },
+        {
+          "sector": "Emp. Adm. Part. - Const. Civil, Mat. Const. e Decoração",
+          "testIssuers": 6,
+          "cases": 15,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 104.96767235051283
+        },
+        {
+          "sector": "Emp. Adm. Part. - Crédito Imobiliário",
+          "testIssuers": 1,
+          "cases": 1,
+          "evidence": "sparse",
+          "macroErrorPercent": 456.1573354380245
+        },
+        {
+          "sector": "Emp. Adm. Part. - Energia Elétrica",
+          "testIssuers": 4,
+          "cases": 12,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 28.94948352936047
+        },
+        {
+          "sector": "Emp. Adm. Part. - Intermediação Financeira",
+          "testIssuers": 2,
+          "cases": 4,
+          "evidence": "sparse",
+          "macroErrorPercent": 71.01438331949194
+        },
+        {
+          "sector": "Emp. Adm. Part. - Metalurgia e Siderurgia",
+          "testIssuers": 2,
+          "cases": 5,
+          "evidence": "sparse",
+          "macroErrorPercent": 100.70969907645093
+        },
+        {
+          "sector": "Emp. Adm. Part. - Máqs., Equip., Veíc. e Peças",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 173.21512979721686
+        },
+        {
+          "sector": "Emp. Adm. Part. - Petróleo e Gás",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 36.22897627636445
+        },
+        {
+          "sector": "Emp. Adm. Part. - Seguradoras e Corretoras",
+          "testIssuers": 1,
+          "cases": 2,
+          "evidence": "sparse",
+          "macroErrorPercent": 359.76515893840207
+        },
+        {
+          "sector": "Emp. Adm. Part. - Sem Setor Principal",
+          "testIssuers": 4,
+          "cases": 11,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 80.19307053206559
+        },
+        {
+          "sector": "Emp. Adm. Part. - Serviços Transporte e Logística",
+          "testIssuers": 3,
+          "cases": 9,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 112.49623679962151
+        },
+        {
+          "sector": "Emp. Adm. Part. - Serviços médicos",
+          "testIssuers": 0,
+          "cases": 0,
+          "evidence": "sparse",
+          "macroErrorPercent": null
+        },
+        {
+          "sector": "Energia Elétrica",
+          "testIssuers": 7,
+          "cases": 17,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 70.59511999025403
+        },
+        {
+          "sector": "Farmacêutico e Higiene",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 45.63756938768222
+        },
+        {
+          "sector": "Hospedagem e Turismo",
+          "testIssuers": 1,
+          "cases": 2,
+          "evidence": "sparse",
+          "macroErrorPercent": 98.88869592708001
+        },
+        {
+          "sector": "Metalurgia e Siderurgia",
+          "testIssuers": 2,
+          "cases": 6,
+          "evidence": "sparse",
+          "macroErrorPercent": 41.71685175630455
+        },
+        {
+          "sector": "Máquinas, Equipamentos, Veículos e Peças",
+          "testIssuers": 4,
+          "cases": 11,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 83.35158967471939
+        },
+        {
+          "sector": "Papel e Celulose",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 39.6965659561074
+        },
+        {
+          "sector": "Petroquímicos e Borracha",
+          "testIssuers": 1,
+          "cases": 2,
+          "evidence": "sparse",
+          "macroErrorPercent": 97.31824020387137
+        },
+        {
+          "sector": "Petróleo e Gás",
+          "testIssuers": 2,
+          "cases": 4,
+          "evidence": "sparse",
+          "macroErrorPercent": 342.47717614773904
+        },
+        {
+          "sector": "Saneamento, Serv. Água e Gás",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 28.34563452955974
+        },
+        {
+          "sector": "Securitização de Recebíveis",
+          "testIssuers": 0,
+          "cases": 0,
+          "evidence": "sparse",
+          "macroErrorPercent": null
+        },
+        {
+          "sector": "Seguradoras e Corretoras",
+          "testIssuers": 2,
+          "cases": 5,
+          "evidence": "sparse",
+          "macroErrorPercent": 70.13110438201949
+        },
+        {
+          "sector": "Serviços Médicos",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 4.725958481124501
+        },
+        {
+          "sector": "Serviços Transporte e Logística",
+          "testIssuers": 6,
+          "cases": 17,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 134.62646069761252
+        },
+        {
+          "sector": "Telecomunicações",
+          "testIssuers": 1,
+          "cases": 3,
+          "evidence": "sparse",
+          "macroErrorPercent": 22.194316567058983
+        },
+        {
+          "sector": "Têxtil e Vestuário",
+          "testIssuers": 8,
+          "cases": 23,
+          "evidence": "measured_sample",
+          "macroErrorPercent": 90.66830253436446
+        },
+        {
+          "sector": "Unclassified",
+          "testIssuers": 0,
+          "cases": 0,
+          "evidence": "sparse",
+          "macroErrorPercent": null
+        }
+      ],
+      "intervalCount": 160,
+      "intervalCoveragePercent": 66.875,
+      "medianIntervalWidthPercent": 206.33469998099883,
+      "meanIntervalWidthPercent": 196.58392891157956,
+      "intervalUsefulness": "not_established",
+      "winsTiesLossesVsV2": {
+        "wins": 122,
+        "ties": 0,
+        "losses": 119
+      },
+      "worstCases": [
+        {
+          "issuer": "4723",
+          "name": "CONSTRUTORA ADOLPHO LINDENBERG S.A.",
+          "sector": "Construção Civil, Mat. Constr. e Decoração",
+          "horizon": 5,
+          "targetYear": 2024,
+          "origin": "2020-07-01",
+          "status": "scored",
+          "reason": null,
+          "trainingIds": [
+            "CVM-4723-2010-v2",
+            "CVM-4723-2011-v2",
+            "CVM-4723-2012-v4",
+            "CVM-4723-2013-v2",
+            "CVM-4723-2014-v1",
+            "CVM-4723-2015-v1",
+            "CVM-4723-2016-v1",
+            "CVM-4723-2017-v1",
+            "CVM-4723-2018-v1",
+            "CVM-4723-2019-v1"
+          ],
+          "targetId": "CVM-4723-2024-v2",
+          "base": 4.076,
+          "actual": 75.149,
+          "predictions": {
+            "bounded_v3": 1.9251362529757297,
+            "naive": 4.076,
+            "legacy": 0.754464290388094,
+            "adaptive_v2": 4.076
+          },
+          "interval": {
+            "lower": 0,
+            "upper": 6.1307530108458135,
+            "nominalPercent": 80
+          },
+          "calibrationPool": "development-only:2020-07-01:h5",
+          "boundsApplied": true
+        },
+        {
+          "issuer": "4723",
+          "name": "CONSTRUTORA ADOLPHO LINDENBERG S.A.",
+          "sector": "Construção Civil, Mat. Constr. e Decoração",
+          "horizon": 5,
+          "targetYear": 2023,
+          "origin": "2019-07-01",
+          "status": "scored",
+          "reason": null,
+          "trainingIds": [
+            "CVM-4723-2010-v2",
+            "CVM-4723-2011-v2",
+            "CVM-4723-2012-v4",
+            "CVM-4723-2013-v2",
+            "CVM-4723-2014-v1",
+            "CVM-4723-2015-v1",
+            "CVM-4723-2016-v1",
+            "CVM-4723-2017-v1",
+            "CVM-4723-2018-v1"
+          ],
+          "targetId": "CVM-4723-2023-v1",
+          "base": 6.814,
+          "actual": 95.712,
+          "predictions": {
+            "bounded_v3": 3.218321498473166,
+            "naive": 6.814,
+            "legacy": 1.0517396952240565,
+            "adaptive_v2": 6.814
+          },
+          "interval": null,
+          "calibrationPool": "development-only:2019-07-01:h5",
+          "boundsApplied": true
+        },
+        {
+          "issuer": "4723",
+          "name": "CONSTRUTORA ADOLPHO LINDENBERG S.A.",
+          "sector": "Construção Civil, Mat. Constr. e Decoração",
+          "horizon": 5,
+          "targetYear": 2025,
+          "origin": "2021-07-01",
+          "status": "scored",
+          "reason": null,
+          "trainingIds": [
+            "CVM-4723-2010-v2",
+            "CVM-4723-2011-v2",
+            "CVM-4723-2012-v4",
+            "CVM-4723-2013-v2",
+            "CVM-4723-2014-v1",
+            "CVM-4723-2015-v1",
+            "CVM-4723-2016-v1",
+            "CVM-4723-2017-v1",
+            "CVM-4723-2018-v1",
+            "CVM-4723-2019-v1",
+            "CVM-4723-2020-v1"
+          ],
+          "targetId": "CVM-4723-2025-v1",
+          "base": 30.039,
+          "actual": 365.614,
+          "predictions": {
+            "bounded_v3": 14.187725197040718,
+            "naive": 30.039,
+            "legacy": 123846.5695311898,
+            "adaptive_v2": 30.039
+          },
+          "interval": {
+            "lower": 0,
+            "upper": 45.17816546068684,
+            "nominalPercent": 80
+          },
+          "calibrationPool": "development-only:2021-07-01:h5",
+          "boundsApplied": true
+        },
+        {
+          "issuer": "22357",
+          "name": "ALLOS S.A.",
+          "sector": "Emp. Adm. Part. - Comércio (Atacado e Varejo)",
+          "horizon": 5,
+          "targetYear": 2023,
+          "origin": "2019-07-01",
+          "status": "scored",
+          "reason": null,
+          "trainingIds": [
+            "CVM-22357-2010-v2",
+            "CVM-22357-2011-v2",
+            "CVM-22357-2012-v1",
+            "CVM-22357-2013-v2",
+            "CVM-22357-2014-v1",
+            "CVM-22357-2015-v1",
+            "CVM-22357-2016-v1",
+            "CVM-22357-2017-v1",
+            "CVM-22357-2018-v2"
+          ],
+          "targetId": "CVM-22357-2023-v1",
+          "base": 374.112,
+          "actual": 2712.274,
+          "predictions": {
+            "bounded_v3": 425.5690536539477,
+            "naive": 374.112,
+            "legacy": 450.62230200011265,
+            "adaptive_v2": 374.112
+          },
+          "interval": null,
+          "calibrationPool": "development-only:2019-07-01:h5",
+          "boundsApplied": false
+        },
+        {
+          "issuer": "22187",
+          "name": "PRIO S.A.",
+          "sector": "Petróleo e Gás",
+          "horizon": 5,
+          "targetYear": 2025,
+          "origin": "2021-07-01",
+          "status": "scored",
+          "reason": null,
+          "trainingIds": [
+            "CVM-22187-2010-v3",
+            "CVM-22187-2011-v2",
+            "CVM-22187-2012-v1",
+            "CVM-22187-2013-v2",
+            "CVM-22187-2014-v1",
+            "CVM-22187-2015-v1",
+            "CVM-22187-2016-v2",
+            "CVM-22187-2017-v2",
+            "CVM-22187-2018-v1",
+            "CVM-22187-2019-v3",
+            "CVM-22187-2020-v1"
+          ],
+          "targetId": "CVM-22187-2025-v1",
+          "base": 1904.185,
+          "actual": 15583.96,
+          "predictions": {
+            "bounded_v3": 4031.640856126833,
+            "naive": 1904.185,
+            "legacy": 3210.020877701261,
+            "adaptive_v2": 1904.185
+          },
+          "interval": {
+            "lower": 2067.143652710242,
+            "upper": 5996.138059543424,
+            "nominalPercent": 80
+          },
+          "calibrationPool": "development-only:2021-07-01:h5",
+          "boundsApplied": true
+        }
+      ],
+      "byIssuer": [
+        {
+          "issuer": "20800",
+          "cases": 3,
+          "macroErrorPercent": 64.87934856917673
+        },
+        {
+          "issuer": "19763",
+          "cases": 3,
+          "macroErrorPercent": 19.752662744840055
+        },
+        {
+          "issuer": "17892",
+          "cases": 3,
+          "macroErrorPercent": 213.63804539229628
+        },
+        {
+          "issuer": "4723",
+          "cases": 3,
+          "macroErrorPercent": 1441.2567739255066
+        },
+        {
+          "issuer": "3298",
+          "cases": 1,
+          "macroErrorPercent": 456.1573354380245
+        },
+        {
+          "issuer": "20915",
+          "cases": 3,
+          "macroErrorPercent": 10.159897430407272
+        },
+        {
+          "issuer": "21350",
+          "cases": 3,
+          "macroErrorPercent": 162.63765712873555
+        },
+        {
+          "issuer": "21180",
+          "cases": 3,
+          "macroErrorPercent": 46.587950808942466
+        },
+        {
+          "issuer": "10880",
+          "cases": 3,
+          "macroErrorPercent": 268.6229134920507
+        },
+        {
+          "issuer": "24120",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "9512",
+          "cases": 3,
+          "macroErrorPercent": 78.2738488846664
+        },
+        {
+          "issuer": "22020",
+          "cases": 3,
+          "macroErrorPercent": 99.0153292910694
+        },
+        {
+          "issuer": "24473",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "20370",
+          "cases": 3,
+          "macroErrorPercent": 76.6564468477621
+        },
+        {
+          "issuer": "3158",
+          "cases": 2,
+          "macroErrorPercent": 74.80496072280033
+        },
+        {
+          "issuer": "14311",
+          "cases": 3,
+          "macroErrorPercent": 16.879160064701626
+        },
+        {
+          "issuer": "22497",
+          "cases": 3,
+          "macroErrorPercent": 48.82938704566824
+        },
+        {
+          "issuer": "23493",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "14761",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "15539",
+          "cases": 3,
+          "macroErrorPercent": 9.960154016297695
+        },
+        {
+          "issuer": "24694",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "20990",
+          "cases": 3,
+          "macroErrorPercent": 102.51427158697679
+        },
+        {
+          "issuer": "15083",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "8893",
+          "cases": 2,
+          "macroErrorPercent": 60.39034951780881
+        },
+        {
+          "issuer": "11070",
+          "cases": 3,
+          "macroErrorPercent": 173.21512979721686
+        },
+        {
+          "issuer": "22500",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "1597",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "13781",
+          "cases": 3,
+          "macroErrorPercent": 112.27175509678963
+        },
+        {
+          "issuer": "23965",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "1384",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "5258",
+          "cases": 2,
+          "macroErrorPercent": 47.94939249019453
+        },
+        {
+          "issuer": "22187",
+          "cases": 1,
+          "macroErrorPercent": 606.6805034108118
+        },
+        {
+          "issuer": "21156",
+          "cases": 1,
+          "macroErrorPercent": 42.27656918459419
+        },
+        {
+          "issuer": "22780",
+          "cases": 3,
+          "macroErrorPercent": 75.12120232716242
+        },
+        {
+          "issuer": "24201",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "4707",
+          "cases": 1,
+          "macroErrorPercent": 96.02290876844896
+        },
+        {
+          "issuer": "18775",
+          "cases": 3,
+          "macroErrorPercent": 77.56675128001447
+        },
+        {
+          "issuer": "8192",
+          "cases": 3,
+          "macroErrorPercent": 45.322191680820374
+        },
+        {
+          "issuer": "20257",
+          "cases": 3,
+          "macroErrorPercent": 65.97938933740588
+        },
+        {
+          "issuer": "22519",
+          "cases": 3,
+          "macroErrorPercent": 65.98413612458639
+        },
+        {
+          "issuer": "23221",
+          "cases": 3,
+          "macroErrorPercent": 31.46719793306896
+        },
+        {
+          "issuer": "19836",
+          "cases": 3,
+          "macroErrorPercent": 226.02245559976285
+        },
+        {
+          "issuer": "20877",
+          "cases": 3,
+          "macroErrorPercent": 91.33286952967148
+        },
+        {
+          "issuer": "19445",
+          "cases": 3,
+          "macroErrorPercent": 28.34563452955974
+        },
+        {
+          "issuer": "23574",
+          "cases": 3,
+          "macroErrorPercent": 37.82431960568884
+        },
+        {
+          "issuer": "21199",
+          "cases": 2,
+          "macroErrorPercent": 74.24908076403676
+        },
+        {
+          "issuer": "6505",
+          "cases": 3,
+          "macroErrorPercent": 9.264298011150185
+        },
+        {
+          "issuer": "23957",
+          "cases": 1,
+          "macroErrorPercent": 220.1599018463705
+        },
+        {
+          "issuer": "22560",
+          "cases": 3,
+          "macroErrorPercent": 30.716637244984028
+        },
+        {
+          "issuer": "21040",
+          "cases": 2,
+          "macroErrorPercent": 110.49920514571517
+        },
+        {
+          "issuer": "19100",
+          "cases": 3,
+          "macroErrorPercent": 11.884941980228904
+        },
+        {
+          "issuer": "21520",
+          "cases": 3,
+          "macroErrorPercent": 86.77187505399105
+        },
+        {
+          "issuer": "12793",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "8745",
+          "cases": 2,
+          "macroErrorPercent": 97.31824020387137
+        },
+        {
+          "issuer": "24490",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "22357",
+          "cases": 3,
+          "macroErrorPercent": 368.3915271670541
+        },
+        {
+          "issuer": "24392",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "22349",
+          "cases": 3,
+          "macroErrorPercent": 382.3366544107028
+        },
+        {
+          "issuer": "17671",
+          "cases": 3,
+          "macroErrorPercent": 22.194316567058983
+        },
+        {
+          "issuer": "16659",
+          "cases": 2,
+          "macroErrorPercent": 91.43282171837073
+        },
+        {
+          "issuer": "12823",
+          "cases": 3,
+          "macroErrorPercent": 66.63177808298501
+        },
+        {
+          "issuer": "20931",
+          "cases": 3,
+          "macroErrorPercent": 62.95074046569047
+        },
+        {
+          "issuer": "19330",
+          "cases": 3,
+          "macroErrorPercent": 46.283913726553784
+        },
+        {
+          "issuer": "19879",
+          "cases": 3,
+          "macroErrorPercent": 28.15636149269399
+        },
+        {
+          "issuer": "10456",
+          "cases": 3,
+          "macroErrorPercent": 29.84851057074615
+        },
+        {
+          "issuer": "24171",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "24627",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "24546",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "23302",
+          "cases": 2,
+          "macroErrorPercent": 102.70121199421631
+        },
+        {
+          "issuer": "8656",
+          "cases": 3,
+          "macroErrorPercent": 60.73571704674442
+        },
+        {
+          "issuer": "4669",
+          "cases": 3,
+          "macroErrorPercent": 22.72551476193565
+        },
+        {
+          "issuer": "2100",
+          "cases": 3,
+          "macroErrorPercent": 124.70731775578132
+        },
+        {
+          "issuer": "7510",
+          "cases": 3,
+          "macroErrorPercent": 42.26666329206763
+        },
+        {
+          "issuer": "24716",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "7544",
+          "cases": 3,
+          "macroErrorPercent": 29.29269270783379
+        },
+        {
+          "issuer": "24090",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "19739",
+          "cases": 3,
+          "macroErrorPercent": 187.54556858467092
+        },
+        {
+          "issuer": "1520",
+          "cases": 2,
+          "macroErrorPercent": 104.2133358818196
+        },
+        {
+          "issuer": "20320",
+          "cases": 1,
+          "macroErrorPercent": 13.831701235913599
+        },
+        {
+          "issuer": "20745",
+          "cases": 3,
+          "macroErrorPercent": 78.75627561755701
+        },
+        {
+          "issuer": "20125",
+          "cases": 3,
+          "macroErrorPercent": 4.725958481124501
+        },
+        {
+          "issuer": "18465",
+          "cases": 3,
+          "macroErrorPercent": 36.22897627636445
+        },
+        {
+          "issuer": "21008",
+          "cases": 3,
+          "macroErrorPercent": 69.17829578481411
+        },
+        {
+          "issuer": "21555",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "20710",
+          "cases": 2,
+          "macroErrorPercent": 140.37183553106846
+        },
+        {
+          "issuer": "24384",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "20087",
+          "cases": 3,
+          "macroErrorPercent": 123.58521126065301
+        },
+        {
+          "issuer": "4863",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "13986",
+          "cases": 3,
+          "macroErrorPercent": 39.6965659561074
+        },
+        {
+          "issuer": "18708",
+          "cases": 3,
+          "macroErrorPercent": 102.78798583284352
+        },
+        {
+          "issuer": "20770",
+          "cases": 3,
+          "macroErrorPercent": 121.36008130202984
+        },
+        {
+          "issuer": "8753",
+          "cases": 3,
+          "macroErrorPercent": 58.378720975437034
+        },
+        {
+          "issuer": "19615",
+          "cases": 3,
+          "macroErrorPercent": 30.914132100131535
+        },
+        {
+          "issuer": "22217",
+          "cases": 2,
+          "macroErrorPercent": 359.76515893840207
+        },
+        {
+          "issuer": "4537",
+          "cases": 3,
+          "macroErrorPercent": 35.64701042746645
+        },
+        {
+          "issuer": "19453",
+          "cases": 3,
+          "macroErrorPercent": 173.12271664423108
+        },
+        {
+          "issuer": "12190",
+          "cases": 3,
+          "macroErrorPercent": 45.63756938768222
+        },
+        {
+          "issuer": "13773",
+          "cases": 3,
+          "macroErrorPercent": 96.24973810222701
+        },
+        {
+          "issuer": "18287",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "21130",
+          "cases": 3,
+          "macroErrorPercent": 54.54244815225682
+        },
+        {
+          "issuer": "24295",
+          "cases": 1,
+          "macroErrorPercent": 140.5265534223696
+        },
+        {
+          "issuer": "14133",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "7617",
+          "cases": 3,
+          "macroErrorPercent": 46.005857870534925
+        },
+        {
+          "issuer": "15458",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "14451",
+          "cases": 3,
+          "macroErrorPercent": 122.66841825440807
+        },
+        {
+          "issuer": "12530",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "23310",
+          "cases": 2,
+          "macroErrorPercent": 98.88869592708001
+        },
+        {
+          "issuer": "7870",
+          "cases": 2,
+          "macroErrorPercent": 140.68368110615742
+        },
+        {
+          "issuer": "20958",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "3069",
+          "cases": 3,
+          "macroErrorPercent": 25.054982537172066
+        },
+        {
+          "issuer": "20346",
+          "cases": 3,
+          "macroErrorPercent": 86.2483798043645
+        },
+        {
+          "issuer": "2453",
+          "cases": 3,
+          "macroErrorPercent": 38.66229270849011
+        },
+        {
+          "issuer": "24660",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "16292",
+          "cases": 3,
+          "macroErrorPercent": 64.86538459473616
+        },
+        {
+          "issuer": "14346",
+          "cases": 3,
+          "macroErrorPercent": 63.341148264337335
+        },
+        {
+          "issuer": "11207",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "80063",
+          "cases": 0,
+          "macroErrorPercent": null
+        },
+        {
+          "issuer": "22594",
+          "cases": 1,
+          "macroErrorPercent": 195.59972986943376
+        },
+        {
+          "issuer": "15253",
+          "cases": 3,
+          "macroErrorPercent": 11.70202927104431
+        },
+        {
+          "issuer": "21202",
+          "cases": 3,
+          "macroErrorPercent": 142.82396556545842
+        }
+      ]
+    }
+  ],
+  "cohort": [
+    {
+      "code": "20800",
+      "name": "TEGMA GESTAO LOGISTICA S.A.",
+      "selectionHash": "3658598f59b78f3451c7a43f4074480f6545001bc49eb75dcbdc07d078351435",
+      "sector": "Serviços Transporte e Logística",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "19763",
+      "name": "EDP - ENERGIAS DO BRASIL S.A.",
+      "selectionHash": "3859f3ad92e84bd68111795b9d0ae859e678a88db92bf8d0b6064041f6b77111",
+      "sector": "Energia Elétrica",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "17892",
+      "name": "SANTOS BRASIL PARTICIPACOES S.A.",
+      "selectionHash": "3ac82d0d70be54429a9d5849268a5c104846a93559281e86555266fd26dd324f",
+      "sector": "Emp. Adm. Part. - Serviços Transporte e Logística",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "4723",
+      "name": "CONSTRUTORA ADOLPHO LINDENBERG S.A.",
+      "selectionHash": "3bbfb51fdb5e27eaad0e276de84b02b73589bb2b656c5216222f36d792175967",
+      "sector": "Construção Civil, Mat. Constr. e Decoração",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "3298",
+      "name": "CIA HABITASUL DE PARTICIPACOES",
+      "selectionHash": "3c543441b85d5aba963618373fdeaa40367dbd6b78600eecf5667250da9043f3",
+      "sector": "Emp. Adm. Part. - Crédito Imobiliário",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "20915",
+      "name": "MRV ENGENHARIA E PARTICIPACOES S.A.",
+      "selectionHash": "3c72ac211a69ca836010797ba0d67e88e58dd510bf40f0172b6f2ca16c264aea",
+      "sector": "Construção Civil, Mat. Constr. e Decoração",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "21350",
+      "name": "DIRECIONAL ENGENHARIA S.A.",
+      "selectionHash": "3c9b706afea458285434e604efbf029408954a1ea9fecc735825d64f544f6033",
+      "sector": "Construção Civil, Mat. Constr. e Decoração",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "21180",
+      "name": "NEXPE PARTICIPAÇÕES S.A",
+      "selectionHash": "3d238f867ffd5771ee395b7dbe718391287033ede7e7aee3bf17750a93dc7b1e",
+      "sector": "Emp. Adm. Part. - Const. Civil, Mat. Const. e Decoração",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "10880",
+      "name": "SONDOTECNICA ENGENHARIA SOLOS S.A.",
+      "selectionHash": "3e00fdfe276341bd3eefb73b41c6558f9f6e93769e57bbf094cc5606ed4c563d",
+      "sector": "Construção Civil, Mat. Constr. e Decoração",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "24120",
+      "name": "ARGO ENERGIA EMPREENDIMENTOS E PARTICIPAÇÕES S/A",
+      "selectionHash": "3e71009c6db8ed85347ee0f6ec98296c12fe674f467d959bae16a3ff088f02e5",
+      "sector": "Emp. Adm. Part. - Energia Elétrica",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "9512",
+      "name": "PETROLEO BRASILEIRO S.A. PETROBRAS",
+      "selectionHash": "3fd49e942e2849ca221f1d08bcc12f7f3b91f06ed8050d4fb804786cbd6dd99c",
+      "sector": "Petróleo e Gás",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "22020",
+      "name": "JSL S.A.",
+      "selectionHash": "413b5c8a9e93c3a945be1a0a101ac65f31a210f31de826d2bef5fe2351eece74",
+      "sector": "Serviços Transporte e Logística",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "24473",
+      "name": "JHSF MALLS S.A.",
+      "selectionHash": "417d327cc2da81c5c4ac3af4d8a765fbd624a785b8c7ddb638f5650308442844",
+      "sector": "Comércio (Atacado e Varejo)",
+      "registryStatus": "CANCELADA"
+    },
+    {
+      "code": "20370",
+      "name": "LPS BRASIL - CONSULTORIA DE IMOVEIS S.A.",
+      "selectionHash": "41e05ca734c17aed2b6ef75f7c1b99eb354f5619e3a6f910d9d3d6baffa0a4e4",
+      "sector": "Emp. Adm. Part. - Const. Civil, Mat. Const. e Decoração",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "3158",
+      "name": "CIA TECIDOS NORTE DE MINAS COTEMINAS",
+      "selectionHash": "41e1867af417c38424eda8ea7082e3804fc809efa210c0700e38207f02ab68c9",
+      "sector": "Têxtil e Vestuário",
+      "registryStatus": "CANCELADA"
+    },
+    {
+      "code": "14311",
+      "name": "CIA PARANAENSE DE ENERGIA - COPEL",
+      "selectionHash": "4354119853c9cba12990893baf69e1cd71d7e3faacaa82de8a164ba2618ed4aa",
+      "sector": "Energia Elétrica",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "22497",
+      "name": "QUALICORP CONSULTORIA E CORRETORA DE SEGUROS S.A.",
+      "selectionHash": "4429b9ad8314921ad7c06b4e19d983fce4f629cd70c7fc564827af69b2fa8c30",
+      "sector": "Seguradoras e Corretoras",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "23493",
+      "name": "DOMMO ENERGIA S.A.",
+      "selectionHash": "44d9737a4f1b261494a671644f81433bddf79c7705e0dc5679f9889cb870d6c3",
+      "sector": "Petróleo e Gás",
+      "registryStatus": "CANCELADA"
+    },
+    {
+      "code": "14761",
+      "name": "CIA HERING",
+      "selectionHash": "44f0e36083456d538840304acffa51f0af79fe9e348cfdd26b794816c3e605b6",
+      "sector": "Têxtil e Vestuário",
+      "registryStatus": "CANCELADA"
+    },
+    {
+      "code": "15539",
+      "name": "NEOENERGIA S.A.",
+      "selectionHash": "45b0c8eb9fb39e291386c455578bedf91655e7a470792184ca2ee3579290a8f5",
+      "sector": "Emp. Adm. Part. - Energia Elétrica",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "24694",
+      "name": "GRUPO SBF S.A.",
+      "selectionHash": "4606c0a329dca52b0be4a7f9cf81033413ecad30e816e9da6bcd16c180f24cf5",
+      "sector": "Comércio (Atacado e Varejo)",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "20990",
+      "name": "AMERICANAS S.A. - EM RECUPERAÇÃO JUDICIAL",
+      "selectionHash": "488c21cf05bdaecc20349cc650eabbabb525f3d597ac2a395f0766609e2dbbca",
+      "sector": "Comércio (Atacado e Varejo)",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "15083",
+      "name": "KOSMOS COMÉRCIO DE VESTUÁRIO S/A - EM RECUPERAÇÃO JUDICIAL",
+      "selectionHash": "4893ca8e6f231dede951fcb1e8d5cff908279d7330a47f4b350a96fbcd1fba4b",
+      "sector": "Comércio (Atacado e Varejo)",
+      "registryStatus": "CANCELADA"
+    },
+    {
+      "code": "8893",
+      "name": "MONTEIRO ARANHA S.A.",
+      "selectionHash": "48a365e71e34edc7f7353edb2ec6027c6609138ecc74076911e2d7ad9169c049",
+      "sector": "Emp. Adm. Part. - Sem Setor Principal",
+      "registryStatus": "CANCELADA"
+    },
+    {
+      "code": "11070",
+      "name": "WLM PART. E COMÉRCIO DE MÁQUINAS E VEÍCULOS S.A.",
+      "selectionHash": "49413864a33f662dfdef84d4c520951ad8cc01127b2c1b2bf897accce5a579e5",
+      "sector": "Emp. Adm. Part. - Máqs., Equip., Veíc. e Peças",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "22500",
+      "name": "MASSA FALIDA DA BRASIL PHARMA S.A.",
+      "selectionHash": "4957c42df60d41d841802e55324610a147c3a7742a807da9afc1c83e8d642ad8",
+      "sector": "Farmacêutico e Higiene",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "1597",
+      "name": "PARTICIPAÇÕES INDUST. DO NORDESTE S.A.",
+      "selectionHash": "4a8643538a21e1205f6ea7f73923128f43e8a93ff803c499f14f3da7fb7aad23",
+      "sector": "Emp. Adm. Part. - Sem Setor Principal",
+      "registryStatus": "CANCELADA"
+    },
+    {
+      "code": "13781",
+      "name": "SAO CARLOS EMPREEND E PARTICIPACOES S.A.",
+      "selectionHash": "4b3cd8dd45b161d7d3f5bc58ac772b3db13b636cf614f85484e970bbe8953372",
+      "sector": "Emp. Adm. Part. - Sem Setor Principal",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "23965",
+      "name": "CINESYSTEM S.A.",
+      "selectionHash": "4b5ce2f9c9135ac004b33e1969f36f3dfb1c78d0e94a29c7155141b803e06c9c",
+      "sector": "Brinquedos e Lazer",
+      "registryStatus": "CANCELADA"
+    },
+    {
+      "code": "1384",
+      "name": "BCO ALFA DE INVESTIMENTO S.A.",
+      "selectionHash": "4cf1ad91a5729e18cbfc26b8e7de1cb6e9ae1019e4fda03dd3c33794f9c8abac",
+      "sector": "Bancos",
+      "registryStatus": "CANCELADA"
+    },
+    {
+      "code": "5258",
+      "name": "RAIA DROGASIL S.A.",
+      "selectionHash": "4e21163bf205d76b7e62c30ca18c1b5c2c9184917bdbfff2458cff40c92de1d7",
+      "sector": "Comércio (Atacado e Varejo)",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "22187",
+      "name": "PRIO S.A.",
+      "selectionHash": "4ee5c6be580e22785d2a83275715b8869e76677126323a2267b36695acd5e8a2",
+      "sector": "Petróleo e Gás",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "21156",
+      "name": "J. MACEDO S.A.",
+      "selectionHash": "4f044d0c5d1488a88985b2575d2c1135e303a061b6300613c5ddc1983f458f65",
+      "sector": "Alimentos",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "22780",
+      "name": "UNICASA INDÚSTRIA DE MÓVEIS S.A.",
+      "selectionHash": "5031ed045f0a404306c85d0b35530e37a74c7bf690956f80168b732b1c4f39da",
+      "sector": "Construção Civil, Mat. Constr. e Decoração",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "24201",
+      "name": "STARA S.A. - INDÚSTRIA DE IMPLEMENTOS AGRÍCOLAS",
+      "selectionHash": "5052c725063276e658f7500db85f3352bb5b27c17d8b22eb0a39018244e7ebea",
+      "sector": "Máquinas, Equipamentos, Veículos e Peças",
+      "registryStatus": "CANCELADA"
+    },
+    {
+      "code": "4707",
+      "name": "CONSORCIO ALFA DE ADMINISTRACAO S.A.",
+      "selectionHash": "5070f5ff53be99132d69ac1f0ca7deba886186a982834bfce80681027da08a23",
+      "sector": "Emp. Adm. Part. - Intermediação Financeira",
+      "registryStatus": "CANCELADA"
+    },
+    {
+      "code": "18775",
+      "name": "INVESTIMENTOS E PARTICIP. EM INFRA S.A. - INVEPAR",
+      "selectionHash": "50e383da7396a250ecb7a34e528ffec3bbdd01536790056656fa46c01d9a195c",
+      "sector": "Emp. Adm. Part. - Serviços Transporte e Logística",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "8192",
+      "name": "TREVISA INVESTIMENTOS S.A.",
+      "selectionHash": "5102a9525de709a10d657544ff6a7773d8d4a6e4d1e331a4c932d4db37043ee4",
+      "sector": "Emp. Adm. Part. - Sem Setor Principal",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "20257",
+      "name": "TRANSMISSORA ALIANÇA DE ENERGIA ELÉTRICA S.A.",
+      "selectionHash": "517075841a30a1ac148aa9182028bde049cbcaaea03f5eb1e5c300ba2eca84e3",
+      "sector": "Emp. Adm. Part. - Energia Elétrica",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "22519",
+      "name": "TECHNOS S.A.",
+      "selectionHash": "51a298c971b084323df0be182c9c03ec8e25e4eda290577513a0135c57cb5392",
+      "sector": "Comércio (Atacado e Varejo)",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "23221",
+      "name": "SER EDUCACIONAL S.A.",
+      "selectionHash": "52f67194ac267069d24fe33c4a117c3393c77831d3a23c4ab284c135a04dc8dd",
+      "sector": "Educação",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "19836",
+      "name": "COSAN S.A.",
+      "selectionHash": "53943afb1ef4b799e00cb918cf49cafe9c29148a45a8d2817b84c1245ad9a7a2",
+      "sector": "Agricultura (Açúcar, Álcool e Cana)",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "20877",
+      "name": "HELBOR EMPREENDIMENTOS S.A.",
+      "selectionHash": "54596497a4d3be2a6aba0db73a47fb33b44e71496cb9d856aeb5d6645a501270",
+      "sector": "Construção Civil, Mat. Constr. e Decoração",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "19445",
+      "name": "CIA SANEAMENTO DE MINAS GERAIS-COPASA MG",
+      "selectionHash": "55a26e7021b9b8dd2f5eab6c8ff7de7be827636d4f2887baadad27f10a788018",
+      "sector": "Saneamento, Serv. Água e Gás",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "23574",
+      "name": "INTERNATIONAL MEAL COMPANY ALIMENTACAO S.A.",
+      "selectionHash": "57f1e8ceb3a95ef3964224e8c229885839369f1000c02f5576adc9020f5758dd",
+      "sector": "Alimentos",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "21199",
+      "name": "BCO PAN S.A.",
+      "selectionHash": "5882b3f0a8f196aaa4508e52024f7000e77ab94c87d42c9c1a96e4d501e1bcb7",
+      "sector": "Bancos",
+      "registryStatus": "CANCELADA"
+    },
+    {
+      "code": "6505",
+      "name": "GRUPO CASAS BAHIA S.A.",
+      "selectionHash": "5919c31b2484b1ed6c83cb8d5a05dabd7e0cfd8f807d387c67f193cf44c9b277",
+      "sector": "Comércio (Atacado e Varejo)",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "23957",
+      "name": "SUGOI S.A.",
+      "selectionHash": "5926513beb3dad9119df7a85f2f802b23dc6f9a168ffe452115c3ff8ee0466c4",
+      "sector": "Emp. Adm. Part. - Const. Civil, Mat. Const. e Decoração",
+      "registryStatus": "SUSPENSO(A) - DECISÃO ADM"
+    },
+    {
+      "code": "22560",
+      "name": "INBRANDS S.A.",
+      "selectionHash": "5a16716300a7bb4811ec8f78aeb5967705fc8aa439922613737b7df932602177",
+      "sector": "Têxtil e Vestuário",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "21040",
+      "name": "SYN PROP & TECH S.A.",
+      "selectionHash": "5ab4d8c7264de1d86b201f3c033bb4c83961c25365645cdb5c3d2c9509cb9b69",
+      "sector": "Emp. Adm. Part. - Const. Civil, Mat. Const. e Decoração",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "19100",
+      "name": "ATMA PARTICIPAÇÕES S.A. - EM RECUPERAÇÃO JUDICIAL",
+      "selectionHash": "5abcbb1ae2c40e8538e8f73aa429db20560771c3b30834a06dc5a130cb610146",
+      "sector": "Emp. Adm. Part. - Comunicação e Informática",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "21520",
+      "name": "MULTINER S/A",
+      "selectionHash": "5ad6baa65c51f3a0c5c66e33275fd6d3955fdb816cd4efe060bc60846bb410ee",
+      "sector": "Energia Elétrica",
+      "registryStatus": "CANCELADA"
+    },
+    {
+      "code": "12793",
+      "name": "FIBRIA CELULOSE S.A.",
+      "selectionHash": "5b47d79bb37c19c1e84cdfe5e13d7e3c2f4771710126ee9b38faca179c0f9707",
+      "sector": "Papel e Celulose",
+      "registryStatus": "CANCELADA"
+    },
+    {
+      "code": "8745",
+      "name": "METANOR SA METANOL DO NE",
+      "selectionHash": "5c429ed305b85c373b112c8537faf012355fa4b7a1fa44df9b7dfb1ea7a23929",
+      "sector": "Petroquímicos e Borracha",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "24490",
+      "name": "SABER SERVIÇOS EDUCACIONAIS S.A.",
+      "selectionHash": "5d3f1512f04742692af43cb102a9ada2df936de9f67fa3e371307d18e33ff521",
+      "sector": "Educação",
+      "registryStatus": "CANCELADA"
+    },
+    {
+      "code": "22357",
+      "name": "ALLOS S.A.",
+      "selectionHash": "5e4b34594d6768aa856183150592ffe228cc97820283283643772b02497b65ef",
+      "sector": "Emp. Adm. Part. - Comércio (Atacado e Varejo)",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "24392",
+      "name": "HAPVIDA PARTICIPAÇÕES E INVESTIMENTOS S.A.",
+      "selectionHash": "5fb84a88fd1dcf396c273c4658f9d726a8cf618d1cecb6124305ce302ec44b2f",
+      "sector": "Serviços Médicos",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "22349",
+      "name": "AZZAS 2154 S.A.",
+      "selectionHash": "621afecce5c2eba3a6a846c313f8a231969470592e5e332f14c9e2700902e61b",
+      "sector": "Têxtil e Vestuário",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "17671",
+      "name": "TELEFÔNICA BRASIL S.A",
+      "selectionHash": "6342ef92e8b7074d14ff8934116e9b71160a8be37d2850556f08abad4842410b",
+      "sector": "Telecomunicações",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "16659",
+      "name": "PORTO SEGURO S.A.",
+      "selectionHash": "63cdc38d2f9d9b736be3fae6b897685e8e5a3c668fd2fff784d7d1a9a7e508a5",
+      "sector": "Seguradoras e Corretoras",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "12823",
+      "name": "SIDERURGICA J. L. ALIPERTI S.A.",
+      "selectionHash": "64ba54b68c58056146206d6cbb0c8df03342ed723ee9229038bfc48ce0f11d59",
+      "sector": "Emp. Adm. Part. - Agricultura (Açúcar, Álcool e Cana)",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "20931",
+      "name": "MINERVA S.A.",
+      "selectionHash": "6696d44591e1655d54ede1d94113c0823faebda46fb5722cd4010d2158b14221",
+      "sector": "Alimentos",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "19330",
+      "name": "TPI - TRIUNFO PARTICIP. E INVEST. S.A.",
+      "selectionHash": "66f1a49bf589f4fc694972a03537cd36fd2bad33c8fb1766dbe2d9b999d0d59c",
+      "sector": "Emp. Adm. Part. - Serviços Transporte e Logística",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "19879",
+      "name": "LIGHT S.A. - EM RECUPERAÇÃO JUDICIAL",
+      "selectionHash": "67a986ab04948a2745d7ca4b19d7134196632b81f2085c73aae232e81428866b",
+      "sector": "Emp. Adm. Part. - Energia Elétrica",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "10456",
+      "name": "ALPARGATAS S.A.",
+      "selectionHash": "682691f8f4ffd38a331995f148b456d028bd00749b02cd582cf49f6a7743cd7e",
+      "sector": "Têxtil e Vestuário",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "24171",
+      "name": "ATACADÃO S.A.",
+      "selectionHash": "69157f879ba5fd6f023e83e525f4a8c64d9833caef46593e7945157934cd7739",
+      "sector": "Emp. Adm. Part. - Comércio (Atacado e Varejo)",
+      "registryStatus": "CANCELADA"
+    },
+    {
+      "code": "24627",
+      "name": "BLAU FARMACÊUTICA S.A.",
+      "selectionHash": "6978ea43c52300d2da7e3e4e89427f1fec64c0581dbfe1a56a806b938e6752d2",
+      "sector": "Farmacêutico e Higiene",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "24546",
+      "name": "PRÁTICA PRODUTOS S.A.",
+      "selectionHash": "69a2a35867df1e95dca623f75d82c9ed819e0e77dfd03bb8bc7e5637d167ad01",
+      "sector": "Emp. Adm. Part. - Máqs., Equip., Veíc. e Peças",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "23302",
+      "name": "QUALITY SOFTWARE S.A.",
+      "selectionHash": "6af6a86e930e8bcfacf5e1da6a8ad6c7233b2c30b791f9e70c668b3c25f7e9dc",
+      "sector": "Emp. Adm. Part. - Comunicação e Informática",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "8656",
+      "name": "METALURGICA GERDAU S.A.",
+      "selectionHash": "6b671f1ba7a445b71fd2a60acb5072366d362b1ac833609556e59a304f6fe703",
+      "sector": "Emp. Adm. Part. - Metalurgia e Siderurgia",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "4669",
+      "name": "GUARARAPES CONFECCOES S.A.",
+      "selectionHash": "6cf02277a0b93f9eb527302f46fe8084461bf3ce6c8e2474a8134d363405eb0c",
+      "sector": "Têxtil e Vestuário",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "2100",
+      "name": "CAMBUCI S.A.",
+      "selectionHash": "6d8a9c13dd430df3d5401d99359df380fd343cee5f830a5ed226383fe742d68b",
+      "sector": "Têxtil e Vestuário",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "7510",
+      "name": "ROMI S.A.",
+      "selectionHash": "6e6538aabb49868d22235c9dd872b44fd570921b0b9a1e109cc117c1c4ceb4d3",
+      "sector": "Máquinas, Equipamentos, Veículos e Peças",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "24716",
+      "name": "VAMOS LOCAÇÃO DE CAMINHÕES, MÁQUINAS E EQUIPAMENTOS S.A.",
+      "selectionHash": "6f0f53d37536f311a0f437976eede8039cf47030d02384d46163c21f5809ed21",
+      "sector": "Serviços Transporte e Logística",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "7544",
+      "name": "TEXTIL RENAUXVIEW S.A.",
+      "selectionHash": "6f1f95fd40db8b1bc7f8bc364b294fab4e89931551a573816483b4f04410e983",
+      "sector": "Têxtil e Vestuário",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "24090",
+      "name": "INSTITUTO HERMES PARDINI S.A.",
+      "selectionHash": "71a8cf6c0e010f00e4016fa7f4c4e926a10c11bc24a40e985c3e96196ad01947",
+      "sector": "Serviços Médicos",
+      "registryStatus": "CANCELADA"
+    },
+    {
+      "code": "19739",
+      "name": "LOCALIZA RENT A CAR S.A.",
+      "selectionHash": "72ed8cc7c90275108c9ab061bdfdf4701300d0aae1644b757495ff7ab1a0ee66",
+      "sector": "Serviços Transporte e Logística",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "1520",
+      "name": "BARDELLA S.A. INDUSTRIAS MECANICAS EM RECUPERAÇÃO JUDICIAL",
+      "selectionHash": "7341dc1cd8354f362eb1058a03b52ec0fb65343085bedb853360a46fca276cd6",
+      "sector": "Máquinas, Equipamentos, Veículos e Peças",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "20320",
+      "name": "CEMIG GERACAO E TRANSMISSAO S.A.",
+      "selectionHash": "73d520741c8da4b2f57407297621796aea756e5b6e8960f0991ccd9a92f1564a",
+      "sector": "Energia Elétrica",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "20745",
+      "name": "SLC AGRICOLA S.A.",
+      "selectionHash": "75915a728b61d39cd9defa846d563808aff371ffb9f4495e5f0fac10fdd28e93",
+      "sector": "Agricultura (Açúcar, Álcool e Cana)",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "20125",
+      "name": "ODONTOPREV S.A.",
+      "selectionHash": "76079a97067df052c6c5f10b0dcd4e4fd5611f0525b43db0707916eef6a13ed0",
+      "sector": "Serviços Médicos",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "18465",
+      "name": "ULTRAPAR PARTICIPACOES S.A.",
+      "selectionHash": "76669e629b5248b890a537438a24131f666ccf258c2e9edc89260f2f750b8b93",
+      "sector": "Emp. Adm. Part. - Petróleo e Gás",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "21008",
+      "name": "GENERAL SHOPPING E OUTLETS DO BRASIL BRASIL S.A.",
+      "selectionHash": "778a1687881040c5bd8dd902f76467ea65057c1fc0cf337070a1881871394295",
+      "sector": "Comércio (Atacado e Varejo)",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "21555",
+      "name": "LOCAMÉRICA RENT-A-CAR S.A.",
+      "selectionHash": "78633b3614cbecc13d0b8c3fa04356ffb449ade377e63abc7625a7115f0f5798",
+      "sector": "Serviços Transporte e Logística",
+      "registryStatus": "CANCELADA"
+    },
+    {
+      "code": "20710",
+      "name": "LOG-IN LOGISTICA INTERMODAL S.A.",
+      "selectionHash": "7a4541c7031cf7550b79fab645120a0419003fa4829cd927e3af96ed607f48f9",
+      "sector": "Serviços Transporte e Logística",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "24384",
+      "name": "NOTRE DAME INTERMÉDICA PARTICIPAÇÕES S.A.",
+      "selectionHash": "7a5cd49087f1bf3bd50ed81b011fd7acc2bca63675e655f5b898c0af627a74b6",
+      "sector": "Emp. Adm. Part. - Serviços médicos",
+      "registryStatus": "CANCELADA"
+    },
+    {
+      "code": "20087",
+      "name": "EMBRAER S.A.",
+      "selectionHash": "7c43fed7cb90b0a0408a293562a3a467f3e0eea57dfe94f07515bb93ccf4a41e",
+      "sector": "Máquinas, Equipamentos, Veículos e Peças",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "4863",
+      "name": "CORREA RIBEIRO S.A. COMERCIO E INDUSTRIA",
+      "selectionHash": "7dfb940f0c8006b8636ba0f0b31de8279ed6f367769a6a85d9dabb372e43cd84",
+      "sector": "Construção Civil, Mat. Constr. e Decoração",
+      "registryStatus": "CANCELADA"
+    },
+    {
+      "code": "13986",
+      "name": "SUZANO S.A.",
+      "selectionHash": "7eae3a36646dbb25f3a61cb6610f2269ad264b605e06b1a04f4588a15b3b5ee6",
+      "sector": "Papel e Celulose",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "18708",
+      "name": "CIA PARTICIPACOES ALIANCA DA BAHIA",
+      "selectionHash": "80f1198cfabd1535b62f239c9eeeabb0066b6d058ddb7405b05a3be4015065ab",
+      "sector": "Emp. Adm. Part. - Sem Setor Principal",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "20770",
+      "name": "EZ TEC EMPREEND. E PARTICIPACOES S.A.",
+      "selectionHash": "82509b107e907866b0bbe0c3a2c522af8d0fde3a137a66f920e1492c040603b4",
+      "sector": "Emp. Adm. Part. - Const. Civil, Mat. Const. e Decoração",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "8753",
+      "name": "METISA METALURGICA TIMBOENSE S.A.",
+      "selectionHash": "828f8a0f2c71c0f7ea67cc752ff26bf6534d1c43d0702b96e7aa2f8b46b3b413",
+      "sector": "Metalurgia e Siderurgia",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "19615",
+      "name": "GRENDENE S.A.",
+      "selectionHash": "82af3315e1319cb311cf05ddfd27a93fada48e99c48d6294a432684fda547b7b",
+      "sector": "Têxtil e Vestuário",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "22217",
+      "name": "ALPER CONSULTORIA E CORRETORA DE SEGUROS S.A.",
+      "selectionHash": "82c2652ce8bed0c8288b6468eab70792799d3266ddf05c0496468bb5e9a10417",
+      "sector": "Emp. Adm. Part. - Seguradoras e Corretoras",
+      "registryStatus": "CANCELADA"
+    },
+    {
+      "code": "4537",
+      "name": "GRAZZIOTIN S.A.",
+      "selectionHash": "836c57015c58d9358ed2dbe7202120c855480b93476d79c1bc3f7d7236501985",
+      "sector": "Comércio (Atacado e Varejo)",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "19453",
+      "name": "ECORODOVIAS INFRAESTRUTURA E LOGÍSTICA S.A.",
+      "selectionHash": "83f1631337d2e758bba6a73a338442d5be5a95f11ffd72ffcc57b2493bef2960",
+      "sector": "Serviços Transporte e Logística",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "12190",
+      "name": "BOMBRIL S.A.",
+      "selectionHash": "84cd080f2c98cbb0d73cbcbb89f33615a149baed69e7124498f3d3fdc062b6a7",
+      "sector": "Farmacêutico e Higiene",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "13773",
+      "name": "PBG S/A",
+      "selectionHash": "84e358cf18883ce911d1f101a1447619608e05db8909ff30ac82ef7169fde327",
+      "sector": "Construção Civil, Mat. Constr. e Decoração",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "18287",
+      "name": "VIRGO II COMPANHIA DE SECURITIZACAO",
+      "selectionHash": "84f2e7a7adf5ca9cac3801ee0be8091ba65f6b49e92939c6179e7dff0d44a9e9",
+      "sector": "Securitização de Recebíveis",
+      "registryStatus": "CANCELADA"
+    },
+    {
+      "code": "21130",
+      "name": "TRISUL S.A.",
+      "selectionHash": "85768407fe1c2d5c90118651de58ba0f8fab15aaf97c8c072df52ebee3fb9df5",
+      "sector": "Emp. Adm. Part. - Const. Civil, Mat. Const. e Decoração",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "24295",
+      "name": "VIBRA ENERGIA S/A",
+      "selectionHash": "85a36c4d7384ba4bc6d6baf29911e8167b2fcd464c86ecc65a93fa80035a4fca",
+      "sector": "Comércio (Atacado e Varejo)",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "14133",
+      "name": "TEC TOY S.A.",
+      "selectionHash": "85fddec348bb4337dcf23d67f6bce8088c389ffc466ccff372feef611a54a5b3",
+      "sector": "Máquinas, Equipamentos, Veículos e Peças",
+      "registryStatus": "CANCELADA"
+    },
+    {
+      "code": "7617",
+      "name": "ITAÚSA S.A.",
+      "selectionHash": "863278387ae22d034ed56b8756d17aec9aa3fa875a59d97f5e6b169cbe0351f4",
+      "sector": "Emp. Adm. Part. - Intermediação Financeira",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "15458",
+      "name": "EMBPAR PARTICIPAÇÕES S/A",
+      "selectionHash": "867cda4f1d2bffa68f356cef6ec0851e1d76fa40574cec6d47ecb561c0abf462",
+      "sector": "Emp. Adm. Part. - Sem Setor Principal",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "14451",
+      "name": "COMPANHIA ENERGÉTICA DE BRASÍLIA - CEB",
+      "selectionHash": "8853d206ac78b7b0b9ea7972f9e61b0c8d93b24c2a939e172a8070cda130c6f4",
+      "sector": "Energia Elétrica",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "12530",
+      "name": "ITAUTEC S.A. - GRUPO ITAUTEC",
+      "selectionHash": "88903f73f6598674a14f67dbcd07a8d00ff7269a0e774b0ee0de759cd8892de7",
+      "sector": "Comunicação e Informática",
+      "registryStatus": "CANCELADA"
+    },
+    {
+      "code": "23310",
+      "name": "CVC BRASIL OPERADORA E AGÊNCIA DE VIAGENS S.A.",
+      "selectionHash": "89f40adb35eea00182d55494fc453b77cf05a5cb42ba8b9d108339016675584e",
+      "sector": "Hospedagem e Turismo",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "7870",
+      "name": "KEPLER WEBER S.A.",
+      "selectionHash": "8a51441ce589a4a7615d16fd108fc093393a5bd05a37ac978610869c19bc5cd7",
+      "sector": "Emp. Adm. Part. - Metalurgia e Siderurgia",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "20958",
+      "name": "BCO ABC BRASIL S.A.",
+      "selectionHash": "8acfb759d7d49f0513188a2839625c58612d15c46a8d7a65ae9de3abe858f3b4",
+      "sector": "Bancos",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "3069",
+      "name": "CIA FERRO LIGAS DA BAHIA - FERBASA",
+      "selectionHash": "8ad126830e9ced83d80895e9514b6f0283969905fa401374c6a8a0bdf6d28cdf",
+      "sector": "Metalurgia e Siderurgia",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "20346",
+      "name": "PROFARMA DISTRIB PROD FARMACEUTICOS S.A.",
+      "selectionHash": "8dc3add17eef668e5cba348fe4451563fad900b4fbe54a12c07d45e5686b619c",
+      "sector": "Comércio (Atacado e Varejo)",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "2453",
+      "name": "CIA ENERGETICA DE MINAS GERAIS - CEMIG",
+      "selectionHash": "8dfe49f3c4ec629463a2ee0a12234202de15200d9a422e37bf7287bb5dada3b8",
+      "sector": "Energia Elétrica",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "24660",
+      "name": "BBM LOGÍSTICA S.A.",
+      "selectionHash": "8e34822d967be49d4bdc7f8c5bc49a7c5d27b20af0f072756e18fd63d4a5df0a",
+      "sector": "Serviços Transporte e Logística",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "16292",
+      "name": "BRF S.A.",
+      "selectionHash": "8f90103dce98070cc5a27c7cc19818dbc7cb52340f7471a0ad9ee434fea8eedf",
+      "sector": "Emp. Adm. Part. - Alimentos",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "14346",
+      "name": "WHIRLPOOL S.A.",
+      "selectionHash": "91da21b69ffb99a0199b7a329148c7d7f89cf85dcf78efecdb4d72dc9e1285b7",
+      "sector": "Máquinas, Equipamentos, Veículos e Peças",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "11207",
+      "name": "TECNOSOLO ENGENHARIA S.A. - EMPRESA FALIDA",
+      "selectionHash": "92ae3887bfdbf2b2571aa975b01e61f73a57c260057f8bb2986e2d0a8b78d882",
+      "sector": "Construção Civil, Mat. Constr. e Decoração",
+      "registryStatus": "CANCELADA"
+    },
+    {
+      "code": "80063",
+      "name": "BCO PATAGONIA S.A.",
+      "selectionHash": "933c7bc4146a24b5499ef78977a9dfd78ed7ec43a852fd302f990c46d9d37197",
+      "sector": "Unclassified",
+      "registryStatus": "Unknown"
+    },
+    {
+      "code": "22594",
+      "name": "STATKRAFT ENERGIAS RENOVAVEIS S.A.",
+      "selectionHash": "9555a4303d82443a3f5398b9f7b4683e23da86f5cdc872d5949e93cbad4546e4",
+      "sector": "Energia Elétrica",
+      "registryStatus": "CANCELADA"
+    },
+    {
+      "code": "15253",
+      "name": "ENERGISA S.A.",
+      "selectionHash": "965cf95e6b5cfb460e9bbda307aa57e85c36bc634f5aa2449b128d17983c8ce1",
+      "sector": "Emp. Adm. Part. - Energia Elétrica",
+      "registryStatus": "ATIVO"
+    },
+    {
+      "code": "21202",
+      "name": "VIX LOGÍSTICA S.A.",
+      "selectionHash": "9813ffeae356871cb25a45a43eeb864943282c82f0922608a4697a4bae184642",
+      "sector": "Serviços Transporte e Logística",
+      "registryStatus": "ATIVO"
+    }
+  ],
+  "limitations": [
+    "Retrospective issuer-held-out Brazilian CVM cohort, not prospective/global accuracy proof.",
+    "All years are available for conditional planning; qualification is assessed separately per horizon.",
+    "V2's original 60 issuers are development/calibration only. New test outcomes never calibrate bands.",
+    "Retained-vintage gaps and reconstructed 2018 eligibility can bias coverage; overlapping years share macro regimes.",
+    "Damping and growth bounds are fixed project controls, not financial laws. Edited plans lose empirical calibration.",
+    "Revenue evidence does not validate margins, FCFF, terminal value, WACC or stock returns."
+  ],
+  "attribution": "CVM DFP and issuer register; derivative database ODbL 1.0, see data/LICENSE-CVM.md."
+}

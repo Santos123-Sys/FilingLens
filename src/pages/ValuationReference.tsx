@@ -60,7 +60,7 @@ export default function ValuationReference() {
           illustrative analyst assumptions. This is not an investment
           recommendation, live quote, issuer guidance or consensus.
         </p>
-        <p className="mt-2 text-xs text-slate-400">
+        <p className="mt-2 break-words text-xs text-slate-400">
           Source retrieved {reference.source.retrievedAt}. PDF fingerprint:{" "}
           {reference.source.pdfSha256}. Source dates and historical diluted
           shares are preserved; fingerprints identify bytes, not audited

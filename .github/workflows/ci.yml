@@ -49,6 +49,13 @@ jobs:
         run: npm run lint
         continue-on-error: true
 
+      - name: Verify five-year forecasts and fresh-issuer qualification offline
+        run: |
+          python -m unittest discover -s tests -p 'test_five_year_acquisition.py' -v
+          npm run forecast:evaluate:five-year > /tmp/five-year-results.json
+          python ops/verify-five-year.py
+          git diff --exit-code -- src/data/five-year-qualification-summary.json public/evaluations/five-year-evaluation-v3.json
+
       - name: Reject production dependency advisories
         run: npm audit --omit=dev --audit-level=moderate
 

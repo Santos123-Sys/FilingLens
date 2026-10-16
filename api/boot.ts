@@ -6,6 +6,7 @@ import { z } from "zod";
 import { evaluateForecasts } from "../contracts/forecast-evaluation";
 import { calculateSectorValuation } from "../contracts/sector-valuation";
 import { forecastQuality } from "../contracts/forecast-qualification";
+import { prepareFiveYearForecast } from "./five-year-planner";
 import { delegatedAnalysisAccess, MODEL_ROUTES, gpiLaunchUrl } from './analysis-access';
 
 import { enrichIssuerHistory } from "./issuer-history";
@@ -47,7 +48,7 @@ const app = new Hono();
 app.use(workspaceEmbedding);
 app.use('/api/*',delegatedAnalysisAccess);
 
-app.use((c,next)=>bodyLimit({maxSize:["/api/valuation/sector", "/api/forecast/evaluate", "/api/forecast/quality"].includes(c.req.path)?100_000:c.req.path==="/api/integration/v1/valuations"?750_000:
+app.use((c,next)=>bodyLimit({maxSize:["/api/valuation/sector", "/api/forecast/evaluate", "/api/forecast/quality", "/api/forecast/plan"].includes(c.req.path)?100_000:c.req.path==="/api/integration/v1/valuations"?750_000:
   c.req.path==="/api/integration/v1/handoff/context"?2500:65*1024*1024})(c,next));
 
 app.use("/api/*", async (c, next) => {
@@ -448,7 +449,7 @@ app.post("/api/presentation", async (c) => {
 });
 
 // Stateless, bounded deterministic calculators. No provider, private store or source URL is accessed.
-for (const [path, calculate] of [["/api/valuation/sector", calculateSectorValuation], ["/api/forecast/evaluate", evaluateForecasts], ["/api/forecast/quality", forecastQuality]] as const) {
+for (const [path, calculate] of [["/api/valuation/sector", calculateSectorValuation], ["/api/forecast/evaluate", evaluateForecasts], ["/api/forecast/quality", forecastQuality], ["/api/forecast/plan", prepareFiveYearForecast]] as const) {
   app.post(path, async c => {
     c.header("Cache-Control", "no-store");
     let input: unknown;
