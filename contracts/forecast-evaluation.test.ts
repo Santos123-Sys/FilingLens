@@ -31,14 +31,15 @@ describe("point-in-time forecast replay", () => {
     expect(after.rows[0].prediction).toBe(before.rows[0].prediction);
     expect(after.rows[0].actual).not.toBe(before.rows[0].actual);
   });
-  it("reproduces current DCF proposals rather than a substitute forecast model", () => {
+  it("retains the legacy comparator but abstains from unsupported automatic DCF growth", () => {
     const a = valuationFixture();
     a.financials.revenue = [100, 120];
     const growth = prepareDcf(a).assumptions.filter(r =>
       r.id.startsWith("dcf.revenue_growth_y")
     );
     expect(growth).toHaveLength(5);
-    expect(growth.map(r => r.proposed_value)).toEqual([20, 17, 14, 11, 8]);
+    expect(growth.map(r => r.proposed_value)).toEqual([null, null, null, null, null]);
+    growth.forEach(r => expect(r.rationale).toContain("Source cutoff and error band unavailable"));
     // Independent small sequence: latest growth 20%, tapered to 17% in Y2.
     expect(
       revenueForecast([100, 100, 120], "filinglens_growth_v1", 2)

@@ -1,4 +1,5 @@
 import ForecastValidation from "../components/ForecastValidation";
+import ForecastQualification from "../components/ForecastQualification";
 import SectorValuationWorkspace from "../components/SectorValuationWorkspace";
 export default function ValuationValidation() {
   return (
@@ -15,6 +16,7 @@ export default function ValuationValidation() {
           scenarios. Deterministic correctness, predictive performance and
           authenticated product access are separate evidence.
         </p>
+        <ForecastQualification />
         <ForecastValidation />
         <SectorValuationWorkspace />
       </div>

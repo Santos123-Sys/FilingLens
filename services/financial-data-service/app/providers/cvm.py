@@ -112,9 +112,9 @@ def _filter_company(df: pd.DataFrame | None, cnpj: str) -> pd.DataFrame:
         if pd.notna(max_version):
             out = out.loc[pd.to_numeric(out["VERSAO"], errors="coerce") == max_version]
     if "ORDEM_EXERC" in out.columns:
-        ultimo = out.loc[out["ORDEM_EXERC"].astype(str).str.upper().str.contains("ÚLTIMO|ULTIMO", regex=True)]
-        if not ultimo.empty:
-            out = ultimo
+        # A substring match also accepts PENÚLTIMO and can select the prior
+        # year's comparative value as the current year when row order changes.
+        out = out.loc[out["ORDEM_EXERC"].astype(str).map(_normalize_text).eq("ultimo")]
     return out
 
 

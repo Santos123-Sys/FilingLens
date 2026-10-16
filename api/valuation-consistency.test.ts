@@ -16,7 +16,7 @@ function ledger(): ValuationAssumption[] {
   return prepareDcf(valuationFixture()).assumptions.map(r => ({
     ...r,
     status: "accepted" as const,
-    final_value: values[r.id] ?? r.proposed_value,
+    final_value: values[r.id] ?? (r.id.startsWith("dcf.revenue_growth_y") ? 0 : r.proposed_value),
   }));
 }
 describe("sustainable terminal cash flow and method suitability", () => {

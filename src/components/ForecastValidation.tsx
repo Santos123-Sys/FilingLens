@@ -3,7 +3,7 @@ import type { ForecastEvaluation } from "@contracts/forecast-evaluation";
 import reference from "../data/forecast-reference.json";
 
 const names: Record<string, string> = {
-  filinglens_growth_v1: "Current FilingLens mechanical growth",
+  filinglens_growth_v1: "Legacy FilingLens mechanical growth",
   naive: "Naive · last annual revenue",
   drift: "Linear drift",
   three_year_cagr: "Trailing CAGR · up to 3 years",
@@ -61,11 +61,11 @@ export default function ForecastValidation() {
   return (
     <section className="space-y-4 rounded-xl border border-slate-700 p-4 sm:p-6">
       <h2 className="text-xl font-semibold">
-        Forecast validation against historical outcomes
+        Development reference · Apple and Microsoft
       </h2>
       <p className="text-sm leading-6 text-slate-300">
         Rolling forecasts use only annual observations published before each
-        origin. The current DCF proposal rule is compared with naive, drift and
+        origin. The legacy DCF proposal rule is compared with naive, drift and
         CAGR baselines, without fitting to the target. Each issuer and horizon
         is scored separately.
       </p>
@@ -122,8 +122,8 @@ export default function ForecastValidation() {
               className="rounded-lg border border-amber-700 p-3 text-sm"
             >
               {current.mae < naive.mae
-                ? "The current rule has lower absolute error than naive in this selected sample."
-                : "The current rule does not beat naive on absolute error in this selected sample."}{" "}
+                ? "The legacy rule has lower absolute error than naive in this selected sample."
+                : "The legacy rule does not beat naive on absolute error in this selected sample."}{" "}
               {current.count} folds at this horizon; no automatic model
               replacement or confidence upgrade.
             </p>
@@ -176,7 +176,7 @@ export default function ForecastValidation() {
           </p>
           <details>
             <summary className="text-sm">
-              Inspect current-rule forecasts and source dates
+              Inspect legacy-rule forecasts and source dates
             </summary>
             <div className="mt-3 overflow-x-auto">
               <table className="w-full text-left text-xs">

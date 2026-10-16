@@ -1,5 +1,8 @@
 # Forecast evidence and specialist valuation methods
 
+Historical release note. The subsequent [broader forecast evaluation](forecast-quality-release.md)
+supersedes its forecast-proposal policy; the two-issuer results remain development references.
+
 16 October 2026. This release adds measured historical forecast validation and two bounded specialist calculators. It does not establish a generally more accurate forecasting model, a current fair value, or successful production sign-in.
 
 ## Forecast result and remedy

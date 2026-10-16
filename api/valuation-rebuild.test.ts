@@ -10,7 +10,7 @@ import { evaluateTradingPeer } from "../contracts/trading-comps-eligibility";
 import {valuationFixture} from "./fixtures/valuation-case";
 function reviewedDcf(a = valuationFixture()): ValuationAssumption[] {
   const inputs: Record<string, number> = { "dcf.risk_free_rate": 10, "dcf.beta": 0, "dcf.equity_risk_premium": 0, "dcf.debt_weight": 0, "dcf.terminal_roic": 10, "dcf.terminal_growth": 0, "dcf.equity_adjustment": 0 };
-  return prepareDcf(a).assumptions.map(row => ({ ...row, proposed_value: inputs[row.id] ?? row.proposed_value, status: "accepted" }));
+  return prepareDcf(a).assumptions.map(row => ({ ...row, proposed_value: inputs[row.id] ?? (row.id.startsWith("dcf.revenue_growth_y") ? 0 : row.proposed_value), status: "accepted" }));
 }
 const snapshots = () => [7, 9, 11, 13].map((multiple, i) => ({
   name: `Peer ${i + 1}`, currency: "USD" as const, basis: "us_gaap" as const, consolidated: true,
@@ -21,6 +21,11 @@ const snapshots = () => [7, 9, 11, 13].map((multiple, i) => ({
   quotation_source_url: `https://quote.example.com/${i}`, financial_source_url: `https://issuer.example.com/${i}/annual` }));
 
 describe("rebuilt valuation arithmetic and analyst gates", () => {
+  it("cannot calculate by accepting populated assumptions when revenue forecasts lack evidence", () => {
+    const proposal = prepareDcf(valuationFixture());
+    expect(proposal.assumptions.filter(r => r.id.startsWith("dcf.revenue_growth_y")).every(r => r.proposed_value === null)).toBe(true);
+    expect(() => calculateDcf(valuationFixture(), proposal.assumptions.map(r => ({...r,status:"accepted"})))).toThrow();
+  });
   it("matches an independent level perpetuity hand calculation", () => {
     const result = calculateDcf(valuationFixture(), reviewedDcf());
     // A perpetual 15 FCFF discounted at 10% is 150 EV, regardless of forecast horizon.
