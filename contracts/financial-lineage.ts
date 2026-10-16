@@ -62,6 +62,28 @@ export function safeEvidenceUrl(value: string | undefined): string | null {
     return null;
   }
 }
+/** Match whole numeric tokens; a matching token still does not establish period/metric support. */
+export function financialQuoteMatch(
+  quote: string | null | undefined,
+  value: number | string | null
+): { index: number; token: string } | null {
+  if (!quote || typeof value !== "number") return null;
+  const formatted = Math.abs(value).toLocaleString("en-US", {
+    maximumFractionDigits: 12,
+  });
+  const tokens =
+    value < 0
+      ? [`(${formatted})`, `-${formatted}`, String(value)]
+      : [formatted, String(value)];
+  for (const token of tokens) {
+    const escaped = token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const match = new RegExp(
+      "(^|[^\\d,.(-])(" + escaped + ")(?=$|[^\\d,.)])"
+    ).exec(quote);
+    if (match) return { index: match.index + match[1].length, token };
+  }
+  return null;
+}
 const cleanSource = (s: EvidenceReference): EvidenceReference => ({
   ...s,
   url: safeEvidenceUrl(s.url) ?? undefined,

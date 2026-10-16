@@ -8,7 +8,10 @@ import {
   SheetTitle,
 } from "./ui/sheet";
 import type { FinancialLineage } from "@contracts/financial-lineage";
-import { safeEvidenceUrl } from "@contracts/financial-lineage";
+import {
+  safeEvidenceUrl,
+  financialQuoteMatch,
+} from "@contracts/financial-lineage";
 
 const EvidenceContext = createContext<{
   open: (id: string, trigger: HTMLElement) => void;
@@ -175,16 +178,14 @@ export function FinancialEvidenceProvider({
                   )}
                   {node.sources.map((source, i) => {
                     const url = safeEvidenceUrl(source.url);
-                    const token =
-                      typeof node.value === "number"
-                        ? node.value.toLocaleString("en-US", {
-                            maximumFractionDigits: 8,
-                          })
-                        : String(node.value ?? "");
-                    const parts =
-                      token && source.quote?.includes(token)
-                        ? source.quote.split(token)
-                        : null;
+                    const match = financialQuoteMatch(source.quote, node.value);
+                    const token = match?.token ?? "";
+                    const parts = match
+                      ? [
+                          source.quote!.slice(0, match.index),
+                          source.quote!.slice(match.index + token.length),
+                        ]
+                      : null;
                     return (
                       <article
                         key={i}

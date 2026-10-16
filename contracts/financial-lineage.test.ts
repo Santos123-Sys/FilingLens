@@ -3,6 +3,7 @@ import {
   buildFinancialLineage,
   financialAuditExport,
   safeEvidenceUrl,
+  financialQuoteMatch,
 } from "./financial-lineage";
 import { valuationFixture } from "../api/fixtures/valuation-case";
 import { prepareDcf, calculateDcf } from "../api/valuation/dcf";
@@ -25,6 +26,36 @@ const ledger = (): ValuationAssumption[] =>
       )[r.id] ?? r.proposed_value,
   }));
 describe("source-to-number and input lineage", () => {
+  it("highlights whole numeric tokens without attaching a false match to another amount", () => {
+    expect(financialQuoteMatch("Revenue 1,100 for FY2025", 100)).toBeNull();
+    expect(financialQuoteMatch("Revenue 100.5 for FY2025", 100)).toBeNull();
+    expect(
+      financialQuoteMatch("Revenue 416,161 in FY2025", 416161)?.token
+    ).toBe("416,161");
+    expect(financialQuoteMatch("Capex (12,715)", -12715)?.token).toBe(
+      "(12,715)"
+    );
+  });
+  it("propagates conflicting input evidence without calling analyst acceptance verification", () => {
+    const a = valuationFixture();
+    a.financials.validationFlags = [
+      {
+        code: "SOURCE_MISMATCH",
+        severity: "error",
+        period: "2025",
+        note: "Synthetic contradiction",
+      },
+    ];
+    const assumptions = ledger(),
+      dcf = calculateDcf(a, assumptions),
+      g = buildFinancialLineage(a, { assumptions: { dcf: assumptions }, dcf });
+    expect(g.nodes["dcf:implied_per_share"].status).toBe(
+      "conflicting_evidence"
+    );
+    expect(g.nodes["dcf:implied_per_share"].limitations.join(" ")).toContain(
+      "linked input"
+    );
+  });
   it("never borrows a quote from another period, and preserves conflicting evidence", () => {
     const a = valuationFixture();
     a.financials.evidence = [
