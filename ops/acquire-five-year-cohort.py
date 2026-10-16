@@ -13,6 +13,19 @@ cvm=importlib.util.module_from_spec(spec)
 spec.loader.exec_module(cvm)
 
 
+def collapse_identical_vintages(rows):
+    unique={}
+    for row in rows:
+        existing=unique.get(row["id"])
+        if existing is None:
+            unique[row["id"]]={**row,"sourceDuplicateCount":1}
+        elif all(existing[k]==row[k] for k in ("sourceRowSha256","sourceSha256","publishedOn","receipt")):
+            existing["sourceDuplicateCount"]+=1
+        else:
+            raise ValueError("Conflicting retained vintage: "+row["id"])
+    return list(unique.values())
+
+
 def main():
     parser=argparse.ArgumentParser();parser.add_argument("--cache",type=Path,required=True)
     args=parser.parse_args();args.cache.mkdir(parents=True,exist_ok=True)
@@ -40,13 +53,15 @@ def main():
     with ThreadPoolExecutor(max_workers=2) as executor:
         acquired=list(executor.map(acquire,[y for y in range(2010,2026) if y!=2018]))
     acquired.append((base,manifest))
-    observations=[r for rows,_ in acquired for r in rows if r["issuer"] in cohort]
+    extracted=[r for rows,_ in acquired for r in rows if r["issuer"] in cohort]
+    observations=collapse_identical_vintages(extracted)
     issuers=[]
     for code in cohort:
         row=next(r for r in base if r["issuer"]==code)
         issuers.append({"code":code,"name":row["name"],"selectionHash":cvm.digest(f"filinglens-forecast-v2:{code}".encode()),**registry.get(code,{"sector":"Unclassified","registryStatus":"Unknown"})})
     result={"schemaVersion":"forecast-cohort.cvm.v3-held-out","protocolCommit":"1d83c38","acquiredOn":date.today().isoformat(),
       "eligible2018Count":len(eligible),"selectionRange":[60,180],"cohort":issuers,
+      "identicalDuplicateRowsCollapsed":len(extracted)-len(observations),
       "observations":sorted(observations,key=lambda r:(r["issuer"],r["fiscalYear"],r["publishedOn"])),
       "archives":sorted([m for _,m in acquired],key=lambda m:m["year"]),
       "registry":{"sourceUrl":registry_url,"sha256":cvm.digest(raw_registry),"labelsAsOf":date.today().isoformat()},

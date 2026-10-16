@@ -4,6 +4,8 @@ import {FinancialEvidenceProvider,FinancialValue} from "./FinancialEvidence";
 import {buildFinancialLineage,financialAuditExport,safeEvidenceUrl} from "@contracts/financial-lineage";
 import {fcffSuitability} from "@contracts/valuation-methodology";
 import {reviewableDcfAssumptions} from "@contracts/revenue-proposal-policy";
+import {alignedPlanningHistory,fiveYearPlanningContext,transferFiveYearScenario} from "@contracts/five-year-scenario";
+import FiveYearScenarioEditor from "./FiveYearScenarioEditor";
 import {analysisFetch,analysisAccessMessage} from '@/lib/gpi-access';
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Calculator, Check, ExternalLink, RefreshCw, ShieldCheck, X } from "lucide-react";
@@ -93,6 +95,8 @@ export default function ValuationWorkspace({
   const lineage=buildFinancialLineage(analysis,bundle);
   const suitability=fcffSuitability(analysis);
   const state = active === "dcf" ? dcfState : compsState;
+  const planningContext=fiveYearPlanningContext(analysis,dcfState.assumptions);
+  const planningHistory=planningContext?alignedPlanningHistory(analysis,planningContext):null;
 
   useEffect(() => {
     onChange?.({
@@ -295,7 +299,8 @@ export default function ValuationWorkspace({
       </div>
 
       <div className="mt-4 rounded-xl border border-amber-700/40 p-4 text-xs text-slate-300"><strong>{suitability.method}</strong><p className="mt-1">{suitability.industry}</p><ul className="mt-2 list-disc pl-4">{suitability.limitations.map(x=><li key={x}>{x}</li>)}</ul>{dcfResult&&!dcfResult.calculation_version&&<p className="mt-2 text-amber-200">Historical calculation version: rebuild assumptions and recalculate before relying on terminal value.</p>}</div>
-      {active === "dcf" && <p className="mt-3 rounded-lg border border-amber-800 p-3 text-xs leading-5 text-amber-200">{lang === "pt" ? "Crescimento exige um cenário documentado: esta análise não preserva as datas de publicação por ano necessárias para calibrar a previsão do emissor. O teste CVM qualifica somente a comparação histórica de receita em um ano. Premissas aceitas ou editadas não comprovam precisão futura." : "Revenue growth requires a documented scenario: this analysis lacks per-year publication vintages for issuer-specific forecast calibration. The CVM test qualifies only a one-year historical revenue comparison. Accepted or edited assumptions do not establish future accuracy."}</p>}
+      {active === "dcf" && <p className="mt-3 rounded-lg border border-amber-800 p-3 text-xs leading-5 text-amber-200">{lang === "pt" ? "Planejamento em cinco anos disponível abaixo após preparar as premissas. Cada horizonte tem evidência própria; precisão futura não é garantida. Revise todos os drivers, o período-base e a transição terminal antes de aplicar." : "Five-year planning is available below after preparing assumptions. Each horizon has separate evidence; future precision is not guaranteed. Review all drivers, the base period and the terminal transition before applying."}</p>}
+      {active==="dcf"&&planningContext&&<div className="mt-4"><FiveYearScenarioEditor key={`${planningContext.issuer}:${planningContext.baseYear}:${planningContext.baseRevenue}:${planningContext.currency}`} context={planningContext} history={planningHistory?.values} initialSourceUrl={planningHistory?.sourceUrls[0]} disabled={dcfState.loading||dcfState.calculating} onApply={input=>{const assumptions=transferFiveYearScenario(dcfState.assumptions,input,analysis.company.name);requestVersion.current.dcf++;setDcfState(prev=>({...prev,assumptions,error:null,loading:false,calculating:false}));setDcfResult(undefined);setReconciliation(undefined);}}/></div>}
       <div className="mt-4 grid gap-3 sm:grid-cols-3 text-xs">
         <div className="rounded-xl border border-cyan-700/50 bg-cyan-950/20 p-3"><strong className="text-cyan-200">{lang === "pt" ? "1 · Preparar" : "1 · Prepare"}</strong><p className="mt-1 text-slate-400">{lang === "pt" ? "Dados anuais do documento; lacunas explícitas." : "Annual filing inputs with explicit gaps."}</p></div>
         <div className="rounded-xl border border-slate-700 p-3"><strong className="text-slate-200">{lang === "pt" ? "2 · Revisar" : "2 · Review"}</strong><p className="mt-1 text-slate-400">{lang === "pt" ? "Edite estimativas e confirme fontes e unidades." : "Edit estimates; confirm sources and units."}</p></div>

@@ -1,6 +1,7 @@
 import ForecastValidation from "../components/ForecastValidation";
 import ForecastQualification from "../components/ForecastQualification";
 import SectorValuationWorkspace from "../components/SectorValuationWorkspace";
+import FiveYearForecastWorkspace from "../components/FiveYearForecastWorkspace";
 export default function ValuationValidation() {
   return (
     <main className="min-h-screen bg-slate-950 px-4 py-8 text-slate-100">
@@ -16,6 +17,7 @@ export default function ValuationValidation() {
           scenarios. Deterministic correctness, predictive performance and
           authenticated product access are separate evidence.
         </p>
+        <FiveYearForecastWorkspace />
         <ForecastQualification />
         <ForecastValidation />
         <SectorValuationWorkspace />
