@@ -6,10 +6,11 @@
  * FilingLens supplies reviewed, nonconstant FCFF forecasts instead of projecting
  * a single growth rate; discount timing and the equity bridge are unchanged.
  */
-export function discountCashFlows(flows: number[], wacc: number, growth: number) {
+// Optional terminal cash flow is already in year n+1 and must not grow again.
+export function discountCashFlows(flows: number[], wacc: number, growth: number, terminalCashFlow?: number) {
   if (!flows.length || flows.some(v => !Number.isFinite(v)) || !Number.isFinite(wacc) ||
       !Number.isFinite(growth) || wacc <= 0 || growth <= -1 || wacc <= growth) throw new Error("invalid_discount_inputs");
-  const terminalValue = flows.at(-1)! * (1 + growth) / (wacc - growth);
+  const terminalValue = (terminalCashFlow ?? flows.at(-1)! * (1 + growth)) / (wacc - growth);
   const presentValues = flows.map((flow, i) => flow / (1 + wacc) ** (i + 1));
   const presentTerminalValue = terminalValue / (1 + wacc) ** flows.length;
   const enterpriseValue = presentValues.reduce((sum, pv) => sum + pv, 0) + presentTerminalValue;
