@@ -15,11 +15,12 @@ export function fcffSuitability(a: FilingAnalysis) {
     industry:
       industry || "Unclassified operating company — analyst review required",
     method: specialized
-      ? "Equity cash flow, dividends, residual income, or NAV — specialized workflow required"
+      ? "Specialist workflow: reviewed common-equity residual income or equity-REIT property NAV where applicable"
       : "Five-year nominal FCFF / WACC, end-year discounting",
     limitations: specialized
       ? [
           "Industrial FCFF is blocked. Debt, regulatory capital, or property-level cash flows require a specialized model.",
+          "The specialist workbench supports banks/insurers under clean-surplus and capital-review conditions, and equity REIT NAV. Mortgage REITs and other financial institutions require another model.",
         ]
       : [
           "Confirm operating-company suitability; sector classification alone is insufficient.",

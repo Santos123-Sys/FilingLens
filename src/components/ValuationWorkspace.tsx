@@ -1,4 +1,5 @@
 import ValuationVersionHistory from "./ValuationVersionHistory";
+import SectorValuationWorkspace from "./SectorValuationWorkspace";
 import {FinancialEvidenceProvider,FinancialValue} from "./FinancialEvidence";
 import {buildFinancialLineage,financialAuditExport,safeEvidenceUrl} from "@contracts/financial-lineage";
 import {fcffSuitability} from "@contracts/valuation-methodology";
@@ -280,7 +281,7 @@ export default function ValuationWorkspace({
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="max-w-3xl">
           <div className="flex items-center gap-2 text-cyan-300"><ShieldCheck className="h-4 w-4" /><span className="text-[10px] font-bold uppercase tracking-[0.18em]">{lang === "pt" ? "Valuation com validação de premissas" : "Assumption-gated valuation"}</span></div>
-          <h2 className="mt-2 text-lg font-bold text-white">DCF + Trading Comps</h2><a className="mt-2 inline-block text-xs text-cyan-300 underline" href="/valuation/reference/apple">Source-backed Apple reference workflow</a>
+          <h2 className="mt-2 text-lg font-bold text-white">DCF + Trading Comps</h2><a className="mt-2 inline-block text-xs text-cyan-300 underline" href="/valuation/reference/apple">Source-backed Apple reference workflow</a><a className="ml-4 mt-2 inline-block text-xs text-cyan-300 underline" href="/valuation/validation" target="_blank" rel="noreferrer">Forecast validation and specialist models</a>
           <p className="mt-2 text-xs leading-relaxed text-slate-400">
             {lang === "pt"
               ? "O FilingLens prepara as premissas disponíveis. Revise a base anual, confirme unidades e fontes e edite as estimativas antes de calcular. Você pode excluir pares incompatíveis; premissas essenciais continuam obrigatórias."
@@ -298,6 +299,7 @@ export default function ValuationWorkspace({
         <div className="rounded-xl border border-slate-700 p-3"><strong className="text-slate-200">{lang === "pt" ? "2 · Revisar" : "2 · Review"}</strong><p className="mt-1 text-slate-400">{lang === "pt" ? "Edite estimativas e confirme fontes e unidades." : "Edit estimates; confirm sources and units."}</p></div>
         <div className="rounded-xl border border-slate-700 p-3"><strong className="text-slate-200">{lang === "pt" ? "3 · Comparar" : "3 · Compare"}</strong><p className="mt-1 text-slate-400">{lang === "pt" ? "Cenários, sensibilidades e divergências." : "Scenarios, sensitivities and divergence."}</p></div>
       </div>
+      {!suitability.supported && <div className="mt-5"><SectorValuationWorkspace key={analysis.company.name} issuer={analysis.company.name} initialSector="" /></div>}
       {active === "comps" && <div className="mt-5 rounded-xl border border-slate-700 bg-slate-950/30 p-4">
         <div className="grid gap-4 sm:grid-cols-3">
           <label className="text-xs text-slate-300">{lang === "pt" ? "Múltiplo" : "Valuation multiple"}<select aria-label="Valuation multiple" value={metric} onChange={e => { setMetric(e.target.value as ValuationMultiple); invalidateComps(); }} className="mt-2 w-full rounded-lg border border-slate-600 bg-slate-950 p-2">{["EV/Revenue", "EV/EBITDA", "P/E"].map(m => <option key={m}>{m}</option>)}</select></label>

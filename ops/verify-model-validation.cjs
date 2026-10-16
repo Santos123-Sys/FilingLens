@@ -1,0 +1,62 @@
+const {chromium,expect}=require(process.env.PLAYWRIGHT_TEST_MODULE||'@playwright/test');
+const {spawn}=require('node:child_process');
+const fs=require('node:fs/promises');
+const server=spawn(process.execPath,['dist/railway.js'],{cwd:process.cwd(),env:{...process.env,PORT:'4179',NODE_ENV:'production'},stdio:'ignore'});
+let browser;
+(async()=>{
+  for(let i=0;i<60;i++){try{if((await fetch('http://127.0.0.1:4179/api/status')).ok)break;}catch{}await new Promise(r=>setTimeout(r,100));}
+  browser=await chromium.launch({headless:true,args:['--no-sandbox']});
+  const results=[];
+  for(const width of [390,1440]){
+    const page=await browser.newPage({viewport:{width,height:1000},acceptDownloads:true});
+    const errors=[];page.on('pageerror',e=>errors.push(e.message));
+    await page.goto('http://127.0.0.1:4179/valuation/validation');
+    await expect(page.getByRole('table').first()).toContainText('Current FilingLens mechanical growth');
+    await expect(page.getByRole('status')).toContainText('does not beat naive');
+    await page.getByLabel('Benchmark issuer').selectOption('Microsoft');
+    await expect(page.getByRole('status')).toContainText('lower absolute error');
+    const forecastDownload=page.waitForEvent('download');
+    await page.getByRole('button',{name:'Export forecast validation with all folds and sources'}).click();
+    const forecast=JSON.parse(await fs.readFile(await(await forecastDownload).path(),'utf8'));
+    if(forecast.issuer!=='Microsoft'||forecast.rows.length!==60||forecast.observations.length!==8)throw Error('Forecast export mismatch');
+    await page.getByRole('button',{name:'Load synthetic bank example'}).click();
+    const sourceDetails=page.locator('div.rounded-lg').filter({has:page.getByLabel('Valuation-date diluted common shares',{exact:true})});
+    await sourceDetails.getByText('Attach input source',{exact:true}).click();
+    await page.getByLabel('Source URL for Valuation-date diluted common shares',{exact:true}).fill('https://example.org/synthetic-shares');
+    const review=page.getByRole('checkbox',{name:/I reviewed normalized common earnings/});
+    await expect(page.getByRole('button',{name:'Calculate sector model',exact:true})).toBeDisabled();
+    await review.check();await page.getByRole('button',{name:'Calculate sector model',exact:true}).click();
+    const trigger=page.getByRole('button',{name:'Inspect Sector value per common share',exact:true});
+    await expect(trigger).toContainText('12.03');
+    await trigger.focus();await page.keyboard.press('Enter');await expect(page.getByRole('dialog')).toContainText('Common equity value / valuation-date diluted common shares');
+    await page.keyboard.press('Escape');await expect(trigger).toBeFocused();
+    const sectorDownload=page.waitForEvent('download');await page.getByRole('button',{name:'Export sector inputs, sources and calculations'}).click();
+    const sector=JSON.parse(await fs.readFile(await(await sectorDownload).path(),'utf8'));
+    if(sector.lineage.calculationVersion!=='residual-income.v1'||Math.abs(sector.reconciliation.difference)>1e-8||sector.input.evidence.dilutedShares.url!=='https://example.org/synthetic-shares')throw Error('Sector audit/tie-out mismatch');
+    await page.getByLabel('Cost of common equity',{exact:true}).fill('5');
+    await expect(trigger).toHaveCount(0);await expect(review).not.toBeChecked();
+    // An old successful response must not reappear after an input edit.
+    let releaseResponse; const gate=new Promise(resolve=>{releaseResponse=resolve}); let entered;
+    const requestEntered=new Promise(resolve=>{entered=resolve});
+    await page.route('**/api/valuation/sector',async route=>{const response=await route.fetch(); entered(); await gate; await route.fulfill({response});});
+    await review.check();await page.getByRole('button',{name:'Calculate sector model',exact:true}).click();await requestEntered;
+    await page.getByLabel('Cost of common equity',{exact:true}).fill('6');releaseResponse();
+    await expect(trigger).toHaveCount(0);await page.unroute('**/api/valuation/sector');
+    await page.getByLabel('Sector model').selectOption('insurer');
+    await page.getByRole('button',{name:'Load synthetic insurer example'}).click();
+    await page.getByRole('checkbox',{name:/I reviewed normalized common earnings/}).check();
+    await page.getByRole('button',{name:'Calculate sector model',exact:true}).click();await expect(trigger).toContainText('12.03');
+    await page.getByLabel('Sector model').selectOption('equity_reit');
+    await page.getByRole('button',{name:'Load synthetic REIT example'}).click();
+    await page.getByRole('checkbox',{name:/I reviewed forward NOI/}).check();
+    await page.getByRole('button',{name:'Calculate sector model',exact:true}).click();await expect(trigger).toContainText('16.00');
+    await page.getByLabel('Property 1 capitalization rate',{exact:true}).fill('0');
+    await page.getByRole('checkbox',{name:/I reviewed forward NOI/}).check();await page.getByRole('button',{name:'Calculate sector model',exact:true}).click();
+    await expect(page.getByRole('alert')).toContainText('Invalid or unreviewed');await expect(trigger).toHaveCount(0);
+    if(errors.length)throw Error(errors.join('\n'));
+    await page.screenshot({path:`${process.env.QA_SCREENSHOT_DIR||'/tmp'}/model-validation-${width}.png`});
+    results.push({width,passed:['forecast baseline comparison','issuer switching','forecast export','bank model','insurer model','REIT NAV','review gate','input invalidation','formula navigation','keyboard return','sector export','invalid input recovery']});
+    await page.close();
+  }
+  console.log(JSON.stringify(results,null,2));
+})().catch(e=>{console.error(e);process.exitCode=1}).finally(async()=>{if(browser)await browser.close();server.kill();});
