@@ -105,7 +105,7 @@ def extract_year(data, year):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--cache", type=Path, required=True)
-    parser.add_argument("--output", type=Path, default=Path("data/forecast-cohort-cvm.json"))
+    parser.add_argument("--output", type=Path, default=Path("public/evaluations/forecast-cohort-cvm.json"))
     args = parser.parse_args()
     args.cache.mkdir(parents=True, exist_ok=True)
     def acquire(year):

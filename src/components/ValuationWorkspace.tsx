@@ -3,6 +3,7 @@ import SectorValuationWorkspace from "./SectorValuationWorkspace";
 import {FinancialEvidenceProvider,FinancialValue} from "./FinancialEvidence";
 import {buildFinancialLineage,financialAuditExport,safeEvidenceUrl} from "@contracts/financial-lineage";
 import {fcffSuitability} from "@contracts/valuation-methodology";
+import {reviewableDcfAssumptions} from "@contracts/revenue-proposal-policy";
 import {analysisFetch,analysisAccessMessage} from '@/lib/gpi-access';
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Calculator, Check, ExternalLink, RefreshCw, ShieldCheck, X } from "lucide-react";
@@ -83,7 +84,7 @@ export default function ValuationWorkspace({
   const [peerInputs, setPeerInputs] = useState<TradingPeerSnapshot[]>(() => Array.from({ length: 3 }, (_, i) => ({ ...emptyTradingPeer(analysis.market.competitors[i] ?? ""), currency: analysis.jurisdiction === "br" ? "BRL" : "USD" })));
   const requestVersion = useRef({ dcf: 0, comps: 0 });
   const [tradingAttested,setTradingAttested]=useState(false);
-  const [dcfState, setDcfState] = useState<MethodState>(() => ({ ...emptyState(), assumptions: analysis.valuation?.assumptions?.dcf ?? [] }));
+  const [dcfState, setDcfState] = useState<MethodState>(() => ({ ...emptyState(), assumptions: reviewableDcfAssumptions(analysis.valuation?.assumptions?.dcf ?? []) }));
   const [compsState, setCompsState] = useState<MethodState>(() => ({ ...emptyState(), assumptions: analysis.valuation?.assumptions?.comps ?? [] }));
   const [dcfResult, setDcfResult] = useState<DcfValuationResult | undefined>(analysis.valuation?.dcf);
   const [compsResult, setCompsResult] = useState<CompsValuationResult | undefined>(analysis.valuation?.comps);
@@ -294,6 +295,7 @@ export default function ValuationWorkspace({
       </div>
 
       <div className="mt-4 rounded-xl border border-amber-700/40 p-4 text-xs text-slate-300"><strong>{suitability.method}</strong><p className="mt-1">{suitability.industry}</p><ul className="mt-2 list-disc pl-4">{suitability.limitations.map(x=><li key={x}>{x}</li>)}</ul>{dcfResult&&!dcfResult.calculation_version&&<p className="mt-2 text-amber-200">Historical calculation version: rebuild assumptions and recalculate before relying on terminal value.</p>}</div>
+      {active === "dcf" && <p className="mt-3 rounded-lg border border-amber-800 p-3 text-xs leading-5 text-amber-200">{lang === "pt" ? "Crescimento exige um cenário documentado: esta análise não preserva as datas de publicação por ano necessárias para calibrar a previsão do emissor. O teste CVM qualifica somente a comparação histórica de receita em um ano. Premissas aceitas ou editadas não comprovam precisão futura." : "Revenue growth requires a documented scenario: this analysis lacks per-year publication vintages for issuer-specific forecast calibration. The CVM test qualifies only a one-year historical revenue comparison. Accepted or edited assumptions do not establish future accuracy."}</p>}
       <div className="mt-4 grid gap-3 sm:grid-cols-3 text-xs">
         <div className="rounded-xl border border-cyan-700/50 bg-cyan-950/20 p-3"><strong className="text-cyan-200">{lang === "pt" ? "1 · Preparar" : "1 · Prepare"}</strong><p className="mt-1 text-slate-400">{lang === "pt" ? "Dados anuais do documento; lacunas explícitas." : "Annual filing inputs with explicit gaps."}</p></div>
         <div className="rounded-xl border border-slate-700 p-3"><strong className="text-slate-200">{lang === "pt" ? "2 · Revisar" : "2 · Review"}</strong><p className="mt-1 text-slate-400">{lang === "pt" ? "Edite estimativas e confirme fontes e unidades." : "Edit estimates; confirm sources and units."}</p></div>
@@ -356,7 +358,7 @@ export default function ValuationWorkspace({
         </>
       )}
 
-      <ValuationVersionHistory bundle={bundle} locale={locale} onRestore={version=>{requestVersion.current.dcf++;requestVersion.current.comps++;setDcfState({...emptyState(),assumptions:version.assumptions.dcf??[]});setCompsState({...emptyState(),assumptions:version.assumptions.comps??[]});setDcfResult(version.dcf);setCompsResult(version.comps);setReconciliation(version.reconciliation);}} />
+      <ValuationVersionHistory bundle={bundle} locale={locale} onRestore={version=>{requestVersion.current.dcf++;requestVersion.current.comps++;setDcfState({...emptyState(),assumptions:reviewableDcfAssumptions(version.assumptions.dcf??[])});setCompsState({...emptyState(),assumptions:version.assumptions.comps??[]});setDcfResult(version.dcf);setCompsResult(version.comps);setReconciliation(version.reconciliation);}} />
       {!currentResult&&state.assumptions.length>0&&<p role="status" className="mt-3 text-xs text-amber-200">Results need recalculation. Your assumptions and saved session versions are retained.</p>}
 
       {currentResult && (

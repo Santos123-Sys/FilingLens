@@ -22,7 +22,7 @@ const assumptions: ValuationAssumption[] = prepareDcf(a).assumptions.map(r => ({
         "dcf.terminal_growth": 2,
         "dcf.equity_adjustment": 0,
       } as Record<string, number>
-    )[r.id] ?? r.proposed_value,
+    )[r.id] ?? (r.id.startsWith("dcf.revenue_growth_y") ? 0 : r.proposed_value),
 }));
 const result = calculateDcf(a, assumptions);
 const record = {

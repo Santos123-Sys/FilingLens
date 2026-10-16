@@ -12,6 +12,7 @@
     "check": "tsc -b",
     "format": "prettier --write .",
     "test": "vitest run",
+    "forecast:evaluate": "esbuild ops/evaluate-forecast-cohort.ts --bundle --platform=node --format=esm --outfile=node_modules/.tmp/evaluate-forecast-cohort.mjs && node node_modules/.tmp/evaluate-forecast-cohort.mjs",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push"

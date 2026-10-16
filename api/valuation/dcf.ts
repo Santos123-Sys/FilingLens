@@ -1,12 +1,12 @@
 import { fcffSuitability } from "../../contracts/valuation-methodology";
-import { taperedRevenueGrowth } from "../../contracts/forecast-evaluation";
+import { REVENUE_PROPOSAL_LIMITATION } from "../../contracts/revenue-proposal-policy";
 import { annualBasis, moneyBasis } from "./basis";
 import { discountCashFlows } from "../../vendor/financetoolkit/valuation";
 import type { DcfProjection, DcfValuationResult, FilingAnalysis, ValuationAssumption } from "../../contracts/analysis";
-import { ValuationInputError, capexPct, costDebt, daPct, ebitMargin, makeAssumption, netDebt, num, nwcPct, revenueGrowth, range, round, shares, taxRate, text, validatedRows } from "./common";
+import { ValuationInputError, capexPct, costDebt, daPct, ebitMargin, makeAssumption, netDebt, num, nwcPct, range, round, shares, taxRate, text, validatedRows } from "./common";
 
 export function prepareDcf(a: FilingAnalysis) {
-  const growth = revenueGrowth(a), margin = ebitMargin(a);
+  const margin = ebitMargin(a);
   const basis = annualBasis(a);
   const currency = moneyBasis(a.financials.unit)?.currency ?? null;
   const unit = `${currency ?? "Currency"} millions`;
@@ -18,7 +18,7 @@ export function prepareDcf(a: FilingAnalysis) {
     makeAssumption("dcf", "dcf.equity_adjustment", "equity_bridge", "Other equity bridge adjustments", null, unit, "Enter nonoperating assets minus preferred equity/minority interest; explicitly enter 0 if none. Exclude cash already in net debt.", "low", "high"),
   ];
   for (let i = 0; i < 5; i++) {
-    assumptions.push(makeAssumption("dcf", `dcf.revenue_growth_y${i + 1}`, "operating_forecast", `Revenue growth — Year ${i + 1}`, growth === null ? null : taperedRevenueGrowth(growth, i), "%", growth === null ? "No filing-derived baseline; enter and validate." : "Unvalidated mechanical taper from latest revenue growth, not guidance. Review forecast validation against naive/drift baselines before relying on it; historical benchmark results do not validate this issuer or your edits.", "low", "high"));
+    assumptions.push(makeAssumption("dcf", `dcf.revenue_growth_y${i + 1}`, "operating_forecast", `Revenue growth — Year ${i + 1}`, null, "%", REVENUE_PROPOSAL_LIMITATION, "low", "high"));
     assumptions.push(makeAssumption("dcf", `dcf.ebit_margin_y${i + 1}`, "operating_forecast", `EBIT margin — Year ${i + 1}`, margin, "%", margin === null ? "No filing-derived baseline; enter and validate." : "Starts from latest filing-derived EBIT margin and remains flat until edited.", margin === null ? "low" : "medium", "high"));
   }
   const derived = [

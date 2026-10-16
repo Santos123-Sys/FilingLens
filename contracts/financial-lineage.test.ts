@@ -23,7 +23,7 @@ const ledger = (): ValuationAssumption[] =>
           "dcf.terminal_growth": 2,
           "dcf.equity_adjustment": 0,
         } as Record<string, number>
-      )[r.id] ?? r.proposed_value,
+      )[r.id] ?? (r.id.startsWith("dcf.revenue_growth_y") ? 0 : r.proposed_value),
   }));
 describe("source-to-number and input lineage", () => {
   it("highlights whole numeric tokens without attaching a false match to another amount", () => {

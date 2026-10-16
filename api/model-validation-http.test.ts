@@ -3,6 +3,7 @@ import app from "./boot";
 import reference from "../src/data/forecast-reference.json";
 import type { SectorValuationResult } from "../contracts/sector-valuation";
 import type { ForecastEvaluation } from "../contracts/forecast-evaluation";
+import type { ForecastQuality } from "../contracts/forecast-qualification";
 const post = (path: string, body: unknown) =>
   app.request(path, {
     method: "POST",
@@ -80,5 +81,37 @@ describe("bounded stateless validation APIs", () => {
     expect(data.result.evaluationType).toBe(
       "retrospective_original_disclosure_replay"
     );
+  });
+  it("bounds quality requests and refuses insufficient or malformed vintage evidence", async () => {
+    expect(
+      (
+        await post("/api/forecast/quality", {
+          observations: [],
+          origin: "2026-07-01",
+        })
+      ).status
+    ).toBe(422);
+    expect(
+      (
+        await app.request("/api/forecast/quality", {
+          method: "POST",
+          body: "x".repeat(100001),
+        })
+      ).status
+    ).toBe(413);
+    const observation = {
+      ...reference.observations[0],
+      periodEnd: "2018-12-31",
+      publishedOn: "2019-03-01",
+    };
+    const response = await post("/api/forecast/quality", {
+      observations: [observation],
+      origin: "2026-07-01",
+    });
+    expect(response.status).toBe(200);
+    const data = (await response.json()) as { result: ForecastQuality };
+    expect(data.result.status).toBe("unavailable");
+    expect(data.result.forecasts).toEqual([]);
+    expect(response.headers.get("cache-control")).toBe("no-store");
   });
 });

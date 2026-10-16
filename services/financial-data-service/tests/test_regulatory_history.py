@@ -1,4 +1,5 @@
-from app.providers.cvm import _scale_multiplier
+import pandas as pd
+from app.providers.cvm import _filter_company, _scale_multiplier
 from app.providers.sec_edgar import _annual_facts
 
 
@@ -36,3 +37,13 @@ def test_cvm_scaling_normalizes_reported_units_to_base_brl():
     assert _scale_multiplier("milhares") == 1_000
     assert _scale_multiplier("MILHÃO") == 1_000_000
     assert _scale_multiplier("UNIDADE") == 1
+
+
+def test_cvm_current_period_does_not_include_comparative_or_fall_back_to_it():
+    rows = pd.DataFrame([
+        {"CNPJ_CIA": "12.345", "VERSAO": 2, "ORDEM_EXERC": "ÚLTIMO", "VL_CONTA": 200},
+        {"CNPJ_CIA": "12.345", "VERSAO": 2, "ORDEM_EXERC": "PENÚLTIMO", "VL_CONTA": 100},
+        {"CNPJ_CIA": "12.345", "VERSAO": 1, "ORDEM_EXERC": "ULTIMO", "VL_CONTA": 190},
+    ])
+    assert _filter_company(rows, "12345")["VL_CONTA"].tolist() == [200]
+    assert _filter_company(rows.iloc[[1]], "12345").empty

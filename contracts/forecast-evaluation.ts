@@ -64,7 +64,7 @@ export const forecastModels = [
 ] as const;
 export type ForecastModel = (typeof forecastModels)[number];
 
-/** Shared by the DCF proposal and its backtest. It is a mechanical scenario, not guidance. */
+/** Historical DCF proposal rule retained for comparison; no longer automatically proposed. */
 export function taperedRevenueGrowth(
   latestGrowthPercent: number,
   horizonIndex: number
