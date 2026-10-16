@@ -2,6 +2,7 @@ import {workspaceEmbedding} from './workspace-embedding';
 import { executionRuntimeStatus, withExecutionScope, safeErrorName } from "./ai/execution";
 import { Hono } from "hono";
 import { bodyLimit } from "hono/body-limit";
+import { delegatedAnalysisAccess, MODEL_ROUTES, gpiLaunchUrl } from './analysis-access';
 
 import { enrichIssuerHistory } from "./issuer-history";
 import { extractFilingText, BadFiling } from "./analyze";
@@ -40,11 +41,11 @@ export function registerRegulatoryArchiver(callback:RegulatoryArchiveFn) {regula
 
 const app = new Hono();
 app.use(workspaceEmbedding);
+app.use('/api/*',delegatedAnalysisAccess);
 
 app.use((c,next)=>bodyLimit({maxSize:c.req.path==="/api/integration/v1/valuations"?750_000:
   c.req.path==="/api/integration/v1/handoff/context"?2500:65*1024*1024})(c,next));
 
-const MODEL_ROUTES = new Set(["/api/metadata", "/api/agent", "/api/market-research", "/api/valuation/propose"]);
 app.use("/api/*", async (c, next) => {
   if (!MODEL_ROUTES.has(c.req.path)) return next();
   const body = await c.req.json().catch(() => ({})) as { agent?: unknown };
@@ -152,6 +153,7 @@ function unavailableRegulatoryData(jurisdiction: Market, warning: string): Regul
 /* ---- Step 0: extract text (CPU only, fast) ---- */
 app.get("/api/status", (c) => c.json({
   configured: Boolean(process.env.OPENAI_API_KEY),
+  analysisAccess: { required:true, launchUrl:gpiLaunchUrl() },
   ai: modelRuntimeConfig(),
   execution: executionRuntimeStatus(),
   dataTools: { configured: dataToolsConfigured() },

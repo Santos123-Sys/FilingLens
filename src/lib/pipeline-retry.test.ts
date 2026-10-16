@@ -26,6 +26,10 @@ const json = (body: unknown, status = 200) =>
   });
 
 describe("browser retry boundary", () => {
+  it.each(['gpi_authorization_required','gpi_authorization_unavailable'])('stops the pipeline without retrying %s',async code=>{
+    vi.stubGlobal('window',{setTimeout,clearTimeout});const fetch=vi.fn(async()=>json({error:code},401));vi.stubGlobal('fetch',fetch);
+    await expect(executeAnalysisPipeline(input())).rejects.toMatchObject({code,terminal:true});expect(fetch).toHaveBeenCalledTimes(1);
+  });
   it("does not retry unknown internal server errors", async () => {
     vi.stubGlobal("window", { setTimeout, clearTimeout });
     const fetch = vi.fn(async () => json({ error: "internal" }, 500));

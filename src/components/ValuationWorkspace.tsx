@@ -1,3 +1,4 @@
+import {analysisFetch,analysisAccessMessage} from '@/lib/gpi-access';
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Calculator, Check, ExternalLink, RefreshCw, ShieldCheck, X } from "lucide-react";
 import TradingPeerEditor from "./TradingPeerEditor";
@@ -122,7 +123,7 @@ export default function ValuationWorkspace({
         if(!Array.isArray(tradingSnapshots)||tradingSnapshots.length<3)
           throw new Error("three_trading_snapshots_required");
       }
-      const response = await fetch("/api/valuation/propose", {
+      const response = await analysisFetch("/api/valuation/propose", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ analysis, method, ...(method === "comps" ? { metric, fiscalToleranceDays: fiscalTolerance, ...(issuerAnnualEnd ? { issuerPeriodEnd: issuerAnnualEnd } : {}) } : {}), ...(tradingSnapshots?{tradingSnapshots,analystAttested:true}:{}) }),
@@ -137,7 +138,7 @@ export default function ValuationWorkspace({
       setReconciliation(undefined);
     } catch (error) {
       if (version !== requestVersion.current[method]) return;
-      setter(prev => ({ ...prev, loading: false, error: error instanceof Error ? error.message : "proposal_failed" }));
+      setter(prev => ({ ...prev, loading: false, error: error instanceof Error ? (analysisAccessMessage(error.message,lang)??error.message) : "proposal_failed" }));
     }
   };
 

@@ -1,4 +1,5 @@
 import {publicationNotice} from '../lib/workspace-bridge';
+import {analysisAccessMessage} from '../lib/gpi-access';
 import {useState} from 'react';
 import type {FilingAnalysis,ValuationAssumption,ValuationMethod} from '@contracts/analysis';
 export function PublishValuation({analysis,method,assumptions}:{analysis:FilingAnalysis;method:ValuationMethod;assumptions:ValuationAssumption[]}) {
@@ -11,7 +12,7 @@ export function PublishValuation({analysis,method,assumptions}:{analysis:FilingA
   setMessage(body.synchronization==='synchronized'?'Reviewed valuation approved and synchronized with GPI.':'Reviewed valuation approved in FilingLens. GPI synchronization is pending; the return link will retry automatically.');setUrl(body.returnUrl);
   const notice=publicationNotice(body.returnUrl,body.valuation?.valuationVersionId);
   if(notice&&window.parent!==window)window.parent.postMessage(notice.event,notice.origin);
- }catch(e){setMessage(e instanceof Error?e.message:'Publication unavailable');}finally{setBusy(false);}}
+ }catch(e){const code=e instanceof Error?e.message:'Publication unavailable';setMessage(analysisAccessMessage(code)??code);}finally{setBusy(false);}}
  return <div className="mt-4 rounded-lg border border-cyan-700 p-4 text-xs text-slate-200">
   <label className="flex gap-2"><input type="checkbox" checked={checked} onChange={e=>setChecked(e.target.checked)}/>I confirmed this company matches the GPI issuer, reviewed the sources and assumptions, and authorize sharing this valuation and its audit data with my GPI workspace.</label>
   <button disabled={!checked||busy} onClick={()=>void publish()} className="mt-3 rounded border border-cyan-600 p-2 disabled:opacity-40">{busy?'Publishing…':'Approve and publish to portfolio'}</button>

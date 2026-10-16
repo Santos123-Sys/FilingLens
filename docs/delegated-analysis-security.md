@@ -1,0 +1,13 @@
+# Authenticated GPI delegation
+
+FilingLens is a personal financial-analysis engine. Public examples/status can be read; model analysis, extraction, regulatory lookup, generated presentations and approval require an explicitly issued GPI issuer/workspace handoff.
+
+New signed `workspace-handoff.v1` tickets additionally contain an originating `sessionId`, `audience: filinglens`, and explicit `analysis:run` / `valuation:publish` permissions. Optional schema fields preserve parsing compatibility for historical records; legacy tickets do not authorize new protected work. Reopen the company from GPI. Browser code sends tickets only in `X-GPI-Handoff` to exact local protected paths; approval retains its existing body ticket. No service credential is sent to a browser.
+
+Before protected work, FilingLens validates the existing HMAC/type/expiry and permission, then calls GPI `/api/integration/v1/analysis-access` with its existing server-only corpus service identity. GPI checks the original session, user status, exact accepted account membership and current editing role. A positive check is never cached. Logout/revocation/downgrade denies subsequent requests. The existing two-hour delegation expiry is retained; new credentials or identity providers are unnecessary. An in-flight request may finish after revocation; this release does not provide distributed cancellation or a global spending quota.
+
+Missing/expired/revoked authority returns `401 gpi_authorization_required`; unavailable upstream/configuration returns `503 gpi_authorization_unavailable`. Authorization happens before parsing or model execution. A signed-in browser is not inferred from CORS, an iframe, local storage or a public status flag. GPI outage intentionally blocks new protected work. Deterministic local review and completed browser analysis remain available.
+
+Rollout: deploy this consumer first, then the GPI producer with the new bound claims and introspection route. Old launch tickets need refreshing after rollout. Keep required CI and real cross-app tests; no database migration. Never repair the secure gate by restoring anonymous inference. If forward recovery fails, contain paid provider use and restore a compatible secure pair. Rollback does not undo approvals committed before an incident.
+
+Scope limits: a copied still-active delegation can be used until its origin session is revoked or its expiry passes. SessionStorage is exposed to any same-origin script execution; wider CSP/XSS validation remains important. Private browser-history cookies use a separate mechanism, and their server expiry migration remains open. Full secret/SAST/image scans, broader RAG injection coverage, durable global spending limits and complete recovery are separate backlog items.
