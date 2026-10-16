@@ -25,7 +25,8 @@ export function fiveYearPath(values:number[]) {
     if(!Number.isFinite(revenue)||revenue<=0)throw Error("unsupported_nonfinite_or_nonpositive_path");
     return {horizon:i+1,growthPercent,revenue};
   });
-  return {modelVersion:FIVE_YEAR_MODEL,rawMedianGrowthPercent:Math.expm1(rawLogGrowth)*100,
+  const rawPercent=Math.expm1(rawLogGrowth)*100;
+  return {modelVersion:FIVE_YEAR_MODEL,rawMedianGrowthPercent:Number.isFinite(rawPercent)?rawPercent:null,
     boundedInitialGrowthPercent:Math.expm1(boundedLogGrowth)*100,
     boundsApplied:rawLogGrowth!==boundedLogGrowth,rows};
 }
