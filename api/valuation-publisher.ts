@@ -5,6 +5,7 @@ import {z} from 'zod';
 import {verifyHandoff} from '../contracts/workspace-handoff';
 import {companySchema,financialsSchema,valuationAssumptionSchema,type FilingAnalysis} from '../contracts/analysis';
 import {calculateValuation} from './valuation-manager';
+import {requireAnalysisAccess,AnalysisAccessError} from './analysis-access';
 const digest=(v:string)=>createHash('sha256').update(v).digest('hex');
 export const PublishRequest=z.object({
  ticket:z.string().max(2000),method:z.enum(['dcf','comps']),confirmed:z.literal(true),
@@ -74,8 +75,8 @@ function bearer(header:string|undefined):boolean {
 export function registerValuationPublisher(app:Hono,connect:typeof database=database) {
  app.post('/api/integration/v1/handoff/context',async c=>{
   try{const body=z.object({ticket:z.string().max(2000)}).strict().parse(await c.req.json());
-   return c.json({context:verifyHandoff(body.ticket,process.env.INTEGRATION_SIGNING_SECRET??'')},{headers:{'Cache-Control':'no-store'}});
-  }catch{return c.json({error:'invalid_or_expired_handoff'},401);}
+   return c.json({context:await requireAnalysisAccess(body.ticket)},{headers:{'Cache-Control':'no-store'}});
+  }catch(error){return c.json({error:error instanceof AnalysisAccessError?error.message:'invalid_or_expired_handoff'},error instanceof AnalysisAccessError?error.status:401);}
  });
  app.post('/api/integration/v1/valuations',async c=>{
   if(!process.env.DATABASE_URL||!process.env.INTEGRATION_SIGNING_SECRET)return c.json({error:'publisher_disabled'},503);
@@ -85,6 +86,7 @@ export function registerValuationPublisher(app:Hono,connect:typeof database=data
   try{
    const raw=await c.req.text();if(Buffer.byteLength(raw)>750_000)return c.json({error:'payload_too_large'},413);
    const input=PublishRequest.parse(JSON.parse(raw));
+   await requireAnalysisAccess(input.ticket,fetch,'valuation:publish');
    const {ctx,version,audit,requestHash}=reviewedVersion(input,process.env.INTEGRATION_SIGNING_SECRET);
    const db=await connect();
    try{
@@ -102,7 +104,8 @@ export function registerValuationPublisher(app:Hono,connect:typeof database=data
     return c.json({valuation:row?JSON.parse(row.payload_json):version,returnUrl:base.href,
       reused:Boolean(row),synchronization},{headers:{'Cache-Control':'no-store'}});
    }catch(e){await db.rollback();throw e;}finally{await db.end();}
-  }catch(e){return c.json({error:e instanceof Error&&['issuer_mismatch','expired_handoff','invalid_handoff','unpublishable_valuation'].includes(e.message)?e.message:'valuation_publication_failed'},422);}
+  }catch(e){if(e instanceof AnalysisAccessError)return c.json({error:e.message},e.status);
+   return c.json({error:e instanceof Error&&['issuer_mismatch','expired_handoff','invalid_handoff','unpublishable_valuation'].includes(e.message)?e.message:'valuation_publication_failed'},422);}
  });
  app.get('/api/integration/v1/valuations/:id',async c=>{
   c.header('Cache-Control','no-store');c.header('Vary','Authorization');

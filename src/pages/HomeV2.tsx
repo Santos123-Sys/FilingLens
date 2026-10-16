@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import {analysisFetch} from '@/lib/gpi-access';
 import {
   ArrowRight,
   BarChart3,
@@ -157,6 +158,8 @@ const COPY = {
 } as const;
 
 const ERROR_COPY: Record<string, [string, string]> = {
+  gpi_authorization_required: ['Open a fresh company handoff from your signed-in GPI workspace. Your selected files and completed analysis remain available.','Abra uma nova transferência da empresa no GPI autenticado. Os arquivos selecionados e a análise concluída continuam disponíveis.'],
+  gpi_authorization_unavailable: ['GPI authorization is temporarily unavailable. No new analysis was started; retry after GPI recovers.','A autorização do GPI está indisponível. Nenhuma nova análise foi iniciada; tente novamente após a recuperação.'],
   no_file: ["No file was received.", "Nenhum arquivo foi recebido."],
   file_too_large: ["One PDF is larger than 20 MB.", "Um dos PDFs é maior que 20 MB."],
   too_many_files: ["A bundle can contain at most 6 PDFs.", "O conjunto pode conter no máximo 6 PDFs."],
@@ -201,6 +204,7 @@ function Architecture({ lang, integrationConfigured }: { lang: Lang; integration
 
 export default function HomeV2() {
   const [configured, setConfigured] = useState<boolean | null>(null);
+  const [launchUrl,setLaunchUrl]=useState<string|null>(null);
   const [integrationConfigured, setIntegrationConfigured] = useState<boolean | null>(null);
   const [lang, setLang] = useState<Lang>("en");
   const [market, setMarket] = useState<Market>("us");
@@ -232,7 +236,11 @@ export default function HomeV2() {
         .then(body=>{sessionStorage.setItem('gpi-workspace-handoff',context);setMarket(body.context.issuerId.startsWith('br:')?'br':'us');})
         .catch(()=>setError('The GPI workspace handoff expired. Open a fresh handoff in GPI.'));
     }
-    fetch("/api/status").then(r => r.json()).then(body => setConfigured(Boolean(body.configured))).catch(() => setConfigured(false));
+    fetch("/api/status").then(r => r.json()).then(body => {setConfigured(Boolean(body.configured));
+      if(typeof body.analysisAccess?.launchUrl==='string'){
+        const url=new URL(body.analysisAccess.launchUrl);if(url.protocol==='https:'&&!url.username&&!url.password)setLaunchUrl(url.href);
+      }
+    }).catch(() => setConfigured(false));
     fetch("/api/integration/v1/capabilities").then(r => r.ok ? r.json() : Promise.reject()).then(body => setIntegrationConfigured(body.configured === true)).catch(() => setIntegrationConfigured(false));
   }, []);
 
@@ -301,7 +309,7 @@ export default function HomeV2() {
     setAnalysis(null); setError(null); setExecution(initialPipelineExecution()); setPhase("extracting");
     try {
       const form = new FormData(); files.forEach(file => form.append("file", file)); form.append("market", market);
-      const response = await fetch("/api/extract", { method: "POST", body: form, signal: controller.signal });
+      const response = await analysisFetch("/api/extract", { method: "POST", body: form, signal: controller.signal });
       const body = await response.json().catch(() => ({}));
       if (!response.ok) throw new PipelineError(typeof body.error === "string" ? body.error : "internal");
       if (typeof body.text !== "string" || !body.classification) throw new PipelineError("internal");
@@ -329,7 +337,7 @@ export default function HomeV2() {
     if (!analysis || pptxGenerating) return;
     setPptxError(false); setPptxGenerating(true);
     try {
-      const response = await fetch("/api/presentation", {
+      const response = await analysisFetch("/api/presentation", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ analysis, lang }),
@@ -363,6 +371,10 @@ export default function HomeV2() {
           <div className="flex items-center gap-3"><div className="grid h-10 w-10 place-items-center rounded-xl border border-cyan-500/25 bg-cyan-400/10"><FileSearch className="h-5 w-5 text-cyan-300" /></div><div><p className="text-sm font-bold text-white">FilingLens</p><p className="text-[9px] uppercase tracking-[0.18em] text-slate-600">{c.brandSub}</p></div></div>
           <div className="flex rounded-full border border-slate-700 bg-slate-900/75 p-1">{(["en", "pt"] as Lang[]).map(item => <button key={item} type="button" onClick={() => setLang(item)} className={`rounded-full px-3.5 py-1.5 text-[10px] font-semibold transition ${lang === item ? "bg-gradient-to-r from-blue-600 to-cyan-500 text-white" : "text-slate-500 hover:text-white"}`}>{item === "en" ? "English" : "Português"}</button>)}</div>
         </nav>
+        <div role="note" className="mt-5 rounded-xl border border-cyan-500/30 p-4 text-xs text-cyan-100">
+          {lang==='pt'?'A análise exige uma transferência de empresa do GPI autenticado. Antes de abrir uma nova transferência, mantenha esta aba aberta ou exporte a análise concluída.':'Analysis requires a company handoff from your signed-in GPI workspace. Before opening a new handoff, keep this tab open or export your completed analysis.'}
+          {launchUrl&&<a href={launchUrl} target="_blank" rel="noopener noreferrer" className="ml-2 underline">{lang==='pt'?'Abrir GPI':'Open GPI'}</a>}
+        </div>
 
         {phase !== "done" && <>
           <section className="mt-12 max-w-4xl"><span className="inline-flex items-center gap-2 rounded-full border border-blue-500/25 bg-blue-500/10 px-3 py-1 text-[9px] font-semibold uppercase tracking-[0.16em] text-blue-200"><Sparkles className="h-3 w-3" />{c.badge}</span><h1 className="mt-5 text-4xl font-semibold leading-[1.08] tracking-tight text-white sm:text-5xl">{c.h1}</h1><p className="mt-4 max-w-3xl text-sm leading-7 text-slate-400">{c.lead}</p></section>

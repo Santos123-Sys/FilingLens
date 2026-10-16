@@ -1,5 +1,14 @@
-import {describe,it,expect} from "vitest";
+import {describe,it,expect,beforeEach,afterEach,vi} from "vitest";
 import app from "./boot";
+import {signHandoff} from '../contracts/workspace-handoff';
+let ticket:string;
+beforeEach(()=>{
+ const secret='synthetic-http-authorization-'.repeat(3),now=Math.floor(Date.now()/1000);
+ vi.stubEnv('INTEGRATION_SIGNING_SECRET',secret);vi.stubEnv('FILINGLENS_CORPUS_TOKEN','synthetic-service-'.repeat(3));vi.stubEnv('GPI_API_URL','https://gpi.example/');
+ ticket=signHandoff({version:'workspace-handoff.v1',workspaceId:crypto.randomUUID(),reviewerUserId:crypto.randomUUID(),sessionId:crypto.randomUUID(),audience:'filinglens',permissions:['analysis:run'],issuerId:'us:0000320193',candidateKey:'XNAS:AAPL',ticker:'AAPL',nonce:crypto.randomUUID(),issuedAt:now,expiresAt:now+7200},secret);
+ vi.stubGlobal('fetch',vi.fn(async url=>{expect(String(url)).toBe('https://gpi.example/api/integration/v1/analysis-access');return Response.json({allowed:true});}));
+});
+afterEach(()=>{vi.unstubAllGlobals();vi.unstubAllEnvs();});
 const today=()=>new Date().toISOString().slice(0,10);
 const analysis={
  jurisdiction:"us",
@@ -21,7 +30,7 @@ const snapshots=()=>[7,8,9].map((multiple,i)=>({
  financial_source_url:`https://investor.example.com/report/${i}`,
 }));
 const post=async(path:string,body:unknown)=>{
- const response=await app.request(path,{method:"POST",headers:{"Content-Type":"application/json"},
+ const response=await app.request(path,{method:"POST",headers:{"Content-Type":"application/json",'X-GPI-Handoff':ticket},
   body:JSON.stringify(body)});
  return {status:response.status,data:await response.json() as any};
 };

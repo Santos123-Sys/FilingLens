@@ -1,3 +1,4 @@
+import {analysisFetch} from './gpi-access';
 import type {
   AgentName,
   AnalysisDiagnostics,
@@ -85,11 +86,11 @@ async function requestJson(
     const timer = window.setTimeout(() => controller.abort("stage_timeout"), timeoutFor(stage));
     onStage(stage, { status: attempt > 1 ? "retrying" : "running", attempt, maxAttempts });
     try {
-      const response = await fetch(url, { ...init, signal: controller.signal });
+      const response = await analysisFetch(url, { ...init, signal: controller.signal });
       const body = await response.json().catch(() => ({}));
       if (response.ok) return body;
       const code = typeof body.error === "string" ? body.error : "internal";
-      const terminal = ["ai_unavailable", "ai_misconfigured", "content_rejected"].includes(code);
+      const terminal = ["ai_unavailable", "ai_misconfigured", "content_rejected", "gpi_authorization_required", "gpi_authorization_unavailable"].includes(code);
       const transient = code === "ai_transient";
       if (terminal) throw new PipelineError(code, true);
       if (transient && attempt < maxAttempts) {
