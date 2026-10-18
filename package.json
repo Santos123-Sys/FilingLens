@@ -4,6 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "forecast:policy": "esbuild ops/export-forecast-reliability.ts --bundle --platform=node --format=esm --outfile=node_modules/.tmp/forecast-policy.mjs && node node_modules/.tmp/forecast-policy.mjs",
+    "forecast:watch": "esbuild ops/forecast-watch.ts --bundle --platform=node --format=esm --outfile=node_modules/.tmp/forecast-watch.mjs && node node_modules/.tmp/forecast-watch.mjs",
     "dev": "vite",
     "build": "node scripts/build.mjs",
     "lint": "eslint .",

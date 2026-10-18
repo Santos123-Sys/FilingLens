@@ -1,0 +1,4737 @@
+{
+  "schemaVersion": "forecast-watch-score.v1",
+  "digest": "effac31a5c2b0e39378c314c70777833a6246021b25b993730488bb298e68be7",
+  "issuedAt": "2026-10-17T22:52:24.900Z",
+  "asOf": "2026-10-17",
+  "timestampStatus": "unanchored_no_prospective_claim",
+  "anchor": null,
+  "cohortSize": 120,
+  "excludedAtRegistration": [
+    {
+      "issuer": "24473",
+      "reason": "five_consecutive_available_positive_annuals_required"
+    },
+    {
+      "issuer": "3158",
+      "reason": "five_consecutive_available_positive_annuals_required"
+    },
+    {
+      "issuer": "23493",
+      "reason": "five_consecutive_available_positive_annuals_required"
+    },
+    {
+      "issuer": "14761",
+      "reason": "five_consecutive_available_positive_annuals_required"
+    },
+    {
+      "issuer": "15083",
+      "reason": "five_consecutive_available_positive_annuals_required"
+    },
+    {
+      "issuer": "8893",
+      "reason": "five_consecutive_available_positive_annuals_required"
+    },
+    {
+      "issuer": "22500",
+      "reason": "five_consecutive_available_positive_annuals_required"
+    },
+    {
+      "issuer": "1597",
+      "reason": "five_consecutive_available_positive_annuals_required"
+    },
+    {
+      "issuer": "23965",
+      "reason": "five_consecutive_available_positive_annuals_required"
+    },
+    {
+      "issuer": "1384",
+      "reason": "five_consecutive_available_positive_annuals_required"
+    },
+    {
+      "issuer": "24201",
+      "reason": "five_consecutive_available_positive_annuals_required"
+    },
+    {
+      "issuer": "4707",
+      "reason": "five_consecutive_available_positive_annuals_required"
+    },
+    {
+      "issuer": "21199",
+      "reason": "five_consecutive_available_positive_annuals_required"
+    },
+    {
+      "issuer": "23957",
+      "reason": "five_consecutive_available_positive_annuals_required"
+    },
+    {
+      "issuer": "12793",
+      "reason": "five_consecutive_available_positive_annuals_required"
+    },
+    {
+      "issuer": "24490",
+      "reason": "five_consecutive_available_positive_annuals_required"
+    },
+    {
+      "issuer": "24171",
+      "reason": "five_consecutive_available_positive_annuals_required"
+    },
+    {
+      "issuer": "24090",
+      "reason": "five_consecutive_available_positive_annuals_required"
+    },
+    {
+      "issuer": "21555",
+      "reason": "five_consecutive_available_positive_annuals_required"
+    },
+    {
+      "issuer": "24384",
+      "reason": "five_consecutive_available_positive_annuals_required"
+    },
+    {
+      "issuer": "4863",
+      "reason": "five_consecutive_available_positive_annuals_required"
+    },
+    {
+      "issuer": "22217",
+      "reason": "five_consecutive_available_positive_annuals_required"
+    },
+    {
+      "issuer": "18287",
+      "reason": "five_consecutive_available_positive_annuals_required"
+    },
+    {
+      "issuer": "14133",
+      "reason": "five_consecutive_available_positive_annuals_required"
+    },
+    {
+      "issuer": "12530",
+      "reason": "five_consecutive_available_positive_annuals_required"
+    },
+    {
+      "issuer": "20958",
+      "reason": "five_consecutive_available_positive_annuals_required"
+    },
+    {
+      "issuer": "11207",
+      "reason": "five_consecutive_available_positive_annuals_required"
+    },
+    {
+      "issuer": "80063",
+      "reason": "five_consecutive_available_positive_annuals_required"
+    },
+    {
+      "issuer": "22594",
+      "reason": "five_consecutive_available_positive_annuals_required"
+    }
+  ],
+  "futureAccuracyProven": false,
+  "cases": [
+    {
+      "issuer": "20800",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 2571.23011329612,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20800",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 2886.1763615900973,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20800",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 3165.6901316517433,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20800",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 3408.6690055061204,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20800",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 3616.4126218549245,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19763",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 20763.348166685584,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19763",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 21247.146636978257,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19763",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 21642.289384202126,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19763",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 21963.687986279325,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19763",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 22224.23992230736,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "17892",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 4534.2675,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "17892",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 5420.44755144585,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "17892",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 6252.555469708021,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "17892",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 7009.313450281073,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "17892",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 7680.152130431896,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "4723",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 457.0175,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "4723",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 546.33728355085,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "4723",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 630.2070333030165,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "4723",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 706.4821186142701,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "4723",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 774.0972331847777,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "3298",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 83.95625000000001,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "3298",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 100.36471155287502,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "3298",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 115.77197643360788,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "3298",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 129.78406597320526,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "3298",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 142.20527842712698,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20915",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 12193.97007541284,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20915",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 13332.798352233654,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20915",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 14319.975008247024,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20915",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 15162.088203359755,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20915",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 15871.297305006019,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "21350",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 5287.302583529599,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "21350",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 6188.551278722886,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "21350",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 7018.961475088702,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "21350",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 7762.827783496325,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "21350",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 8414.292907826175,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "21180",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 0.6324225102300001,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "21180",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 0.611934367186061,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "21180",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 0.5960227885770523,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "21180",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 0.5835919346507411,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "21180",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 0.5738341841286712,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "10880",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 274.97613183394,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "10880",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 321.21974784807554,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "10880",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 363.7542085204625,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "10880",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 401.8025240648681,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "10880",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 435.08725852671665,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "24120",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 1073.7431146400402,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "24120",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 1069.291257575,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "24120",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 1065.743071166639,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "24120",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 1062.9130010985868,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "24120",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 1060.6543534877724,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "9512",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 504361.00306488003,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "9512",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 509877.69362918363,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "9512",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 514334.46316631924,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "9512",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 517927.91232667706,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "9512",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 520820.7365296283,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "22020",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 12050.76,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "22020",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 14405.9680058712,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "22020",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 16617.468058983864,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "22020",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 18628.709963430505,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "22020",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 20411.60343701016,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20370",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 214.50751807134,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20370",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 224.05961936391367,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20370",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 232.00666228914932,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20370",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 238.56676666870612,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20370",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 243.94815300946712,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "14311",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 27541.36386925872,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "14311",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 28736.712491430455,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "14311",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 29730.2386344488,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "14311",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 30549.7348242642,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "14311",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 31221.566262678527,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "22497",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 1288.6806593493,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "22497",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 1187.8459467979449,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "22497",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 1112.889304017154,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "22497",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 1056.3441886314483,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "22497",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 1013.1837819959718,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "15539",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 56543.43873689,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "15539",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 59879.9584933515,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "15539",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 62690.38123166684,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "15539",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 65033.39786977927,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "15539",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 66970.7057232832,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "24694",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 8635.964808395649,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "24694",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 9430.350594629177,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "24694",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 10118.1570816922,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "24694",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 10704.349476772912,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "24694",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 11197.662419627844,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20990",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 11816.654049050001,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20990",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 11439.968895934491,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20990",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 11147.284956511166,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20990",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 10918.538544708124,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20990",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 10738.925637642269,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "11070",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 3630.0144931705195,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "11070",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 4214.669564260274,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "11070",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 4749.497560728905,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "11070",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 5225.826428408504,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "11070",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 5641.061451213594,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "13781",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 254.50354724271,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "13781",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 223.2286854170937,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "13781",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 200.99947916721163,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "13781",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 184.82081199961047,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "13781",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 172.8206480327801,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "5258",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 51719.675661172136,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "5258",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 58593.073672663035,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "5258",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 64743.87220655904,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "5258",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 70126.24460530729,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "5258",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 74752.56693108717,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "22187",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 19479.949999999997,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "22187",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 23287.123505568998,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "22187",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 26861.994340241006,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "22187",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 30113.149598210242,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "22187",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 32995.18157965025,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "21156",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 3582.99540953738,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "21156",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 3881.5029263354727,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "21156",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 4138.117818177095,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "21156",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 4355.571978310374,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "21156",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 4537.734411823452,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "22780",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 252.03556677626,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "22780",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 263.01107553902654,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "22780",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 272.13462465662775,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "22780",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 279.6608124922864,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "22780",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 285.83135213361686,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "18775",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 4375.93518153403,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "18775",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 4880.386337839796,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "18775",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 5325.505780483818,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "18775",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 5710.658447426529,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "18775",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 6038.7416001028,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "8192",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 165.61842949373,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "8192",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 171.92720645842826,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "8192",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 177.14682016727053,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "8192",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 181.43637727357492,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "8192",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 184.94268969529995,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20257",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 5113.77068358312,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20257",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 5542.573958031584,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20257",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 5911.363915001683,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20257",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 6223.986691214743,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20257",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 6485.947382422744,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "22519",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 559.3831944659199,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "22519",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 633.9095657421769,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "22519",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 700.6185317654023,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "22519",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 759.0057611553908,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "22519",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 809.1999202890081,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "23221",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 2479.6223465327903,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "23221",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 2712.407457504752,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "23221",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 2914.2743952905807,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "23221",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 3086.532462814431,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "23221",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 3231.641496273528,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19836",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 45008.739109157475,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19836",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 49053.42604465757,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19836",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 52549.34942437764,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19836",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 55524.6389374625,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19836",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 58025.7096521388,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20877",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 1098.54414774828,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20877",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 1075.1819806010742,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20877",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 1056.8504718900597,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20877",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 1042.4105547965503,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20877",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 1031.0008083726025,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19445",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 8863.037267502,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19445",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 9313.752846881187,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19445",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 9690.772910160238,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19445",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 10003.348112023352,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19445",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 10260.651931390752,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "23574",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 1728.60062547144,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "23574",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 1727.7552014775345,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "23574",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 1727.0791481447482,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "23574",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 1726.538503288213,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "23574",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 1726.1061089854495,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "6505",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 29196.05518508,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "6505",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 29195.29929921126,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "6505",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 29194.694664562772,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "6505",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 29194.21090847218,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "6505",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 29193.823793235533,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "22560",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 420.66724445025005,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "22560",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 413.25868010130426,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "22560",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 407.42588096896566,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "22560",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 402.81896985953244,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "22560",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 399.17097681744934,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "21040",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 293.28364344872,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "21040",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 268.3934759577559,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "21040",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 250.01107259267124,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "21040",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 236.2158716251667,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "21040",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 225.7298215329979,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19100",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 496.0690753437,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19100",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 539.0892719487806,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19100",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 576.1764682835543,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19100",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 607.6750159722674,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19100",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 634.1092255418201,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "21520",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 194.27228073770002,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "21520",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 184.04022003610154,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "21520",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 176.24397080860703,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "21520",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 170.2454402894272,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "21520",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 165.59395010602498,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "8745",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 545.88,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "8745",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 652.5671256456001,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "8745",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 752.7445127143942,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "8745",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 843.850528500895,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "8745",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 924.6127285080034,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "22357",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 3361.29433096438,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "22357",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 3825.846753400319,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "22357",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 4243.306393922582,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "22357",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 4609.839975316756,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "22357",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 4925.734699236508,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "24392",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 36480.58950948121,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "24392",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 40946.047870826354,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "24392",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 44908.867802836736,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "24392",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 48353.531551642205,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "24392",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 51298.547876044,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "22349",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 14774.365,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "22349",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 17661.8760557063,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "22349",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 20373.19957241445,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "22349",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 22839.004384691005,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "22349",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 25024.851495975578,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "17671",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 63878.61768195,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "17671",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 67526.16085078586,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "17671",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 70593.59477993114,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "17671",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 73147.56797242067,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "17671",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 75257.11457371809,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "16659",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 47425.27921140205,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "16659",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 53405.06058074333,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "16659",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 58727.352308856,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "16659",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 63364.61908737337,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "16659",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 67336.71957897829,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "12823",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 53.59930035199999,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "12823",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 61.3251383442825,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "12823",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 68.3002148122102,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "12823",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 74.44729015148526,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "12823",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 79.7609565523727,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20931",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 68537.59,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20931",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 81932.6190829058,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20931",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 94510.32239167755,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20931",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 105949.07588421936,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20931",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 116089.11866209214,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19330",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 1128.7353038718902,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19330",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 1191.6366747713503,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19330",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 1244.4723792176019,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19330",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 1288.4227506640689,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19330",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 1324.6980097560106,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19879",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 15803.787776659201,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19879",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 16480.842747973267,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19879",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 17043.31215624917,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19879",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 17507.07789376599,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19879",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 17887.160231326005,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "10456",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 5022.27875707904,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "10456",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 5420.987774605544,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "10456",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 5762.627151951502,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "10456",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 6051.37678181621,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "10456",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 6292.759484614631,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "24627",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 1752.8427134336798,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "24627",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 1794.2861027140304,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "24627",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 1828.1452145010173,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "24627",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 1855.6919625334485,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "24627",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 1878.0279246128039,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "24546",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 485.87125000000003,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "24546",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 580.830228340175,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "24546",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 669.9950855924078,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "24546",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 751.0857900928601,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "24546",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 822.9697775446879,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "23302",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 65.7185544569702,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "23302",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 65.75285428491237,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "23302",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 65.78030675910486,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "23302",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 65.8022773815624,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "23302",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 65.81985909205598,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "8656",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 72810.05497699999,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "8656",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 75260.80866300108,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "8656",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 77280.67329806044,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "8656",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 78935.52685976212,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "8656",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 80284.88785560051,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "4669",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 11498.155260336222,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "4669",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 12367.36060687239,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "4669",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 13109.801214337911,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "4669",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 13735.718316573517,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "4669",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 14257.900878383703,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "2100",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 399.43933455368,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "2100",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 412.9921713713192,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "2100",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 424.1647866346018,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "2100",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 433.3201120886463,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "2100",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 440.78644727959306,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "7510",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 1442.7449711436002,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "7510",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 1542.836471147966,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "7510",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 1627.8866430309981,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "7510",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 1699.290260440339,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "7510",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 1758.6616608924483,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "24716",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 7128.64753872128,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "24716",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 8459.284167476864,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "24716",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 9700.514933370745,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "24716",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 10823.40046461181,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "24716",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 11814.596114590471,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "7544",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 114.10562312211,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "7544",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 112.70492525075571,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "7544",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 111.5967574543754,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "7544",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 110.7180736013366,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "7544",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 110.02011018689598,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19739",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 52226.985,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19739",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 62434.259329130706,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19739",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 72018.71542164391,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19739",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 80735.26946262608,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19739",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 88462.18052062097,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "1520",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 60.09,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "1520",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 71.8340268558,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "1520",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 82.86146729868825,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "1520",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 92.89033900787496,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "1520",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 101.78057238962029,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20320",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 7084.38987399549,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20320",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 6973.249965652249,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20320",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 6885.594749201507,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20320",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 6816.264590799114,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20320",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 6761.303413499998,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20745",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 12199.0175,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20745",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 14583.20104359085,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20745",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 16821.908631259375,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20745",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 18857.894344117147,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20745",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 20662.722312214926,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20125",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 2567.5916738558103,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20125",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 2691.978626819838,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20125",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 2795.8130341782353,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20125",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 2881.7568860114816,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20125",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 2952.4103028291306,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "18465",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 151829.59587459263,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "18465",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 159848.26190097907,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "18465",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 166567.0535981622,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "18465",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 172144.85620560474,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "18465",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 176741.28568245922,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "21008",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 213.60359571524998,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "21008",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 234.39432362582943,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "21008",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 252.47472824905796,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "21008",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 267.9381615437557,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "21008",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 280.9880816635995,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20710",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 3683.2717304697594,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20710",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 4248.784476246995,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20710",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 4763.097330313853,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20710",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 5219.023578844053,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20710",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 5614.9914718635455,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20087",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 48339.8821519422,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20087",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 54214.803987038766,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20087",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 59424.80110975785,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20087",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 63951.04024253334,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20087",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 67819.02042700099,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "13986",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 59756.33995638064,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "13986",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 68787.937079924,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "13986",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 76986.56149727205,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "13986",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 84243.62273025089,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "13986",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 90538.79736097576,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "18708",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 146.57500000000002,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "18708",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 175.22170887650003,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "18708",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 202.12047877026515,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "18708",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 226.58348211148734,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "18708",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 248.2690530538958,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20770",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 1532.80772889712,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20770",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 1560.5503225439745,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20770",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 1583.1054869428121,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20770",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 1601.384117881383,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20770",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 1616.1588560713035,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "8753",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 559.5371064689965,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "8753",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 582.0623358104082,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "8753",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 600.7336790329242,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "8753",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 616.1010773129494,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "8753",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 628.6775547651495,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19615",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 2772.00956347137,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19615",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 2931.910107690461,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19615",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 3066.446490887446,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19615",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 3178.507079424016,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19615",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 3271.0969588625667,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "4537",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 801.7774829405,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "4537",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 850.4684513109474,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "4537",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 891.5417571295336,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "4537",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 925.8240875005896,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "4537",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 954.1966888048333,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19453",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 13445.10958782023,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19453",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 15213.231715303926,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19453",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 16793.73085916356,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19453",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 18175.55799571113,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "19453",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 19362.445379300883,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "12190",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 1871.0177367767599,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "12190",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 1992.9739471409084,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "12190",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 2096.238038746244,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "12190",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 2182.6885934169504,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "12190",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 2254.4090558896614,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "13773",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 2864.2511509264805,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "13773",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 3089.019937464101,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "13773",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 3281.469740843036,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "13773",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 3444.0270904208264,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "13773",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 3579.8520797685082,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "21130",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 1411.25372607552,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "21130",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 1437.936046248759,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "21130",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 1459.6446817738604,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "21130",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 1477.2473251994998,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "21130",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 1491.4821542874881,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "24295",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 207516.92361075,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "24295",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 223557.4007584749,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "24295",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 237278.00149475547,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "24295",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 248858.34961214702,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "24295",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 258528.25094594373,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "7617",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 8568.055564409999,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "7617",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 8832.162535641268,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "7617",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 9049.297630393368,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "7617",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 9226.842949549184,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "7617",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 9371.384027869897,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "15458",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 1.9128,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "15458",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 1.600079464992,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "15458",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 1.3871363135635948,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "15458",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 1.2373746547101372,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "15458",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 1.1292936165026914,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "14451",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 558.4093000024,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "14451",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 600.1104019035131,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "14451",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 635.7025657697533,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "14451",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 665.6902704816296,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "14451",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 690.6957871619095,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "23310",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 1745.7087135256102,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "23310",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 1983.1326574838226,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "23310",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 2196.1184276684976,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "23310",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 2382.8623055606736,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "23310",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 2543.627424788266,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "7870",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 1584.088915773,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "7870",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 1663.3522896693169,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "7870",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 1729.609200230539,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "7870",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 1784.509988469773,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "7870",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 1829.682699570799,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "3069",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 2436.4759428258003,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "3069",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 2521.294470253174,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "3069",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 2591.270350915857,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "3069",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 2648.6468031926092,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "3069",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 2695.4613440878907,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20346",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 13397.17231885508,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20346",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 15190.19881878411,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20346",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 16795.916608518743,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20346",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 18201.86600476047,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "20346",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 19410.90019958892,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "2453",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 45898.78550405314,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "2453",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 48582.83219235426,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "2453",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 50842.645141962035,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "2453",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 52725.946201075756,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "2453",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 54282.6924168896,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "24660",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 1326.3040979467999,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "24660",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 1311.1603444934024,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "24660",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 1299.169927370648,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "24660",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 1289.656586685386,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "24660",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 1282.0961039116014,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "16292",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 72397.79742409565,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "16292",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 78870.49643958984,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "16292",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 84462.89259236518,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "16292",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 89220.99308776429,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "16292",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 93219.74951972783,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "14346",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 13364.33205525753,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "14346",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 14043.099798178033,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "14346",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 14610.852773710509,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "14346",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 15081.537889210927,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "14346",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 15468.980184538696,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "15253",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 38154.26275534685,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "15253",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 40473.362403452265,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "15253",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 42429.7293929523,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "15253",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 44062.69353588287,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "15253",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 45414.199893958204,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "21202",
+      "horizon": 1,
+      "targetYear": 2026,
+      "prediction": 4981.38613683997,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "21202",
+      "horizon": 2,
+      "targetYear": 2027,
+      "prediction": 5885.927103575285,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "21202",
+      "horizon": 3,
+      "targetYear": 2028,
+      "prediction": 6726.460802237166,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "21202",
+      "horizon": 4,
+      "targetYear": 2029,
+      "prediction": 7484.520894284458,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    },
+    {
+      "issuer": "21202",
+      "horizon": 5,
+      "targetYear": 2030,
+      "prediction": 8152.032755179798,
+      "status": "pending_outcome",
+      "reason": "target_disclosure_not_available",
+      "scaledAbsoluteError": null,
+      "covered": null
+    }
+  ],
+  "summaries": [
+    {
+      "horizon": 1,
+      "fixedAttempts": 120,
+      "scored": 0,
+      "pending": 91,
+      "ineligible": 0,
+      "macroScaledAbsoluteErrorPercent": null,
+      "bandCases": 0,
+      "bandCoveragePercent": null,
+      "qualification": "not_established_requires_separate_predeclared_validation"
+    },
+    {
+      "horizon": 2,
+      "fixedAttempts": 120,
+      "scored": 0,
+      "pending": 91,
+      "ineligible": 0,
+      "macroScaledAbsoluteErrorPercent": null,
+      "bandCases": 0,
+      "bandCoveragePercent": null,
+      "qualification": "not_established_requires_separate_predeclared_validation"
+    },
+    {
+      "horizon": 3,
+      "fixedAttempts": 120,
+      "scored": 0,
+      "pending": 91,
+      "ineligible": 0,
+      "macroScaledAbsoluteErrorPercent": null,
+      "bandCases": 0,
+      "bandCoveragePercent": null,
+      "qualification": "not_established_requires_separate_predeclared_validation"
+    },
+    {
+      "horizon": 4,
+      "fixedAttempts": 120,
+      "scored": 0,
+      "pending": 91,
+      "ineligible": 0,
+      "macroScaledAbsoluteErrorPercent": null,
+      "bandCases": 0,
+      "bandCoveragePercent": null,
+      "qualification": "not_established_requires_separate_predeclared_validation"
+    },
+    {
+      "horizon": 5,
+      "fixedAttempts": 120,
+      "scored": 0,
+      "pending": 91,
+      "ineligible": 0,
+      "macroScaledAbsoluteErrorPercent": null,
+      "bandCases": 0,
+      "bandCoveragePercent": null,
+      "qualification": "not_established_requires_separate_predeclared_validation"
+    }
+  ]
+}

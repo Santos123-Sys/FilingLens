@@ -6,6 +6,7 @@ import {
   planningInputSchema,
 } from "../contracts/five-year-forecast";
 import { checkedVintages } from "../contracts/forecast-qualification";
+import { applyForecastReliability } from "../contracts/forecast-reliability";
 const developmentRows = development.cohort.flatMap(i =>
   checkedVintages(development.observations.filter(o => o.issuer === i.code))
 );
@@ -28,18 +29,15 @@ export function prepareFiveYearForecast(raw: unknown) {
     observations = checkedVintages(input.observations);
   const eligible =
     canonical.get(observations[0].issuer) === JSON.stringify(observations);
-  const plan = fiveYearPlan(input, eligible ? pool : []);
+  const plan = applyForecastReliability(
+    fiveYearPlan(input, eligible ? pool : []),
+    eligible
+  );
   return {
     ...plan,
     calibrationEligibility: eligible
       ? "canonical_cvm_replay"
       : "analyst_supplied_not_canonical",
-    rows: plan.rows.map(row => ({
-      ...row,
-      band: eligible
-        ? row.band
-        : { ...row.band, status: "unverified_history_no_calibration" },
-    })),
   };
 }
 export type PreparedFiveYearForecast = ReturnType<

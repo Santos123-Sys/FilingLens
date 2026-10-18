@@ -27,6 +27,18 @@ describe("bounded stateless five-year planning API", () => {
     expect(body.result.rows).toHaveLength(5);
     expect(body.result.calibrationEligibility).toBe("canonical_cvm_replay");
     expect(body.result.rows[0].band.interval).not.toBeNull();
+    expect(
+      body.result.rows
+        .slice(2)
+        .every(
+          r =>
+            r.band.interval === null &&
+            r.band.status === "withheld_failed_horizon_precision_gate"
+        )
+    ).toBe(true);
+    expect(
+      body.result.rows.every(r => r.reliability.futureAccuracyProven === false)
+    ).toBe(true);
     const heldOut = new Set(source.cohort.map(i => i.code));
     for (const row of body.result.rows)
       expect(

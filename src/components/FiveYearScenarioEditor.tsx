@@ -6,6 +6,10 @@ import type {
 } from "@contracts/five-year-scenario";
 import { fiveYearPath } from "@contracts/five-year-forecast";
 import type { FiveYearPlan } from "@contracts/five-year-forecast";
+import {
+  horizonReliability,
+  usablePlanningBand,
+} from "@contracts/forecast-reliability";
 
 const fmt = (value: number) =>
   value.toLocaleString("en-US", { maximumFractionDigits: 2 });
@@ -90,7 +94,19 @@ export default function FiveYearScenarioEditor({
             modelVersion: modelPlan.modelVersion,
           }
         : null,
-      modelBands: !edited && modelPlan ? modelPlan.rows.map(r => r.band) : null,
+      modelBands:
+        !edited && modelPlan
+          ? modelPlan.rows.map((r, i) => ({
+              ...r.band,
+              interval: usablePlanningBand(modelPlan, i, false),
+              status: horizonReliability(i + 1, true).activeBandAllowed
+                ? r.band.status
+                : "withheld_failed_horizon_precision_gate",
+            }))
+          : null,
+      horizonReliability: modelPlan
+        ? modelPlan.rows.map(r => horizonReliability(r.horizon, !edited))
+        : null,
       evidenceStatus:
         edited || !modelPlan
           ? "edited_or_manual_no_empirical_calibration"
@@ -146,6 +162,17 @@ export default function FiveYearScenarioEditor({
           Publication-vintage evidence is unavailable here. Historical
           suggestions and manual drivers are conditional planning assumptions,
           without empirical bands or issuer-specific accuracy qualification.
+        </p>
+      )}
+      {modelPlan && (
+        <p
+          role="status"
+          className="rounded border border-amber-800 p-3 text-xs text-amber-200"
+        >
+          Precision gate enforced: years 3–5 are planning-only. Their failed
+          empirical bands are withheld from this table and scenario exports, not
+          repaired by widening them. Years 1–2 have historical cohort evidence
+          only; future and issuer-specific accuracy remain unproven.
         </p>
       )}
       <div className="grid gap-3 sm:grid-cols-5">
@@ -228,7 +255,7 @@ export default function FiveYearScenarioEditor({
             </thead>
             <tbody>
               {preview.rows.map((row, i) => {
-                const band = !edited ? modelPlan?.rows[i]?.band.interval : null;
+                const band = usablePlanningBand(modelPlan, i, edited);
                 return (
                   <tr key={row.horizon}>
                     <td className="p-2">FY{row.targetYear}</td>
@@ -252,7 +279,11 @@ export default function FiveYearScenarioEditor({
                     <td className="p-2">
                       {band
                         ? `${fmt(band.lower)}–${fmt(band.upper)}`
-                        : "Unavailable / uncalibrated"}
+                        : modelPlan &&
+                            !edited &&
+                            !horizonReliability(i + 1, true).activeBandAllowed
+                          ? "Withheld · precision gate failed"
+                          : "Unavailable / uncalibrated"}
                     </td>
                   </tr>
                 );

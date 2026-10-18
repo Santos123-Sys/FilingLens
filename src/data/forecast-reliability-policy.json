@@ -1,0 +1,222 @@
+{
+  "acquiredOn": "2026-10-16",
+  "datasetSha256": "5fe6757d523390f9b7e17bd3e130bd80a51d82457ad9eea6ae324b8a8f5c766a",
+  "engineSha256": "37287f8e13cc2d38cd7f303c878cf90242721db08a44f84d686e4908333f91d6",
+  "summaries": [
+    {
+      "horizon": 1,
+      "gates": [
+        {
+          "name": "30 paired issuers",
+          "pass": true
+        },
+        {
+          "name": "100 paired cases",
+          "pass": true
+        },
+        {
+          "name": "60% scored coverage",
+          "pass": true
+        },
+        {
+          "name": "Six sectors with three issuers",
+          "pass": true
+        },
+        {
+          "name": "5% lower macro error than legacy",
+          "pass": true
+        },
+        {
+          "name": "No more than 5% worse than naive",
+          "pass": true
+        }
+      ],
+      "scores": [
+        {
+          "model": "bounded_v3",
+          "count": 266,
+          "issuerCount": 98,
+          "macroScaledAbsoluteErrorPercent": 19.312428185702508,
+          "meanScaledAbsoluteErrorPercent": 19.035695826368872,
+          "medianScaledAbsoluteErrorPercent": 10.751007290323319,
+          "mapePercent": 90.602370625519
+        }
+      ],
+      "intervalUsefulness": "passes_project_precision_gate",
+      "intervalCoveragePercent": 86.8421052631579,
+      "medianIntervalWidthPercent": 66.94855765041898
+    },
+    {
+      "horizon": 2,
+      "gates": [
+        {
+          "name": "30 paired issuers",
+          "pass": true
+        },
+        {
+          "name": "100 paired cases",
+          "pass": true
+        },
+        {
+          "name": "60% scored coverage",
+          "pass": true
+        },
+        {
+          "name": "Six sectors with three issuers",
+          "pass": true
+        },
+        {
+          "name": "5% lower macro error than legacy",
+          "pass": true
+        },
+        {
+          "name": "No more than 5% worse than naive",
+          "pass": true
+        }
+      ],
+      "scores": [
+        {
+          "model": "bounded_v3",
+          "count": 264,
+          "issuerCount": 98,
+          "macroScaledAbsoluteErrorPercent": 36.32899681354389,
+          "meanScaledAbsoluteErrorPercent": 35.49281830244809,
+          "medianScaledAbsoluteErrorPercent": 22.21334659858765,
+          "mapePercent": 211.12735242344493
+        }
+      ],
+      "intervalUsefulness": "passes_project_precision_gate",
+      "intervalCoveragePercent": 76.89393939393939,
+      "medianIntervalWidthPercent": 106.14641968792738
+    },
+    {
+      "horizon": 3,
+      "gates": [
+        {
+          "name": "30 paired issuers",
+          "pass": true
+        },
+        {
+          "name": "100 paired cases",
+          "pass": true
+        },
+        {
+          "name": "60% scored coverage",
+          "pass": true
+        },
+        {
+          "name": "Six sectors with three issuers",
+          "pass": true
+        },
+        {
+          "name": "5% lower macro error than legacy",
+          "pass": true
+        },
+        {
+          "name": "No more than 5% worse than naive",
+          "pass": true
+        }
+      ],
+      "scores": [
+        {
+          "model": "bounded_v3",
+          "count": 260,
+          "issuerCount": 98,
+          "macroScaledAbsoluteErrorPercent": 56.164348045877134,
+          "meanScaledAbsoluteErrorPercent": 55.65198520567411,
+          "medianScaledAbsoluteErrorPercent": 40.29046212568241,
+          "mapePercent": 370.95091204237804
+        }
+      ],
+      "intervalUsefulness": "not_established",
+      "intervalCoveragePercent": 71.53846153846153,
+      "medianIntervalWidthPercent": 132.4574340500118
+    },
+    {
+      "horizon": 4,
+      "gates": [
+        {
+          "name": "30 paired issuers",
+          "pass": true
+        },
+        {
+          "name": "100 paired cases",
+          "pass": true
+        },
+        {
+          "name": "60% scored coverage",
+          "pass": true
+        },
+        {
+          "name": "Six sectors with three issuers",
+          "pass": true
+        },
+        {
+          "name": "5% lower macro error than legacy",
+          "pass": true
+        },
+        {
+          "name": "No more than 5% worse than naive",
+          "pass": true
+        }
+      ],
+      "scores": [
+        {
+          "model": "bounded_v3",
+          "count": 253,
+          "issuerCount": 96,
+          "macroScaledAbsoluteErrorPercent": 83.12844130192322,
+          "meanScaledAbsoluteErrorPercent": 82.37784351071251,
+          "medianScaledAbsoluteErrorPercent": 52.075064673660975,
+          "mapePercent": 516.0204349912759
+        }
+      ],
+      "intervalUsefulness": "not_established",
+      "intervalCoveragePercent": 67.98418972332016,
+      "medianIntervalWidthPercent": 158.8086710761685
+    },
+    {
+      "horizon": 5,
+      "gates": [
+        {
+          "name": "30 paired issuers",
+          "pass": true
+        },
+        {
+          "name": "100 paired cases",
+          "pass": true
+        },
+        {
+          "name": "60% scored coverage",
+          "pass": true
+        },
+        {
+          "name": "Six sectors with three issuers",
+          "pass": true
+        },
+        {
+          "name": "5% lower macro error than legacy",
+          "pass": true
+        },
+        {
+          "name": "No more than 5% worse than naive",
+          "pass": true
+        }
+      ],
+      "scores": [
+        {
+          "model": "bounded_v3",
+          "count": 241,
+          "issuerCount": 90,
+          "macroScaledAbsoluteErrorPercent": 113.88365808091889,
+          "meanScaledAbsoluteErrorPercent": 106.65066101889886,
+          "medianScaledAbsoluteErrorPercent": 60.61455260254939,
+          "mapePercent": 91.75606898031505
+        }
+      ],
+      "intervalUsefulness": "not_established",
+      "intervalCoveragePercent": 66.875,
+      "medianIntervalWidthPercent": 206.33469998099883
+    }
+  ]
+}

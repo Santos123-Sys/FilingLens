@@ -1,6 +1,7 @@
 # CVM forecast evaluation derivative database
 
-`forecast-cohort-cvm.json`, `five-year-cohort-cvm-v3.json` and derived evaluation reports contain data from the
+`forecast-cohort-cvm.json`, `five-year-cohort-cvm-v3.json`,
+`forecast-watch-v1.json`, `forecast-watch-score-v1.json` and derived evaluation reports contain data from the
 Comissão de Valores Mobiliários (CVM), [DFP dataset](https://dados.cvm.gov.br/dataset/cia_aberta-doc-dfp)
 and [public issuer register](https://dados.cvm.gov.br/dataset/cia_aberta-cad).
 
