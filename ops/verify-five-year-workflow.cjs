@@ -31,6 +31,9 @@ async function downloadJson(page, button) {
     await expect(panel.getByRole('table').first().locator('tbody tr')).toHaveCount(5);
     await panel.getByText('Forward accuracy tracking · outcomes pending, not proven',{exact:true}).click();
     await expect(panel).toContainText('91 eligible and 29 retained exclusions');
+    await expect(panel).toContainText('Registration independently observed by GitHub');
+    await expect(panel).toContainText('Reporting year not complete');
+    await expect(panel.getByRole('link',{name:'Inspect successful CI timestamp receipt'})).toHaveAttribute('href','https://github.com/Santos123-Sys/FilingLens/actions/runs/39115630450');
     await expect(panel.getByRole('table').nth(1).locator('tbody tr')).toHaveCount(5);
     const watch=await downloadJson(page,panel.getByRole('link',{name:'Download frozen forward forecasts'}));
     if(watch.payload.forecasts.length!==91||watch.payload.exclusions.length!==29||!watch.digest)throw Error('Forward cohort denominator lost');

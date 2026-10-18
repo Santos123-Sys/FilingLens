@@ -1,6 +1,8 @@
 import { useRef, useState } from "react";
 import report from "../data/five-year-qualification-summary.json";
 import watch from "../data/forecast-watch-summary.json";
+import attestation from "../../public/evaluations/forecast-watch-attestation-v1.json";
+import { forecastObservationState } from "@contracts/forecast-observation-state";
 import FiveYearScenarioEditor from "./FiveYearScenarioEditor";
 import type { RevenueVintage } from "@contracts/forecast-qualification";
 import type { PreparedFiveYearForecast } from "../../api/five-year-planner";
@@ -160,32 +162,60 @@ export default function FiveYearForecastWorkspace() {
           represent five full annual lead times from issuance.
         </p>
         <p className="mt-2">
-          Independent timestamp: {watch.timestampStatus.replaceAll("_", " ")}.
-          The initial local file is not independent prospective proof. The
-          verifier must check successful GitHub CI metadata and exact committed
-          snapshot bytes before classifying future scores as prospective.
+          Registration independently observed by GitHub at{" "}
+          {attestation.receipt.observedAt}. Receipt verified on{" "}
+          {attestation.verifiedAt}.{" "}
+          <a
+            className="text-cyan-200 underline"
+            href={attestation.receipt.url}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Inspect successful CI timestamp receipt
+          </a>
+          . This dated attestation establishes snapshot chronology, not
+          prediction accuracy. The initial outcome snapshot remains unanchored;
+          scoring future outcomes requires live receipt re-verification, not
+          copying this receipt.
         </p>
         <div className="overflow-x-auto">
           <table className="mt-2 w-full min-w-[440px] text-left">
             <thead>
               <tr>
                 <th>Year</th>
+                <th>Target period end</th>
                 <th>Fixed attempts</th>
                 <th>Scored</th>
                 <th>Pending outcomes</th>
                 <th>Accuracy status</th>
+                <th>Observation availability</th>
               </tr>
             </thead>
             <tbody>
-              {watch.summaries.map(s => (
-                <tr key={s.horizon}>
-                  <td>{s.horizon}</td>
-                  <td>{s.fixedAttempts}</td>
-                  <td>{s.scored}</td>
-                  <td>{s.pending}</td>
-                  <td>Not established</td>
-                </tr>
-              ))}
+              {watch.summaries.map(s => {
+                const state = forecastObservationState(
+                  Number(watch.sourceCutoff.slice(0, 4)) + s.horizon - 1,
+                  watch.asOf,
+                  s.scored,
+                  s.pending
+                );
+                return (
+                  <tr key={s.horizon}>
+                    <td>{s.horizon}</td>
+                    <td>{state.periodEnd}</td>
+                    <td>{s.fixedAttempts}</td>
+                    <td>{s.scored}</td>
+                    <td>{s.pending}</td>
+                    <td>Not established</td>
+                    <td>
+                      {state.label}
+                      <span className="block text-slate-400">
+                        {state.nextAction}
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
@@ -201,6 +231,9 @@ export default function FiveYearForecastWorkspace() {
           </a>
           <a download href="/evaluations/forecast-watch-score-v1.json">
             Download pending-outcome ledger
+          </a>
+          <a download href="/evaluations/forecast-watch-attestation-v1.json">
+            Download verified timestamp attestation
           </a>
         </div>
       </details>
