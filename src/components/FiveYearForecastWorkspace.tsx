@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import report from "../data/five-year-qualification-summary.json";
+import watch from "../data/forecast-watch-summary.json";
 import FiveYearScenarioEditor from "./FiveYearScenarioEditor";
 import type { RevenueVintage } from "@contracts/forecast-qualification";
 import type { PreparedFiveYearForecast } from "../../api/five-year-planner";
@@ -74,7 +75,10 @@ export default function FiveYearForecastWorkspace() {
         {report.qualifiedHorizons.join(", ") || "none"} in this fresh
         issuer-held-out cohort. Absolute errors grow sharply with horizon.
         Empirical precision is not established for years 3–5; comparison
-        qualification is not a guarantee for a future company forecast.
+        qualification is not a guarantee for a future company forecast. Failed
+        years 3–5 bands are withheld from live plans and exports; the frozen
+        report retains them for audit. No post-test parameter tuning or inflated
+        accuracy claim is used to turn a failed precision gate into a pass.
       </p>
       <div className="overflow-x-auto">
         <table className="w-full min-w-[800px] text-left text-xs">
@@ -144,6 +148,62 @@ export default function FiveYearForecastWorkspace() {
         overlapping years and retained-vintage gaps limit generalization. This
         is not a prospective or global test.
       </p>
+      <details className="rounded border border-slate-700 p-3 text-xs">
+        <summary>
+          Forward accuracy tracking · outcomes pending, not proven
+        </summary>
+        <p className="mt-2">
+          Frozen {watch.issuedAt}; source cutoff {watch.sourceCutoff}. Fixed
+          cohort: {watch.cohortSize} issuers, {watch.forecastIssuers} eligible
+          and {watch.excluded} retained exclusions. Forecasts cover FY2026–2030.
+          This October freeze is not a forecast issued in July and does not
+          represent five full annual lead times from issuance.
+        </p>
+        <p className="mt-2">
+          Independent timestamp: {watch.timestampStatus.replaceAll("_", " ")}.
+          The initial local file is not independent prospective proof. The
+          verifier must check successful GitHub CI metadata and exact committed
+          snapshot bytes before classifying future scores as prospective.
+        </p>
+        <div className="overflow-x-auto">
+          <table className="mt-2 w-full min-w-[440px] text-left">
+            <thead>
+              <tr>
+                <th>Year</th>
+                <th>Fixed attempts</th>
+                <th>Scored</th>
+                <th>Pending outcomes</th>
+                <th>Accuracy status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {watch.summaries.map(s => (
+                <tr key={s.horizon}>
+                  <td>{s.horizon}</td>
+                  <td>{s.fixedAttempts}</td>
+                  <td>{s.scored}</td>
+                  <td>{s.pending}</td>
+                  <td>Not established</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="mt-2">
+          Status snapshot as of {watch.asOf}; it is not a continuously refreshed
+          production feed. Missing outcomes are never zero-filled. First annual
+          FY2026 disclosures cannot mature before that reporting year ends;
+          years 3–5 require later FY2028–2030 outcomes.
+        </p>
+        <div className="mt-2 flex flex-wrap gap-3 text-cyan-200 underline">
+          <a download href="/evaluations/forecast-watch-v1.json">
+            Download frozen forward forecasts
+          </a>
+          <a download href="/evaluations/forecast-watch-score-v1.json">
+            Download pending-outcome ledger
+          </a>
+        </div>
+      </details>
       <details>
         <summary className="text-sm">
           Per-year gates, exclusions, sectors and worst cases

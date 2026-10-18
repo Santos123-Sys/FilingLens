@@ -29,6 +29,12 @@ async function downloadJson(page, button) {
     await expect(panel).toContainText('113.88');
     await expect(panel).toContainText('Empirical precision is not established for years 3–5');
     await expect(panel.getByRole('table').first().locator('tbody tr')).toHaveCount(5);
+    await panel.getByText('Forward accuracy tracking · outcomes pending, not proven',{exact:true}).click();
+    await expect(panel).toContainText('91 eligible and 29 retained exclusions');
+    await expect(panel.getByRole('table').nth(1).locator('tbody tr')).toHaveCount(5);
+    const watch=await downloadJson(page,panel.getByRole('link',{name:'Download frozen forward forecasts'}));
+    if(watch.payload.forecasts.length!==91||watch.payload.exclusions.length!==29||!watch.digest)throw Error('Forward cohort denominator lost');
+    await panel.getByText('Forward accuracy tracking · outcomes pending, not proven',{exact:true}).click();
     await panel.getByLabel('Five-year model issuer', { exact: true }).selectOption(eligible[0].code);
     const build = panel.getByRole('button', { name: 'Build source-dated five-year plan', exact: true });
     await build.focus(); await page.keyboard.press('Enter');
@@ -36,6 +42,9 @@ async function downloadJson(page, button) {
     await expect(panel.getByRole('table').nth(1).locator('tbody tr')).toHaveCount(5);
     const sourceExport = await downloadJson(page, panel.getByRole('button', { name: 'Export five-year scenario and evidence' }));
     if (sourceExport.rows.length !== 5 || sourceExport.modelBands.length !== 5 || !sourceExport.modelReference.trainingIds.length || sourceExport.reviewStatus !== 'draft') throw Error('Model export lost evidence or review status');
+    if(sourceExport.modelBands.slice(2).some(b=>b.interval!==null||b.status!=='withheld_failed_horizon_precision_gate'))throw Error('Failed precision escaped in export');
+    await expect(panel).toContainText('Precision gate enforced: years 3–5 are planning-only');
+    await expect(panel.getByRole('table').nth(1)).toContainText('Withheld · precision gate failed');
     await panel.getByLabel('Planning growth year 1', { exact: true }).fill('0');
     await expect(panel).toContainText('Edited scenario: empirical bands');
     const editedExport = await downloadJson(page, panel.getByRole('button', { name: 'Export five-year scenario and evidence' }));

@@ -1,0 +1,5790 @@
+{
+  "payload": {
+    "schemaVersion": "forecast-watch.v1",
+    "issuedAt": "2026-10-17T22:52:24.900Z",
+    "sourceCutoff": "2026-07-01",
+    "modelVersion": "bounded-median-damped.v3",
+    "sourceDatasetSha256": "5fe6757d523390f9b7e17bd3e130bd80a51d82457ad9eea6ae324b8a8f5c766a",
+    "predictorSha256": "37287f8e13cc2d38cd7f303c878cf90242721db08a44f84d686e4908333f91d6",
+    "reliabilityPolicy": "forecast-reliability.v1",
+    "cohort": [
+      "20800",
+      "19763",
+      "17892",
+      "4723",
+      "3298",
+      "20915",
+      "21350",
+      "21180",
+      "10880",
+      "24120",
+      "9512",
+      "22020",
+      "24473",
+      "20370",
+      "3158",
+      "14311",
+      "22497",
+      "23493",
+      "14761",
+      "15539",
+      "24694",
+      "20990",
+      "15083",
+      "8893",
+      "11070",
+      "22500",
+      "1597",
+      "13781",
+      "23965",
+      "1384",
+      "5258",
+      "22187",
+      "21156",
+      "22780",
+      "24201",
+      "4707",
+      "18775",
+      "8192",
+      "20257",
+      "22519",
+      "23221",
+      "19836",
+      "20877",
+      "19445",
+      "23574",
+      "21199",
+      "6505",
+      "23957",
+      "22560",
+      "21040",
+      "19100",
+      "21520",
+      "12793",
+      "8745",
+      "24490",
+      "22357",
+      "24392",
+      "22349",
+      "17671",
+      "16659",
+      "12823",
+      "20931",
+      "19330",
+      "19879",
+      "10456",
+      "24171",
+      "24627",
+      "24546",
+      "23302",
+      "8656",
+      "4669",
+      "2100",
+      "7510",
+      "24716",
+      "7544",
+      "24090",
+      "19739",
+      "1520",
+      "20320",
+      "20745",
+      "20125",
+      "18465",
+      "21008",
+      "21555",
+      "20710",
+      "24384",
+      "20087",
+      "4863",
+      "13986",
+      "18708",
+      "20770",
+      "8753",
+      "19615",
+      "22217",
+      "4537",
+      "19453",
+      "12190",
+      "13773",
+      "18287",
+      "21130",
+      "24295",
+      "14133",
+      "7617",
+      "15458",
+      "14451",
+      "12530",
+      "23310",
+      "7870",
+      "20958",
+      "3069",
+      "20346",
+      "2453",
+      "24660",
+      "16292",
+      "14346",
+      "11207",
+      "80063",
+      "22594",
+      "15253",
+      "21202"
+    ],
+    "exclusions": [
+      {
+        "issuer": "24473",
+        "reason": "five_consecutive_available_positive_annuals_required"
+      },
+      {
+        "issuer": "3158",
+        "reason": "five_consecutive_available_positive_annuals_required"
+      },
+      {
+        "issuer": "23493",
+        "reason": "five_consecutive_available_positive_annuals_required"
+      },
+      {
+        "issuer": "14761",
+        "reason": "five_consecutive_available_positive_annuals_required"
+      },
+      {
+        "issuer": "15083",
+        "reason": "five_consecutive_available_positive_annuals_required"
+      },
+      {
+        "issuer": "8893",
+        "reason": "five_consecutive_available_positive_annuals_required"
+      },
+      {
+        "issuer": "22500",
+        "reason": "five_consecutive_available_positive_annuals_required"
+      },
+      {
+        "issuer": "1597",
+        "reason": "five_consecutive_available_positive_annuals_required"
+      },
+      {
+        "issuer": "23965",
+        "reason": "five_consecutive_available_positive_annuals_required"
+      },
+      {
+        "issuer": "1384",
+        "reason": "five_consecutive_available_positive_annuals_required"
+      },
+      {
+        "issuer": "24201",
+        "reason": "five_consecutive_available_positive_annuals_required"
+      },
+      {
+        "issuer": "4707",
+        "reason": "five_consecutive_available_positive_annuals_required"
+      },
+      {
+        "issuer": "21199",
+        "reason": "five_consecutive_available_positive_annuals_required"
+      },
+      {
+        "issuer": "23957",
+        "reason": "five_consecutive_available_positive_annuals_required"
+      },
+      {
+        "issuer": "12793",
+        "reason": "five_consecutive_available_positive_annuals_required"
+      },
+      {
+        "issuer": "24490",
+        "reason": "five_consecutive_available_positive_annuals_required"
+      },
+      {
+        "issuer": "24171",
+        "reason": "five_consecutive_available_positive_annuals_required"
+      },
+      {
+        "issuer": "24090",
+        "reason": "five_consecutive_available_positive_annuals_required"
+      },
+      {
+        "issuer": "21555",
+        "reason": "five_consecutive_available_positive_annuals_required"
+      },
+      {
+        "issuer": "24384",
+        "reason": "five_consecutive_available_positive_annuals_required"
+      },
+      {
+        "issuer": "4863",
+        "reason": "five_consecutive_available_positive_annuals_required"
+      },
+      {
+        "issuer": "22217",
+        "reason": "five_consecutive_available_positive_annuals_required"
+      },
+      {
+        "issuer": "18287",
+        "reason": "five_consecutive_available_positive_annuals_required"
+      },
+      {
+        "issuer": "14133",
+        "reason": "five_consecutive_available_positive_annuals_required"
+      },
+      {
+        "issuer": "12530",
+        "reason": "five_consecutive_available_positive_annuals_required"
+      },
+      {
+        "issuer": "20958",
+        "reason": "five_consecutive_available_positive_annuals_required"
+      },
+      {
+        "issuer": "11207",
+        "reason": "five_consecutive_available_positive_annuals_required"
+      },
+      {
+        "issuer": "80063",
+        "reason": "five_consecutive_available_positive_annuals_required"
+      },
+      {
+        "issuer": "22594",
+        "reason": "five_consecutive_available_positive_annuals_required"
+      }
+    ],
+    "forecasts": [
+      {
+        "issuer": "20800",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 2225.428,
+        "trainingIds": [
+          "CVM-20800-2010-v2",
+          "CVM-20800-2011-v3",
+          "CVM-20800-2012-v2",
+          "CVM-20800-2013-v1",
+          "CVM-20800-2014-v1",
+          "CVM-20800-2015-v1",
+          "CVM-20800-2016-v1",
+          "CVM-20800-2017-v1",
+          "CVM-20800-2018-v1",
+          "CVM-20800-2019-v1",
+          "CVM-20800-2020-v1",
+          "CVM-20800-2021-v1",
+          "CVM-20800-2022-v3",
+          "CVM-20800-2023-v1",
+          "CVM-20800-2024-v1",
+          "CVM-20800-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 2571.23011329612,
+            "interval": {
+              "lower": 1845.6879175038296,
+              "upper": 3296.772309088411
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 2886.1763615900973,
+            "interval": {
+              "lower": 1661.0505643388578,
+              "upper": 4111.302158841337
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 3165.6901316517433,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 3408.6690055061204,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 3616.4126218549245,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "19763",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 20174.062,
+        "trainingIds": [
+          "CVM-19763-2010-v5",
+          "CVM-19763-2011-v2",
+          "CVM-19763-2012-v2",
+          "CVM-19763-2013-v2",
+          "CVM-19763-2014-v1",
+          "CVM-19763-2015-v1",
+          "CVM-19763-2016-v1",
+          "CVM-19763-2017-v2",
+          "CVM-19763-2018-v2",
+          "CVM-19763-2019-v1",
+          "CVM-19763-2020-v2",
+          "CVM-19763-2021-v1",
+          "CVM-19763-2022-v1",
+          "CVM-19763-2023-v1",
+          "CVM-19763-2024-v1",
+          "CVM-19763-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 20763.348166685584,
+            "interval": {
+              "lower": 14186.126507962043,
+              "upper": 27340.569825409126
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 21247.146636978257,
+            "interval": {
+              "lower": 10141.07455037472,
+              "upper": 32353.218723581795
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 21642.289384202126,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 21963.687986279325,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 22224.23992230736,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "17892",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 3627.414,
+        "trainingIds": [
+          "CVM-17892-2010-v1",
+          "CVM-17892-2011-v1",
+          "CVM-17892-2012-v1",
+          "CVM-17892-2013-v1",
+          "CVM-17892-2014-v1",
+          "CVM-17892-2015-v1",
+          "CVM-17892-2016-v1",
+          "CVM-17892-2017-v2",
+          "CVM-17892-2018-v1",
+          "CVM-17892-2019-v1",
+          "CVM-17892-2020-v1",
+          "CVM-17892-2021-v1",
+          "CVM-17892-2022-v2",
+          "CVM-17892-2023-v1",
+          "CVM-17892-2024-v1",
+          "CVM-17892-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 4534.2675,
+            "interval": {
+              "lower": 3351.644688294703,
+              "upper": 5716.890311705297
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 5420.44755144585,
+            "interval": {
+              "lower": 3423.511021164795,
+              "upper": 7417.384081726905
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 6252.555469708021,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 7009.313450281073,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 7680.152130431896,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "4723",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 365.614,
+        "trainingIds": [
+          "CVM-4723-2010-v2",
+          "CVM-4723-2011-v2",
+          "CVM-4723-2012-v4",
+          "CVM-4723-2013-v2",
+          "CVM-4723-2014-v1",
+          "CVM-4723-2015-v1",
+          "CVM-4723-2016-v1",
+          "CVM-4723-2017-v1",
+          "CVM-4723-2018-v1",
+          "CVM-4723-2019-v1",
+          "CVM-4723-2020-v1",
+          "CVM-4723-2021-v1",
+          "CVM-4723-2022-v1",
+          "CVM-4723-2023-v1",
+          "CVM-4723-2024-v2",
+          "CVM-4723-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 457.0175,
+            "interval": {
+              "lower": 337.81868324546895,
+              "upper": 576.216316754531
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 546.33728355085,
+            "interval": {
+              "lower": 345.0622284889856,
+              "upper": 747.6123386127143
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 630.2070333030165,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 706.4821186142701,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 774.0972331847777,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "3298",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 67.165,
+        "trainingIds": [
+          "CVM-3298-2020-v1",
+          "CVM-3298-2021-v1",
+          "CVM-3298-2022-v1",
+          "CVM-3298-2023-v1",
+          "CVM-3298-2024-v2",
+          "CVM-3298-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 83.95625000000001,
+            "interval": {
+              "lower": 62.05887044856577,
+              "upper": 105.85362955143425
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 100.36471155287502,
+            "interval": {
+              "lower": 63.38954355266135,
+              "upper": 137.33987955308868
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 115.77197643360788,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 129.78406597320526,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 142.20527842712698,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "20915",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 10906.236,
+        "trainingIds": [
+          "CVM-20915-2010-v1",
+          "CVM-20915-2011-v1",
+          "CVM-20915-2012-v1",
+          "CVM-20915-2013-v1",
+          "CVM-20915-2014-v1",
+          "CVM-20915-2015-v1",
+          "CVM-20915-2016-v2",
+          "CVM-20915-2017-v1",
+          "CVM-20915-2018-v1",
+          "CVM-20915-2019-v1",
+          "CVM-20915-2020-v1",
+          "CVM-20915-2021-v2",
+          "CVM-20915-2022-v2",
+          "CVM-20915-2023-v1",
+          "CVM-20915-2024-v1",
+          "CVM-20915-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 12193.97007541284,
+            "interval": {
+              "lower": 8638.279028446177,
+              "upper": 15749.661122379504
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 13332.798352233654,
+            "interval": {
+              "lower": 7328.779765916699,
+              "upper": 19336.81693855061
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 14319.975008247024,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 15162.088203359755,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 15871.297305006019,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "21350",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 4343.008,
+        "trainingIds": [
+          "CVM-21350-2010-v2",
+          "CVM-21350-2011-v2",
+          "CVM-21350-2012-v1",
+          "CVM-21350-2013-v1",
+          "CVM-21350-2014-v1",
+          "CVM-21350-2015-v1",
+          "CVM-21350-2016-v1",
+          "CVM-21350-2017-v2",
+          "CVM-21350-2018-v1",
+          "CVM-21350-2019-v1",
+          "CVM-21350-2020-v1",
+          "CVM-21350-2021-v1",
+          "CVM-21350-2022-v3",
+          "CVM-21350-2023-v1",
+          "CVM-21350-2024-v1",
+          "CVM-21350-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 5287.302583529599,
+            "interval": {
+              "lower": 3871.3791923151975,
+              "upper": 6703.225974744001
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 6188.551278722886,
+            "interval": {
+              "lower": 3797.6713497975243,
+              "upper": 8579.43120764825
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 7018.961475088702,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 7762.827783496325,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 8414.292907826175,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "21180",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 0.659,
+        "trainingIds": [
+          "CVM-21180-2010-v2",
+          "CVM-21180-2011-v2",
+          "CVM-21180-2012-v2",
+          "CVM-21180-2013-v1",
+          "CVM-21180-2014-v1",
+          "CVM-21180-2015-v1",
+          "CVM-21180-2016-v1",
+          "CVM-21180-2017-v1",
+          "CVM-21180-2018-v1",
+          "CVM-21180-2019-v1",
+          "CVM-21180-2020-v1",
+          "CVM-21180-2021-v2",
+          "CVM-21180-2022-v2",
+          "CVM-21180-2023-v2",
+          "CVM-21180-2024-v3",
+          "CVM-21180-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 0.6324225102300001,
+            "interval": {
+              "lower": 0.4175729140951804,
+              "upper": 0.8472721063648198
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 0.611934367186061,
+            "interval": {
+              "lower": 0.24914666954382458,
+              "upper": 0.9747220648282974
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 0.5960227885770523,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 0.5835919346507411,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 0.5738341841286712,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "10880",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 226.418,
+        "trainingIds": [
+          "CVM-10880-2010-v1",
+          "CVM-10880-2011-v2",
+          "CVM-10880-2012-v3",
+          "CVM-10880-2013-v2",
+          "CVM-10880-2014-v1",
+          "CVM-10880-2015-v2",
+          "CVM-10880-2016-v1",
+          "CVM-10880-2017-v1",
+          "CVM-10880-2018-v1",
+          "CVM-10880-2019-v2",
+          "CVM-10880-2020-v2",
+          "CVM-10880-2021-v2",
+          "CVM-10880-2022-v2",
+          "CVM-10880-2023-v1",
+          "CVM-10880-2024-v1",
+          "CVM-10880-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 274.97613183394,
+            "interval": {
+              "lower": 201.1585053428116,
+              "upper": 348.7937583250683
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 321.21974784807554,
+            "interval": {
+              "lower": 196.57382231733217,
+              "upper": 445.8656733788189
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 363.7542085204625,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 401.8025240648681,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 435.08725852671665,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "24120",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 1079.334,
+        "trainingIds": [
+          "CVM-24120-2017-v1",
+          "CVM-24120-2018-v1",
+          "CVM-24120-2019-v1",
+          "CVM-24120-2020-v1",
+          "CVM-24120-2021-v1",
+          "CVM-24120-2022-v1",
+          "CVM-24120-2023-v1",
+          "CVM-24120-2024-v1",
+          "CVM-24120-2025-v3"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 1073.7431146400402,
+            "interval": {
+              "lower": 721.854686727173,
+              "upper": 1425.6315425529074
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 1069.291257575,
+            "interval": {
+              "lower": 475.10446418048457,
+              "upper": 1663.4780509695152
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 1065.743071166639,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 1062.9130010985868,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 1060.6543534877724,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "9512",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 497549,
+        "trainingIds": [
+          "CVM-9512-2010-v3",
+          "CVM-9512-2011-v2",
+          "CVM-9512-2012-v1",
+          "CVM-9512-2013-v1",
+          "CVM-9512-2014-v2",
+          "CVM-9512-2015-v1",
+          "CVM-9512-2016-v2",
+          "CVM-9512-2017-v2",
+          "CVM-9512-2018-v1",
+          "CVM-9512-2019-v1",
+          "CVM-9512-2020-v2",
+          "CVM-9512-2021-v1",
+          "CVM-9512-2022-v1",
+          "CVM-9512-2023-v2",
+          "CVM-9512-2024-v1",
+          "CVM-9512-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 504361.00306488003,
+            "interval": {
+              "lower": 342148.2538884257,
+              "upper": 666573.7522413344
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 509877.69362918363,
+            "interval": {
+              "lower": 235970.77985953708,
+              "upper": 783784.6073988301
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 514334.46316631924,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 517927.91232667706,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 520820.7365296283,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "22020",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 9640.608,
+        "trainingIds": [
+          "CVM-22020-2010-v2",
+          "CVM-22020-2011-v2",
+          "CVM-22020-2012-v3",
+          "CVM-22020-2013-v2",
+          "CVM-22020-2014-v1",
+          "CVM-22020-2015-v1",
+          "CVM-22020-2016-v3",
+          "CVM-22020-2017-v2",
+          "CVM-22020-2018-v1",
+          "CVM-22020-2019-v1",
+          "CVM-22020-2020-v1",
+          "CVM-22020-2021-v3",
+          "CVM-22020-2022-v1",
+          "CVM-22020-2023-v1",
+          "CVM-22020-2024-v1",
+          "CVM-22020-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 12050.76,
+            "interval": {
+              "lower": 8907.693633848085,
+              "upper": 15193.826366151916
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 14405.9680058712,
+            "interval": {
+              "lower": 9098.69337735629,
+              "upper": 19713.242634386108
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 16617.468058983864,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 18628.709963430505,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 20411.60343701016,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "20370",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 203.138,
+        "trainingIds": [
+          "CVM-20370-2010-v1",
+          "CVM-20370-2011-v1",
+          "CVM-20370-2012-v1",
+          "CVM-20370-2013-v1",
+          "CVM-20370-2014-v2",
+          "CVM-20370-2015-v1",
+          "CVM-20370-2016-v2",
+          "CVM-20370-2017-v1",
+          "CVM-20370-2018-v1",
+          "CVM-20370-2019-v1",
+          "CVM-20370-2020-v1",
+          "CVM-20370-2021-v1",
+          "CVM-20370-2022-v1",
+          "CVM-20370-2023-v1",
+          "CVM-20370-2024-v1",
+          "CVM-20370-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 214.50751807134,
+            "interval": {
+              "lower": 148.27972253319888,
+              "upper": 280.7353136094811
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 224.05961936391367,
+            "interval": {
+              "lower": 112.22962342514491,
+              "upper": 335.88961530268244
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 232.00666228914932,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 238.56676666870612,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 243.94815300946712,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "14311",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 26116.856,
+        "trainingIds": [
+          "CVM-14311-2010-v2",
+          "CVM-14311-2011-v1",
+          "CVM-14311-2012-v1",
+          "CVM-14311-2013-v2",
+          "CVM-14311-2014-v1",
+          "CVM-14311-2015-v1",
+          "CVM-14311-2016-v1",
+          "CVM-14311-2017-v2",
+          "CVM-14311-2018-v1",
+          "CVM-14311-2019-v2",
+          "CVM-14311-2020-v2",
+          "CVM-14311-2021-v1",
+          "CVM-14311-2022-v1",
+          "CVM-14311-2023-v1",
+          "CVM-14311-2024-v1",
+          "CVM-14311-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 27541.36386925872,
+            "interval": {
+              "lower": 19026.650722200688,
+              "upper": 36056.07701631675
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 28736.712491430455,
+            "interval": {
+              "lower": 14359.058382335119,
+              "upper": 43114.36660052579
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 29730.2386344488,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 30549.7348242642,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 31221.566262678527,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "22497",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 1426.845,
+        "trainingIds": [
+          "CVM-22497-2011-v1",
+          "CVM-22497-2012-v1",
+          "CVM-22497-2013-v1",
+          "CVM-22497-2014-v1",
+          "CVM-22497-2015-v1",
+          "CVM-22497-2016-v1",
+          "CVM-22497-2017-v1",
+          "CVM-22497-2018-v2",
+          "CVM-22497-2019-v3",
+          "CVM-22497-2020-v1",
+          "CVM-22497-2021-v1",
+          "CVM-22497-2022-v1",
+          "CVM-22497-2023-v1",
+          "CVM-22497-2024-v1",
+          "CVM-22497-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 1288.6806593493,
+            "interval": {
+              "lower": 823.4954211141151,
+              "upper": 1753.8658975844849
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 1187.8459467979449,
+            "interval": {
+              "lower": 402.35002503415615,
+              "upper": 1973.3418685617335
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 1112.889304017154,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 1056.3441886314483,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 1013.1837819959718,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "15539",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 52633,
+        "trainingIds": [
+          "CVM-15539-2010-v2",
+          "CVM-15539-2011-v3",
+          "CVM-15539-2012-v1",
+          "CVM-15539-2013-v1",
+          "CVM-15539-2014-v3",
+          "CVM-15539-2015-v4",
+          "CVM-15539-2016-v7",
+          "CVM-15539-2017-v4",
+          "CVM-15539-2018-v2",
+          "CVM-15539-2019-v1",
+          "CVM-15539-2020-v1",
+          "CVM-15539-2021-v1",
+          "CVM-15539-2022-v2",
+          "CVM-15539-2023-v1",
+          "CVM-15539-2024-v2",
+          "CVM-15539-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 56543.43873689,
+            "interval": {
+              "lower": 39383.835105078215,
+              "upper": 73703.04236870178
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 59879.9584933515,
+            "interval": {
+              "lower": 30904.83726421064,
+              "upper": 88855.07972249236
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 62690.38123166684,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 65033.39786977927,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 66970.7057232832,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "24694",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 7736.413,
+        "trainingIds": [
+          "CVM-24694-2018-v1",
+          "CVM-24694-2019-v2",
+          "CVM-24694-2020-v1",
+          "CVM-24694-2021-v1",
+          "CVM-24694-2022-v1",
+          "CVM-24694-2023-v2",
+          "CVM-24694-2024-v2",
+          "CVM-24694-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 8635.964808395649,
+            "interval": {
+              "lower": 6113.711077618458,
+              "upper": 11158.21853917284
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 9430.350594629177,
+            "interval": {
+              "lower": 5171.359000881883,
+              "upper": 13689.342188376471
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 10118.1570816922,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 10704.349476772912,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 11197.662419627844,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "20990",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 12305,
+        "trainingIds": [
+          "CVM-20990-2010-v3",
+          "CVM-20990-2011-v5",
+          "CVM-20990-2012-v1",
+          "CVM-20990-2013-v2",
+          "CVM-20990-2014-v2",
+          "CVM-20990-2015-v2",
+          "CVM-20990-2016-v1",
+          "CVM-20990-2017-v1",
+          "CVM-20990-2018-v1",
+          "CVM-20990-2019-v2",
+          "CVM-20990-2020-v2",
+          "CVM-20990-2021-v1",
+          "CVM-20990-2022-v1",
+          "CVM-20990-2023-v1",
+          "CVM-20990-2024-v1",
+          "CVM-20990-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 11816.654049050001,
+            "interval": {
+              "lower": 7804.93283442336,
+              "upper": 15828.375263676642
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 11439.968895934491,
+            "interval": {
+              "lower": 4665.913327667847,
+              "upper": 18214.024464201135
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 11147.284956511166,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 10918.538544708124,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 10738.925637642269,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "11070",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 3011.892,
+        "trainingIds": [
+          "CVM-11070-2010-v3",
+          "CVM-11070-2011-v1",
+          "CVM-11070-2012-v1",
+          "CVM-11070-2013-v2",
+          "CVM-11070-2014-v1",
+          "CVM-11070-2015-v1",
+          "CVM-11070-2016-v1",
+          "CVM-11070-2017-v2",
+          "CVM-11070-2018-v1",
+          "CVM-11070-2019-v1",
+          "CVM-11070-2020-v1",
+          "CVM-11070-2021-v1",
+          "CVM-11070-2022-v1",
+          "CVM-11070-2023-v1",
+          "CVM-11070-2024-v1",
+          "CVM-11070-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 3630.0144931705195,
+            "interval": {
+              "lower": 2648.066420633806,
+              "upper": 4611.962565707233
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 4214.669564260274,
+            "interval": {
+              "lower": 2556.5855517760997,
+              "upper": 5872.753576744448
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 4749.497560728905,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 5225.826428408504,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 5641.061451213594,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "13781",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 299.829,
+        "trainingIds": [
+          "CVM-13781-2010-v1",
+          "CVM-13781-2011-v1",
+          "CVM-13781-2012-v1",
+          "CVM-13781-2013-v1",
+          "CVM-13781-2014-v1",
+          "CVM-13781-2015-v1",
+          "CVM-13781-2016-v1",
+          "CVM-13781-2017-v1",
+          "CVM-13781-2018-v1",
+          "CVM-13781-2019-v1",
+          "CVM-13781-2020-v1",
+          "CVM-13781-2021-v1",
+          "CVM-13781-2022-v3",
+          "CVM-13781-2023-v1",
+          "CVM-13781-2024-v2",
+          "CVM-13781-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 254.50354724271,
+            "interval": {
+              "lower": 156.7521973800289,
+              "upper": 352.25489710539114
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 223.2286854170937,
+            "interval": {
+              "lower": 58.169091188908425,
+              "upper": 388.288279645279
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 200.99947916721163,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 184.82081199961047,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 172.8206480327801,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "5258",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 44250.449,
+        "trainingIds": [
+          "CVM-5258-2015-v1",
+          "CVM-5258-2016-v1",
+          "CVM-5258-2017-v1",
+          "CVM-5258-2018-v1",
+          "CVM-5258-2019-v1",
+          "CVM-5258-2020-v1",
+          "CVM-5258-2021-v1",
+          "CVM-5258-2022-v1",
+          "CVM-5258-2023-v1",
+          "CVM-5258-2024-v2",
+          "CVM-5258-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 51719.675661172136,
+            "interval": {
+              "lower": 37292.98203987557,
+              "upper": 66146.3692824687
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 58593.073672663035,
+            "interval": {
+              "lower": 34232.65104391462,
+              "upper": 82953.49630141145
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 64743.87220655904,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 70126.24460530729,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 74752.56693108717,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "22187",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 15583.96,
+        "trainingIds": [
+          "CVM-22187-2010-v3",
+          "CVM-22187-2011-v2",
+          "CVM-22187-2012-v1",
+          "CVM-22187-2013-v2",
+          "CVM-22187-2014-v1",
+          "CVM-22187-2015-v1",
+          "CVM-22187-2016-v2",
+          "CVM-22187-2017-v2",
+          "CVM-22187-2018-v1",
+          "CVM-22187-2019-v3",
+          "CVM-22187-2020-v1",
+          "CVM-22187-2021-v1",
+          "CVM-22187-2022-v1",
+          "CVM-22187-2023-v1",
+          "CVM-22187-2024-v1",
+          "CVM-22187-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 19479.949999999997,
+            "interval": {
+              "lower": 14399.21022430776,
+              "upper": 24560.689775692234
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 23287.123505568998,
+            "interval": {
+              "lower": 14707.959668621037,
+              "upper": 31866.28734251696
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 26861.994340241006,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 30113.149598210242,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 32995.18157965025,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "21156",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 3241.934,
+        "trainingIds": [
+          "CVM-21156-2010-v2",
+          "CVM-21156-2011-v2",
+          "CVM-21156-2012-v1",
+          "CVM-21156-2013-v1",
+          "CVM-21156-2014-v1",
+          "CVM-21156-2015-v1",
+          "CVM-21156-2016-v1",
+          "CVM-21156-2017-v1",
+          "CVM-21156-2018-v1",
+          "CVM-21156-2019-v4",
+          "CVM-21156-2020-v3",
+          "CVM-21156-2021-v1",
+          "CVM-21156-2022-v1",
+          "CVM-21156-2023-v2",
+          "CVM-21156-2024-v1",
+          "CVM-21156-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 3582.99540953738,
+            "interval": {
+              "lower": 2526.0482007426294,
+              "upper": 4639.94261833213
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 3881.5029263354727,
+            "interval": {
+              "lower": 2096.777931239743,
+              "upper": 5666.227921431202
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 4138.117818177095,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 4355.571978310374,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 4537.734411823452,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "22780",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 238.958,
+        "trainingIds": [
+          "CVM-22780-2013-v1",
+          "CVM-22780-2014-v2",
+          "CVM-22780-2015-v1",
+          "CVM-22780-2016-v2",
+          "CVM-22780-2017-v1",
+          "CVM-22780-2018-v1",
+          "CVM-22780-2019-v1",
+          "CVM-22780-2020-v1",
+          "CVM-22780-2021-v1",
+          "CVM-22780-2022-v4",
+          "CVM-22780-2023-v2",
+          "CVM-22780-2024-v1",
+          "CVM-22780-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 252.03556677626,
+            "interval": {
+              "lower": 174.1296035089091,
+              "upper": 329.9415300436109
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 263.01107553902654,
+            "interval": {
+              "lower": 131.46172401672985,
+              "upper": 394.56042706132325
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 272.13462465662775,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 279.6608124922864,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 285.83135213361686,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "18775",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 3818.051,
+        "trainingIds": [
+          "CVM-18775-2010-v1",
+          "CVM-18775-2011-v1",
+          "CVM-18775-2012-v1",
+          "CVM-18775-2013-v2",
+          "CVM-18775-2014-v2",
+          "CVM-18775-2015-v1",
+          "CVM-18775-2016-v2",
+          "CVM-18775-2017-v1",
+          "CVM-18775-2018-v1",
+          "CVM-18775-2019-v2",
+          "CVM-18775-2020-v1",
+          "CVM-18775-2021-v1",
+          "CVM-18775-2022-v1",
+          "CVM-18775-2023-v1",
+          "CVM-18775-2024-v2",
+          "CVM-18775-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 4375.93518153403,
+            "interval": {
+              "lower": 3131.1601961438255,
+              "upper": 5620.710166924234
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 4880.386337839796,
+            "interval": {
+              "lower": 2778.5017676263847,
+              "upper": 6982.270908053208
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 5325.505780483818,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 5710.658447426529,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 6038.7416001028,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "8192",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 158.057,
+        "trainingIds": [
+          "CVM-8192-2010-v1",
+          "CVM-8192-2011-v1",
+          "CVM-8192-2012-v2",
+          "CVM-8192-2013-v1",
+          "CVM-8192-2014-v1",
+          "CVM-8192-2015-v1",
+          "CVM-8192-2016-v1",
+          "CVM-8192-2017-v1",
+          "CVM-8192-2018-v1",
+          "CVM-8192-2019-v1",
+          "CVM-8192-2020-v1",
+          "CVM-8192-2021-v1",
+          "CVM-8192-2022-v1",
+          "CVM-8192-2023-v1",
+          "CVM-8192-2024-v1",
+          "CVM-8192-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 165.61842949373,
+            "interval": {
+              "lower": 114.08810685900892,
+              "upper": 217.14875212845106
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 171.92720645842826,
+            "interval": {
+              "lower": 84.91486180556187,
+              "upper": 258.93955111129463
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 177.14682016727053,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 181.43637727357492,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 184.94268969529995,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "20257",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 4624.113,
+        "trainingIds": [
+          "CVM-20257-2010-v2",
+          "CVM-20257-2011-v4",
+          "CVM-20257-2012-v1",
+          "CVM-20257-2013-v1",
+          "CVM-20257-2014-v1",
+          "CVM-20257-2015-v2",
+          "CVM-20257-2016-v1",
+          "CVM-20257-2017-v2",
+          "CVM-20257-2018-v2",
+          "CVM-20257-2019-v1",
+          "CVM-20257-2020-v1",
+          "CVM-20257-2021-v2",
+          "CVM-20257-2022-v1",
+          "CVM-20257-2023-v1",
+          "CVM-20257-2024-v1",
+          "CVM-20257-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 5113.77068358312,
+            "interval": {
+              "lower": 3606.2004096350634,
+              "upper": 6621.340957531178
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 5542.573958031584,
+            "interval": {
+              "lower": 2996.942229795568,
+              "upper": 8088.2056862676
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 5911.363915001683,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 6223.986691214743,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 6485.947382422744,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "22519",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 478.423,
+        "trainingIds": [
+          "CVM-22519-2010-v1",
+          "CVM-22519-2011-v1",
+          "CVM-22519-2012-v2",
+          "CVM-22519-2013-v1",
+          "CVM-22519-2014-v1",
+          "CVM-22519-2015-v2",
+          "CVM-22519-2016-v1",
+          "CVM-22519-2017-v1",
+          "CVM-22519-2018-v2",
+          "CVM-22519-2019-v3",
+          "CVM-22519-2020-v1",
+          "CVM-22519-2021-v1",
+          "CVM-22519-2022-v1",
+          "CVM-22519-2023-v2",
+          "CVM-22519-2024-v1",
+          "CVM-22519-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 559.3831944659199,
+            "interval": {
+              "lower": 403.40597393237084,
+              "upper": 715.360414999469
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 633.9095657421769,
+            "interval": {
+              "lower": 370.531752890748,
+              "upper": 897.2873785936058
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 700.6185317654023,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 759.0057611553908,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 809.1999202890081,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "23221",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 2216.531,
+        "trainingIds": [
+          "CVM-23221-2010-v1",
+          "CVM-23221-2011-v1",
+          "CVM-23221-2012-v1",
+          "CVM-23221-2013-v1",
+          "CVM-23221-2014-v2",
+          "CVM-23221-2015-v2",
+          "CVM-23221-2016-v1",
+          "CVM-23221-2017-v1",
+          "CVM-23221-2018-v1",
+          "CVM-23221-2019-v1",
+          "CVM-23221-2020-v1",
+          "CVM-23221-2021-v1",
+          "CVM-23221-2022-v1",
+          "CVM-23221-2023-v1",
+          "CVM-23221-2024-v2",
+          "CVM-23221-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 2479.6223465327903,
+            "interval": {
+              "lower": 1756.9807833001528,
+              "upper": 3202.263909765428
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 2712.407457504752,
+            "interval": {
+              "lower": 1492.1795694279026,
+              "upper": 3932.6353455816015
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 2914.2743952905807,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 3086.532462814431,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 3231.641496273528,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "19836",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 40418.596,
+        "trainingIds": [
+          "CVM-19836-2014-v2",
+          "CVM-19836-2015-v1",
+          "CVM-19836-2016-v1",
+          "CVM-19836-2017-v2",
+          "CVM-19836-2018-v1",
+          "CVM-19836-2019-v1",
+          "CVM-19836-2020-v1",
+          "CVM-19836-2021-v2",
+          "CVM-19836-2022-v1",
+          "CVM-19836-2023-v3",
+          "CVM-19836-2024-v1",
+          "CVM-19836-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 45008.739109157475,
+            "interval": {
+              "lower": 31831.320251894293,
+              "upper": 58186.15796642066
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 49053.42604465757,
+            "interval": {
+              "lower": 26802.4861588128,
+              "upper": 71304.36593050235
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 52549.34942437764,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 55524.6389374625,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 58025.7096521388,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "20877",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 1128.462,
+        "trainingIds": [
+          "CVM-20877-2010-v4",
+          "CVM-20877-2011-v1",
+          "CVM-20877-2012-v3",
+          "CVM-20877-2013-v1",
+          "CVM-20877-2014-v1",
+          "CVM-20877-2015-v1",
+          "CVM-20877-2016-v3",
+          "CVM-20877-2017-v1",
+          "CVM-20877-2018-v1",
+          "CVM-20877-2019-v1",
+          "CVM-20877-2020-v2",
+          "CVM-20877-2021-v1",
+          "CVM-20877-2022-v2",
+          "CVM-20877-2023-v1",
+          "CVM-20877-2024-v1",
+          "CVM-20877-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 1098.54414774828,
+            "interval": {
+              "lower": 730.6388291542119,
+              "upper": 1466.4494663423482
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 1075.1819806010742,
+            "interval": {
+              "lower": 453.949612077928,
+              "upper": 1696.4143491242203
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 1056.8504718900597,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 1042.4105547965503,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 1031.0008083726025,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "19445",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 8330.19,
+        "trainingIds": [
+          "CVM-19445-2010-v1",
+          "CVM-19445-2011-v1",
+          "CVM-19445-2012-v3",
+          "CVM-19445-2013-v1",
+          "CVM-19445-2014-v3",
+          "CVM-19445-2015-v3",
+          "CVM-19445-2016-v1",
+          "CVM-19445-2017-v2",
+          "CVM-19445-2018-v1",
+          "CVM-19445-2019-v2",
+          "CVM-19445-2020-v2",
+          "CVM-19445-2021-v3",
+          "CVM-19445-2022-v1",
+          "CVM-19445-2023-v1",
+          "CVM-19445-2024-v1",
+          "CVM-19445-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 8863.037267502,
+            "interval": {
+              "lower": 6147.198182181342,
+              "upper": 11578.87635282266
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 9313.752846881187,
+            "interval": {
+              "lower": 4727.879628334326,
+              "upper": 13899.626065428049
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 9690.772910160238,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 10003.348112023352,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 10260.651931390752,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "23574",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 1729.658,
+        "trainingIds": [
+          "CVM-23574-2011-v1",
+          "CVM-23574-2012-v1",
+          "CVM-23574-2013-v1",
+          "CVM-23574-2014-v1",
+          "CVM-23574-2015-v1",
+          "CVM-23574-2016-v1",
+          "CVM-23574-2017-v1",
+          "CVM-23574-2018-v1",
+          "CVM-23574-2019-v1",
+          "CVM-23574-2020-v1",
+          "CVM-23574-2021-v1",
+          "CVM-23574-2022-v1",
+          "CVM-23574-2023-v1",
+          "CVM-23574-2024-v2",
+          "CVM-23574-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 1728.60062547144,
+            "interval": {
+              "lower": 1164.6911827531396,
+              "upper": 2292.51006818974
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 1727.7552014775345,
+            "interval": {
+              "lower": 775.5569563660393,
+              "upper": 2679.9534465890297
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 1727.0791481447482,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 1726.538503288213,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 1726.1061089854495,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "6505",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 29197,
+        "trainingIds": [
+          "CVM-6505-2010-v1",
+          "CVM-6505-2011-v1",
+          "CVM-6505-2012-v1",
+          "CVM-6505-2013-v2",
+          "CVM-6505-2014-v1",
+          "CVM-6505-2015-v2",
+          "CVM-6505-2016-v1",
+          "CVM-6505-2017-v1",
+          "CVM-6505-2018-v1",
+          "CVM-6505-2019-v1",
+          "CVM-6505-2020-v1",
+          "CVM-6505-2021-v1",
+          "CVM-6505-2022-v1",
+          "CVM-6505-2023-v2",
+          "CVM-6505-2024-v1",
+          "CVM-6505-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 29196.05518508,
+            "interval": {
+              "lower": 19677.14219820848,
+              "upper": 38714.96817195152
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 29195.29929921126,
+            "interval": {
+              "lower": 13121.987602609779,
+              "upper": 45268.61099581274
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 29194.694664562772,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 29194.21090847218,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 29193.823793235533,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "22560",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 430.115,
+        "trainingIds": [
+          "CVM-22560-2010-v1",
+          "CVM-22560-2011-v1",
+          "CVM-22560-2012-v1",
+          "CVM-22560-2013-v1",
+          "CVM-22560-2014-v2",
+          "CVM-22560-2015-v1",
+          "CVM-22560-2016-v1",
+          "CVM-22560-2017-v1",
+          "CVM-22560-2018-v1",
+          "CVM-22560-2019-v1",
+          "CVM-22560-2020-v1",
+          "CVM-22560-2021-v1",
+          "CVM-22560-2022-v1",
+          "CVM-22560-2023-v1",
+          "CVM-22560-2024-v1",
+          "CVM-22560-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 420.66724445025005,
+            "interval": {
+              "lower": 280.4395751914823,
+              "upper": 560.8949137090178
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 413.25868010130426,
+            "interval": {
+              "lower": 176.47502217810168,
+              "upper": 650.0423380245069
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 407.42588096896566,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 402.81896985953244,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 399.17097681744934,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "21040",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 327.667,
+        "trainingIds": [
+          "CVM-21040-2010-v1",
+          "CVM-21040-2011-v1",
+          "CVM-21040-2012-v1",
+          "CVM-21040-2013-v1",
+          "CVM-21040-2014-v2",
+          "CVM-21040-2015-v1",
+          "CVM-21040-2016-v1",
+          "CVM-21040-2017-v3",
+          "CVM-21040-2018-v1",
+          "CVM-21040-2019-v1",
+          "CVM-21040-2020-v2",
+          "CVM-21040-2021-v2",
+          "CVM-21040-2022-v1",
+          "CVM-21040-2023-v1",
+          "CVM-21040-2024-v1",
+          "CVM-21040-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 293.28364344872,
+            "interval": {
+              "lower": 186.456446761758,
+              "upper": 400.110840135682
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 268.3934759577559,
+            "interval": {
+              "lower": 88.0087164382739,
+              "upper": 448.77823547723796
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 250.01107259267124,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 236.2158716251667,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 225.7298215329979,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "19100",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 447.089,
+        "trainingIds": [
+          "CVM-19100-2010-v3",
+          "CVM-19100-2011-v2",
+          "CVM-19100-2012-v2",
+          "CVM-19100-2013-v2",
+          "CVM-19100-2014-v1",
+          "CVM-19100-2015-v2",
+          "CVM-19100-2016-v2",
+          "CVM-19100-2017-v1",
+          "CVM-19100-2018-v1",
+          "CVM-19100-2019-v1",
+          "CVM-19100-2020-v1",
+          "CVM-19100-2021-v1",
+          "CVM-19100-2022-v3",
+          "CVM-19100-2023-v2",
+          "CVM-19100-2024-v1",
+          "CVM-19100-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 496.0690753437,
+            "interval": {
+              "lower": 350.30748037204535,
+              "upper": 641.8306703153546
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 539.0892719487806,
+            "interval": {
+              "lower": 292.96121587720273,
+              "upper": 785.2173280203585
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 576.1764682835543,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 607.6750159722674,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 634.1092255418201,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "21520",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 207.866,
+        "trainingIds": [
+          "CVM-21520-2010-v1",
+          "CVM-21520-2011-v1",
+          "CVM-21520-2012-v2",
+          "CVM-21520-2013-v2",
+          "CVM-21520-2014-v1",
+          "CVM-21520-2015-v2",
+          "CVM-21520-2016-v3",
+          "CVM-21520-2017-v1",
+          "CVM-21520-2018-v1",
+          "CVM-21520-2019-v1",
+          "CVM-21520-2020-v2",
+          "CVM-21520-2021-v1",
+          "CVM-21520-2022-v2",
+          "CVM-21520-2023-v2",
+          "CVM-21520-2024-v1",
+          "CVM-21520-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 194.27228073770002,
+            "interval": {
+              "lower": 126.50304530498312,
+              "upper": 262.0415161704169
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 184.04022003610154,
+            "interval": {
+              "lower": 69.60740128329257,
+              "upper": 298.4730387889105
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 176.24397080860703,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 170.2454402894272,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 165.59395010602498,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "8745",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 436.704,
+        "trainingIds": [
+          "CVM-8745-2010-v2",
+          "CVM-8745-2011-v2",
+          "CVM-8745-2012-v1",
+          "CVM-8745-2013-v1",
+          "CVM-8745-2014-v1",
+          "CVM-8745-2015-v1",
+          "CVM-8745-2016-v1",
+          "CVM-8745-2017-v1",
+          "CVM-8745-2018-v1",
+          "CVM-8745-2019-v2",
+          "CVM-8745-2020-v1",
+          "CVM-8745-2021-v1",
+          "CVM-8745-2022-v1",
+          "CVM-8745-2023-v1",
+          "CVM-8745-2024-v1",
+          "CVM-8745-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 545.88,
+            "interval": {
+              "lower": 403.50416080355035,
+              "upper": 688.2558391964496
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 652.5671256456001,
+            "interval": {
+              "lower": 412.15614125841466,
+              "upper": 892.9781100327855
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 752.7445127143942,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 843.850528500895,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 924.6127285080034,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "22357",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 2859.106,
+        "trainingIds": [
+          "CVM-22357-2010-v2",
+          "CVM-22357-2011-v2",
+          "CVM-22357-2012-v1",
+          "CVM-22357-2013-v2",
+          "CVM-22357-2014-v1",
+          "CVM-22357-2015-v1",
+          "CVM-22357-2016-v1",
+          "CVM-22357-2017-v1",
+          "CVM-22357-2018-v2",
+          "CVM-22357-2019-v1",
+          "CVM-22357-2020-v1",
+          "CVM-22357-2021-v1",
+          "CVM-22357-2022-v2",
+          "CVM-22357-2023-v1",
+          "CVM-22357-2024-v1",
+          "CVM-22357-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 3361.29433096438,
+            "interval": {
+              "lower": 2429.158110316975,
+              "upper": 4293.430551611785
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 3825.846753400319,
+            "interval": {
+              "lower": 2251.873334500313,
+              "upper": 5399.820172300325
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 4243.306393922582,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 4609.839975316756,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 4925.734699236508,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "24392",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 31577.24,
+        "trainingIds": [
+          "CVM-24392-2017-v1",
+          "CVM-24392-2018-v2",
+          "CVM-24392-2019-v1",
+          "CVM-24392-2020-v2",
+          "CVM-24392-2021-v1",
+          "CVM-24392-2022-v1",
+          "CVM-24392-2023-v2",
+          "CVM-24392-2024-v1",
+          "CVM-24392-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 36480.58950948121,
+            "interval": {
+              "lower": 26185.661950980033,
+              "upper": 46775.51706798238
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 40946.047870826354,
+            "interval": {
+              "lower": 23562.384445187003,
+              "upper": 58329.711296465706
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 44908.867802836736,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 48353.531551642205,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 51298.547876044,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "22349",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 11819.492,
+        "trainingIds": [
+          "CVM-22349-2010-v1",
+          "CVM-22349-2011-v1",
+          "CVM-22349-2012-v1",
+          "CVM-22349-2013-v1",
+          "CVM-22349-2014-v1",
+          "CVM-22349-2015-v1",
+          "CVM-22349-2016-v3",
+          "CVM-22349-2017-v2",
+          "CVM-22349-2018-v1",
+          "CVM-22349-2019-v2",
+          "CVM-22349-2020-v2",
+          "CVM-22349-2021-v2",
+          "CVM-22349-2022-v3",
+          "CVM-22349-2023-v1",
+          "CVM-22349-2024-v2",
+          "CVM-22349-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 14774.365,
+            "interval": {
+              "lower": 10920.930883583107,
+              "upper": 18627.799116416893
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 17661.8760557063,
+            "interval": {
+              "lower": 11155.098680925068,
+              "upper": 24168.65343048753
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 20373.19957241445,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 22839.004384691005,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 25024.851495975578,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "17671",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 59595,
+        "trainingIds": [
+          "CVM-17671-2010-v1",
+          "CVM-17671-2011-v1",
+          "CVM-17671-2012-v1",
+          "CVM-17671-2013-v1",
+          "CVM-17671-2014-v1",
+          "CVM-17671-2015-v1",
+          "CVM-17671-2016-v1",
+          "CVM-17671-2017-v1",
+          "CVM-17671-2018-v1",
+          "CVM-17671-2019-v1",
+          "CVM-17671-2020-v1",
+          "CVM-17671-2021-v1",
+          "CVM-17671-2022-v2",
+          "CVM-17671-2023-v1",
+          "CVM-17671-2024-v1",
+          "CVM-17671-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 63878.61768195,
+            "interval": {
+              "lower": 44449.23728490208,
+              "upper": 83307.99807899792
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 67526.16085078586,
+            "interval": {
+              "lower": 34718.37201772201,
+              "upper": 100333.94968384971
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 70593.59477993114,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 73147.56797242067,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 75257.11457371809,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "16659",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 40883.141,
+        "trainingIds": [
+          "CVM-16659-2015-v1",
+          "CVM-16659-2016-v1",
+          "CVM-16659-2017-v2",
+          "CVM-16659-2018-v1",
+          "CVM-16659-2019-v1",
+          "CVM-16659-2020-v3",
+          "CVM-16659-2021-v1",
+          "CVM-16659-2022-v1",
+          "CVM-16659-2023-v1",
+          "CVM-16659-2024-v1",
+          "CVM-16659-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 47425.27921140205,
+            "interval": {
+              "lower": 34096.407690047134,
+              "upper": 60754.15073275696
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 53405.06058074333,
+            "interval": {
+              "lower": 30898.382893682756,
+              "upper": 75911.73826780391
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 58727.352308856,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 63364.61908737337,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 67336.71957897829,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "12823",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 45.296,
+        "trainingIds": [
+          "CVM-12823-2010-v2",
+          "CVM-12823-2011-v1",
+          "CVM-12823-2012-v1",
+          "CVM-12823-2013-v2",
+          "CVM-12823-2014-v1",
+          "CVM-12823-2015-v1",
+          "CVM-12823-2016-v1",
+          "CVM-12823-2017-v1",
+          "CVM-12823-2018-v1",
+          "CVM-12823-2019-v1",
+          "CVM-12823-2020-v1",
+          "CVM-12823-2021-v1",
+          "CVM-12823-2022-v1",
+          "CVM-12823-2023-v1",
+          "CVM-12823-2024-v2",
+          "CVM-12823-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 53.59930035199999,
+            "interval": {
+              "lower": 38.831732360311385,
+              "upper": 68.3668683436886
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 61.3251383442825,
+            "interval": {
+              "lower": 36.389126883883804,
+              "upper": 86.2611498046812
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 68.3002148122102,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 74.44729015148526,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 79.7609565523727,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "20931",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 54830.072,
+        "trainingIds": [
+          "CVM-20931-2010-v9",
+          "CVM-20931-2011-v5",
+          "CVM-20931-2012-v1",
+          "CVM-20931-2013-v1",
+          "CVM-20931-2014-v2",
+          "CVM-20931-2015-v1",
+          "CVM-20931-2016-v2",
+          "CVM-20931-2017-v1",
+          "CVM-20931-2018-v1",
+          "CVM-20931-2019-v1",
+          "CVM-20931-2020-v1",
+          "CVM-20931-2021-v1",
+          "CVM-20931-2022-v1",
+          "CVM-20931-2023-v1",
+          "CVM-20931-2024-v1",
+          "CVM-20931-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 68537.59,
+            "interval": {
+              "lower": 50661.688899479384,
+              "upper": 86413.49110052061
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 81932.6190829058,
+            "interval": {
+              "lower": 51747.982387248674,
+              "upper": 112117.25577856293
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 94510.32239167755,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 105949.07588421936,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 116089.11866209214,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "19330",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 1054.757,
+        "trainingIds": [
+          "CVM-19330-2010-v2",
+          "CVM-19330-2011-v2",
+          "CVM-19330-2012-v3",
+          "CVM-19330-2013-v1",
+          "CVM-19330-2014-v1",
+          "CVM-19330-2015-v2",
+          "CVM-19330-2016-v1",
+          "CVM-19330-2017-v1",
+          "CVM-19330-2018-v1",
+          "CVM-19330-2019-v1",
+          "CVM-19330-2020-v1",
+          "CVM-19330-2021-v1",
+          "CVM-19330-2022-v1",
+          "CVM-19330-2023-v2",
+          "CVM-19330-2024-v3",
+          "CVM-19330-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 1128.7353038718902,
+            "interval": {
+              "lower": 784.8595596072862,
+              "upper": 1472.6110481364942
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 1191.6366747713503,
+            "interval": {
+              "lower": 610.9798256028641,
+              "upper": 1772.2935239398364
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 1244.4723792176019,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 1288.4227506640689,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 1324.6980097560106,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "19879",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 14996.448,
+        "trainingIds": [
+          "CVM-19879-2010-v2",
+          "CVM-19879-2011-v2",
+          "CVM-19879-2012-v1",
+          "CVM-19879-2013-v2",
+          "CVM-19879-2014-v1",
+          "CVM-19879-2015-v3",
+          "CVM-19879-2016-v1",
+          "CVM-19879-2017-v1",
+          "CVM-19879-2018-v1",
+          "CVM-19879-2019-v1",
+          "CVM-19879-2020-v2",
+          "CVM-19879-2021-v1",
+          "CVM-19879-2022-v1",
+          "CVM-19879-2023-v1",
+          "CVM-19879-2024-v1",
+          "CVM-19879-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 15803.787776659201,
+            "interval": {
+              "lower": 10914.59081724065,
+              "upper": 20692.98473607775
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 16480.842747973267,
+            "interval": {
+              "lower": 8225.111575391295,
+              "upper": 24736.573920555238
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 17043.31215624917,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 17507.07789376599,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 17887.160231326005,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "10456",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 4564.874,
+        "trainingIds": [
+          "CVM-10456-2010-v2",
+          "CVM-10456-2011-v2",
+          "CVM-10456-2012-v2",
+          "CVM-10456-2013-v2",
+          "CVM-10456-2014-v2",
+          "CVM-10456-2015-v1",
+          "CVM-10456-2016-v2",
+          "CVM-10456-2017-v1",
+          "CVM-10456-2018-v1",
+          "CVM-10456-2019-v2",
+          "CVM-10456-2020-v1",
+          "CVM-10456-2021-v3",
+          "CVM-10456-2022-v3",
+          "CVM-10456-2023-v2",
+          "CVM-10456-2024-v3",
+          "CVM-10456-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 5022.27875707904,
+            "interval": {
+              "lower": 3534.021799102805,
+              "upper": 6510.5357150552745
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 5420.987774605544,
+            "interval": {
+              "lower": 2907.967852774123,
+              "upper": 7934.007696436964
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 5762.627151951502,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 6051.37678181621,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 6292.759484614631,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "24627",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 1702.382,
+        "trainingIds": [
+          "CVM-24627-2017-v1",
+          "CVM-24627-2018-v1",
+          "CVM-24627-2019-v3",
+          "CVM-24627-2020-v2",
+          "CVM-24627-2021-v1",
+          "CVM-24627-2022-v1",
+          "CVM-24627-2023-v1",
+          "CVM-24627-2024-v1",
+          "CVM-24627-2025-v2"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 1752.8427134336798,
+            "interval": {
+              "lower": 1197.8258922391628,
+              "upper": 2307.859534628197
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 1794.2861027140304,
+            "interval": {
+              "lower": 857.103634902823,
+              "upper": 2731.4685705252377
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 1828.1452145010173,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 1855.6919625334485,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 1878.0279246128039,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "24546",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 388.697,
+        "trainingIds": [
+          "CVM-24546-2017-v1",
+          "CVM-24546-2018-v2",
+          "CVM-24546-2019-v1",
+          "CVM-24546-2020-v3",
+          "CVM-24546-2021-v1",
+          "CVM-24546-2022-v2",
+          "CVM-24546-2023-v1",
+          "CVM-24546-2024-v1",
+          "CVM-24546-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 485.87125000000003,
+            "interval": {
+              "lower": 359.14682895475573,
+              "upper": 612.5956710452443
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 580.830228340175,
+            "interval": {
+              "lower": 366.8476946369211,
+              "upper": 794.812762043429
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 669.9950855924078,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 751.0857900928601,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 822.9697775446879,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "23302",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 65.675705,
+        "trainingIds": [
+          "CVM-23302-2015-v2",
+          "CVM-23302-2016-v1",
+          "CVM-23302-2017-v1",
+          "CVM-23302-2018-v2",
+          "CVM-23302-2019-v1",
+          "CVM-23302-2020-v1",
+          "CVM-23302-2021-v2",
+          "CVM-23302-2022-v1",
+          "CVM-23302-2023-v2",
+          "CVM-23302-2024-v2",
+          "CVM-23302-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 65.7185544569702,
+            "interval": {
+              "lower": 44.30672032173567,
+              "upper": 87.13038859220472
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 65.75285428491237,
+            "interval": {
+              "lower": 29.597561708310387,
+              "upper": 101.90814686151435
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 65.78030675910486,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 65.8022773815624,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 65.81985909205598,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "8656",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 69858.532,
+        "trainingIds": [
+          "CVM-8656-2010-v1",
+          "CVM-8656-2011-v2",
+          "CVM-8656-2012-v1",
+          "CVM-8656-2013-v2",
+          "CVM-8656-2014-v2",
+          "CVM-8656-2015-v1",
+          "CVM-8656-2016-v1",
+          "CVM-8656-2017-v2",
+          "CVM-8656-2018-v1",
+          "CVM-8656-2019-v1",
+          "CVM-8656-2020-v1",
+          "CVM-8656-2021-v1",
+          "CVM-8656-2022-v1",
+          "CVM-8656-2023-v1",
+          "CVM-8656-2024-v2",
+          "CVM-8656-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 72810.05497699999,
+            "interval": {
+              "lower": 50034.52024745314,
+              "upper": 95585.58970654685
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 75260.80866300108,
+            "interval": {
+              "lower": 36802.81779054813,
+              "upper": 113718.79953545403
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 77280.67329806044,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 78935.52685976212,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 80284.88785560051,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "4669",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 10497.046,
+        "trainingIds": [
+          "CVM-4669-2010-v2",
+          "CVM-4669-2011-v1",
+          "CVM-4669-2012-v1",
+          "CVM-4669-2013-v1",
+          "CVM-4669-2014-v1",
+          "CVM-4669-2015-v2",
+          "CVM-4669-2016-v1",
+          "CVM-4669-2017-v1",
+          "CVM-4669-2018-v1",
+          "CVM-4669-2019-v1",
+          "CVM-4669-2020-v1",
+          "CVM-4669-2021-v1",
+          "CVM-4669-2022-v1",
+          "CVM-4669-2023-v1",
+          "CVM-4669-2024-v1",
+          "CVM-4669-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 11498.155260336222,
+            "interval": {
+              "lower": 8075.869837409629,
+              "upper": 14920.440683262814
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 12367.36060687239,
+            "interval": {
+              "lower": 6588.606205681726,
+              "upper": 18146.115008063054
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 13109.801214337911,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 13735.718316573517,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 14257.900878383703,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "2100",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 383.122,
+        "trainingIds": [
+          "CVM-2100-2010-v1",
+          "CVM-2100-2011-v1",
+          "CVM-2100-2012-v1",
+          "CVM-2100-2013-v2",
+          "CVM-2100-2014-v1",
+          "CVM-2100-2015-v1",
+          "CVM-2100-2016-v1",
+          "CVM-2100-2017-v1",
+          "CVM-2100-2018-v1",
+          "CVM-2100-2019-v1",
+          "CVM-2100-2020-v1",
+          "CVM-2100-2021-v1",
+          "CVM-2100-2022-v2",
+          "CVM-2100-2023-v1",
+          "CVM-2100-2024-v1",
+          "CVM-2100-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 399.43933455368,
+            "interval": {
+              "lower": 274.53249544842294,
+              "upper": 524.346173658937
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 412.9921713713192,
+            "interval": {
+              "lower": 202.07874451837705,
+              "upper": 623.9055982242614
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 424.1647866346018,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 433.3201120886463,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 440.78644727959306,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "7510",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 1326.712,
+        "trainingIds": [
+          "CVM-7510-2010-v5",
+          "CVM-7510-2011-v3",
+          "CVM-7510-2012-v2",
+          "CVM-7510-2013-v1",
+          "CVM-7510-2014-v1",
+          "CVM-7510-2015-v1",
+          "CVM-7510-2016-v1",
+          "CVM-7510-2017-v1",
+          "CVM-7510-2018-v1",
+          "CVM-7510-2019-v1",
+          "CVM-7510-2020-v1",
+          "CVM-7510-2021-v2",
+          "CVM-7510-2022-v1",
+          "CVM-7510-2023-v1",
+          "CVM-7510-2024-v2",
+          "CVM-7510-2025-v2"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 1442.7449711436002,
+            "interval": {
+              "lower": 1010.2054606925851,
+              "upper": 1875.2844815946153
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 1542.836471147966,
+            "interval": {
+              "lower": 812.4650114904141,
+              "upper": 2273.207930805518
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 1627.8866430309981,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 1699.290260440339,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 1758.6616608924483,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "24716",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 5755.712,
+        "trainingIds": [
+          "CVM-24716-2018-v1",
+          "CVM-24716-2019-v1",
+          "CVM-24716-2020-v1",
+          "CVM-24716-2021-v1",
+          "CVM-24716-2022-v1",
+          "CVM-24716-2023-v1",
+          "CVM-24716-2024-v2",
+          "CVM-24716-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 7128.64753872128,
+            "interval": {
+              "lower": 5252.1492099377665,
+              "upper": 9005.145867504794
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 8459.284167476864,
+            "interval": {
+              "lower": 5290.693113194935,
+              "upper": 11627.875221758793
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 9700.514933370745,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 10823.40046461181,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 11814.596114590471,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "7544",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 115.881,
+        "trainingIds": [
+          "CVM-7544-2010-v3",
+          "CVM-7544-2011-v1",
+          "CVM-7544-2012-v1",
+          "CVM-7544-2013-v2",
+          "CVM-7544-2014-v2",
+          "CVM-7544-2015-v2",
+          "CVM-7544-2016-v1",
+          "CVM-7544-2017-v1",
+          "CVM-7544-2018-v1",
+          "CVM-7544-2019-v1",
+          "CVM-7544-2020-v1",
+          "CVM-7544-2021-v1",
+          "CVM-7544-2022-v1",
+          "CVM-7544-2023-v1",
+          "CVM-7544-2024-v1",
+          "CVM-7544-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 114.10562312211,
+            "interval": {
+              "lower": 76.32567464001738,
+              "upper": 151.88557160420262
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 112.70492525075571,
+            "interval": {
+              "lower": 48.91099324699244,
+              "upper": 176.49885725451898
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 111.5967574543754,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 110.7180736013366,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 110.02011018689598,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "19739",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 41781.588,
+        "trainingIds": [
+          "CVM-19739-2010-v1",
+          "CVM-19739-2011-v1",
+          "CVM-19739-2012-v1",
+          "CVM-19739-2013-v1",
+          "CVM-19739-2014-v1",
+          "CVM-19739-2015-v1",
+          "CVM-19739-2016-v2",
+          "CVM-19739-2017-v2",
+          "CVM-19739-2018-v1",
+          "CVM-19739-2019-v1",
+          "CVM-19739-2020-v1",
+          "CVM-19739-2021-v1",
+          "CVM-19739-2022-v2",
+          "CVM-19739-2023-v3",
+          "CVM-19739-2024-v1",
+          "CVM-19739-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 52226.985,
+            "interval": {
+              "lower": 38605.19849367006,
+              "upper": 65848.77150632994
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 62434.259329130706,
+            "interval": {
+              "lower": 39432.975392322674,
+              "upper": 85435.54326593873
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 72018.71542164391,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 80735.26946262608,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 88462.18052062097,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "1520",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 48.072,
+        "trainingIds": [
+          "CVM-1520-2010-v3",
+          "CVM-1520-2011-v1",
+          "CVM-1520-2012-v1",
+          "CVM-1520-2013-v2",
+          "CVM-1520-2014-v1",
+          "CVM-1520-2015-v1",
+          "CVM-1520-2016-v2",
+          "CVM-1520-2017-v1",
+          "CVM-1520-2018-v1",
+          "CVM-1520-2019-v1",
+          "CVM-1520-2020-v1",
+          "CVM-1520-2021-v1",
+          "CVM-1520-2022-v1",
+          "CVM-1520-2023-v1",
+          "CVM-1520-2024-v1",
+          "CVM-1520-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 60.09,
+            "interval": {
+              "lower": 44.417390310480954,
+              "upper": 75.76260968951905
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 71.8340268558,
+            "interval": {
+              "lower": 45.36979286329987,
+              "upper": 98.29826084830015
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 82.86146729868825,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 92.89033900787496,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 101.78057238962029,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "20320",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 7225.809,
+        "trainingIds": [
+          "CVM-20320-2016-v1",
+          "CVM-20320-2017-v1",
+          "CVM-20320-2018-v2",
+          "CVM-20320-2019-v2",
+          "CVM-20320-2020-v2",
+          "CVM-20320-2021-v1",
+          "CVM-20320-2022-v1",
+          "CVM-20320-2023-v2",
+          "CVM-20320-2024-v2",
+          "CVM-20320-2025-v2"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 7084.38987399549,
+            "interval": {
+              "lower": 4728.605131359154,
+              "upper": 9440.174616631826
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 6973.249965652249,
+            "interval": {
+              "lower": 2995.352225572506,
+              "upper": 10951.147705731992
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 6885.594749201507,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 6816.264590799114,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 6761.303413499998,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "20745",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 9759.214,
+        "trainingIds": [
+          "CVM-20745-2010-v2",
+          "CVM-20745-2011-v1",
+          "CVM-20745-2012-v2",
+          "CVM-20745-2013-v1",
+          "CVM-20745-2014-v1",
+          "CVM-20745-2015-v1",
+          "CVM-20745-2016-v3",
+          "CVM-20745-2017-v1",
+          "CVM-20745-2018-v1",
+          "CVM-20745-2019-v2",
+          "CVM-20745-2020-v1",
+          "CVM-20745-2021-v1",
+          "CVM-20745-2022-v2",
+          "CVM-20745-2023-v2",
+          "CVM-20745-2024-v3",
+          "CVM-20745-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 12199.0175,
+            "interval": {
+              "lower": 9017.282770875147,
+              "upper": 15380.752229124853
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 14583.20104359085,
+            "interval": {
+              "lower": 9210.632336674491,
+              "upper": 19955.76975050721
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 16821.908631259375,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 18857.894344117147,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 20662.722312214926,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "20125",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 2420.159,
+        "trainingIds": [
+          "CVM-20125-2010-v3",
+          "CVM-20125-2011-v1",
+          "CVM-20125-2012-v2",
+          "CVM-20125-2013-v2",
+          "CVM-20125-2014-v1",
+          "CVM-20125-2015-v1",
+          "CVM-20125-2016-v1",
+          "CVM-20125-2017-v1",
+          "CVM-20125-2018-v1",
+          "CVM-20125-2019-v2",
+          "CVM-20125-2020-v1",
+          "CVM-20125-2021-v1",
+          "CVM-20125-2022-v1",
+          "CVM-20125-2023-v1",
+          "CVM-20125-2024-v1",
+          "CVM-20125-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 2567.5916738558103,
+            "interval": {
+              "lower": 1778.5625634885128,
+              "upper": 3356.620784223108
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 2691.978626819838,
+            "interval": {
+              "lower": 1359.650991708856,
+              "upper": 4024.3062619308203
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 2795.8130341782353,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 2881.7568860114816,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 2952.4103028291306,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "18465",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 142369.54,
+        "trainingIds": [
+          "CVM-18465-2010-v1",
+          "CVM-18465-2011-v1",
+          "CVM-18465-2012-v1",
+          "CVM-18465-2013-v1",
+          "CVM-18465-2014-v1",
+          "CVM-18465-2015-v1",
+          "CVM-18465-2016-v1",
+          "CVM-18465-2017-v2",
+          "CVM-18465-2018-v1",
+          "CVM-18465-2019-v2",
+          "CVM-18465-2020-v2",
+          "CVM-18465-2021-v2",
+          "CVM-18465-2022-v1",
+          "CVM-18465-2023-v1",
+          "CVM-18465-2024-v1",
+          "CVM-18465-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 151829.59587459263,
+            "interval": {
+              "lower": 105413.75646503261,
+              "upper": 198245.43528415266
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 159848.26190097907,
+            "interval": {
+              "lower": 81472.05912255072,
+              "upper": 238224.46467940742
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 166567.0535981622,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 172144.85620560474,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 176741.28568245922,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "21008",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 190.189,
+        "trainingIds": [
+          "CVM-21008-2010-v1",
+          "CVM-21008-2011-v2",
+          "CVM-21008-2012-v2",
+          "CVM-21008-2013-v1",
+          "CVM-21008-2014-v1",
+          "CVM-21008-2015-v2",
+          "CVM-21008-2016-v1",
+          "CVM-21008-2017-v1",
+          "CVM-21008-2018-v1",
+          "CVM-21008-2019-v1",
+          "CVM-21008-2020-v1",
+          "CVM-21008-2021-v1",
+          "CVM-21008-2022-v1",
+          "CVM-21008-2023-v1",
+          "CVM-21008-2024-v1",
+          "CVM-21008-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 213.60359571524998,
+            "interval": {
+              "lower": 151.59748063287483,
+              "upper": 275.6097107976251
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 234.39432362582943,
+            "interval": {
+              "lower": 129.6929132663768,
+              "upper": 339.0957339852821
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 252.47472824905796,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 267.9381615437557,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 280.9880816635995,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "20710",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 3081.024,
+        "trainingIds": [
+          "CVM-20710-2010-v2",
+          "CVM-20710-2011-v1",
+          "CVM-20710-2012-v1",
+          "CVM-20710-2013-v1",
+          "CVM-20710-2014-v1",
+          "CVM-20710-2015-v1",
+          "CVM-20710-2016-v1",
+          "CVM-20710-2017-v2",
+          "CVM-20710-2018-v2",
+          "CVM-20710-2019-v2",
+          "CVM-20710-2020-v1",
+          "CVM-20710-2021-v1",
+          "CVM-20710-2022-v1",
+          "CVM-20710-2023-v1",
+          "CVM-20710-2024-v1",
+          "CVM-20710-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 3683.2717304697594,
+            "interval": {
+              "lower": 2678.784989829871,
+              "upper": 4687.758471109648
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 4248.784476246995,
+            "interval": {
+              "lower": 2552.6424377940757,
+              "upper": 5944.926514699914
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 4763.097330313853,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 5219.023578844053,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 5614.9914718635455,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "20087",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 41883.234,
+        "trainingIds": [
+          "CVM-20087-2010-v1",
+          "CVM-20087-2011-v3",
+          "CVM-20087-2012-v1",
+          "CVM-20087-2013-v2",
+          "CVM-20087-2014-v2",
+          "CVM-20087-2015-v2",
+          "CVM-20087-2016-v1",
+          "CVM-20087-2017-v1",
+          "CVM-20087-2018-v1",
+          "CVM-20087-2019-v1",
+          "CVM-20087-2020-v1",
+          "CVM-20087-2021-v1",
+          "CVM-20087-2022-v1",
+          "CVM-20087-2023-v1",
+          "CVM-20087-2024-v1",
+          "CVM-20087-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 48339.8821519422,
+            "interval": {
+              "lower": 34684.95664402088,
+              "upper": 61994.807659863516
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 54214.803987038766,
+            "interval": {
+              "lower": 31157.56266280351,
+              "upper": 77272.04531127402
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 59424.80110975785,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 63951.04024253334,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 67819.02042700099,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "13986",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 50115.679,
+        "trainingIds": [
+          "CVM-13986-2010-v1",
+          "CVM-13986-2011-v1",
+          "CVM-13986-2012-v1",
+          "CVM-13986-2013-v1",
+          "CVM-13986-2014-v1",
+          "CVM-13986-2015-v1",
+          "CVM-13986-2016-v1",
+          "CVM-13986-2017-v2",
+          "CVM-13986-2018-v1",
+          "CVM-13986-2019-v1",
+          "CVM-13986-2020-v1",
+          "CVM-13986-2021-v1",
+          "CVM-13986-2022-v1",
+          "CVM-13986-2023-v1",
+          "CVM-13986-2024-v1",
+          "CVM-13986-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 59756.33995638064,
+            "interval": {
+              "lower": 43417.442546407554,
+              "upper": 76095.23736635373
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 68787.937079924,
+            "interval": {
+              "lower": 41198.632375542555,
+              "upper": 96377.24178430544
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 76986.56149727205,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 84243.62273025089,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 90538.79736097576,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "18708",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 117.26,
+        "trainingIds": [
+          "CVM-18708-2010-v1",
+          "CVM-18708-2011-v1",
+          "CVM-18708-2012-v1",
+          "CVM-18708-2013-v1",
+          "CVM-18708-2014-v1",
+          "CVM-18708-2015-v1",
+          "CVM-18708-2016-v1",
+          "CVM-18708-2017-v1",
+          "CVM-18708-2018-v1",
+          "CVM-18708-2019-v1",
+          "CVM-18708-2020-v1",
+          "CVM-18708-2021-v1",
+          "CVM-18708-2022-v1",
+          "CVM-18708-2023-v2",
+          "CVM-18708-2024-v2",
+          "CVM-18708-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 146.57500000000002,
+            "interval": {
+              "lower": 108.34546488198946,
+              "upper": 184.80453511801056
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 175.22170887650003,
+            "interval": {
+              "lower": 110.6686202186417,
+              "upper": 239.77479753435836
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 202.12047877026515,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 226.58348211148734,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 248.2690530538958,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "20770",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 1498.822,
+        "trainingIds": [
+          "CVM-20770-2010-v1",
+          "CVM-20770-2011-v1",
+          "CVM-20770-2012-v1",
+          "CVM-20770-2013-v1",
+          "CVM-20770-2014-v1",
+          "CVM-20770-2015-v1",
+          "CVM-20770-2016-v1",
+          "CVM-20770-2017-v1",
+          "CVM-20770-2018-v1",
+          "CVM-20770-2019-v1",
+          "CVM-20770-2020-v1",
+          "CVM-20770-2021-v1",
+          "CVM-20770-2022-v2",
+          "CVM-20770-2023-v2",
+          "CVM-20770-2024-v1",
+          "CVM-20770-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 1532.80772889712,
+            "interval": {
+              "lower": 1044.1562852279503,
+              "upper": 2021.4591725662895
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 1560.5503225439745,
+            "interval": {
+              "lower": 735.4301669210125,
+              "upper": 2385.6704781669364
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 1583.1054869428121,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 1601.384117881383,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 1616.1588560713035,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "8753",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 532.602422,
+        "trainingIds": [
+          "CVM-8753-2010-v1",
+          "CVM-8753-2011-v1",
+          "CVM-8753-2012-v1",
+          "CVM-8753-2013-v1",
+          "CVM-8753-2014-v1",
+          "CVM-8753-2015-v1",
+          "CVM-8753-2016-v1",
+          "CVM-8753-2017-v1",
+          "CVM-8753-2018-v1",
+          "CVM-8753-2019-v1",
+          "CVM-8753-2020-v1",
+          "CVM-8753-2021-v1",
+          "CVM-8753-2022-v1",
+          "CVM-8753-2023-v1",
+          "CVM-8753-2024-v1",
+          "CVM-8753-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 559.5371064689965,
+            "interval": {
+              "lower": 385.89611213344745,
+              "upper": 733.1781008045456
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 582.0623358104082,
+            "interval": {
+              "lower": 288.85807718209435,
+              "upper": 875.266594438722
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 600.7336790329242,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 616.1010773129494,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 628.6775547651495,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "19615",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 2584.341,
+        "trainingIds": [
+          "CVM-19615-2010-v2",
+          "CVM-19615-2011-v1",
+          "CVM-19615-2012-v1",
+          "CVM-19615-2013-v1",
+          "CVM-19615-2014-v1",
+          "CVM-19615-2015-v1",
+          "CVM-19615-2016-v1",
+          "CVM-19615-2017-v1",
+          "CVM-19615-2018-v1",
+          "CVM-19615-2019-v2",
+          "CVM-19615-2020-v1",
+          "CVM-19615-2021-v1",
+          "CVM-19615-2022-v1",
+          "CVM-19615-2023-v1",
+          "CVM-19615-2024-v1",
+          "CVM-19615-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 2772.00956347137,
+            "interval": {
+              "lower": 1929.4532355128629,
+              "upper": 3614.5658914298765
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 2931.910107690461,
+            "interval": {
+              "lower": 1509.1982392345658,
+              "upper": 4354.621976146356
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 3066.446490887446,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 3178.507079424016,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 3271.0969588625667,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "4537",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 744.815,
+        "trainingIds": [
+          "CVM-4537-2010-v2",
+          "CVM-4537-2011-v2",
+          "CVM-4537-2012-v1",
+          "CVM-4537-2013-v1",
+          "CVM-4537-2014-v2",
+          "CVM-4537-2015-v1",
+          "CVM-4537-2016-v1",
+          "CVM-4537-2017-v1",
+          "CVM-4537-2018-v1",
+          "CVM-4537-2019-v1",
+          "CVM-4537-2020-v1",
+          "CVM-4537-2021-v1",
+          "CVM-4537-2022-v2",
+          "CVM-4537-2023-v3",
+          "CVM-4537-2024-v1",
+          "CVM-4537-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 801.7774829405,
+            "interval": {
+              "lower": 558.9501658765307,
+              "upper": 1044.6048000044693
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 850.4684513109474,
+            "interval": {
+              "lower": 440.43852867149025,
+              "upper": 1260.4983739504046
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 891.5417571295336,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 925.8240875005896,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 954.1966888048333,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "19453",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 11521.073,
+        "trainingIds": [
+          "CVM-19453-2010-v2",
+          "CVM-19453-2011-v1",
+          "CVM-19453-2012-v1",
+          "CVM-19453-2013-v1",
+          "CVM-19453-2014-v1",
+          "CVM-19453-2015-v1",
+          "CVM-19453-2016-v1",
+          "CVM-19453-2017-v1",
+          "CVM-19453-2018-v1",
+          "CVM-19453-2019-v1",
+          "CVM-19453-2020-v1",
+          "CVM-19453-2021-v3",
+          "CVM-19453-2022-v1",
+          "CVM-19453-2023-v1",
+          "CVM-19453-2024-v1",
+          "CVM-19453-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 13445.10958782023,
+            "interval": {
+              "lower": 9688.967127896443,
+              "upper": 17201.25204774402
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 15213.231715303926,
+            "interval": {
+              "lower": 8870.73771221116,
+              "upper": 21555.725718396694
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 16793.73085916356,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 18175.55799571113,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 19362.445379300883,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "12190",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 1729.013,
+        "trainingIds": [
+          "CVM-12190-2010-v1",
+          "CVM-12190-2011-v1",
+          "CVM-12190-2012-v1",
+          "CVM-12190-2013-v2",
+          "CVM-12190-2014-v1",
+          "CVM-12190-2015-v1",
+          "CVM-12190-2016-v1",
+          "CVM-12190-2017-v2",
+          "CVM-12190-2018-v1",
+          "CVM-12190-2019-v1",
+          "CVM-12190-2020-v1",
+          "CVM-12190-2021-v1",
+          "CVM-12190-2022-v1",
+          "CVM-12190-2023-v2",
+          "CVM-12190-2024-v1",
+          "CVM-12190-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 1871.0177367767599,
+            "interval": {
+              "lower": 1307.318579323265,
+              "upper": 2434.7168942302546
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 1992.9739471409084,
+            "interval": {
+              "lower": 1041.1307825529025,
+              "upper": 2944.8171117289144
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 2096.238038746244,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 2182.6885934169504,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 2254.4090558896614,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "13773",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 2606.148,
+        "trainingIds": [
+          "CVM-13773-2010-v1",
+          "CVM-13773-2011-v2",
+          "CVM-13773-2012-v1",
+          "CVM-13773-2013-v1",
+          "CVM-13773-2014-v1",
+          "CVM-13773-2015-v1",
+          "CVM-13773-2016-v2",
+          "CVM-13773-2017-v1",
+          "CVM-13773-2018-v1",
+          "CVM-13773-2019-v2",
+          "CVM-13773-2020-v2",
+          "CVM-13773-2021-v1",
+          "CVM-13773-2022-v1",
+          "CVM-13773-2023-v1",
+          "CVM-13773-2024-v1",
+          "CVM-13773-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 2864.2511509264805,
+            "interval": {
+              "lower": 2014.5852248755425,
+              "upper": 3713.917076977418
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 3089.019937464101,
+            "interval": {
+              "lower": 1654.3030442396412,
+              "upper": 4523.736830688561
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 3281.469740843036,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 3444.0270904208264,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 3579.8520797685082,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "21130",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 1378.596,
+        "trainingIds": [
+          "CVM-21130-2010-v1",
+          "CVM-21130-2011-v1",
+          "CVM-21130-2012-v1",
+          "CVM-21130-2013-v1",
+          "CVM-21130-2014-v1",
+          "CVM-21130-2015-v1",
+          "CVM-21130-2016-v2",
+          "CVM-21130-2017-v1",
+          "CVM-21130-2018-v1",
+          "CVM-21130-2019-v1",
+          "CVM-21130-2020-v1",
+          "CVM-21130-2021-v1",
+          "CVM-21130-2022-v3",
+          "CVM-21130-2023-v1",
+          "CVM-21130-2024-v1",
+          "CVM-21130-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 1411.25372607552,
+            "interval": {
+              "lower": 961.7988037188009,
+              "upper": 1860.7086484322392
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 1437.936046248759,
+            "interval": {
+              "lower": 679.0017991792652,
+              "upper": 2196.870293318253
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 1459.6446817738604,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 1477.2473251994998,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 1491.4821542874881,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "24295",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 189075,
+        "trainingIds": [
+          "CVM-24295-2016-v1",
+          "CVM-24295-2017-v2",
+          "CVM-24295-2018-v1",
+          "CVM-24295-2019-v2",
+          "CVM-24295-2020-v1",
+          "CVM-24295-2021-v1",
+          "CVM-24295-2022-v1",
+          "CVM-24295-2023-v1",
+          "CVM-24295-2024-v1",
+          "CVM-24295-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 207516.92361075,
+            "interval": {
+              "lower": 145873.99889270595,
+              "upper": 269159.84832879406
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 223557.4007584749,
+            "interval": {
+              "lower": 119469.26125664508,
+              "upper": 327645.5402603047
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 237278.00149475547,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 248858.34961214702,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 258528.25094594373,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "7617",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 8249,
+        "trainingIds": [
+          "CVM-7617-2010-v1",
+          "CVM-7617-2011-v1",
+          "CVM-7617-2012-v1",
+          "CVM-7617-2013-v1",
+          "CVM-7617-2014-v1",
+          "CVM-7617-2015-v1",
+          "CVM-7617-2016-v1",
+          "CVM-7617-2017-v1",
+          "CVM-7617-2018-v1",
+          "CVM-7617-2019-v1",
+          "CVM-7617-2020-v1",
+          "CVM-7617-2021-v1",
+          "CVM-7617-2022-v1",
+          "CVM-7617-2023-v1",
+          "CVM-7617-2024-v2",
+          "CVM-7617-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 8568.055564409999,
+            "interval": {
+              "lower": 5878.6863405615495,
+              "upper": 11257.424788258448
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 8832.162535641268,
+            "interval": {
+              "lower": 4290.985422058859,
+              "upper": 13373.339649223677
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 9049.297630393368,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 9226.842949549184,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 9371.384027869897,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "15458",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 2.391,
+        "trainingIds": [
+          "CVM-15458-2017-v2",
+          "CVM-15458-2018-v1",
+          "CVM-15458-2019-v2",
+          "CVM-15458-2020-v1",
+          "CVM-15458-2021-v1",
+          "CVM-15458-2022-v1",
+          "CVM-15458-2023-v1",
+          "CVM-15458-2024-v1",
+          "CVM-15458-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 1.9128,
+            "interval": {
+              "lower": 1.1332774137202521,
+              "upper": 2.692322586279748
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 1.600079464992,
+            "interval": {
+              "lower": 0.28380422210491774,
+              "upper": 2.9163547078790826
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 1.3871363135635948,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 1.2373746547101372,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 1.1292936165026914,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "14451",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 510.334,
+        "trainingIds": [
+          "CVM-14451-2010-v2",
+          "CVM-14451-2011-v2",
+          "CVM-14451-2012-v2",
+          "CVM-14451-2013-v1",
+          "CVM-14451-2014-v1",
+          "CVM-14451-2015-v1",
+          "CVM-14451-2016-v1",
+          "CVM-14451-2017-v1",
+          "CVM-14451-2018-v1",
+          "CVM-14451-2019-v1",
+          "CVM-14451-2020-v1",
+          "CVM-14451-2021-v2",
+          "CVM-14451-2022-v1",
+          "CVM-14451-2023-v1",
+          "CVM-14451-2024-v1",
+          "CVM-14451-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 558.4093000024,
+            "interval": {
+              "lower": 392.02833825146354,
+              "upper": 724.7902617533364
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 600.1104019035131,
+            "interval": {
+              "lower": 319.16518659463134,
+              "upper": 881.0556172123948
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 635.7025657697533,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 665.6902704816296,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 690.6957871619095,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "23310",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 1488.493,
+        "trainingIds": [
+          "CVM-23310-2012-v2",
+          "CVM-23310-2013-v2",
+          "CVM-23310-2014-v2",
+          "CVM-23310-2015-v2",
+          "CVM-23310-2016-v1",
+          "CVM-23310-2017-v1",
+          "CVM-23310-2018-v2",
+          "CVM-23310-2019-v2",
+          "CVM-23310-2020-v1",
+          "CVM-23310-2021-v1",
+          "CVM-23310-2022-v2",
+          "CVM-23310-2023-v1",
+          "CVM-23310-2024-v1",
+          "CVM-23310-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 1745.7087135256102,
+            "interval": {
+              "lower": 1260.4247683063293,
+              "upper": 2230.9926587448913
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 1983.1326574838226,
+            "interval": {
+              "lower": 1163.6987448486402,
+              "upper": 2802.566570119005
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 2196.1184276684976,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 2382.8623055606736,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 2543.627424788266,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "7870",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 1490.3,
+        "trainingIds": [
+          "CVM-7870-2010-v2",
+          "CVM-7870-2011-v1",
+          "CVM-7870-2012-v1",
+          "CVM-7870-2013-v1",
+          "CVM-7870-2014-v1",
+          "CVM-7870-2015-v1",
+          "CVM-7870-2016-v1",
+          "CVM-7870-2017-v1",
+          "CVM-7870-2018-v1",
+          "CVM-7870-2019-v2",
+          "CVM-7870-2020-v1",
+          "CVM-7870-2021-v1",
+          "CVM-7870-2022-v1",
+          "CVM-7870-2023-v1",
+          "CVM-7870-2024-v1",
+          "CVM-7870-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 1584.088915773,
+            "interval": {
+              "lower": 1098.2158457885967,
+              "upper": 2069.9619857574035
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 1663.3522896693169,
+            "interval": {
+              "lower": 842.9236010559256,
+              "upper": 2483.780978282708
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 1729.609200230539,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 1784.509988469773,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 1829.682699570799,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "3069",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 2334.454,
+        "trainingIds": [
+          "CVM-3069-2010-v2",
+          "CVM-3069-2011-v1",
+          "CVM-3069-2012-v1",
+          "CVM-3069-2013-v1",
+          "CVM-3069-2014-v1",
+          "CVM-3069-2015-v1",
+          "CVM-3069-2016-v1",
+          "CVM-3069-2017-v1",
+          "CVM-3069-2018-v2",
+          "CVM-3069-2019-v1",
+          "CVM-3069-2020-v3",
+          "CVM-3069-2021-v1",
+          "CVM-3069-2022-v1",
+          "CVM-3069-2023-v1",
+          "CVM-3069-2024-v1",
+          "CVM-3069-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 2436.4759428258003,
+            "interval": {
+              "lower": 1675.388690784352,
+              "upper": 3197.5631948672485
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 2521.294470253174,
+            "interval": {
+              "lower": 1236.1485037710659,
+              "upper": 3806.440436735282
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 2591.270350915857,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 2648.6468031926092,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 2695.4613440878907,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "20346",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 11450.521,
+        "trainingIds": [
+          "CVM-20346-2010-v2",
+          "CVM-20346-2011-v3",
+          "CVM-20346-2012-v1",
+          "CVM-20346-2013-v2",
+          "CVM-20346-2014-v3",
+          "CVM-20346-2015-v3",
+          "CVM-20346-2016-v2",
+          "CVM-20346-2017-v1",
+          "CVM-20346-2018-v2",
+          "CVM-20346-2019-v1",
+          "CVM-20346-2020-v1",
+          "CVM-20346-2021-v1",
+          "CVM-20346-2022-v2",
+          "CVM-20346-2023-v1",
+          "CVM-20346-2024-v1",
+          "CVM-20346-2025-v2"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 13397.17231885508,
+            "interval": {
+              "lower": 9664.031480640708,
+              "upper": 17130.313157069453
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 15190.19881878411,
+            "interval": {
+              "lower": 8886.544569324204,
+              "upper": 21493.853068244018
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 16795.916608518743,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 18201.86600476047,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 19410.90019958892,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "2453",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 42751.283,
+        "trainingIds": [
+          "CVM-2453-2010-v2",
+          "CVM-2453-2011-v1",
+          "CVM-2453-2012-v2",
+          "CVM-2453-2013-v2",
+          "CVM-2453-2014-v1",
+          "CVM-2453-2015-v2",
+          "CVM-2453-2016-v1",
+          "CVM-2453-2017-v1",
+          "CVM-2453-2018-v1",
+          "CVM-2453-2019-v2",
+          "CVM-2453-2020-v2",
+          "CVM-2453-2021-v1",
+          "CVM-2453-2022-v1",
+          "CVM-2453-2023-v1",
+          "CVM-2453-2024-v1",
+          "CVM-2453-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 45898.78550405314,
+            "interval": {
+              "lower": 31960.855478566977,
+              "upper": 59836.71552953931
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 48582.83219235426,
+            "interval": {
+              "lower": 25047.719095508008,
+              "upper": 72117.94528920052
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 50842.645141962035,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 52725.946201075756,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 54282.6924168896,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "24660",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 1345.48,
+        "trainingIds": [
+          "CVM-24660-2017-v1",
+          "CVM-24660-2018-v1",
+          "CVM-24660-2019-v1",
+          "CVM-24660-2020-v1",
+          "CVM-24660-2021-v1",
+          "CVM-24660-2022-v1",
+          "CVM-24660-2023-v1",
+          "CVM-24660-2024-v1",
+          "CVM-24660-2025-v2"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 1326.3040979467999,
+            "interval": {
+              "lower": 887.6457753254383,
+              "upper": 1764.9624205681614
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 1311.1603444934024,
+            "interval": {
+              "lower": 570.4568673709801,
+              "upper": 2051.8638216158247
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 1299.169927370648,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 1289.656586685386,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 1282.0961039116014,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "16292",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 65048.731,
+        "trainingIds": [
+          "CVM-16292-2010-v3",
+          "CVM-16292-2011-v1",
+          "CVM-16292-2012-v1",
+          "CVM-16292-2013-v1",
+          "CVM-16292-2014-v1",
+          "CVM-16292-2015-v1",
+          "CVM-16292-2016-v1",
+          "CVM-16292-2017-v1",
+          "CVM-16292-2018-v2",
+          "CVM-16292-2019-v2",
+          "CVM-16292-2020-v1",
+          "CVM-16292-2021-v1",
+          "CVM-16292-2022-v1",
+          "CVM-16292-2023-v1",
+          "CVM-16292-2024-v1",
+          "CVM-16292-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 72397.79742409565,
+            "interval": {
+              "lower": 51190.37165105692,
+              "upper": 93605.22319713439
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 78870.49643958984,
+            "interval": {
+              "lower": 43060.36084924209,
+              "upper": 114680.6320299376
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 84462.89259236518,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 89220.99308776429,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 93219.74951972783,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "14346",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 12561.821,
+        "trainingIds": [
+          "CVM-14346-2010-v2",
+          "CVM-14346-2011-v1",
+          "CVM-14346-2012-v2",
+          "CVM-14346-2013-v1",
+          "CVM-14346-2014-v1",
+          "CVM-14346-2015-v1",
+          "CVM-14346-2016-v1",
+          "CVM-14346-2017-v1",
+          "CVM-14346-2018-v2",
+          "CVM-14346-2019-v2",
+          "CVM-14346-2020-v1",
+          "CVM-14346-2021-v1",
+          "CVM-14346-2022-v4",
+          "CVM-14346-2023-v2",
+          "CVM-14346-2024-v1",
+          "CVM-14346-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 13364.33205525753,
+            "interval": {
+              "lower": 9268.881116611252,
+              "upper": 17459.782993903806
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 14043.099798178033,
+            "interval": {
+              "lower": 7127.661074681985,
+              "upper": 20958.53852167408
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 14610.852773710509,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 15081.537889210927,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 15468.980184538696,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "15253",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 35441.353,
+        "trainingIds": [
+          "CVM-15253-2010-v1",
+          "CVM-15253-2011-v1",
+          "CVM-15253-2012-v1",
+          "CVM-15253-2013-v1",
+          "CVM-15253-2014-v1",
+          "CVM-15253-2015-v1",
+          "CVM-15253-2016-v1",
+          "CVM-15253-2017-v1",
+          "CVM-15253-2018-v2",
+          "CVM-15253-2019-v2",
+          "CVM-15253-2020-v2",
+          "CVM-15253-2021-v5",
+          "CVM-15253-2022-v2",
+          "CVM-15253-2023-v3",
+          "CVM-15253-2024-v1",
+          "CVM-15253-2025-v3"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 38154.26275534685,
+            "interval": {
+              "lower": 26599.542909335345,
+              "upper": 49708.98260135835
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 40473.362403452265,
+            "interval": {
+              "lower": 20962.45670361043,
+              "upper": 59984.268103294104
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 42429.7293929523,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 44062.69353588287,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 45414.199893958204,
+            "interval": null
+          }
+        ]
+      },
+      {
+        "issuer": "21202",
+        "currency": "BRL",
+        "definition": "RECEITA DE VENDA DE BENS E/OU SERVICOS",
+        "base": 4043.611,
+        "trainingIds": [
+          "CVM-21202-2010-v1",
+          "CVM-21202-2011-v1",
+          "CVM-21202-2012-v1",
+          "CVM-21202-2013-v1",
+          "CVM-21202-2014-v1",
+          "CVM-21202-2015-v1",
+          "CVM-21202-2016-v1",
+          "CVM-21202-2017-v1",
+          "CVM-21202-2018-v1",
+          "CVM-21202-2019-v1",
+          "CVM-21202-2020-v1",
+          "CVM-21202-2021-v1",
+          "CVM-21202-2022-v1",
+          "CVM-21202-2023-v1",
+          "CVM-21202-2024-v1",
+          "CVM-21202-2025-v1"
+        ],
+        "rows": [
+          {
+            "horizon": 1,
+            "targetYear": 2026,
+            "prediction": 4981.38613683997,
+            "interval": {
+              "lower": 3663.0732532643797,
+              "upper": 6299.699020415561
+            }
+          },
+          {
+            "horizon": 2,
+            "targetYear": 2027,
+            "prediction": 5885.927103575285,
+            "interval": {
+              "lower": 3659.868947504237,
+              "upper": 8111.985259646333
+            }
+          },
+          {
+            "horizon": 3,
+            "targetYear": 2028,
+            "prediction": 6726.460802237166,
+            "interval": null
+          },
+          {
+            "horizon": 4,
+            "targetYear": 2029,
+            "prediction": 7484.520894284458,
+            "interval": null
+          },
+          {
+            "horizon": 5,
+            "targetYear": 2030,
+            "prediction": 8152.032755179798,
+            "interval": null
+          }
+        ]
+      }
+    ]
+  },
+  "digest": "effac31a5c2b0e39378c314c70777833a6246021b25b993730488bb298e68be7"
+}

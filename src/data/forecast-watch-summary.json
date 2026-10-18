@@ -1,0 +1,67 @@
+{
+  "issuedAt": "2026-10-17T22:52:24.900Z",
+  "asOf": "2026-10-17",
+  "digest": "effac31a5c2b0e39378c314c70777833a6246021b25b993730488bb298e68be7",
+  "sourceCutoff": "2026-07-01",
+  "cohortSize": 120,
+  "forecastIssuers": 91,
+  "excluded": 29,
+  "timestampStatus": "unanchored_no_prospective_claim",
+  "summaries": [
+    {
+      "horizon": 1,
+      "fixedAttempts": 120,
+      "scored": 0,
+      "pending": 91,
+      "ineligible": 0,
+      "macroScaledAbsoluteErrorPercent": null,
+      "bandCases": 0,
+      "bandCoveragePercent": null,
+      "qualification": "not_established_requires_separate_predeclared_validation"
+    },
+    {
+      "horizon": 2,
+      "fixedAttempts": 120,
+      "scored": 0,
+      "pending": 91,
+      "ineligible": 0,
+      "macroScaledAbsoluteErrorPercent": null,
+      "bandCases": 0,
+      "bandCoveragePercent": null,
+      "qualification": "not_established_requires_separate_predeclared_validation"
+    },
+    {
+      "horizon": 3,
+      "fixedAttempts": 120,
+      "scored": 0,
+      "pending": 91,
+      "ineligible": 0,
+      "macroScaledAbsoluteErrorPercent": null,
+      "bandCases": 0,
+      "bandCoveragePercent": null,
+      "qualification": "not_established_requires_separate_predeclared_validation"
+    },
+    {
+      "horizon": 4,
+      "fixedAttempts": 120,
+      "scored": 0,
+      "pending": 91,
+      "ineligible": 0,
+      "macroScaledAbsoluteErrorPercent": null,
+      "bandCases": 0,
+      "bandCoveragePercent": null,
+      "qualification": "not_established_requires_separate_predeclared_validation"
+    },
+    {
+      "horizon": 5,
+      "fixedAttempts": 120,
+      "scored": 0,
+      "pending": 91,
+      "ineligible": 0,
+      "macroScaledAbsoluteErrorPercent": null,
+      "bandCases": 0,
+      "bandCoveragePercent": null,
+      "qualification": "not_established_requires_separate_predeclared_validation"
+    }
+  ]
+}

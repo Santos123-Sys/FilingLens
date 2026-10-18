@@ -59,6 +59,13 @@ jobs:
       - name: Reject production dependency advisories
         run: npm audit --omit=dev --audit-level=moderate
 
+      - name: Verify frozen forward forecast ledger without claiming future outcomes
+        run: |
+          npm run forecast:policy
+          git diff --exit-code -- src/data/forecast-reliability-policy.json
+          npm run forecast:watch -- verify
+          python ops/verify-forecast-watch.py
+
       - name: Typecheck
         run: npm run check
 
