@@ -4,6 +4,7 @@ import source from "../public/evaluations/five-year-cohort-cvm-v3.json";
 import { prepareFiveYearForecast } from "../api/five-year-planner";
 import {
   checkedForecastWatch,
+  checkedWatchAttestation,
   freezeForecastWatch,
   scoreForecastWatch,
   verifyWatchTimestamp,
@@ -14,8 +15,13 @@ const path = "public/evaluations/forecast-watch-v1.json",
 const sha = (p: string) =>
   createHash("sha256").update(readFileSync(p)).digest("hex");
 const mode = process.argv[2] ?? "verify";
-if (!["register", "verify", "score"].includes(mode))
-  throw Error("Use register, verify or score");
+if (
+  !["register", "verify", "score", "attest", "verify-attestation"].includes(
+    mode
+  )
+)
+  throw Error("Use register, verify, score, attest or verify-attestation");
+const attestationPath = "public/evaluations/forecast-watch-attestation-v1.json";
 const expectedForecast = (
   issuer: string,
   plan: ReturnType<typeof prepareFiveYearForecast>,
@@ -105,6 +111,51 @@ if (mode === "register") {
     )
       throw Error("frozen_forecast_or_input_changed");
   }
+  if (mode === "attest" || mode === "verify-attestation") {
+    const retained =
+      mode === "verify-attestation"
+        ? checkedWatchAttestation(
+            JSON.parse(readFileSync(attestationPath, "utf8")),
+            record
+          )
+        : undefined;
+    const receipt = await verifyWatchTimestamp(
+      record,
+      Number(
+        process.env.FORECAST_WATCH_ANCHOR_RUN_ID ?? retained?.receipt.runId
+      )
+    );
+    if (retained && watchDigest(retained.receipt) !== watchDigest(receipt))
+      throw Error("watch_attestation_receipt_changed");
+    if (!retained)
+      writeFileSync(
+        attestationPath,
+        JSON.stringify(
+          checkedWatchAttestation(
+            {
+              schemaVersion: "forecast-watch-attestation.v1",
+              verifiedAt: new Date().toISOString(),
+              receipt,
+            },
+            record
+          ),
+          null,
+          2
+        ) + "\n"
+      );
+    console.log(
+      JSON.stringify({
+        receipt,
+        futureAccuracyProven: false,
+        scoringCapability: false,
+      })
+    );
+    process.exit(0);
+  }
+  const attestation = checkedWatchAttestation(
+    JSON.parse(readFileSync(attestationPath, "utf8")),
+    record
+  );
   const savedScore = JSON.parse(readFileSync(scorePath, "utf8"));
   const targetFile = process.env.FORECAST_WATCH_OUTCOMES;
   const outcomes = targetFile
@@ -155,6 +206,7 @@ if (mode === "register") {
       digest: record.digest,
       timestampStatus: result.timestampStatus,
       futureAccuracyProven: false,
+      retainedAttestationRun: attestation.receipt.runId,
       summaries: result.summaries,
     })
   );

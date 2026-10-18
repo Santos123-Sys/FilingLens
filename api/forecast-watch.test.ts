@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import {
   checkedForecastWatch,
+  checkedWatchAttestation,
   freezeForecastWatch,
   scoreForecastWatch,
   verifyWatchTimestamp,
@@ -72,6 +73,43 @@ const receiptFetcher = (snapshot: unknown, patch = {}) =>
     throw Error("Unexpected receipt endpoint");
   });
 describe("prospective forecast evidence, not fabricated future proof", () => {
+  it("checks retained receipt lineage but never upgrades a copied attestation into scoring authority", async () => {
+    const record = freezeForecastWatch(payload());
+    const receipt = await verifyWatchTimestamp(
+      record,
+      42,
+      receiptFetcher(record)
+    );
+    const retained = checkedWatchAttestation(
+      {
+        schemaVersion: "forecast-watch-attestation.v1",
+        verifiedAt: "2026-10-18T13:00:00Z",
+        receipt,
+      },
+      record
+    );
+    expect(retained.receipt.digest).toBe(record.digest);
+    expect(() =>
+      scoreForecastWatch(record, [actual()], "2027-05-01", retained.receipt)
+    ).toThrow("invalid_watch_anchor");
+    for (const patch of [
+      { digest: "f".repeat(64) },
+      { url: "https://attacker.example/receipt" },
+      { observedAt: "2020-01-01T00:00:00Z" },
+    ])
+      expect(() =>
+        checkedWatchAttestation(
+          { ...retained, receipt: { ...retained.receipt, ...patch } },
+          record
+        )
+      ).toThrow();
+    expect(() =>
+      checkedWatchAttestation(
+        { ...retained, verifiedAt: "2026-10-17T00:00:00Z" },
+        record
+      )
+    ).toThrow();
+  });
   it("freezes a fixed denominator, detects tampering, and refuses backdated/elapsed targets and failed bands", () => {
     const value = freezeForecastWatch(payload());
     expect(checkedForecastWatch(value)).toEqual(value);

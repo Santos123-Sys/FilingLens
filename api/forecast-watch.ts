@@ -191,6 +191,37 @@ export async function verifyWatchTimestamp(
   return receipt;
 }
 type VerifiedTimestamp = Awaited<ReturnType<typeof verifyWatchTimestamp>>;
+/** A retained attestation is a dated observation, never a live scoring capability. */
+export function checkedWatchAttestation(raw: unknown, frozen: unknown) {
+  const record = checkedForecastWatch(frozen);
+  const result = z
+    .object({
+      schemaVersion: z.literal("forecast-watch-attestation.v1"),
+      verifiedAt: z.string().datetime(),
+      receipt: z
+        .object({
+          provider: z.literal("github-actions"),
+          runId: z.number().int().positive().safe(),
+          headSha: z.string().regex(/^[a-f0-9]{40}$/),
+          observedAt: z.string().datetime(),
+          digest: hash,
+          url: z.string(),
+        })
+        .strict(),
+    })
+    .strict()
+    .parse(raw);
+  if (
+    result.receipt.digest !== record.digest ||
+    Date.parse(result.receipt.observedAt) <
+      Date.parse(record.payload.issuedAt) ||
+    Date.parse(result.verifiedAt) < Date.parse(result.receipt.observedAt) ||
+    result.receipt.url !==
+      `https://github.com/Santos123-Sys/FilingLens/actions/runs/${result.receipt.runId}`
+  )
+    throw Error("invalid_watch_attestation");
+  return result;
+}
 /** All fixed cases remain visible. Missing outcomes never become zeros or successes. */
 export function scoreForecastWatch(
   raw: unknown,
