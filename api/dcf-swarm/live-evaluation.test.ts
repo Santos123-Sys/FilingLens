@@ -20,5 +20,5 @@ it('database failure reports the phase and code without SQL contents or credenti
  vi.stubEnv('DCF_BENCHMARK_RUN_ID','d307995c-98b9-4764-a458-d5ea03a2ba52');vi.stubEnv('DATABASE_URL','synthetic');
  const warning=vi.spyOn(console,'warn').mockImplementation(()=>{});
  mocks.query.mockRejectedValue(Object.assign(new Error('secret SQL and credential'),{code:'ER_TABLEACCESS_DENIED_ERROR'}));
- await runLiveEvaluation();const logged=JSON.parse(warning.mock.calls[0][0]);expect(logged.phase).toBe('create_store');expect(logged.code).toBe('ER_TABLEACCESS_DENIED_ERROR');expect(JSON.stringify(logged)).not.toContain('secret');expect(mocks.load).not.toHaveBeenCalled();
+ await runLiveEvaluation();const logged=JSON.parse(warning.mock.calls[0][0]);expect(logged.phase).toBe('verify_store');expect(logged.code).toBe('ER_TABLEACCESS_DENIED_ERROR');expect(JSON.stringify(logged)).not.toContain('secret');expect(mocks.load).not.toHaveBeenCalled();
 });

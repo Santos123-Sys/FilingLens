@@ -6,6 +6,21 @@ async function migrate() {
  if (!url) throw new Error("DATABASE_URL missing");
  const db = await mysql.createConnection(url);
  try {
+   // Dedicated additive DCF migration. Return before any legacy account changes.
+   if(Bun.env.DCF_SCHEMA_ONLY==='true'){
+    await db.query(`CREATE TABLE IF NOT EXISTS dcf_debate_runs (
+ id CHAR(36) PRIMARY KEY, workspace_id VARCHAR(64) NOT NULL, issuer_id VARCHAR(30) NOT NULL,
+ request_hash CHAR(64) NOT NULL, status VARCHAR(30) NOT NULL, output_json MEDIUMTEXT NULL,
+ created_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+ INDEX dcf_scope (workspace_id,issuer_id,created_at))`);
+    await db.query(`CREATE TABLE IF NOT EXISTS dcf_live_evaluations (
+ id VARCHAR(120) PRIMARY KEY,status VARCHAR(30) NOT NULL,result_json MEDIUMTEXT NULL,
+ created_at TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3))`);
+    await db.query('SELECT id,workspace_id,issuer_id,request_hash,status,output_json,created_at FROM dcf_debate_runs LIMIT 0');
+    await db.query('SELECT id,status,result_json,created_at FROM dcf_live_evaluations LIMIT 0');
+    status='ready';detail='DCF review and evaluation tables verified; no grants or passwords changed';
+    console.log('DCF_SCHEMA_VERIFIED');return;
+   }
    const statements = [
 `CREATE TABLE IF NOT EXISTS companies (
  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,

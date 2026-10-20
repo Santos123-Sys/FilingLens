@@ -58,6 +58,8 @@ const callModel: ModelCall = async (prompt, payload, judge, signal) => {
         system: prompt,
         messages: [{ role: "user", content: serialized }],
         maxRetries: 0,
+        // Responses models use the SDK's top-level cap, not the Chat-only option.
+        maxOutputTokens: baseline?14400:2400,
         providerOptions: openAIProviderOptions(
           judge ? "synthesizer" : "financials",
           baseline?14400:2400,

@@ -54,7 +54,9 @@ export function registerDcfSwarm(
       if (!process.env.DATABASE_URL)
         return c.json({ error: "debate_store_unavailable" }, 503);
       db = await deps.connect();
-      await db.query(DEBATE_DDL);
+      // The application account deliberately has DML privileges only.
+      // Deployment migrations own DDL; requests verify the required table.
+      await db.query('SELECT id FROM dcf_debate_runs LIMIT 0');
       const enabled = process.env.DCF_SWARM_ENABLED === "true";
       if (input.action === "read") {
         const [rows] = await db.query(
