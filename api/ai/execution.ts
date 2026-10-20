@@ -155,7 +155,7 @@ export async function withModelExecution<T>(
   const trace = execution.getStore();
   if (
     trace &&
-    (trace.generations >= EXECUTION_POLICY.maxGenerationsPerRequest ||
+    (trace.generations >= (trace.stage === 'dcf-swarm' ? 6 : EXECUTION_POLICY.maxGenerationsPerRequest) ||
       trace.reportedTokens >= EXECUTION_POLICY.maxReportedTokensPerRequest)
   ) {
     throw new AiInvalidRequest("Model request budget exhausted");
@@ -182,7 +182,7 @@ export async function withModelExecution<T>(
     signal.throwIfAborted();
     if (trace) {
       if (
-        trace.generations >= EXECUTION_POLICY.maxGenerationsPerRequest ||
+        trace.generations >= (trace.stage === 'dcf-swarm' ? 6 : EXECUTION_POLICY.maxGenerationsPerRequest) ||
         trace.reportedTokens >= EXECUTION_POLICY.maxReportedTokensPerRequest
       ) {
         throw new AiInvalidRequest("Model request budget exhausted");

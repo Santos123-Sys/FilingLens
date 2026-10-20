@@ -1,3 +1,5 @@
+import DcfDebatePanel from './DcfDebatePanel';
+import {transferDebate} from '@contracts/dcf-swarm-transfer';
 import ValuationVersionHistory from "./ValuationVersionHistory";
 import SectorValuationWorkspace from "./SectorValuationWorkspace";
 import {FinancialEvidenceProvider,FinancialValue} from "./FinancialEvidence";
@@ -300,6 +302,11 @@ export default function ValuationWorkspace({
 
       <div className="mt-4 rounded-xl border border-amber-700/40 p-4 text-xs text-slate-300"><strong>{suitability.method}</strong><p className="mt-1">{suitability.industry}</p><ul className="mt-2 list-disc pl-4">{suitability.limitations.map(x=><li key={x}>{x}</li>)}</ul>{dcfResult&&!dcfResult.calculation_version&&<p className="mt-2 text-amber-200">Historical calculation version: rebuild assumptions and recalculate before relying on terminal value.</p>}</div>
       {active === "dcf" && <p className="mt-3 rounded-lg border border-amber-800 p-3 text-xs leading-5 text-amber-200">{lang === "pt" ? "Planejamento em cinco anos disponível abaixo após preparar as premissas. Cada horizonte tem evidência própria; precisão futura não é garantida. Revise todos os drivers, o período-base e a transição terminal antes de aplicar." : "Five-year planning is available below after preparing assumptions. Each horizon has separate evidence; future precision is not guaranteed. Review all drivers, the base period and the terminal transition before applying."}</p>}
+      {active==="dcf"&&<DcfDebatePanel analysis={analysis} lang={lang} canTransfer={dcfState.assumptions.length>0&&!dcfState.calculating&&!dcfState.loading} onTransfer={(run,key)=>{
+        const registry=analysis.jurisdiction==='us'?analysis.metadata?.cik?.padStart(10,'0'):analysis.metadata?.cnpj?.replace(/\D/g,'');
+        const assumptions=transferDebate(dcfState.assumptions,run,key,analysis.jurisdiction+':'+registry);
+        requestVersion.current.dcf++;setDcfState(prev=>({...prev,assumptions,error:null}));setDcfResult(undefined);setReconciliation(undefined);
+      }}/>}
       {active==="dcf"&&planningContext&&<div className="mt-4"><FiveYearScenarioEditor key={`${planningContext.issuer}:${planningContext.baseYear}:${planningContext.baseRevenue}:${planningContext.currency}`} context={planningContext} history={planningHistory?.values} initialSourceUrl={planningHistory?.sourceUrls[0]} disabled={dcfState.loading||dcfState.calculating} onApply={input=>{const assumptions=transferFiveYearScenario(dcfState.assumptions,input,analysis.company.name);requestVersion.current.dcf++;setDcfState(prev=>({...prev,assumptions,error:null,loading:false,calculating:false}));setDcfResult(undefined);setReconciliation(undefined);}}/></div>}
       <div className="mt-4 grid gap-3 sm:grid-cols-3 text-xs">
         <div className="rounded-xl border border-cyan-700/50 bg-cyan-950/20 p-3"><strong className="text-cyan-200">{lang === "pt" ? "1 · Preparar" : "1 · Prepare"}</strong><p className="mt-1 text-slate-400">{lang === "pt" ? "Dados anuais do documento; lacunas explícitas." : "Annual filing inputs with explicit gaps."}</p></div>

@@ -1,3 +1,4 @@
+import {registerDcfSwarm} from './dcf-swarm/routes';
 import { serve } from "@hono/node-server";
 import { serveStatic } from "@hono/node-server/serve-static";
 import { readFile } from "node:fs/promises";
@@ -11,6 +12,7 @@ import { registerDocumentIntegration } from "./document-integration";
 import { registerValuationPublisher } from "./valuation-publisher";
 import { registerValueDriverRoutes } from "./value-driver-routes";
 
+registerDcfSwarm(app);
 registerHistoryApi(app);
 registerPrivateHistory(app);
 registerPublicFinanceApi(app);
