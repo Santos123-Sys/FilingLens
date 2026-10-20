@@ -29,9 +29,9 @@ function sparse(snapshot:PublicFinanceSnapshot){return buildPublicFinanceSnapsho
 export async function runLiveEvaluation(){
  const id=process.env.DCF_BENCHMARK_RUN_ID;
  if(!id||!/^[-a-f0-9]{36}$/.test(id)||!process.env.DATABASE_URL)return;
- const db=await mysql.createConnection(process.env.DATABASE_URL);let phase='create_store';
+ const db=await mysql.createConnection(process.env.DATABASE_URL);let phase='verify_store';
  try{
-  await db.query('CREATE TABLE IF NOT EXISTS dcf_live_evaluations (id VARCHAR(120) PRIMARY KEY,status VARCHAR(30) NOT NULL,result_json MEDIUMTEXT NULL,created_at TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3))');
+  await db.query('SELECT id FROM dcf_live_evaluations LIMIT 0');
   phase='read_receipt';
   const [existing]=await db.query('SELECT status,result_json FROM dcf_live_evaluations WHERE id=?',[id]);
   const old=(existing as {status:string;result_json:string|null}[])[0];

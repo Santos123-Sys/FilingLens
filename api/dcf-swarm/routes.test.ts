@@ -70,6 +70,7 @@ describe("DCF HTTP boundary", () => {
     expect(
       s.query.mock.calls.find(c => c[0].startsWith("SELECT id,status"))?.[1]
     ).toEqual([ctx.workspaceId, ctx.issuerId]);
+    expect(s.query.mock.calls.some(c=>/CREATE|ALTER|GRANT/.test(c[0]))).toBe(false);
   });
   it("disabled generation cannot call providers", async () => {
     vi.stubEnv("DCF_SWARM_ENABLED", "false");

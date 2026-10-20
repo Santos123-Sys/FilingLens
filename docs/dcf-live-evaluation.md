@@ -1,5 +1,7 @@
 # DCF live release experiment
 
+First deploy `ops/phase1-schema-migrator.ts.txt` to the existing schema migrator with `DCF_SCHEMA_ONLY=true`. That additive branch creates/verifies the two DCF tables and returns before legacy grants/password operations. The application keeps its existing SELECT/INSERT/UPDATE/DELETE privileges and only verifies schema with read-only queries. Production rejected the earlier request-time CREATE with `ER_TABLEACCESS_DENIED_ERROR`; do not solve that by granting DDL privileges to the app.
+
 Set a fresh UUID in `DCF_BENCHMARK_RUN_ID` on the FilingLens Node service. Its next startup runs one bounded experiment; a durable unique receipt prevents paid execution from repeating after a crash/redeploy. A running/crashed receipt is never silently replayed. This flag does not enable user generation.
 
 The same validators and evidence limits compare one analyst, four specialists plus selector, and five specialists plus selector. Cases are archived SEC Apple and CVM Petrobras, a derived sparse SEC case and a CVM prompt-injection case. Three trials rotate architecture order per case. Missing evidence separately requires zero calls. Maximum 144 model calls, two concurrent process-wide, no retries, twenty-five-minute experiment deadline and existing run/call deadlines. Input evidence is capped equally. All modes have a completion-token ceiling no greater than the five-role workflow's aggregate ceiling; actual usage is reported rather than assumed equal.
