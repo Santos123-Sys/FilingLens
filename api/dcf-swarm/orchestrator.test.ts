@@ -261,3 +261,30 @@ describe("bounded assumption review", () => {
     ).toThrow();
   });
 });
+
+it("preserves all ten unresolved keys and the full bounded dissent set", () => {
+  const empty = synthesize({ selections: [] }, [opinion]);
+  expect(empty.unresolved).toHaveLength(10);
+  const roles = [
+    "growth_analyst",
+    "margin_analyst",
+    "discount_rate_analyst",
+    "terminal_value_analyst",
+    "contrarian_challenger",
+  ] as const;
+  const opinions = roles.map(role => ({
+    ...opinion,
+    role,
+    challenges: [
+      "The evidence cannot support certainty about the future.",
+      "Alternative assumptions require independent assessment.",
+      "A change in operating conditions may invalidate this.",
+    ],
+  }));
+  const result = synthesize(
+    { selections: [{ key: "revenue_growth_path", role: "growth_analyst" }] },
+    opinions
+  );
+  expect(result.rows[0].dissent).toHaveLength(15);
+  expect(result.unresolved).toHaveLength(9);
+});
