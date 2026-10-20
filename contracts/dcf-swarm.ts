@@ -147,6 +147,7 @@ export type ConsensusMap = z.infer<typeof ConsensusMap>;
 
 export type DcfDebateRun = {
   architecture: "dcf-assumption-swarm-v1";
+  mode?: 'single'|'four'|'five';
   promptVersion: string;
   brief: DcfDebateBrief;
   status:

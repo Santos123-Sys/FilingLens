@@ -57,3 +57,9 @@ Return {"rows":[{"key":string,"proposal":object|null,"dissent":[{"from":string,"
 
 export const SELECTION_PROMPT = `${boundary}
 Select only among the supplied validated opinions. Return {"selections":[{"key":string,"role":string}]}. Each key occurs once. Omit keys where no defensible proposal exists. The server copies selected entries unchanged and retains all alternatives and challenges. No new numbers or explanations are accepted.`;
+
+export const BASELINE_PROMPT = `SINGLE_ANALYST_BASELINE\n${boundary}
+One analyst covers all four disciplines in a single response. Return {"opinions":[AgentOpinion]} with exactly the four roles growth_analyst, margin_analyst, discount_rate_analyst and terminal_value_analyst.
+Role key scopes: growth_analyst: revenue_growth_path; margin_analyst: operating_margin, capex_ratio, nwc_ratio, tax_rate; discount_rate_analyst: wacc_risk_free, wacc_beta, wacc_erp; terminal_value_analyst: terminal_method, terminal_growth.
+${opinionShape}
+The outer response is the opinions wrapper, not a single opinion. Abstain rather than invent missing facts. Historical revenue cannot be cited as a forecast growth rate. All forward guesses are analyst_estimate.`;

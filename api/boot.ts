@@ -1,4 +1,5 @@
 import {workspaceEmbedding} from './workspace-embedding';
+import {evaluationRuntimeStatus} from './dcf-swarm/live-evaluation';
 import { executionRuntimeStatus, withExecutionScope, safeErrorName } from "./ai/execution";
 import { Hono } from "hono";
 import { bodyLimit } from "hono/body-limit";
@@ -160,6 +161,7 @@ app.get("/api/status", (c) => c.json({
   configured: Boolean(process.env.OPENAI_API_KEY),
   analysisAccess: { required:true, launchUrl:gpiLaunchUrl() },
   ai: modelRuntimeConfig(),
+  dcfReview: {enabled:process.env.DCF_SWARM_ENABLED==='true',evaluation:evaluationRuntimeStatus()},
   execution: executionRuntimeStatus(),
   dataTools: { configured: dataToolsConfigured() },
   skills: { marketResearch: marketResearchSkillStatus() },

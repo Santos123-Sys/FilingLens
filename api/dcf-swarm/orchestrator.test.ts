@@ -74,6 +74,13 @@ const call: ModelCall = async (prompt, _payload, judge) => ({
         },
 });
 describe("bounded assumption review", () => {
+  it('evaluates a single analyst with the same role and source validators and no selection call',async()=>{
+    const model=vi.fn(async()=>({value:{opinions:[opinion,...['margin_analyst','discount_rate_analyst','terminal_value_analyst'].map(role=>({role,assumptions:[],challenges:[],gaps:[]}))]}}));
+    const result=await runDebate('us:0000320193',snapshot,brief,crypto.randomUUID(),{enabled:true,mode:'single',call:model});
+    expect(result.status).toBe('needs_human_review');expect(result.mode).toBe('single');expect(result.modelCalls).toBe(1);expect(result.consensus?.rows[0].proposal).toEqual(proposal);
+    const bad=await runDebate('us:0000320193',snapshot,brief,crypto.randomUUID(),{enabled:true,mode:'single',call:async()=>({value:{opinions:[opinion,opinion,opinion,opinion]}})});
+    expect(bad.status).toBe('failed_closed');expect(bad.consensus).toBeNull();
+  });
   it("calls no model when disabled or missing evidence", async () => {
     const model = vi.fn(call);
     expect(
