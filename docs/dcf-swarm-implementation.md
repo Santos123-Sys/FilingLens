@@ -4,7 +4,7 @@
 
 Adapted from the user-supplied `dcf-swarm-architecture.md` and `dcf-swarm-scaffold.patch` on 2026-10-20. The attachment targeted GPI; this implementation belongs to FilingLens, as requested. Existing signed GPI delegation authorizes the issuer/workspace, then server-owned archived SEC/CVM snapshots supply public facts. Neither client analyses nor arbitrary URLs supply model evidence.
 
-Flow: verified delegation → durable bounded run → archived evidence → five specialist opinions (two concurrently) → index-only selection judge → disagreement-preserving ledger → explicit user transfer → pending DCF inputs → existing human acceptance, deterministic calculation and separate publication.
+Flow: verified delegation → durable bounded run → archived evidence → four specialist opinions in the supervised preview (two concurrently; the fifth role remains evaluated and gated) → index-only selection judge → disagreement-preserving ledger → explicit user transfer → pending DCF inputs → existing human acceptance, deterministic calculation and separate publication.
 
 No trading, autonomous publication, agent tools, dynamic agents or agent-to-agent instructions. Source numbers must match the cited record's metric, unit and value; quote overlap alone cannot validate a forecast. In most cases forward inputs must be labeled estimates.
 
@@ -13,7 +13,7 @@ No trading, autonomous publication, agent tools, dynamic agents or agent-to-agen
 | Candidate | Feasibility and resource model | Latency | Controls and proof | Trade-off |
 |---|---|---|---|---|
 | One structured analyst | Existing provider adapter; one call, up to 2,400 output tokens | One model wave | Same evidence validator and human review | Cheapest baseline; less role coverage |
-| Five specialists plus selector (implemented) | Existing Node service and MySQL; at most six calls, 14,400 output tokens, no provider retries | Four waves with concurrency two, capped at 100 seconds overall | Role scopes, schema/value checks, exact proposal selection, retained alternatives, cancellation and quota tests | More resource use; incremental quality remains unmeasured |
+| Four/five specialists plus selector (implemented) | Existing Node service and MySQL; at most five/six calls, 14,400 output tokens overall ceiling, no provider retries | Three/four waves with concurrency two, capped at 100 seconds overall | Role scopes, schema/value checks, exact proposal selection, retained alternatives, cancellation and quota tests | More resource use; incremental quality remains unmeasured |
 | Free multi-round swarm | Would require dynamic scheduling and bigger budgets | Unbounded without additional policy | Rejected: no measured benefit to justify additional failure surface | Not implemented |
 
 Input payloads are bounded to 64 KB per call, evidence to twenty records/48 KB, generated objects to 64 KB. Each model call has thirty seconds including admission. No dollar cost is asserted without measured token usage and verified deployed model rates. Six calls are an upper bound, not a latency or quality promise.
@@ -24,7 +24,7 @@ The chosen workflow has measured deterministic validation behavior under injecte
 
 ## 4. Recommendation and rollout
 
-Deploy the feature disabled (`DCF_SWARM_ENABLED` absent/false), as the supplied design requires. Existing valuation tools continue functioning. Enable only after reviewing the benchmark below with the deployed model. Confidence: 4/5 in the bounded control design, 1/5 in an incremental forecast-quality claim. This is an assumption-review aid, not proof of forecasting accuracy.
+The feature defaults disabled. A completed live receipt now qualifies only the four-specialist review preview. Server-side release checks require the matching experiment, prompt version and model pins; a flag alone cannot enable an unqualified mode. Every proposal remains subject to explicit human review and acceptance before valuation. Five-specialist activation remains blocked by the recorded result. Confidence: 4/5 in the bounded control design, 1/5 in an incremental forecast-quality claim. This is an assumption-review aid, not proof of forecasting accuracy.
 
 ## 5. Implementation blueprint and interaction contract
 
@@ -40,7 +40,7 @@ Deploy the feature disabled (`DCF_SWARM_ENABLED` absent/false), as the supplied 
 
 Run unit/HTTP tests plus repository typecheck/build/full CI. Tests use synthetic outputs and verify zero-call paths, issuer/period boundaries, role impersonation, numeric grounding, malformed selection, partial provider failure, cancellation, transfer reset and anonymous authorization. They do not establish live model quality.
 
-Before production enablement: prepare reviewed SEC and CVM evidence cases including sparse/missing/contradictory annual facts and injected instructions. Compare the one-call baseline, four-specialist ablation, and five-specialist workflow under equivalent context/output budgets, with at least three repeated trials per case. Preserve raw validated outputs and token counts privately. Require zero unsupported source-number/citation admissions, zero cross-issuer evidence, exact dissent retention and no automatic valuation approval. A human reviewer must assess forecast assumptions and correction effort. Report median/tail latency only with sample-size limitations. Do not enable on synthetic tests alone; the required live comparative benchmark has not been completed.
+Before production enablement: prepare reviewed SEC and CVM evidence cases including sparse/missing/contradictory annual facts and injected instructions. Compare the one-call baseline, four-specialist ablation, and five-specialist workflow under equivalent context/output budgets, with at least three repeated trials per case. Preserve raw validated outputs and token counts privately. Require zero unsupported source-number/citation admissions, zero cross-issuer evidence, exact dissent retention and no automatic valuation approval. A human reviewer must assess forecast assumptions and correction effort. Report median/tail latency only with sample-size limitations. Do not enable on synthetic tests alone; the live comparison completed on 2026-10-20; see `dcf-live-evaluation.md`. It measures controls, coverage, latency and tokens; forecast accuracy and human correction effort remain unmeasured.
 
 ## Security and operational record
 
