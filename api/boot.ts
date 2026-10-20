@@ -48,7 +48,7 @@ const app = new Hono();
 app.use(workspaceEmbedding);
 app.use('/api/*',delegatedAnalysisAccess);
 
-app.use((c,next)=>bodyLimit({maxSize:["/api/valuation/sector", "/api/forecast/evaluate", "/api/forecast/quality", "/api/forecast/plan"].includes(c.req.path)?100_000:c.req.path==="/api/integration/v1/valuations"?750_000:
+app.use((c,next)=>bodyLimit({maxSize:c.req.path==="/api/dcf-swarm"?8000:["/api/valuation/sector", "/api/forecast/evaluate", "/api/forecast/quality", "/api/forecast/plan"].includes(c.req.path)?100_000:c.req.path==="/api/integration/v1/valuations"?750_000:
   c.req.path==="/api/integration/v1/handoff/context"?2500:65*1024*1024})(c,next));
 
 app.use("/api/*", async (c, next) => {
@@ -536,7 +536,7 @@ app.post("/api/dashboard-data", async (c) => {
 app.all("/api/*", async (c, next) => {
   // Railway registers internal history routes after importing this shared app.
   // Let only those requests continue to the Node-only handlers.
-  if (c.req.path.startsWith('/api/value-drivers/') || c.req.path === '/api/gpi-handoff' || c.req.path.startsWith("/api/internal/history/") || c.req.path.startsWith("/api/regulatory-history/") || c.req.path.startsWith("/api/history/") || c.req.path.startsWith("/api/integration/")) return next();
+  if (c.req.path === "/api/dcf-swarm" || c.req.path.startsWith('/api/value-drivers/') || c.req.path === '/api/gpi-handoff' || c.req.path.startsWith("/api/internal/history/") || c.req.path.startsWith("/api/regulatory-history/") || c.req.path.startsWith("/api/history/") || c.req.path.startsWith("/api/integration/")) return next();
   return c.json({ error: "Not Found" }, 404);
 });
 
