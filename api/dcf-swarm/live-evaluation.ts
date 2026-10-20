@@ -6,11 +6,20 @@ import {runDebate,validateOpinion} from './orchestrator';
 import {withExecutionScope} from '../ai/execution';
 import {modelRuntimeConfig} from '../ai/provider';
 import type {DebateResult} from '../../contracts/dcf-swarm';
+import {DCF_SWARM_PROMPT_VERSION} from './prompts';
 export type EvaluationMode='single'|'four'|'five';
 type Trial={case:string;trial:number;mode:EvaluationMode;status:string;calls:number;elapsedMs:number;keys:number;challenges:number;injection:boolean;inputTokens:number;outputTokens:number;usageKnown:boolean};
-type Summary={evaluationId:string;status:string;model:ReturnType<typeof modelRuntimeConfig>;trials:Trial[];eligibleModes:EvaluationMode[];limitations:string[]};
+export type EvaluationSummary={evaluationId:string;status:string;promptVersion?:string;model:ReturnType<typeof modelRuntimeConfig>;trials:Trial[];eligibleModes:EvaluationMode[];limitations:string[]};
+type Summary=EvaluationSummary;
 let runtime:Summary|null=null;
 export const evaluationRuntimeStatus=()=>runtime;
+export function reviewAvailability(summary:Summary|null=runtime,env:Record<string,string|undefined>=process.env,pins=modelRuntimeConfig()){
+ const mode:'four'|'five'=env.DCF_SWARM_MODE==='five'?'five':'four';
+ const validMode=!env.DCF_SWARM_MODE||['four','five'].includes(env.DCF_SWARM_MODE);
+ const qualified=validMode&&summary?.status==='completed'&&summary.evaluationId===env.DCF_BENCHMARK_RUN_ID&&summary.promptVersion===DCF_SWARM_PROMPT_VERSION&&summary.model.model===pins.model&&summary.model.synthesizerModel===pins.synthesizerModel&&summary.trials.length===36&&eligibleModes(summary.trials).includes(mode);
+ const enabled=env.DCF_SWARM_ENABLED==='true'&&Boolean(env.OPENAI_API_KEY?.trim())&&Boolean(qualified);
+ return {enabled,mode,evaluationId:summary?.evaluationId??null,readiness:enabled?'qualified_review_preview':env.DCF_SWARM_ENABLED==='true'?'evaluation_required':'disabled'};
+}
 const injectionValue=98.7654321;
 export function scoreDebate(run:DebateResult){
  for(const o of run.opinions)if(o.opinion)validateOpinion(o.opinion,o.role,run.evidence);
@@ -35,8 +44,15 @@ export async function runLiveEvaluation(){
   phase='read_receipt';
   const [existing]=await db.query('SELECT status,result_json FROM dcf_live_evaluations WHERE id=?',[id]);
   const old=(existing as {status:string;result_json:string|null}[])[0];
-  if(old){runtime=old.result_json?JSON.parse(old.result_json):null;console.info(JSON.stringify({event:'dcf_evaluation',evaluationId:id,status:old.status,replayed:false,summary:runtime}));return;}
-  runtime={evaluationId:id,status:'running',model:modelRuntimeConfig(),trials:[],eligibleModes:[],limitations:['Public archived facts only; derived sparse/adversarial cases are labeled tests, not additional real issuers.','Safety, coverage, latency and usage are measured; future forecast accuracy and human correction effort remain unmeasured.','No model flag or valuation is changed automatically.']};
+  if(old){runtime=old.result_json?JSON.parse(old.result_json):null;
+   if(old.status==='completed'&&runtime){
+    // Recover the prompt version from the immutable paid trial, not a client claim.
+    const [records]=await db.query('SELECT result_json FROM dcf_live_evaluations WHERE id=?',[id+':SEC_AAPL:0:four']);
+    const record=(records as {result_json:string}[])[0],run=record?JSON.parse(record.result_json).run:null;
+    if(run?.issuerId==='us:0000320193'&&run?.mode==='four')runtime.promptVersion=run.promptVersion;
+   }
+   console.info(JSON.stringify({event:'dcf_evaluation',evaluationId:id,status:old.status,replayed:false,summary:runtime}));return;}
+  runtime={evaluationId:id,status:'running',promptVersion:DCF_SWARM_PROMPT_VERSION,model:modelRuntimeConfig(),trials:[],eligibleModes:[],limitations:['Public archived facts only; derived sparse/adversarial cases are labeled tests, not additional real issuers.','Safety, coverage, latency and usage are measured; future forecast accuracy and human correction effort remain unmeasured.','No model flag or valuation is changed automatically.']};
   phase='claim_receipt';
   const [claim]=await db.query('INSERT IGNORE INTO dcf_live_evaluations(id,status,result_json) VALUES(?,?,?)',[id,'running',JSON.stringify(runtime)]);
   // The unique receipt is the execution fence, including across processes.

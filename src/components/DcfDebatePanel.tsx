@@ -22,6 +22,7 @@ export default function DcfDebatePanel({
   const [run, setRun] = useState<DebateResult | null>(null),
     [busy, setBusy] = useState(false),
     [message, setMessage] = useState("");
+  const [mode,setMode]=useState<'four'|'five'>('four');
   const [question, setQuestion] = useState(
     "Which DCF assumptions are defensible from the available annual evidence, and what could invalidate them?"
   );
@@ -63,6 +64,7 @@ export default function DcfDebatePanel({
       });
       const body = await response.json();
       if (!response.ok) throw Error(body.error ?? "debate_unavailable");
+      if(body.mode==='four'||body.mode==='five')setMode(body.mode);
       if (version !== generation.current) return;
       const result = action === "read" ? body.run?.result : body.result;
       setRun(result ?? null);
@@ -96,8 +98,9 @@ export default function DcfDebatePanel({
     >
       <h3 className="font-semibold">Hybrid DCF assumption review · AI draft</h3>
       <p className="text-sm">
-        Five specialists and one selection judge examine the same evidence. At
-        most six model calls, two at a time, within a bounded run. Only
+        {(run?.mode??mode)==='five'?'Five':'Four'} specialists and one selection judge examine the same evidence.
+        At most {(run?.mode??mode)==='five'?'six':'five'} model calls, two at a time.
+        This is a draft-review preview; comparative forecast accuracy and human correction effort remain unmeasured.
         FilingLens calculates value after you review the inputs.
       </p>
       <p className="text-sm">

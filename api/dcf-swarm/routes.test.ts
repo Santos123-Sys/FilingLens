@@ -30,6 +30,7 @@ function setup(authorization = true) {
     connect: connect as never,
     run,
     load,
+    availability:()=>({enabled:process.env.DCF_SWARM_ENABLED==='true',mode:'four',evaluationId:null,readiness:'test_fixture'}),
   });
   const post = (body: unknown) =>
     app.request("/api/dcf-swarm", {
@@ -117,6 +118,7 @@ it("persists before generation and bounds daily paid runs", async () => {
   });
   expect((await s.post(body)).status).toBe(200);
   expect(s.run).toHaveBeenCalledTimes(1);
+  expect(s.run.mock.calls[0][4].mode).toBe('four');
   const capped = setup();
   capped.query.mockImplementation(async (sql: string) =>
     sql.includes("GET_LOCK")

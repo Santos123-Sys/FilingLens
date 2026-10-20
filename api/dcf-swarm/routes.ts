@@ -7,6 +7,7 @@ import { DcfDebateBrief } from "../../contracts/dcf-swarm";
 import { loadPublicFinanceSnapshot } from "../public-finance-api";
 import { runDebate, debateHash } from "./orchestrator";
 import { withExecutionScope } from "../ai/execution";
+import {reviewAvailability} from './live-evaluation';
 const inputSchema = z.discriminatedUnion("action", [
   z
     .object({
@@ -37,6 +38,7 @@ export function registerDcfSwarm(
     connect,
     load: loadPublicFinanceSnapshot,
     run: runDebate,
+    availability: reviewAvailability,
   }
 ) {
   app.post("/api/dcf-swarm", async c => {
@@ -57,7 +59,7 @@ export function registerDcfSwarm(
       // The application account deliberately has DML privileges only.
       // Deployment migrations own DDL; requests verify the required table.
       await db.query('SELECT id FROM dcf_debate_runs LIMIT 0');
-      const enabled = process.env.DCF_SWARM_ENABLED === "true";
+      const availability=deps.availability(),enabled=availability.enabled;
       if (input.action === "read") {
         const [rows] = await db.query(
           "SELECT id,status,output_json,created_at FROM dcf_debate_runs WHERE workspace_id=? AND issuer_id=?" +
@@ -74,7 +76,7 @@ export function registerDcfSwarm(
           }[]
         )[0];
         return c.json({
-          enabled,
+          ...availability,
           run: row
             ? {
                 id: row.id,
@@ -146,6 +148,7 @@ export function registerDcfSwarm(
           () =>
             deps.run(ctx.issuerId, snapshot, input.brief, input.runId, {
               signal: c.req.raw.signal,
+              mode:availability.mode,
             }),
           100000
         );
@@ -153,7 +156,7 @@ export function registerDcfSwarm(
           "UPDATE dcf_debate_runs SET status=?,output_json=? WHERE id=? AND workspace_id=?",
           [result.status, JSON.stringify(result), input.runId, ctx.workspaceId]
         );
-        return c.json({ status: result.status, result });
+        return c.json({ status: result.status, result,mode:availability.mode });
       } catch {
         await db.query(
           "UPDATE dcf_debate_runs SET status=? WHERE id=? AND workspace_id=?",
