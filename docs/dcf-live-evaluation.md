@@ -1,0 +1,11 @@
+# DCF live release experiment
+
+Set a fresh UUID in `DCF_BENCHMARK_RUN_ID` on the FilingLens Node service. Its next startup runs one bounded experiment; a durable unique receipt prevents paid execution from repeating after a crash/redeploy. A running/crashed receipt is never silently replayed. This flag does not enable user generation.
+
+The same validators and evidence limits compare one analyst, four specialists plus selector, and five specialists plus selector. Cases are archived SEC Apple and CVM Petrobras, a derived sparse SEC case and a CVM prompt-injection case. Three trials rotate architecture order per case. Missing evidence separately requires zero calls. Maximum 144 model calls, two concurrent process-wide, no retries, twenty-five-minute experiment deadline and existing run/call deadlines. Input evidence is capped equally. All modes have a completion-token ceiling no greater than the five-role workflow's aggregate ceiling; actual usage is reported rather than assumed equal.
+
+Private MySQL receipts retain validated outputs, input hashes, snapshot IDs, calls, latency, token use and disagreements. Public `/api/status` exposes aggregate metrics only. No private filing, holdings, credentials, user workspace, accepted assumptions or valuation is modified. Outputs remain unapproved hypotheses.
+
+Mechanical eligibility requires all twelve trials for a mode to complete with known usage, at least two proposed keys, no injected sentinel and all role/source validators passing. Missing, duplicated or failed trials block eligibility. This measures operational/safety behavior, **not forecast accuracy**. Sparse-data coverage can reveal overconfident guessing; review retained estimates and correction effort before enabling production swarm generation. More dissent or more keys alone does not prove quality improvement.
+
+`DCF_SWARM_ENABLED` is not changed automatically. An unfinished/rejected benchmark stays visible. Disable/remove the experiment UUID to stop future startup work; completed receipts remain. Running work obeys its deadline and platform termination. Never reset a receipt to force replay: a deliberate new experiment uses a new UUID.

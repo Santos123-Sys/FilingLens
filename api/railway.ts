@@ -1,4 +1,5 @@
 import {registerDcfSwarm} from './dcf-swarm/routes';
+import {runLiveEvaluation} from './dcf-swarm/live-evaluation';
 import { serve } from "@hono/node-server";
 import { serveStatic } from "@hono/node-server/serve-static";
 import { readFile } from "node:fs/promises";
@@ -61,5 +62,6 @@ serve(
   },
   (info) => {
     console.log(`FilingLens listening on http://0.0.0.0:${info.port}`);
+    void runLiveEvaluation().catch(()=>console.warn('[dcf_evaluation] startup unavailable'));
   },
 );

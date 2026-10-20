@@ -1,4 +1,5 @@
 import { generateObject } from "ai";
+import { z } from "zod";
 import { createHash } from "node:crypto";
 import {
   AgentOpinion,
@@ -45,6 +46,7 @@ export type ModelCall = (
   signal: AbortSignal
 ) => Promise<{ value: unknown; usage?: unknown }>;
 const callModel: ModelCall = async (prompt, payload, judge, signal) => {
+  const baseline=prompt.startsWith('SINGLE_ANALYST_BASELINE');
   const serialized = JSON.stringify(payload);
   if (Buffer.byteLength(serialized) > 64000) throw Error("input_budget");
   const result = await withModelExecution(
@@ -52,13 +54,13 @@ const callModel: ModelCall = async (prompt, payload, judge, signal) => {
     async gateSignal =>
       generateObject({
         model: filingModel(judge ? "synthesizer" : "financials"),
-        schema: judge ? JudgeSelection : AgentOpinion,
+        schema: judge ? JudgeSelection : baseline ? z.object({opinions:z.array(AgentOpinion).length(4)}).strict() : AgentOpinion,
         system: prompt,
         messages: [{ role: "user", content: serialized }],
         maxRetries: 0,
         providerOptions: openAIProviderOptions(
           judge ? "synthesizer" : "financials",
-          2400,
+          baseline?14400:2400,
           "low"
         ),
         abortSignal: AbortSignal.any([signal, gateSignal]),
@@ -155,7 +157,7 @@ export async function runDebate(
   rawSnapshot: PublicFinanceSnapshot | null,
   rawBrief: unknown,
   runId: string,
-  options: { call?: ModelCall; signal?: AbortSignal; enabled?: boolean } = {}
+  options: { call?: ModelCall; signal?: AbortSignal; enabled?: boolean; mode?:'single'|'four'|'five' } = {}
 ): Promise<DebateResult> {
   const brief = DcfDebateBrief.parse(rawBrief),
     start = Date.now();
@@ -190,6 +192,7 @@ export async function runDebate(
     throw Error("evidence_budget");
   const run: DebateResult = {
     architecture: "dcf-assumption-swarm-v1",
+    mode: options.mode ?? 'five',
     promptVersion: prompts.DCF_SWARM_PROMPT_VERSION,
     runId,
     issuerId,
@@ -253,10 +256,21 @@ export async function runDebate(
     }
   };
   try {
+    if(options.mode==='single'){
+      const raw=await invoke('single_analyst',prompts.BASELINE_PROMPT,{brief,issuerId,evidence});
+      const parsed=z.object({opinions:z.array(AgentOpinion).length(4)}).strict().parse(raw);
+      if(new Set(parsed.opinions.map(o=>o.role)).size!==4||parsed.opinions.some(o=>o.role==='contrarian_challenger'))throw Error('baseline_roles');
+      const valid=parsed.opinions.map(o=>validateOpinion(o,o.role,evidence));
+      run.opinions=valid.map(opinion=>({role:opinion.role,opinion}));
+      run.consensus=synthesize({selections:valid.flatMap(o=>o.assumptions.map(a=>({key:a.key,role:o.role})))},valid);
+      run.gaps=valid.flatMap(o=>o.gaps);run.status='needs_human_review';run.stopReason='completed';
+      run.trace.push({stage:'complete',status:run.status,elapsedMs:Date.now()-start});return run;
+    }
+    const activeRoles=options.mode==='four'?roles.slice(0,4):roles;
     // Respect FilingLens's existing two-generation global admission limit.
-    for (let i = 0; i < roles.length; i += 2) {
+    for (let i = 0; i < activeRoles.length; i += 2) {
       const settled = await Promise.allSettled(
-        roles.slice(i, i + 2).map(async (role, j) =>
+        activeRoles.slice(i, i + 2).map(async (role, j) =>
           validateOpinion(
             await invoke(role, rolePrompts[i + j], {
               brief,
