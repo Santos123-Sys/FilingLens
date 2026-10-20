@@ -133,14 +133,14 @@ export const ConsensusRow = z
           })
           .strict()
       )
-      .max(4),
+      .max(20),
     status: z.enum(["proposed", "contested", "unresolved"]),
   })
   .strict();
 export const ConsensusMap = z
   .object({
     rows: z.array(ConsensusRow).max(10),
-    unresolved: z.array(z.string().trim().min(1).max(400)).max(8),
+    unresolved: z.array(z.string().trim().min(1).max(400)).max(10),
   })
   .strict();
 export type ConsensusMap = z.infer<typeof ConsensusMap>;

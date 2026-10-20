@@ -8,7 +8,7 @@ import {
   type DebateEvidence,
   type DebateResult,
   type AgentRole,
-  type ConsensusMap,
+  ConsensusMap,
 } from "../../contracts/dcf-swarm";
 import {
   publicFinanceSnapshotSchema,
@@ -112,7 +112,7 @@ export function synthesize(
         ?.assumptions.some(a => a.key === s.key)
     )
       throw Error("invented_selection");
-  return {
+  return ConsensusMap.parse({
     rows: AssumptionKey.options.map(key => {
       const selected = selection.selections.find(s => s.key === key);
       const proposal = selected
@@ -148,7 +148,7 @@ export function synthesize(
     unresolved: AssumptionKey.options.filter(
       key => !selection.selections.some(s => s.key === key)
     ),
-  };
+  });
 }
 export async function runDebate(
   issuerId: string,
@@ -256,19 +256,17 @@ export async function runDebate(
     // Respect FilingLens's existing two-generation global admission limit.
     for (let i = 0; i < roles.length; i += 2) {
       const settled = await Promise.allSettled(
-        roles
-          .slice(i, i + 2)
-          .map(async (role, j) =>
-            validateOpinion(
-              await invoke(role, rolePrompts[i + j], {
-                brief,
-                issuerId,
-                evidence,
-              }),
-              role,
-              evidence
-            )
+        roles.slice(i, i + 2).map(async (role, j) =>
+          validateOpinion(
+            await invoke(role, rolePrompts[i + j], {
+              brief,
+              issuerId,
+              evidence,
+            }),
+            role,
+            evidence
           )
+        )
       );
       settled.forEach((s, j) =>
         run.opinions.push({
