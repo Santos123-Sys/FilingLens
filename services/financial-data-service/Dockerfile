@@ -6,5 +6,7 @@ COPY services/financial-data-service/requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 COPY services/financial-data-service/app ./app
 COPY skills ./skills
+COPY config/sec-acquisition-access.json ./config/sec-acquisition-access.json
+ENV SEC_ACCESS_POLICY_PATH=/app/config/sec-acquisition-access.json
 EXPOSE 8000
 CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]

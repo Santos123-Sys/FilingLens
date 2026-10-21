@@ -16,7 +16,8 @@ export async function dataToolsJson<T>(path: string, payload: unknown, timeoutMs
   if (!base) throw new Error("financial_data_service_not_configured");
   const response = await fetch(`${base}${path}`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    headers: { "Content-Type": "application/json", Accept: "application/json",
+      ...(process.env.FILINGLENS_CORPUS_TOKEN ? {Authorization: `Bearer ${process.env.FILINGLENS_CORPUS_TOKEN}`} : {}) },
     body: JSON.stringify(payload),
     signal: executionAbortSignal(timeoutMs),
   });

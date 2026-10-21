@@ -1,3 +1,5 @@
+import {runBrazilFundamentalsCanary} from "./brazil-fundamentals-canary";
+import {registerBrazilFundamentalsApi} from "./brazil-fundamentals-api";
 import {registerDcfSwarm} from './dcf-swarm/routes';
 import {runLiveEvaluation} from './dcf-swarm/live-evaluation';
 import { serve } from "@hono/node-server";
@@ -17,6 +19,7 @@ registerDcfSwarm(app);
 registerHistoryApi(app);
 registerPrivateHistory(app);
 registerPublicFinanceApi(app);
+registerBrazilFundamentalsApi(app);
 registerIssuerPrimaryIntegration(app);
 registerDocumentIntegration(app);
 registerValuationPublisher(app);
@@ -62,6 +65,7 @@ serve(
   },
   (info) => {
     console.log(`FilingLens listening on http://0.0.0.0:${info.port}`);
+    void runBrazilFundamentalsCanary(app);
     void runLiveEvaluation().catch(()=>console.warn('[dcf_evaluation] startup unavailable'));
   },
 );

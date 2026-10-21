@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import io
+import math
 import re
 import time
 import unicodedata
@@ -73,9 +74,7 @@ async def resolve_cvm_identifier(company_name: str | None = None) -> str | None:
     registry = pd.read_csv(io.BytesIO(raw), sep=";", encoding="latin1", low_memory=False)
     active = registry
     if "SIT" in active.columns:
-        active_rows = active.loc[active["SIT"].astype(str).str.upper().str.contains("ATIV", na=False)]
-        if not active_rows.empty:
-            active = active_rows
+        active = active.loc[active["SIT"].astype(str).map(_normalize_text).eq("ativo")]
     names: list[tuple[int, str]] = []
     for idx, row in active.iterrows():
         legal = _normalize_text(str(row.get("DENOM_SOCIAL") or ""))
@@ -214,7 +213,7 @@ def _extract_year_metrics(
     by_key = {metric.key: metric for metric in metrics}
     current_liabilities = by_key.get("currentLiabilities")
     noncurrent_liabilities = by_key.get("nonCurrentLiabilities")
-    if current_liabilities or noncurrent_liabilities:
+    if current_liabilities and noncurrent_liabilities:
         template = current_liabilities or noncurrent_liabilities
         assert template is not None
         metrics.append(Metric(
@@ -231,7 +230,7 @@ def _extract_year_metrics(
         ))
     short = by_key.get("shortTermDebt")
     long = by_key.get("longTermDebt")
-    if short or long:
+    if short and long:
         template = short or long
         assert template is not None
         metrics.append(Metric(
@@ -255,82 +254,71 @@ async def enrich_cvm(
     filing_type: str | None,
     history_years: int = 5,
 ) -> RegulatorySnapshot:
-    cnpj_digits = normalize_cnpj(cnpj)
-    if len(cnpj_digits) != 14:
-        raise ValueError("invalid_cnpj")
+    # Reuse the all-issuer archive cache and strict, source-preserving normalizer.
+    # No PDF/OCR or label-guessing path may certify financial observations.
+    from . import cvm_facts
+    identity = cvm_facts.cnpj_id(cnpj)
     requested_year = year_from_period(reporting_period)
-    # The five-year history is deliberately sourced from audited/annual DFP files,
-    # even when the uploaded document is an ITR. Try the reporting year first and
-    # walk backwards until five complete annual archives are found.
-    candidate_years = list(range(requested_year, requested_year - history_years - 3, -1))
-    retrieved = datetime.now(timezone.utc).isoformat()
-    metrics: list[Metric] = []
-    sources: list[SourceRef] = []
-    coverage: list[int] = []
+    metrics, sources, coverage, warnings = [], [], [], []
     company_name = ""
-    attempted: list[int] = []
-
-    for year in candidate_years:
+    for year in range(requested_year, max(2009, requested_year-history_years-3), -1):
         if len(coverage) >= history_years:
             break
-        attempted.append(year)
-        url = f"{CVM_BASE}/DFP/DADOS/dfp_cia_aberta_{year}.zip"
+        url = cvm_facts.source_url("DFP", year)
         try:
-            raw = await _cached_bytes(url)
+            raw, receipt = await cvm_facts.acquire(url)
         except httpx.HTTPStatusError as exc:
             if exc.response.status_code == 404:
                 continue
             raise
-        frames = _statement_frames(raw, cnpj_digits)
-        if all(frame.empty for frame in frames.values()):
+        reported, issues = await asyncio.to_thread(cvm_facts.parse_archive, raw, "DFP", year, receipt, identity)
+        selected, conflicts = cvm_facts.select_facts(reported, "consolidated")
+        if not selected:
+            if reported:
+                warnings.append(f"FY{year}: consolidated scope missing; standalone facts remain available through the account API.")
             continue
-        source = SourceRef(
-            provider="cvm_open_data",
-            url=url,
-            retrievedAt=retrieved,
-            form="DFP",
-            period=f"FY{year}",
-        )
-        year_metrics = _extract_year_metrics(frames, year, source)
-        if not year_metrics:
-            continue
-        metrics.extend(year_metrics)
-        sources.append(source)
-        coverage.append(year)
-        if not company_name:
-            for frame in (frames["DRE"], frames["BPA"], frames["BPP"]):
-                if not frame.empty and "DENOM_CIA" in frame.columns:
-                    company_name = str(frame.iloc[-1].get("DENOM_CIA") or "")
-                    if company_name:
-                        break
-
-    coverage.sort()
-    coverage_years = [f"FY{year}" for year in coverage]
-    warnings: list[str] = []
+        source = SourceRef(provider="cvm_open_data", url=url, retrievedAt=receipt["retrievedAt"], form="DFP", period=f"FY{year}")
+        candidates: dict[str, list[dict]] = {}
+        for fact in selected:
+            if not fact["canonicalMetric"] or fact["currency"] != "BRL" or fact["periodEnd"] != fact["referenceDate"]:
+                continue
+            if fact["periodKind"] == "duration":
+                days = (datetime.fromisoformat(fact["periodEnd"])-datetime.fromisoformat(fact["periodStart"])).days
+                if not 250 <= days <= 450:
+                    continue
+            candidates.setdefault(fact["canonicalMetric"], []).append(fact)
+        year_metrics = []
+        for key, choices in candidates.items():
+            if len(choices) != 1:
+                warnings.append(f"FY{year}:{key}:ambiguous_context")
+                continue
+            fact = choices[0]
+            company_name = company_name or fact["issuerName"]
+            numeric = float(fact["value"])
+            if not math.isfinite(numeric):
+                continue
+            year_metrics.append(Metric(key=key, value=numeric, unit="BRL", period=fact["periodEnd"],
+                fiscalYear=int(fact["periodEnd"][:4]), statementType="annual", status="single_source", source=source,
+                rawCode=fact["accountCode"], rawLabel=fact["accountLabel"]))
+        by_key = {m.key: m for m in year_metrics}
+        for key, operands in (("totalLiabilities", ("currentLiabilities", "nonCurrentLiabilities")),
+                              ("totalDebt", ("shortTermDebt", "longTermDebt"))):
+            if all(k in by_key for k in operands):
+                parts = [by_key[k] for k in operands]
+                if len({m.period for m in parts}) == 1:
+                    year_metrics.append(Metric(key=key, value=sum(m.value for m in parts), unit="BRL", period=parts[0].period,
+                        fiscalYear=parts[0].fiscalYear, statementType="annual", status="single_source", source=source,
+                        rawLabel=" + ".join(operands)))
+        if year_metrics:
+            metrics.extend(year_metrics)
+            sources.append(source)
+            coverage.append(f"FY{year}")
+        warnings.extend(issues[:3]+conflicts[:3])
     if len(coverage) < history_years:
-        warnings.append(
-            f"CVM Open Data supplied {len(coverage)} of {history_years} requested annual DFP periods."
-        )
-
-    return RegulatorySnapshot(
-        status="complete" if len(coverage) >= min(3, history_years) else "partial",
-        jurisdiction="br",
-        provider="cvm_open_data",
-        company={
-            "name": company_name,
-            "cnpj": cnpj_digits,
-            "document": "DFP",
-            "requestedFilingType": filing_type,
-        },
-        metrics=metrics,
-        sources=sources,
-        warnings=warnings,
-        raw={
-            "annualHistoryPolicy": "latest_available_dfp_years",
-            "attemptedYears": attempted,
-            "statementRowsByYear": coverage_years,
-        },
-        coverageYears=coverage_years,
-        historyRequested=history_years,
-        resolvedIdentifier=cnpj_digits,
-    )
+        warnings.append(f"CVM supplied {len(coverage)} of {history_years} requested annual periods; missing values remain missing.")
+    warnings.append("Annual consolidated facts only. ITR duration contexts and standalone accounts are available in the CVM account API. Price/corporate-action certification and point-in-time availability are separate.")
+    return RegulatorySnapshot(status="complete" if len(coverage) == history_years else "partial", jurisdiction="br",
+        provider="cvm_open_data", company={"name":company_name,"cnpj":identity,"document":"DFP","requestedFilingType":filing_type},
+        metrics=metrics, sources=sources, warnings=warnings, coverageYears=sorted(coverage), historyRequested=history_years,
+        resolvedIdentifier=identity, raw={"annualHistoryPolicy":"strict_latest_available_dfp", "mappingVersion":cvm_facts.MAPPING_VERSION,
+        "pointInTimeSupported":False,"priceCertification":"separate","scope":"consolidated"})

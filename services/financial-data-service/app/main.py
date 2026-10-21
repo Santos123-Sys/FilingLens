@@ -2,6 +2,10 @@ from __future__ import annotations
 
 import httpx
 from fastapi import FastAPI, HTTPException, Header
+from pydantic import BaseModel, Field, ConfigDict
+from typing import Literal
+from .providers import cvm_facts
+from .sec_policy import sec_access_status
 from fastapi.responses import Response
 
 from .models import RegulatoryRequest, RegulatorySnapshot, MarketShareRequest, MarketShareSnapshot, PresentationRequest
@@ -64,7 +68,7 @@ async def health():
         "service": "filinglens-data-tools",
         "version": "1.3.0",
         "providers": {
-            "sec": "configured",
+            "sec": sec_access_status(),
             "cvm": "configured",
             "presentation": "configured",
             "anpMarketShare": "configured",
@@ -166,3 +170,39 @@ async def presentation(req: PresentationRequest):
             "X-FilingLens-Presentation-QA": f"{quality.verdict}; score={quality.score}",
         },
     )
+
+
+class CvmFactsQuery(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    operation: Literal["issuers", "facts", "screen"]
+    cnpj: str | None = Field(default=None, max_length=18)
+    form: Literal["DFP", "ITR"] = "DFP"
+    year: int = Field(default=2025, ge=2010, le=2100)
+    scope: Literal["consolidated", "standalone"] = "consolidated"
+    offset: int = Field(default=0, ge=0, le=100000)
+    limit: int = Field(default=50, ge=1, le=100)
+    activeOnly: bool = True
+
+
+@app.post("/v1/fundamentals/br")
+async def brazil_fundamentals(req: CvmFactsQuery, authorization: str | None = Header(default=None)):
+    corpus_auth(authorization)
+    try:
+        if req.operation == "issuers":
+            return await asyncio.wait_for(cvm_facts.issuer_registry(req.offset, req.limit, req.activeOnly), 65)
+        if req.operation == "facts":
+            if not req.cnpj:
+                raise ValueError("cnpj_required")
+            return await asyncio.wait_for(cvm_facts.company_facts(req.cnpj, req.form, req.year, req.scope, req.offset, req.limit), 65)
+        return await asyncio.wait_for(cvm_facts.screen(req.form, req.year, req.scope, req.offset, req.limit), 65)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail="cvm_invalid_request_or_source") from exc
+    except httpx.HTTPStatusError as exc:
+        raise HTTPException(status_code=503, detail=f"cvm_http_{exc.response.status_code}") from None
+    except (OSError, asyncio.TimeoutError, httpx.HTTPError):
+        raise HTTPException(status_code=503, detail="cvm_source_unavailable") from None
+
+
+@app.get("/v1/regulatory/access-status")
+async def regulatory_access_status():
+    return {"sec": sec_access_status(), "cvm": {"status": "available_adapter", "liveCoverageVerified": False}}
