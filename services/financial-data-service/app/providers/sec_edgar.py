@@ -10,13 +10,14 @@ from typing import Any
 import httpx
 
 from ..models import Metric, RegulatorySnapshot, SourceRef
+from ..sec_policy import require_sec_access
 from .http_retry import get_with_retry, retryable_status
 
 SEC_BASE = "https://data.sec.gov"
 SEC_TICKERS_URL = "https://www.sec.gov/files/company_tickers.json"
 SEC_USER_AGENT = os.getenv(
     "SEC_USER_AGENT",
-    "FilingLens/1.0 filinglens-contact@users.noreply.github.com",
+    "",
 )
 CACHE_TTL_SECONDS = 6 * 60 * 60
 
@@ -45,7 +46,9 @@ def normalize_cik(value: str) -> str:
     digits = "".join(ch for ch in value if ch.isdigit())
     if not digits:
         raise ValueError("missing_cik")
-    return digits.zfill(10)[-10:]
+    if not re.fullmatch(r"[0-9]{1,10}", value):
+        raise ValueError("invalid_cik")
+    return digits.zfill(10)
 
 
 def _normalized_name(value: str | None) -> str:
@@ -58,6 +61,9 @@ async def _cached_json(url: str, *, timeout_seconds: float = 25.0) -> dict[str, 
         cached = _cache.get(url)
         if cached and now - cached[0] < CACHE_TTL_SECONDS:
             return cached[1]
+    require_sec_access()
+    if not SEC_USER_AGENT or not re.search(r"[^\s@]+@[^\s@]+\.[^\s@]+", SEC_USER_AGENT):
+        raise ValueError("sec_contact_required")
     stale_payload = cached[1] if cached else None
     headers = {
         "User-Agent": SEC_USER_AGENT,
@@ -70,7 +76,7 @@ async def _cached_json(url: str, *, timeout_seconds: float = 25.0) -> dict[str, 
             timeout=httpx.Timeout(timeout_seconds, connect=10.0),
             follow_redirects=True,
         ) as client:
-            response = await get_with_retry(client, url)
+            response = await get_with_retry(client, url, attempts=1)
             payload = response.json()
     except (httpx.TimeoutException, httpx.TransportError, httpx.HTTPStatusError) as exc:
         status = exc.response.status_code if isinstance(exc, httpx.HTTPStatusError) else None
@@ -128,7 +134,7 @@ def _fact_entries(companyfacts: dict[str, Any], tags: list[str]) -> list[dict[st
         if not concept:
             continue
         for unit_name, entries in (concept.get("units") or {}).items():
-            if not str(unit_name).upper().startswith("USD"):
+            if unit_name != "USD":
                 continue
             for item in entries or []:
                 if item.get("val") is None:

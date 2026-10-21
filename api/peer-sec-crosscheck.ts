@@ -1,3 +1,4 @@
+import secAccessPolicy from "../config/sec-acquisition-access.json";
 import type { MarketResult } from "../contracts/analysis";
 import { corroborateSecPeerPoint, secFilingIdentity, secProofUrl } from "../contracts/sec-peer-proof";
 import type { SecCompanyFacts } from "../contracts/sec-peer-proof";
@@ -47,7 +48,7 @@ export async function crosscheckCompetitiveFacts(
  }
  const fetcher=options.retrieve??retrieve;
  const results=new Map<string,SecCompanyFacts|null>();
- if(agent.length>=12&&(options.retrieve||process.env.SEC_LIVE_LOOKUP_ENABLED==="true")&&Date.now()>=secRestrictedUntil){
+ if(agent.length>=12&&(options.retrieve||(process.env.SEC_LIVE_LOOKUP_ENABLED==="true"&&String(secAccessPolicy.state)==="reviewed"))&&Date.now()>=secRestrictedUntil){
   await Promise.all(uniqueCiks.map(async cik=>{
    try{results.set(cik,await fetcher(secProofUrl(cik),agent));}
    catch{results.set(cik,null);}
